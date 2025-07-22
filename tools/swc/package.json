@@ -1,0 +1,24 @@
+{
+  "name": "@shipfox/swc",
+  "version": "1.0.2",
+  "license": "MIT",
+  "private": false,
+  "packageManager": "pnpm@9.15.7",
+  "type": "module",
+  "bin": {
+    "swc": "./bin/swc.js"
+  },
+  "scripts": {
+    "build": "rm -rf dist && swc --strip-leading-paths --config-file .swcrc -d dist . && tsc-alias -p tsconfig.build.json --resolve-full-paths"
+  },
+  "dependencies": {
+    "@shipfox/tool-utils": "workspace:*",
+    "@swc/cli": "^0.6.0",
+    "@swc/core": "^1.11.24",
+    "date-fns": "^4.1.0",
+    "tsc-alias": "^1.8.10"
+  },
+  "devDependencies": {
+    "@shipfox/ts-config": "workspace:*"
+  }
+}

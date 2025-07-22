@@ -1,0 +1,8 @@
+{
+  "name": "@shipfox/ts-config",
+  "version": "1.0.1",
+  "license": "MIT",
+  "private": false,
+  "packageManager": "pnpm@9.15.7",
+  "exports": "./tsconfig.json"
+}
