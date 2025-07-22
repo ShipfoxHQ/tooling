@@ -1,0 +1,25 @@
+{
+  "name": "@shipfox/redis",
+  "license": "MIT",
+  "private": false,
+  "version": "2.0.2",
+  "packageManager": "pnpm@9.15.7",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "type": "module",
+  "scripts": {
+    "build": "swc",
+    "check": "biome",
+    "type": "tsc-emit"
+  },
+  "dependencies": {
+    "@shipfox/config": "workspace:*",
+    "ioredis": "^5.6.1"
+  },
+  "devDependencies": {
+    "@shipfox/biome": "workspace:*",
+    "@shipfox/swc": "workspace:*",
+    "@shipfox/ts-config": "workspace:*",
+    "@shipfox/typescript": "workspace:*"
+  }
+}

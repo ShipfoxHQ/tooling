@@ -1,0 +1,12 @@
+import * as DialogPrimitive from '@radix-ui/react-dialog';
+
+export const Dialog = DialogPrimitive.Root;
+export const DialogTrigger = DialogPrimitive.Trigger;
+export const DialogClose = DialogPrimitive.Close;
+
+export * from './DialogContent';
+export * from './DialogDescription';
+export * from './DialogFooter';
+export * from './DialogHeader';
+export * from './DialogOverlay';
+export * from './DialogTitle';
