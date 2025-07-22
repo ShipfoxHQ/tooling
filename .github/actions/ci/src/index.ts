@@ -1,6 +1,6 @@
 import core from '@actions/core';
-import {getContext} from 'src/context';
-import {nixExecSync} from 'src/utils';
+import {getContext} from './context';
+import {nixExecSync} from './utils';
 
 function getTurboTasks(): string[] {
   const tasks: string[] = ['check', 'type', 'build', 'test'];
