@@ -20,7 +20,8 @@
       "dependsOn": ["^build"]
     },
     "check": {
-      "cache": true
+      "cache": true,
+      "dependsOn": ["@shipfox/biome#build"]
     },
     "cli": {
       "cache": false,
