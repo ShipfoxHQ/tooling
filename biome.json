@@ -10,16 +10,11 @@
       "**/out/**",
       "**/coverage/**",
       "**/.nx/**",
-      "./apps/landing-page/storyblok/**",
       "/nix/store/**",
       "**/.docusaurus/**",
       "**/.astro/**",
-      "libs/runner-sidecar/github-cache/src/presentation/twirp/cache.pb.ts",
-      "images/github-runner/ubuntu/runtime/runner-agent.mjs",
-      "images/github-runner/ubuntu/runtime/runner-container-hooks.js",
       "**/_temp/**",
-      "**/.react-router/**",
-      "apps/landing-page/src/app.css"
+      "**/.react-router/**"
     ]
   },
   "formatter": {

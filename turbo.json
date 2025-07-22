@@ -2,14 +2,6 @@
   "$schema": "https://turbo.build/schema.json",
   "globalDependencies": ["flake.lock", "flake.nix", "biome.json"],
   "globalPassThroughEnv": [
-    "CLOUDSDK_PROJECT",
-    "CLOUDSDK_CORE_PROJECT",
-    "GCP_PROJECT",
-    "GCLOUD_PROJECT",
-    "GOOGLE_CLOUD_PROJECT",
-    "CLOUDSDK_AUTH_CREDENTIAL_FILE_OVERRIDE",
-    "GOOGLE_APPLICATION_CREDENTIALS",
-    "GOOGLE_GHA_CREDS_PATH",
     "GITHUB_*",
     "ACTIONS_*"
   ],
