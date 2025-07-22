@@ -1,0 +1,27 @@
+{
+  "name": "@shipfox/vitest",
+  "version": "1.0.2",
+  "license": "MIT",
+  "private": false,
+  "packageManager": "pnpm@9.15.7",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "type": "module",
+  "bin": {
+    "vitest-run": "./bin/vitest-run.js"
+  },
+  "scripts": {
+    "build": "swc",
+    "type": "tsc-emit"
+  },
+  "dependencies": {
+    "@shipfox/tool-utils": "workspace:*",
+    "vitest": "^3.0.5",
+    "vite-tsconfig-paths": "^5.1.4"
+  },
+  "devDependencies": {
+    "@shipfox/swc": "workspace:*",
+    "@shipfox/ts-config": "workspace:*",
+    "@shipfox/typescript": "workspace:*"
+  }
+}

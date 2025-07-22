@@ -1,0 +1,39 @@
+{
+  "$schema": "https://turbo.build/schema.json",
+  "globalDependencies": ["flake.lock", "flake.nix", "biome.json"],
+  "globalPassThroughEnv": [
+    "GITHUB_*",
+    "ACTIONS_*"
+  ],
+  "tasks": {
+    "build": {
+      "cache": true,
+      "outputs": ["dist/**/*", "!dist/**/*.d.ts", "!dist/**/*.d.ts.map", ".vercel/**/*"],
+      "dependsOn": ["^build"]
+    },
+    "check": {
+      "cache": true,
+      "dependsOn": ["@shipfox/biome#build"]
+    },
+    "cli": {
+      "cache": false,
+      "dependsOn": ["build"],
+      "passThroughEnv": ["*"]
+    },
+    "dev": {
+      "cache": false,
+      "persistent": true,
+      "dependsOn": ["build"],
+      "env": ["LOG_LEVEL", "LOG_PRETTY", "PORT"]
+    },
+    "type": {
+      "cache": true,
+      "outputs": ["dist/**/*.d.ts", "dist/**/*.d.ts.map"],
+      "dependsOn": ["@shipfox/typescript#build", "^type"]
+    },
+    "test": {
+      "cache": true,
+      "dependsOn": ["^build"]
+    }
+  }
+}

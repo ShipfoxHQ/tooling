@@ -1,0 +1,16 @@
+name: Install Nix dependencies
+description: Installs Nix dependencies, using cache if available
+
+runs:
+  using: composite
+  steps:
+    - name: Install Nix
+      uses: cachix/install-nix-action@v31
+    - name: Cache dependencies
+      uses: nix-community/cache-nix-action@v6
+      with:
+        primary-key: nix-${{ runner.os }}-${{ hashFiles('**/*.nix', '**/flake.lock') }}
+        restore-prefixes-first-match: nix-${{ runner.os }}-
+    - name: Load dependencies
+      shell: bash
+      run: nix develop --install

@@ -1,0 +1,24 @@
+{
+  "name": "@shipfox/typescript",
+  "version": "1.0.2",
+  "license": "MIT",
+  "private": false,
+  "packageManager": "pnpm@9.15.7",
+  "type": "module",
+  "bin": {
+    "tsc-check": "./bin/tsc-check.js",
+    "tsc-emit": "./bin/tsc-emit.js"
+  },
+  "scripts": {
+    "build": "swc"
+  },
+  "dependencies": {
+    "@shipfox/tool-utils": "workspace:*",
+    "typescript": "~5.8.3",
+    "tsc-alias": "^1.8.10"
+  },
+  "devDependencies": {
+    "@shipfox/swc": "workspace:*",
+    "@shipfox/ts-config": "workspace:*"
+  }
+}

@@ -1,0 +1,36 @@
+name: Continuous integration
+
+on:
+  push:
+    branches:
+      - main
+  pull_request: {}
+  workflow_dispatch: {}
+
+jobs:
+  ci:
+    name: Continuous integration
+    strategy:
+      fail-fast: false
+      matrix:
+        arch: ["amd64", "arm64"]
+    runs-on: ${{ matrix.arch == 'amd64' && 'shipfox-4vcpu-ubuntu-2204' || 'shipfox-4vcpu-ubuntu-2204-arm'  }}
+    permissions:
+      contents: read
+      id-token: write
+      actions: read
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Install Nix dependencies
+        uses: ./.github/actions/nix
+      - name: Install NodeJS dependencies
+        uses: ./.github/actions/pnpm
+      - name: Run CI - test
+        uses: ./.github/actions/ci
+        env:
+          CLOUDFLARE_ACCOUNT_ID: ${{ vars.CLOUDFLARE_ACCOUNT_ID }}
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          BUILD_NUMBER: ${{ github.run_number }}
+          BUILD_ARCH: ${{ matrix.arch }}

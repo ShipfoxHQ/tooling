@@ -1,0 +1,10 @@
+{
+  "extends": "@shipfox/ts-config",
+  "compilerOptions": {
+    "rootDir": "src",
+    "baseUrl": "src",
+    "outDir": "dist"
+  },
+  "include": ["src"],
+  "exclude": ["**/*.test.ts", "**/*TestHelper.ts"]
+}

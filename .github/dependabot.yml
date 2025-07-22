@@ -1,0 +1,67 @@
+version: 2
+updates:
+  - package-ecosystem: "npm"
+    directory: "/"
+    schedule:
+      interval: "daily"
+    groups:
+      dependencies:
+        applies-to: version-updates
+        update-types:
+          - "minor"
+          - "patch"
+      docusaurus:
+        applies-to: version-updates
+        patterns:
+          - "@docusaurus/*"
+      react:
+        applies-to: version-updates
+        patterns:
+          - "react"
+          - "react-dom"
+          - "@types/react"
+          - "@types/react-dom"
+      storybook:
+        applies-to: version-updates
+        patterns:
+          - "storybook"
+          - "@storybook/*"
+
+  # Exclude the e2e npm directory by creating a separate entry and ignoring all deps
+  - package-ecosystem: "npm"
+    directory: "/.github/e2e/npm/"
+    schedule:
+      interval: "monthly"
+    ignore:
+      - dependency-name: "*"
+
+  - package-ecosystem: "npm"
+    directory: "/.github/e2e/yarn/"
+    schedule:
+      interval: "monthly"
+    ignore:
+      - dependency-name: "*"
+
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "daily"
+    ignore:
+      - dependency-name: "ShipfoxHQ/shipfox*"
+
+  - package-ecosystem: "docker"
+    directories:
+      - "**/*"
+    schedule:
+      interval: "daily"
+
+  - package-ecosystem: "helm"
+    directories:
+      - "**/*"
+    schedule:
+      interval: "daily"
+
+  - package-ecosystem: "uv"
+    directory: "/"
+    schedule:
+      interval: "daily"

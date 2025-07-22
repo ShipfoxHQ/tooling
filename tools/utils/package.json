@@ -1,0 +1,16 @@
+{
+  "name": "@shipfox/tool-utils",
+  "version": "1.0.1",
+  "license": "MIT",
+  "private": false,
+  "packageManager": "pnpm@9.15.7",
+  "main": "src/index.js",
+  "types": "src/index.d.ts",
+  "type": "module",
+  "scripts": {
+    "cli": "node src/index.js"
+  },
+  "dependencies": {
+    "@actions/core": "^1.11.1"
+  }
+}
