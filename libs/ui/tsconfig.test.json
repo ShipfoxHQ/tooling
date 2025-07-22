@@ -1,0 +1,19 @@
+{
+  "extends": "./tsconfig.build.json",
+  "compilerOptions": {
+    "rootDir": ".",
+    "paths": {
+      "test": ["../test"],
+      "test/*": ["../test/*"]
+    }
+  },
+  "include": [
+    "src",
+    "test",
+    "jest.config.ts",
+    "tailwind.config.ts",
+    "tailwind.config.colors.ts",
+    "vite.config.ts"
+  ],
+  "exclude": []
+}
