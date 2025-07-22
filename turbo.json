@@ -29,7 +29,7 @@
     "type": {
       "cache": true,
       "outputs": ["dist/**/*.d.ts", "dist/**/*.d.ts.map"],
-      "dependsOn": ["^type"]
+      "dependsOn": ["@shipfox/typescript#build", "^type"]
     },
     "test": {
       "cache": true,
