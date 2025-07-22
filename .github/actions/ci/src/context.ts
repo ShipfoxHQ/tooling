@@ -2,7 +2,7 @@ import {readFileSync} from 'node:fs';
 import core from '@actions/core';
 import github from '@actions/github';
 import type {components} from '@octokit/openapi-webhooks-types';
-import {nixExecSync} from './utils';
+import {nixExecSync} from 'src/utils';
 
 type PullRequestEvent = components['schemas']['webhook-pull-request-opened'];
 type PushEvent = components['schemas']['webhook-push'];

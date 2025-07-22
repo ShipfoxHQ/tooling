@@ -5,9 +5,9 @@
   "packageManager": "pnpm@9.15.7",
   "type": "module",
   "scripts": {
-    "build": "vite-build",
-    "check": "biome",
-    "type": "tsc-check"
+    "build": "node_modules/.bin/vite-build",
+    "check": "node_modules/.bin/biome",
+    "type": "node_modules/.bin/tsc-check"
   },
   "dependencies": {
     "@actions/core": "^1.11.1",
