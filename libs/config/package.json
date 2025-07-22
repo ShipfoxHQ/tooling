@@ -1,0 +1,27 @@
+{
+  "name": "@shipfox/config",
+  "license": "MIT",
+  "private": false,
+  "version": "1.0.0",
+  "packageManager": "pnpm@9.15.7",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "type": "module",
+  "scripts": {
+    "build": "swc",
+    "check": "biome",
+    "test": "vitest-run",
+    "type": "tsc-emit"
+  },
+  "dependencies": {
+    "envalid": "^8.0.0"
+  },
+  "devDependencies": {
+    "@shipfox/biome": "workspace:*",
+    "@shipfox/swc": "workspace:*",
+    "@shipfox/ts-config": "workspace:*",
+    "@shipfox/typescript": "workspace:*",
+    "@shipfox/vitest": "workspace:*",
+    "vitest": "^3.0.5"
+  }
+}
