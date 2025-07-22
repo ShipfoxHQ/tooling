@@ -25,18 +25,6 @@ function runTurbo() {
 }
 
 function run() {
-  nixExecSync('docker compose up -d', {stdio: 'inherit'});
-
-  // Wait for all containers to be healthy
-  core.info('Waiting for containers to be healthy...');
-  nixExecSync('docker compose ps --format "table {{.Name}}\t{{.Status}}"', {stdio: 'inherit'});
-
-  // Wait for all services to be healthy
-  nixExecSync('timeout 60 bash -c "until docker compose ps | grep -q healthy; do sleep 2; done"', {
-    stdio: 'inherit',
-  });
-
-  core.info('All containers are healthy!');
   runTurbo();
 }
 
