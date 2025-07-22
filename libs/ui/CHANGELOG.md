@@ -1,11 +1,19 @@
 # @shipfox/ui
 
+## 2.1.0
+
+### Minor Changes
+
+- bdf8ff5: Move libs in open source repo
+
 ## 2.0.1
+
 ### Patch Changes
 
 - 7bb1804: Remove unsued publishing scripts
 
 ## 2.0.0
+
 ### Major Changes
 
 - ed7ec07: Initial release
@@ -16,6 +24,7 @@
 - a6ebd5c: Add MIT license to packages
 
 ## 1.0.0
+
 ### Major Changes
 
 - 212199d: Initial release
