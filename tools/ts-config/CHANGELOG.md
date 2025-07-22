@@ -1,5 +1,17 @@
 # @shipfox/ts-config
 
+## 1.2.1
+
+### Patch Changes
+
+- Export tsconfig.json
+
+## 1.2.0
+
+### Minor Changes
+
+- Improve export
+
 ## 1.1.0
 
 ### Minor Changes

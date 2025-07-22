@@ -2,7 +2,7 @@
   "name": "@shipfox/pubsub",
   "license": "MIT",
   "private": false,
-  "version": "2.1.0",
+  "version": "2.1.1",
   "packageManager": "pnpm@9.15.7",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",

@@ -1,5 +1,16 @@
 # @shipfox/jobs
 
+## 2.2.0
+
+### Minor Changes
+
+- Fix dependencies
+
+### Patch Changes
+
+- Updated dependencies
+  - @shipfox/opentelemetry@2.2.0
+
 ## 2.1.0
 
 ### Minor Changes

@@ -24,6 +24,5 @@
     "composite": false,
     "verbatimModuleSyntax": true,
     "declarationMap": true
-  },
-  "exclude": ["**/node_modules", "**/dist", "**/.*/"]
+  }
 }
