@@ -34,23 +34,6 @@
       "dependsOn": ["build", "migrate"],
       "env": ["LOG_LEVEL", "LOG_PRETTY", "PORT"]
     },
-//    "docker:build": {
-//      "cache": false,
-//      "dependsOn": ["build", "test"],
-//      "env": ["NODE_VERSION", "PNPM_VERSION", "BUILD_NUMBER", "BUILD_ARCH"],
-//      "passThroughEnv": ["CI", "GITHUB_ACTION"]
-//    },
-//    "docker:build:push": {
-//      "cache": false,
-//      "dependsOn": ["build", "test"],
-//      "env": ["NODE_VERSION", "PNPM_VERSION", "BUILD_NUMBER", "BUILD_ARCH"],
-//      "passThroughEnv": ["CI", "GITHUB_ACTION"]
-//    },
-//    "docker:manifest": {
-//      "cache": false,
-//      "dependsOn": ["docker:build:push"],
-//      "env": ["BUILD_NUMBER", "TARGET_ENVIRONMENT"]
-//    },
     "migrate": {
       "cache": false,
       "dependsOn": ["^migrate"]
