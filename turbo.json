@@ -1,0 +1,71 @@
+{
+  "$schema": "https://turbo.build/schema.json",
+  "globalDependencies": ["flake.lock", "flake.nix", "biome.json"],
+  "globalPassThroughEnv": [
+    "CLOUDSDK_PROJECT",
+    "CLOUDSDK_CORE_PROJECT",
+    "GCP_PROJECT",
+    "GCLOUD_PROJECT",
+    "GOOGLE_CLOUD_PROJECT",
+    "CLOUDSDK_AUTH_CREDENTIAL_FILE_OVERRIDE",
+    "GOOGLE_APPLICATION_CREDENTIALS",
+    "GOOGLE_GHA_CREDS_PATH",
+    "GITHUB_*",
+    "ACTIONS_*"
+  ],
+  "tasks": {
+    "build": {
+      "cache": true,
+      "outputs": ["dist/**/*", "!dist/**/*.d.ts", "!dist/**/*.d.ts.map", ".vercel/**/*"],
+      "dependsOn": ["^build"]
+    },
+    "check": {
+      "cache": true
+    },
+    "cli": {
+      "cache": false,
+      "dependsOn": ["build"],
+      "passThroughEnv": ["*"]
+    },
+    "dev": {
+      "cache": false,
+      "persistent": true,
+      "dependsOn": ["build", "migrate"],
+      "env": ["LOG_LEVEL", "LOG_PRETTY", "PORT"]
+    },
+//    "docker:build": {
+//      "cache": false,
+//      "dependsOn": ["build", "test"],
+//      "env": ["NODE_VERSION", "PNPM_VERSION", "BUILD_NUMBER", "BUILD_ARCH"],
+//      "passThroughEnv": ["CI", "GITHUB_ACTION"]
+//    },
+//    "docker:build:push": {
+//      "cache": false,
+//      "dependsOn": ["build", "test"],
+//      "env": ["NODE_VERSION", "PNPM_VERSION", "BUILD_NUMBER", "BUILD_ARCH"],
+//      "passThroughEnv": ["CI", "GITHUB_ACTION"]
+//    },
+//    "docker:manifest": {
+//      "cache": false,
+//      "dependsOn": ["docker:build:push"],
+//      "env": ["BUILD_NUMBER", "TARGET_ENVIRONMENT"]
+//    },
+    "migrate": {
+      "cache": false,
+      "dependsOn": ["^migrate"]
+    },
+    "migrate:test": {
+      "cache": false,
+      "dependsOn": ["^migrate:test"]
+    },
+    "type": {
+      "cache": true,
+      "outputs": ["dist/**/*.d.ts", "dist/**/*.d.ts.map"],
+      "dependsOn": ["^type"]
+    },
+    "test": {
+      "cache": true,
+      "dependsOn": ["^build", "migrate:test"]
+    }
+  }
+}

@@ -1,0 +1,24 @@
+{
+  "name": "@shipfox/ci",
+  "license": "UNLICENSED",
+  "private": true,
+  "packageManager": "pnpm@9.15.7",
+  "type": "module",
+  "scripts": {
+    "build": "vite-build",
+    "check": "biome",
+    "type": "tsc-check"
+  },
+  "dependencies": {
+    "@actions/core": "^1.11.1",
+    "@actions/github": "^6.0.0"
+  },
+  "devDependencies": {
+    "@octokit/openapi-webhooks-types": "^9.1.0",
+    "@shipfox/biome": "^1.0.2",
+    "@shipfox/ts-config": "^1.0.1",
+    "@shipfox/typescript": "^1.0.2",
+    "@shipfox/vite": "^1.0.2",
+    "vite": "^6.2.7"
+  }
+}

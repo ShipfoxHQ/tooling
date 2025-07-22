@@ -1,0 +1,9 @@
+packages:
+  - ".github/actions/**"
+  - "apps/*"
+  - "libs/**"
+  - "images/**"
+  - "tools/**"
+  - "turbo/**"
+  - "!**/vite/types/**"
+  - "!**/node_modules/**"

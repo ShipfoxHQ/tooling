@@ -1,0 +1,31 @@
+name: Install PNPM dependencies
+description: Installs PNPM dependencies, using cache if available
+
+inputs:
+  ignore-scripts:
+    description: "Whether to ignore scripts during installation"
+    required: false
+    default: "false"
+
+runs:
+  using: composite
+  steps:
+    - name: Get pnpm store directory
+      id: pnpm_store_path
+      shell: nix develop --command bash {0}
+      run: echo "PNPM_STORE_PATH=$(pnpm store path --silent)" >> $GITHUB_OUTPUT
+    - name: Get store from cache
+      uses: actions/cache@v4
+      with:
+        path: ${{ steps.pnpm_store_path.outputs.PNPM_STORE_PATH }}
+        key: pnpm-store-${{ hashFiles('pnpm-lock.yaml') }}
+        restore-keys: |
+          pnpm-store-
+    - name: Install dependencies
+      shell: nix develop --command bash {0}
+      run: |
+        if [ "${{ inputs.ignore-scripts }}" = "true" ]; then
+          pnpm -r install --frozen-lockfile --ignore-scripts
+        else
+          pnpm -r install --frozen-lockfile
+        fi
