@@ -34,14 +34,6 @@
       "dependsOn": ["build", "migrate"],
       "env": ["LOG_LEVEL", "LOG_PRETTY", "PORT"]
     },
-    "migrate": {
-      "cache": false,
-      "dependsOn": ["^migrate"]
-    },
-    "migrate:test": {
-      "cache": false,
-      "dependsOn": ["^migrate:test"]
-    },
     "type": {
       "cache": true,
       "outputs": ["dist/**/*.d.ts", "dist/**/*.d.ts.map"],
