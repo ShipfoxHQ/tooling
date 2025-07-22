@@ -23,8 +23,6 @@
               # Node
               nodejs_22
               pnpm
-              # DB migration
-              go-migrate
             ];
           };
         };

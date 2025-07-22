@@ -23,7 +23,7 @@
     "dev": {
       "cache": false,
       "persistent": true,
-      "dependsOn": ["build", "migrate"],
+      "dependsOn": ["build"],
       "env": ["LOG_LEVEL", "LOG_PRETTY", "PORT"]
     },
     "type": {
@@ -33,7 +33,7 @@
     },
     "test": {
       "cache": true,
-      "dependsOn": ["^build", "migrate:test"]
+      "dependsOn": ["^build"]
     }
   }
 }
