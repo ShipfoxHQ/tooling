@@ -1,6 +1,6 @@
 # https://docs.github.com/en/actions/creating-actions/metadata-syntax-for-github-actions
 name: CI
-description: Shhipfox continuous integration pipeline
+description: Shipfox continuous integration pipeline
 
 inputs:
   github-token:
