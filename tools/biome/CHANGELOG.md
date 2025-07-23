@@ -1,5 +1,23 @@
 # @shipfox/biome
 
+## 1.2.0
+
+### Minor Changes
+
+- Fix recursive imports
+
+## 1.5.1
+
+### Patch Changes
+
+- test
+
+## 1.4.1
+
+### Patch Changes
+
+- test
+
 ## 1.1.0
 
 ### Minor Changes

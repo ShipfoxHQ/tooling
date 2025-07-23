@@ -3,7 +3,8 @@
   "license": "MIT",
   "scripts": {
     "preinstall": "npx only-allow pnpm",
-    "prepare": "husky || echo \"Husky not installed, cannot setup hooks\""
+    "prepare": "husky || echo \"Husky not installed, cannot setup hooks\"",
+    "biome": "pnpm --filter @shipfox/biome exec biome"
   },
   "private": false,
   "packageManager": "pnpm@9.15.7",
