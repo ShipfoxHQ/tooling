@@ -27,13 +27,8 @@ async function run() {
 
   if (process.env.GITHUB_ACTION) {
     log.debug('Running in GitHub Action, setting up cache');
-    const cacheFromParams = ['type=gha', 'url_v2=http://localhost:4854/'];
-    const cacheToParams = [
-      'type=gha',
-      'url_v2=http://localhost:4854/',
-      'mode=max',
-      'ignore-error=true',
-    ];
+    const cacheFromParams = ['type=gha'];
+    const cacheToParams = ['type=gha', 'mode=max'];
     if (imageName) {
       cacheFromParams.push(`scope=${imageName}-${process.env.BUILD_ARCH}`);
       cacheToParams.push(`scope=${imageName}-${process.env.BUILD_ARCH}`);

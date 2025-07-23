@@ -1,5 +1,11 @@
 # @shipfox/docker
 
+## 1.1.2
+
+### Patch Changes
+
+- Improve cacheToParams
+
 ## 1.1.1
 
 ### Patch Changes
