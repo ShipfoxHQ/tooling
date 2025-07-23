@@ -1,5 +1,45 @@
 # @shipfox/ts-config
 
+## 1.3.3
+
+### Patch Changes
+
+- Bump version
+
+## 1.3.2
+
+### Patch Changes
+
+- Better export
+
+## 1.3.1
+
+### Patch Changes
+
+- Update
+
+## 1.3.0
+
+### Minor Changes
+
+- 0741f42: Upgrade opentelemetry version
+
+### Patch Changes
+
+- Update excludes
+
+## 1.2.1
+
+### Patch Changes
+
+- Export tsconfig.json
+
+## 1.2.0
+
+### Minor Changes
+
+- Improve export
+
 ## 1.1.0
 
 ### Minor Changes

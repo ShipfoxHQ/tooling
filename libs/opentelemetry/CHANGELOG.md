@@ -1,5 +1,21 @@
 # @shipfox/opentelemetry
 
+## 2.3.0
+
+### Minor Changes
+
+- 0741f42: Upgrade opentelemetry version
+
+### Patch Changes
+
+- @shipfox/config@1.1.0
+
+## 2.2.0
+
+### Minor Changes
+
+- Fix dependencies
+
 ## 2.1.0
 
 ### Minor Changes

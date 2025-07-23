@@ -1,5 +1,28 @@
 # @shipfox/pubsub
 
+## 2.2.0
+
+### Minor Changes
+
+- 0741f42: Upgrade opentelemetry version
+
+### Patch Changes
+
+- Updated dependencies [0741f42]
+  - @shipfox/opentelemetry@2.3.0
+  - @shipfox/jobs@2.3.0
+  - @shipfox/config@1.1.0
+  - @shipfox/feature-flag@2.1.0
+  - @shipfox/log@2.1.0
+
+## 2.1.1
+
+### Patch Changes
+
+- Updated dependencies
+  - @shipfox/opentelemetry@2.2.0
+  - @shipfox/jobs@2.2.0
+
 ## 2.1.0
 
 ### Minor Changes
