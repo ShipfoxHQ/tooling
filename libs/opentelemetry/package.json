@@ -2,7 +2,7 @@
   "name": "@shipfox/opentelemetry",
   "license": "MIT",
   "private": false,
-  "version": "2.2.0",
+  "version": "2.3.0",
   "packageManager": "pnpm@9.15.7",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
