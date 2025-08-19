@@ -16,7 +16,7 @@
     "ajv": "^8.17.1",
     "ajv-formats": "^2.1.1",
     "@fastify/type-provider-typebox": "^5.1.0",
-    "@google-cloud/pubsub": "^5.0.0",
+    "@google-cloud/pubsub": "^5.2.0",
     "@sentry/node": "^9.12.0",
     "@shipfox/feature-flag": "workspace:*",
     "@shipfox/jobs": "workspace:*",
