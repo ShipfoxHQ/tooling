@@ -21,6 +21,6 @@
     "@shipfox/swc": "workspace:*",
     "@shipfox/ts-config": "workspace:*",
     "@shipfox/typescript": "workspace:*",
-    "@types/pg": "^8.11.6"
+    "@types/pg": "^8.15.5"
   }
 }
