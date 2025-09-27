@@ -17,7 +17,7 @@
   },
   "dependencies": {
     "@shipfox/tool-utils": "workspace:*",
-    "vite": "^6.2.7",
+    "vite": "^6.3.6",
     "vite-tsconfig-paths": "^5.1.4"
   },
   "devDependencies": {
