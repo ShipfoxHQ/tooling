@@ -1,5 +1,5 @@
 import {bool, createConfig, str} from '@shipfox/config';
-import {type LoggerOptions, pino} from 'pino';
+import {type LoggerOptions, pino, stdSerializers, stdTimeFunctions} from 'pino';
 
 const env = createConfig({
   LOG_LEVEL: str({default: 'info'}),
@@ -9,6 +9,21 @@ const env = createConfig({
 export const settings: LoggerOptions = {
   level: env.LOG_LEVEL,
   transport: env.LOG_PRETTY ? {target: 'pino-pretty', options: {colorize: true}} : undefined,
+  timestamp: stdTimeFunctions.isoTime,
+  formatters: {
+    level: (label) => ({level: label.toUpperCase()}),
+  },
+  serializers: {
+    error: stdSerializers.errWithCause,
+    errors: (errors: unknown) => {
+      if (Array.isArray(errors))
+        return errors.map((error) => stdSerializers.errWithCause(error as Error));
+      return stdSerializers.errWithCause(errors as Error);
+    },
+    err: stdSerializers.errWithCause,
+    req: stdSerializers.req,
+    res: stdSerializers.res,
+  },
 };
 
 const logger = pino(settings);
