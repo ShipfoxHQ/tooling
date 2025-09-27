@@ -1,0 +1,26 @@
+{
+  "name": "@shipfox/node-log",
+  "license": "MIT",
+  "private": false,
+  "version": "0.0.0",
+  "packageManager": "pnpm@9.15.7",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "type": "module",
+  "scripts": {
+    "build": "swc",
+    "check": "biome",
+    "type": "tsc-emit"
+  },
+  "dependencies": {
+    "@shipfox/config": "workspace:*",
+    "pino": "^9.6.0",
+    "pino-pretty": "^13.0.0"
+  },
+  "devDependencies": {
+    "@shipfox/biome": "workspace:*",
+    "@shipfox/swc": "workspace:*",
+    "@shipfox/ts-config": "workspace:*",
+    "@shipfox/typescript": "workspace:*"
+  }
+}

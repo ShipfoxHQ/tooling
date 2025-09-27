@@ -1,0 +1,25 @@
+{
+  "name": "@shipfox/node-clickhouse",
+  "license": "MIT",
+  "private": false,
+  "version": "0.0.0",
+  "packageManager": "pnpm@9.15.7",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "type": "module",
+  "scripts": {
+    "build": "swc",
+    "check": "biome",
+    "type": "tsc-emit"
+  },
+  "dependencies": {
+    "@clickhouse/client": "^1.10.1",
+    "@shipfox/config": "workspace:*"
+  },
+  "devDependencies": {
+    "@shipfox/biome": "workspace:*",
+    "@shipfox/swc": "workspace:*",
+    "@shipfox/ts-config": "workspace:*",
+    "@shipfox/typescript": "workspace:*"
+  }
+}
