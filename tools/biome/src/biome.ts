@@ -1,9 +1,14 @@
-#! /usr/bin/env node
+#!/usr/bin/env node
 
 import {execSync} from 'node:child_process';
-import {getProjectBinaryPath, getWorkspaceFilePath} from '@shipfox/tool-utils';
+import {dirname, join} from 'node:path';
+import {fileURLToPath} from 'node:url';
+import {getWorkspaceFilePath} from '@shipfox/tool-utils';
 
-const binPath = getProjectBinaryPath('biome', import.meta.url);
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+
+const binPath = join(__dirname, '..', 'node_modules', '.bin', 'biome');
 const biomeConfigFile = getWorkspaceFilePath('biome.json');
 
 const extraArgs: string[] = [];

@@ -1,5 +1,17 @@
 # @shipfox/docker
 
+## 1.1.2
+
+### Patch Changes
+
+- Improve cacheToParams
+
+## 1.1.1
+
+### Patch Changes
+
+- 44c5b62: Imrpove cacheFromParams
+
 ## 1.1.0
 
 ### Minor Changes
