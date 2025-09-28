@@ -1,21 +1,24 @@
 {
-  "$schema": "https://biomejs.dev/schemas/1.9.4/schema.json",
+  "$schema": "https://biomejs.dev/schemas/2.2.4/schema.json",
   "vcs": { "enabled": false, "clientKind": "git", "useIgnoreFile": true },
   "files": {
-    "ignoreUnknown": false,
-    "ignore": [
-      "**/node_modules/**",
-      "**/dist/**",
-      "**/build/**",
-      "**/out/**",
-      "**/coverage/**",
-      "**/.nx/**",
-      "/nix/store/**",
-      "**/.docusaurus/**",
-      "**/.astro/**",
-      "**/_temp/**",
-      "**/.react-router/**"
-    ]
+    "includes": [
+      "**/*.ts",
+      "**/*.tsx",
+      "**/*.js",
+      "**/*.jsx",
+      "**/*.css",
+      "**/*.scss",
+      "**/*.json",
+      "**/*.jsonc",
+      "!**/node_modules",
+      "!**/dist",
+      "!**/build",
+      "!**/out",
+      "!**/coverage",
+      "!**/nix/store"
+    ],
+    "ignoreUnknown": false
   },
   "formatter": {
     "enabled": true,
@@ -28,15 +31,27 @@
     "attributePosition": "auto",
     "bracketSpacing": true
   },
-  "organizeImports": { "enabled": true },
+  "assist": {
+    "enabled": true,
+    "actions": {
+      "source": {
+        "recommended": true
+      }
+    }
+  },
   "linter": {
     "enabled": true,
+    "domains": {
+      "react": "recommended",
+      "test": "recommended"
+    },
     "rules": {
       "recommended": true,
       "correctness": {
         "noUnusedImports": "error",
         "noUnusedFunctionParameters": "error",
-        "useHookAtTopLevel": "error"
+        "useHookAtTopLevel": "error",
+        "noUnusedVariables": "warn"
       },
       "performance": {
         "useTopLevelRegex": "error"
@@ -49,14 +64,12 @@
       },
       "suspicious": {
         "noConsole": "error",
-        "noConsoleLog": "off",
         "noEmptyBlockStatements": "error",
         "noEvolvingTypes": "error",
         "useAwait": "error",
         "useErrorMessage": "error"
       }
-    },
-    "ignore": ["**/*.astro"]
+    }
   },
   "javascript": {
     "formatter": {
@@ -78,16 +91,5 @@
       "enabled": true,
       "trailingCommas": "none"
     }
-  },
-  "overrides": [
-    {
-      "include": ["*.ts", "*.tsx", "*.js", "*.jsx"],
-      "linter": {
-        "rules": {
-          "correctness": { "noUnusedVariables": "warn" },
-          "suspicious": { "noConsole": "error" }
-        }
-      }
-    }
-  ]
+  }
 }

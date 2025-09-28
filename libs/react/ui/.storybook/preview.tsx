@@ -1,9 +1,9 @@
-import '../global.css';
+import '../index.css';
 import type {Decorator, Preview} from '@storybook/react';
-import {ThemeProvider} from '../src/components/ThemeProvider';
+import {ThemeProvider} from '../src/components/theme-provider';
 
 const withTheme: Decorator = (Story, context) => {
-  return <ThemeProvider theme={context.globals.theme}>{Story()}</ThemeProvider>;
+  return <ThemeProvider defaultTheme={context.globals.theme}>{Story()}</ThemeProvider>;
 };
 
 const preview: Preview = {

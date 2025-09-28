@@ -1,9 +1,8 @@
 import type {StorybookConfigVite} from '@storybook/builder-vite';
-import type {StorybookConfig} from '@storybook/types';
+import type {StorybookConfig} from '@storybook/react-vite';
 
 const config: StorybookConfig & StorybookConfigVite = {
   stories: ['../src/**/*.stories.@(js|jsx|ts|tsx|mdx)'],
-  addons: ['@storybook/addon-essentials', '@storybook/addon-interactions'],
   core: {
     builder: {
       name: '@storybook/builder-vite',
@@ -12,9 +11,7 @@ const config: StorybookConfig & StorybookConfigVite = {
       },
     },
   },
-  framework: {
-    name: '@storybook/react-vite',
-  },
+  framework: '@storybook/react-vite',
 };
 
 export default config;
