@@ -15,7 +15,7 @@ export const Gallery: Story = {
   render: (args) => (
     <div className="flex flex-col gap-16">
       <div className="grid grid-cols-8 gap-16">
-        {iconNames.map((name) => (
+        {iconNames.toSorted().map((name) => (
           <div key={name} className="flex flex-col items-center gap-4">
             <Icon {...args} name={name} />
             <Code variant="label" className="text-foreground-neutral-subtle">

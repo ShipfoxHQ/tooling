@@ -5,7 +5,7 @@ import {cn} from 'utils/cn';
 import {Icon, type IconName} from './icon/icon';
 
 export const buttonVariants = cva(
-  'rounded-[6px] inline-flex items-center justify-center whitespace-nowrap transition-colors disabled:pointer-events-none shrink-0 outline-none focus-visible:ring-3 focus-visible:ring-border-highlights-interactive',
+  'rounded-[6px] inline-flex items-center justify-center whitespace-nowrap transition-colors disabled:pointer-events-none shrink-0 outline-none',
   {
     variants: {
       variant: {

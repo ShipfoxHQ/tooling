@@ -8,6 +8,8 @@
   --\*: initial;
 }
 
+@custom-variant hover (&:hover);
+
 @font-face {
   font-family: "Commit Mono";
   src: url("https://a.storyblok.com/f/338460/x/5b4955e226/commitmono-400-regular.otf")
