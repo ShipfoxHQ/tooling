@@ -2,9 +2,7 @@
   "editor.formatOnSave": true,
   "editor.tabSize": 2,
   "editor.codeActionsOnSave": {
-    "source.fixAll": "explicit",
-    "quickfix.biome": "explicit",
-    "source.organizeImports.biome": "explicit"
+    "source.fixAll.biome": "explicit"
   },
   "files.associations": {
     "*.css": "tailwindcss"
@@ -33,5 +31,8 @@
   },
   "biome.lsp.bin": "tools/biome/node_modules/@biomejs/cli-darwin-arm64/biome",
   "vitest.shellType": "terminal",
-  "vitest.logLevel": "info"
+  "vitest.logLevel": "info",
+  "[tailwindcss]": {
+    "editor.defaultFormatter": "biomejs.biome"
+  }
 }

@@ -1,2 +1,2 @@
-export * from './useTheme';
 export * from './useCopyToClipboard';
+export * from './useTheme';

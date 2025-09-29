@@ -1,4 +1,4 @@
-import {url, createConfig, str} from '@shipfox/config';
+import {createConfig, str, url} from '@shipfox/config';
 
 export const config = createConfig({
   CLICKHOUSE_URL: url({default: 'http://localhost:8123'}),

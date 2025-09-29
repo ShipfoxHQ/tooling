@@ -2,7 +2,7 @@ import FastifyOtelInstrumentation from '@fastify/otel';
 import {getNodeAutoInstrumentations} from '@opentelemetry/auto-instrumentations-node';
 import {OTLPTraceExporter} from '@opentelemetry/exporter-trace-otlp-http';
 import {NodeSDK} from '@opentelemetry/sdk-node';
-import {type StartInstrumentationOptions, env, getMetricsReader} from './common';
+import {env, getMetricsReader, type StartInstrumentationOptions} from './common';
 
 let instanceInstrumentation: NodeSDK | undefined;
 let fastifyInstrumentation: FastifyOtelInstrumentation | undefined;

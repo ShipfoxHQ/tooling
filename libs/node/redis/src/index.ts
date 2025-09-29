@@ -1,5 +1,6 @@
 import {Redis, type RedisOptions} from 'ioredis';
 import {config} from './config';
+
 export type * from 'ioredis';
 
 let _redis: Redis | undefined;

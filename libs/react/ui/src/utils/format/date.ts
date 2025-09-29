@@ -1,4 +1,4 @@
-import {type NormalizedInterval, getYear} from 'date-fns';
+import {getYear, type NormalizedInterval} from 'date-fns';
 import {isEndOfDay, isStartOfDay} from 'utils/date';
 
 interface DateTimeFormatOptions extends Intl.DateTimeFormatOptions {
@@ -57,7 +57,6 @@ export function formatDateTimeRange(
     minute: areFullDays ? undefined : defaultOptions.minute,
     ...options,
   });
-  // @ts-ignore - This function somehow does not exist in Typescript
   return formatter.formatRange(start, end);
 }
 

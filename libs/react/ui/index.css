@@ -1,11 +1,11 @@
 @import url("https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap")
-layer(base);
+  layer(base);
 
 @import "tailwindcss";
 @import "tw-animate-css";
 
 @theme {
-  --*: initial;
+  --\*: initial;
 }
 
 @font-face {
@@ -419,27 +419,27 @@ layer(base);
   --alpha-400: var(--color-alpha-white-24);
 
   /* Shadow */
-  --shadow-button-inverted: 0 -1px 0 0 var(--color-alpha-white-12),
-    0 0 0 1px var(--color-alpha-white-10), 0 0 0 1px var(--color-neutral-600),
-    0 0 1px 1.5px var(--color-alpha-black-24),
-    0 2px 2px 0 var(--color-alpha-black-24);
-  --shadow-button-inverted-focus: 0 -1px 0 0 var(--color-alpha-white-12),
-    0 0 0 1px var(--color-alpha-white-12), 0 0 0 1px var(--color-neutral-600),
-    0 0 0 2px var(--color-neutral-950), 0 0 0 4px var(--color-primary-500);
-  --shadow-button-neutral: 0 -1px 0 0 var(--color-alpha-white-6),
-    0 0 0 1px var(--color-alpha-white-6), 0 0 0 1px var(--color-neutral-800),
-    0 0 1px 1.5px var(--color-alpha-black-24),
-    0 2px 2px 0 var(--color-alpha-black-24);
-  --shadow-button-neutral-focus: 0 -1px 0 0 var(--color-alpha-white-6),
-    0 0 0 1px var(--color-alpha-white-6), 0 0 0 1px var(--color-neutral-800),
-    0 0 0 2px var(--color-neutral-950), 0 0 0 4px var(--color-primary-500);
-  --shadow-button-danger: 0 -1px 0 0 var(--color-alpha-white-16),
-    0 0 0 1px var(--color-alpha-white-12), 0 0 0 1px var(--color-red-700),
-    0 0 1px 1.5px var(--color-alpha-black-24),
-    0 2px 2px 0 var(--color-alpha-black-24);
-  --shadow-button-danger-focus: 0 -1px 0 0 var(--color-alpha-white-16),
-    0 0 0 1px var(--color-alpha-white-12), 0 0 0 1px var(--color-red-700),
-    0 0 0 2px var(--color-neutral-950), 0 0 0 4px var(--color-primary-500);
+  --shadow-button-inverted:
+    0 -1px 0 0 var(--color-alpha-white-12), 0 0 0 1px var(--color-alpha-white-10), 0 0 0 1px
+    var(--color-neutral-600), 0 0 1px 1.5px var(--color-alpha-black-24), 0 2px 2px 0
+    var(--color-alpha-black-24);
+  --shadow-button-inverted-focus:
+    0 -1px 0 0 var(--color-alpha-white-12), 0 0 0 1px var(--color-alpha-white-12), 0 0 0 1px
+    var(--color-neutral-600), 0 0 0 2px var(--color-neutral-950), 0 0 0 4px var(--color-primary-500);
+  --shadow-button-neutral:
+    0 -1px 0 0 var(--color-alpha-white-6), 0 0 0 1px var(--color-alpha-white-6), 0 0 0 1px
+    var(--color-neutral-800), 0 0 1px 1.5px var(--color-alpha-black-24), 0 2px 2px 0
+    var(--color-alpha-black-24);
+  --shadow-button-neutral-focus:
+    0 -1px 0 0 var(--color-alpha-white-6), 0 0 0 1px var(--color-alpha-white-6), 0 0 0 1px
+    var(--color-neutral-800), 0 0 0 2px var(--color-neutral-950), 0 0 0 4px var(--color-primary-500);
+  --shadow-button-danger:
+    0 -1px 0 0 var(--color-alpha-white-16), 0 0 0 1px var(--color-alpha-white-12), 0 0 0 1px
+    var(--color-red-700), 0 0 1px 1.5px var(--color-alpha-black-24), 0 2px 2px 0
+    var(--color-alpha-black-24);
+  --shadow-button-danger-focus:
+    0 -1px 0 0 var(--color-alpha-white-16), 0 0 0 1px var(--color-alpha-white-12), 0 0 0 1px
+    var(--color-red-700), 0 0 0 2px var(--color-neutral-950), 0 0 0 4px var(--color-primary-500);
 }
 
 @theme inline {
@@ -588,9 +588,7 @@ layer(base);
   --color-background-neutral-base: var(--background-neutral-base);
   --color-background-components-pressed: var(--background-components-pressed);
   --color-background-subtle-pressed: var(--background-subtle-pressed);
-  --color-background-highlight-interactive: var(
-    --background-highlight-interactive
-  );
+  --color-background-highlight-interactive: var(--background-highlight-interactive);
   --color-background-subtle-hover: var(--background-subtle-hover);
   --color-background-highlight-hover: var(--background-highlight-hover);
   --color-background-field-base: var(--background-field-base);
@@ -601,9 +599,7 @@ layer(base);
   --color-background-components-base: var(--background-components-base);
   --color-background-field-component: var(--background-field-component);
   --color-background-switch-off-hover: var(--background-switch-off-hover);
-  --color-background-field-component-hover: var(
-    --background-field-component-hover
-  );
+  --color-background-field-component-hover: var(--background-field-component-hover);
   --color-background-subtle-base: var(--background-subtle-base);
   --color-background-neutral-disabled: var(--background-neutral-disabled);
   --color-background-field-hover: var(--background-field-hover);
@@ -616,81 +612,45 @@ layer(base);
   --color-background-backdrop-backdrop: var(--background-backdrop-backdrop);
 
   /* Theme tokens - button background */
-  --color-background-button-transparent-default: var(
-    --background-button-transparent-default
-  );
-  --color-background-button-neutral-hover: var(
-    --background-button-neutral-hover
-  );
+  --color-background-button-transparent-default: var(--background-button-transparent-default);
+  --color-background-button-neutral-hover: var(--background-button-neutral-hover);
   --color-background-button-danger-hover: var(--background-button-danger-hover);
-  --color-background-button-neutral-pressed: var(
-    --background-button-neutral-pressed
-  );
-  --color-background-button-neutral-default: var(
-    --background-button-neutral-default
-  );
-  --color-background-button-transparent-hover: var(
-    --background-button-transparent-hover
-  );
-  --color-background-button-inverted-pressed: var(
-    --background-button-inverted-pressed
-  );
-  --color-background-button-transparent-pressed: var(
-    --background-button-transparent-pressed
-  );
-  --color-background-button-danger-pressed: var(
-    --background-button-danger-pressed
-  );
-  --color-background-button-inverted-hover: var(
-    --background-button-inverted-hover
-  );
-  --color-background-button-danger-default: var(
-    --background-button-danger-default
-  );
-  --color-background-button-inverted-default: var(
-    --background-button-inverted-default
-  );
+  --color-background-button-neutral-pressed: var(--background-button-neutral-pressed);
+  --color-background-button-neutral-default: var(--background-button-neutral-default);
+  --color-background-button-transparent-hover: var(--background-button-transparent-hover);
+  --color-background-button-inverted-pressed: var(--background-button-inverted-pressed);
+  --color-background-button-transparent-pressed: var(--background-button-transparent-pressed);
+  --color-background-button-danger-pressed: var(--background-button-danger-pressed);
+  --color-background-button-inverted-hover: var(--background-button-inverted-hover);
+  --color-background-button-danger-default: var(--background-button-danger-default);
+  --color-background-button-inverted-default: var(--background-button-inverted-default);
 
   /* Theme tokens - accent background */
   --color-background-accent-neutral-soft: var(--background-accent-neutral-soft);
-  --color-background-accent-neutral-strong: var(
-    --background-accent-neutral-strong
-  );
-  --color-background-accent-neutral-white: var(
-    --background-accent-neutral-white
-  );
+  --color-background-accent-neutral-strong: var(--background-accent-neutral-strong);
+  --color-background-accent-neutral-white: var(--background-accent-neutral-white);
   --color-background-accent-blue-soft: var(--background-accent-blue-soft);
   --color-background-accent-blue-base: var(--background-accent-blue-base);
   --color-background-accent-blue-strong: var(--background-accent-blue-strong);
   --color-background-accent-purple-soft: var(--background-accent-purple-soft);
   --color-background-accent-purple-base: var(--background-accent-purple-base);
-  --color-background-accent-purple-strong: var(
-    --background-accent-purple-strong
-  );
+  --color-background-accent-purple-strong: var(--background-accent-purple-strong);
   --color-background-accent-success-soft: var(--background-accent-success-soft);
   --color-background-accent-success-base: var(--background-accent-success-base);
-  --color-background-accent-success-strong: var(
-    --background-accent-success-strong
-  );
+  --color-background-accent-success-strong: var(--background-accent-success-strong);
   --color-background-accent-warning-soft: var(--background-accent-warning-soft);
   --color-background-accent-warning-base: var(--background-accent-warning-base);
-  --color-background-accent-warning-strong: var(
-    --background-accent-warning-strong
-  );
+  --color-background-accent-warning-strong: var(--background-accent-warning-strong);
   --color-background-accent-error-soft: var(--background-accent-error-soft);
   --color-background-accent-error-base: var(--background-accent-error-base);
   --color-background-accent-error-strong: var(--background-accent-error-strong);
 
   /* Theme tokens - foreground */
-  --color-foreground-highlight-interactive-hover: var(
-    --foreground-highlight-interactive-hover
-  );
+  --color-foreground-highlight-interactive-hover: var(--foreground-highlight-interactive-hover);
   --color-foreground-neutral-muted: var(--foreground-neutral-muted);
   --color-foreground-neutral-base: var(--foreground-neutral-base);
   --color-foreground-neutral-subtle: var(--foreground-neutral-subtle);
-  --color-foreground-highlight-interactive: var(
-    --foreground-highlight-interactive
-  );
+  --color-foreground-highlight-interactive: var(--foreground-highlight-interactive);
   --color-foreground-neutral-on-color: var(--foreground-neutral-on-color);
   --color-foreground-highlight-error: var(--foreground-highlight-error);
   --color-foreground-neutral-on-inverted: var(--foreground-neutral-on-inverted);
@@ -804,6 +764,9 @@ layer(base);
   }
   html {
     @apply bg-background-neutral-base text-foreground-neutral-base;
-    font-feature-settings: "rlig" 1, "calt" 1, "lnum" 1;
+    font-feature-settings:
+      "rlig" 1,
+      "calt" 1,
+      "lnum" 1;
   }
 }
