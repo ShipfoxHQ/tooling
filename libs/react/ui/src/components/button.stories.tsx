@@ -103,23 +103,6 @@ Variants.parameters = {
   },
 };
 
-export const Sizes: Story = {
-  render: (args) => (
-    <div className="flex flex-col gap-16">
-      {sizeOptions.map((size) => (
-        <div key={size}>
-          <Code variant="label" className="text-foreground-neutral-subtle">
-            {size}
-          </Code>
-          <Button {...args} size={size}>
-            Click me
-          </Button>
-        </div>
-      ))}
-    </div>
-  ),
-};
-
 export const Icons: Story = {
   render: (args) => (
     <div className="flex flex-col gap-16">
