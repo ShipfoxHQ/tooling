@@ -1,5 +1,5 @@
 import {MeterProvider, type MetricReader} from '@opentelemetry/sdk-metrics';
-import {type StartInstrumentationOptions, getMetricsReader, getResource} from './common';
+import {getMetricsReader, getResource, type StartInstrumentationOptions} from './common';
 
 let serviceMetricsProvider: MeterProvider | undefined;
 let serviceMetricReader: MetricReader | undefined;

@@ -3,16 +3,16 @@ import {
   type ExporterConfig as PrometheusExporterConfig,
 } from '@opentelemetry/exporter-prometheus';
 import {
-  type Resource,
   detectResources,
   envDetector,
   hostDetector,
   osDetector,
   processDetector,
+  type Resource,
   resourceFromAttributes,
 } from '@opentelemetry/resources';
 import {ATTR_SERVICE_NAME} from '@opentelemetry/semantic-conventions';
-import {url, createConfig, str} from '@shipfox/config';
+import {createConfig, str, url} from '@shipfox/config';
 
 export const env = createConfig({
   OTEL_SERVICE_NAME: str({default: undefined}),

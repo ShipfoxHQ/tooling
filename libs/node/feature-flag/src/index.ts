@@ -1,4 +1,4 @@
-import {type LDClient, type LDContext, init} from '@launchdarkly/node-server-sdk';
+import {init, type LDClient, type LDContext} from '@launchdarkly/node-server-sdk';
 import {createConfig, str} from '@shipfox/config';
 import {log} from '@shipfox/node-log';
 

@@ -1,8 +1,8 @@
 import {
   type Duration,
-  type NormalizedInterval,
   endOfDay,
   formatDuration,
+  type NormalizedInterval,
   startOfDay,
   startOfMonth,
   sub,
@@ -81,7 +81,7 @@ export function parseTextDurationShortcut(text: string): Duration | undefined {
   if (!match) return;
   const [_, value, shortcut] = match;
   const unit = DURATION_SHORTCUTS_REVERSED[shortcut];
-  return {[unit]: Number.parseInt(value)};
+  return {[unit]: Number.parseInt(value, 10)};
 }
 
 const dateSplitterRefex = /[-\u2013]/;

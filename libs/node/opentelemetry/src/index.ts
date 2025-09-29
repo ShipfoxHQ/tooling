@@ -3,6 +3,7 @@ import {
   type Gauge,
   type Histogram,
   type Meter,
+  metrics,
   type Observable,
   type ObservableCallback,
   type ObservableCounter,
@@ -10,14 +11,12 @@ import {
   type ObservableResult,
   type ObservableUpDownCounter,
   type UpDownCounter,
-  metrics,
 } from '@opentelemetry/api';
 import {shutdownInstanceInstrumentation} from './instance';
 import {getServiceMetricsProvider, shutdownServiceMetrics} from './service';
 
-export {startInstanceInstrumentation} from './instance';
+export {getFastifyInstrumentation, startInstanceInstrumentation} from './instance';
 export {startServiceMetrics} from './service';
-export {getFastifyInstrumentation} from './instance';
 
 export async function shutdownInstrumentation() {
   await shutdownInstanceInstrumentation();

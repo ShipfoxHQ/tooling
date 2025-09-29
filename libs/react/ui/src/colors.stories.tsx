@@ -1,21 +1,7 @@
 import type {Meta, StoryObj} from '@storybook/react';
-import {Typography} from 'components/Typography';
-import {colors} from '../tailwind.config.colors';
-import {getColor} from './utils';
-
-const scales = [
-  'gray',
-  'blue',
-  'purple',
-  'amber',
-  'red',
-  'pink',
-  'green',
-  'teal',
-  'gray-alpha',
-] as const;
-
-const scaleSteps = Array.from({length: 10}, (_, i) => (i + 1) * 100);
+import {Code, Header} from 'components/typography';
+import {cn} from 'utils/cn';
+import {primitiveColors} from './colors.stories.conts';
 
 const meta: Meta = {
   title: 'Assets/Colors',
@@ -26,23 +12,17 @@ type Story = StoryObj;
 
 interface ColorItemProps {
   color: string;
-  tint: string;
-  name: string;
+  variant: string;
 }
 
-const colorVarRegex = /var\(--(.+)\)/;
-
-function ColorItem({name, color, tint}: ColorItemProps) {
-  const colorVariants = colors[color as keyof typeof colors];
-  const varColor = colorVariants[tint as keyof typeof colorVariants] as string;
-  const varName = varColor.match(colorVarRegex)?.[1];
-  const hex = getColor(varName as string);
-
+function ColorItem({variant}: ColorItemProps) {
+  const value = variant.split('-').pop();
   return (
     <div className="flex flex-col items-center gap-1">
-      <div className="h-8 w-16 rounded-xs border border-border" style={{background: varColor}} />
-      <Typography variant="muted">{name}</Typography>
-      <Typography variant="muted">{hex}</Typography>
+      <div className={cn('h-24 w-full rounded-sm border border-border', variant)} />
+      <Code variant="label" className="text-foreground-neutral-subtle">
+        {value}
+      </Code>
     </div>
   );
 }
@@ -50,20 +30,17 @@ function ColorItem({name, color, tint}: ColorItemProps) {
 interface ColorPaletteProps {
   title: string;
   rootKey: string;
-  variants: {name: string; key?: string}[];
+  variants: readonly string[];
 }
 
 function ColorPalette({title, rootKey, variants}: ColorPaletteProps) {
   return (
-    <div className="grid grid-cols-11">
-      <Typography className="capitalize">{title}</Typography>
+    <div className="grid grid-cols-16 gap-8">
+      <Code variant="label" className="text-foreground-neutral-subtle">
+        {title}
+      </Code>
       {variants.map((variant) => (
-        <ColorItem
-          key={variant.key ?? variant.name}
-          name={variant.name}
-          color={rootKey}
-          tint={variant.key ?? 'DEFAULT'}
-        />
+        <ColorItem key={variant} variant={variant} color={rootKey} />
       ))}
     </div>
   );
@@ -71,86 +48,18 @@ function ColorPalette({title, rootKey, variants}: ColorPaletteProps) {
 
 export const Palette: Story = {
   render: () => (
-    <div className="flex flex-col gap-8">
-      <section className="flex flex-col gap-4">
-        <Typography variant="h2">Scales</Typography>
+    <div className="flex flex-col gap-16">
+      <section className="flex flex-col gap-8">
+        <Header variant="h2">Primitive Colors</Header>
 
-        {scales.map((color) => (
+        {Object.entries(primitiveColors).map(([color, variants]) => (
           <ColorPalette
             key={color}
             title={color.replace('-', ' ')}
             rootKey={color}
-            variants={scaleSteps.map((step) => ({name: `${color}-${step}`, key: `${step}`}))}
+            variants={variants.variants as readonly string[]}
           />
         ))}
-      </section>
-
-      <section className="flex flex-col gap-4">
-        <Typography variant="h2">Applications</Typography>
-        <ColorPalette
-          title="Background"
-          rootKey="background"
-          variants={[
-            {name: 'Default background'},
-            {key: 'secondary', name: 'Secondary background'},
-          ]}
-        />
-
-        <ColorPalette
-          title="Border"
-          rootKey="border"
-          variants={[
-            {name: 'Default border'},
-            {key: 'hover', name: 'Hover border'},
-            {key: 'active', name: 'Active border'},
-          ]}
-        />
-
-        <ColorPalette
-          title="Text"
-          rootKey="text"
-          variants={[
-            {name: 'Default text'},
-            {key: 'secondary', name: 'Secondary text'},
-            {key: 'muted', name: 'Muted text'},
-            {key: 'contrast', name: 'Contrast text'},
-          ]}
-        />
-
-        <ColorPalette
-          title="Focus"
-          rootKey="focus"
-          variants={[
-            {key: 'border', name: 'Focus border'},
-            {key: 'color', name: 'Focus text'},
-          ]}
-        />
-
-        <ColorPalette
-          title="Surface"
-          rootKey="surface"
-          variants={[
-            {name: 'Default surface'},
-            {key: 'hover', name: 'Surface hover'},
-            {key: 'active', name: 'Surface active'},
-          ]}
-        />
-
-        <ColorPalette
-          title="Contrast"
-          rootKey="contrast"
-          variants={[{name: 'Default contrast'}, {key: 'hover', name: 'Hover contrast'}]}
-        />
-
-        <ColorPalette
-          title="Execution Status"
-          rootKey="status"
-          variants={[
-            {key: 'success', name: 'Success'},
-            {key: 'failed', name: 'Failed'},
-            {key: 'neutral', name: 'Neutral'},
-          ]}
-        />
       </section>
     </div>
   ),
