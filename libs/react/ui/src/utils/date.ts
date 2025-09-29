@@ -25,7 +25,7 @@ export function humanizeDurationToNow(duration: Duration): string {
 }
 
 export interface IntervalToNowFromDurationOptions {
-  /** When set, if an interval is given in a precise unit, it will be rounded-sm to full days
+  /** When set, if an interval is given in a precise unit, it will be rounded to full days
    *  (ex: 1 day, will generate intervals from midnight (d-1) to midnight (d))
    *  Does not apply to units lower than day */
   attemptRounding?: boolean;

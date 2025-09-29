@@ -19,7 +19,7 @@ function ColorItem({variant}: ColorItemProps) {
   const value = variant.split('-').pop();
   return (
     <div className="flex flex-col items-center gap-1">
-      <div className={cn('h-24 w-full rounded-sm border border-border', variant)} />
+      <div className={cn('h-24 w-full rounded-6 border border-border', variant)} />
       <Code variant="label" className="text-foreground-neutral-subtle">
         {value}
       </Code>
