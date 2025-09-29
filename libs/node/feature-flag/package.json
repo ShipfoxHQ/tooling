@@ -15,7 +15,7 @@
   "dependencies": {
     "@shipfox/config": "workspace:*",
     "@shipfox/node-log": "workspace:*",
-    "@launchdarkly/node-server-sdk": "^9.7.2"
+    "@launchdarkly/node-server-sdk": "^9.10.2"
   },
   "devDependencies": {
     "@shipfox/biome": "workspace:*",

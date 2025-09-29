@@ -14,7 +14,7 @@
   "dependencies": {
     "@shipfox/tool-utils": "workspace:*",
     "@swc/cli": "^0.7.0",
-    "@swc/core": "^1.11.24",
+    "@swc/core": "^1.13.5",
     "date-fns": "^4.1.0",
     "tsc-alias": "^1.8.10"
   },
