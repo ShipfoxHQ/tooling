@@ -1,0 +1,25 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": [
+    "config:recommended",
+    "group:recommended",
+    "monorepo:turbo",
+    "monorepo:vitest",
+    "monorepo:react",
+    "monorepo:storybook",
+    "packages:react",
+    "packages:vite",
+    "packages:unitTest",
+    "helpers:pinGitHubActionDigests",
+    "helpers:followTypescriptRc",
+    "customManagers:biomeVersions",
+    "customManagers:dockerfileVersions",
+    "replacements:all",
+    "security:openssf-scorecard",
+    ":configMigration",
+    "abandonments:recommended",
+    ":gitSignOff",
+    "schedule:daily"
+  ],
+  "packageRules": []
+}
