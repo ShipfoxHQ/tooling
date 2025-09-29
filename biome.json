@@ -16,7 +16,8 @@
       "!**/build",
       "!**/out",
       "!**/coverage",
-      "!**/nix/store"
+      "!**/nix/store",
+      "!**/storybook-static"
     ],
     "ignoreUnknown": false
   },
