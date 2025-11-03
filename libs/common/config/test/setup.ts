@@ -1,4 +1,4 @@
-import {afterEach, vi} from 'vitest';
+import {afterEach, vi} from '@shipfox/vitest/vi';
 
 afterEach(() => {
   vi.restoreAllMocks();

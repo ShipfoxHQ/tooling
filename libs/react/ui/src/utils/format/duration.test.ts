@@ -1,4 +1,4 @@
-import {describe, expect, it} from 'vitest';
+import {describe, expect, it} from '@shipfox/vitest/vi';
 import {formatDuration} from './duration';
 
 describe('formatDuration', () => {

@@ -1,3 +1,4 @@
+import {afterEach, beforeEach, describe, expect, it, vi} from '@shipfox/vitest/vi';
 import {
   addDays,
   addYears,
@@ -8,7 +9,6 @@ import {
   subHours,
   subYears,
 } from 'date-fns';
-import {afterEach, beforeEach, describe, expect, it, vi} from 'vitest';
 import {formatDateTimeRange} from './date';
 
 describe('Format - Date', () => {

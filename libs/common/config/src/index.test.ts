@@ -1,4 +1,4 @@
-import {afterEach, describe, expect, it} from 'vitest';
+import {afterEach, describe, expect, it} from '@shipfox/vitest/vi';
 import {bool, createConfig, num, str} from './index';
 
 describe('config', () => {
