@@ -2,6 +2,7 @@ import {execSync} from 'node:child_process';
 import {cpSync, existsSync, readdirSync, rmSync, statSync} from 'node:fs';
 import {dirname, join, relative} from 'node:path';
 import {
+  buildShellCommand,
   getProjectFilePath,
   getWorkspaceBinaryPath,
   getWorkspaceRootPath,
@@ -13,9 +14,15 @@ export function prepareOutDir() {
 
   const turboBin = getWorkspaceBinaryPath('turbo');
 
-  execSync(`${turboBin} prune --docker --out-dir ${contextPath} ${process.env.npm_package_name}`, {
-    stdio: 'inherit',
-  });
+  const command = buildShellCommand([
+    turboBin,
+    'prune',
+    '--docker',
+    '--out-dir',
+    contextPath,
+    process.env.npm_package_name as string,
+  ]);
+  execSync(command, {stdio: 'inherit'});
 
   addDistToDir(join(contextPath, 'full'));
 }

@@ -4,7 +4,7 @@ import {execSync} from 'node:child_process';
 import {existsSync} from 'node:fs';
 import {dirname, join} from 'node:path';
 import {fileURLToPath} from 'node:url';
-import {getProjectFilePath, log} from '@shipfox/tool-utils';
+import {buildShellCommand, getProjectFilePath, log} from '@shipfox/tool-utils';
 import {replaceTscAliasPaths} from 'tsc-alias';
 import {cleanup} from './utils';
 
@@ -18,12 +18,16 @@ async function run() {
 
   const binPath = join(__dirname, '..', 'node_modules', '.bin', 'tsc');
 
-  execSync(
-    `'${binPath}' --project '${configFile}' --declaration --emitDeclarationOnly --outDir '${outDir}'`,
-    {
-      stdio: 'inherit',
-    },
-  );
+  const command = buildShellCommand([
+    binPath,
+    '--project',
+    configFile,
+    '--declaration',
+    '--emitDeclarationOnly',
+    '--outDir',
+    outDir,
+  ]);
+  execSync(command, {stdio: 'inherit'});
   await cleanup(configFile);
   await replaceTscAliasPaths({outDir, configFile});
 }
