@@ -49,4 +49,20 @@ describe('config', () => {
     // Clean up
     process.env.TEST_BOOL = undefined;
   });
+
+  it('should update config', () => {
+    const schema = {
+      TEST_STRING: str(),
+    };
+
+    process.env.TEST_STRING = 'test-value';
+
+    let config = createConfig(schema);
+
+    config = createConfig(schema, {TEST_STRING: 'test-value2'});
+
+    expect(config.TEST_STRING).toBe('test-value2');
+
+    process.env.TEST_STRING = undefined;
+  });
 });
