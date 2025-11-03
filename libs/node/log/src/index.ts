@@ -1,1 +1,1 @@
-export {type Level, type Logger, createLogger, log, type LogFn, settings} from './log';
+export {createLogger, type Level, type LogFn, type Logger, log, settings} from './log';
