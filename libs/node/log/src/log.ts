@@ -5,12 +5,13 @@ import {
   pino,
   stdSerializers,
   stdTimeFunctions,
+  type TransportSingleOptions,
 } from 'pino';
 import {env} from './env';
 
 export type {Level, LogFn} from 'pino';
 
-let transport;
+let transport: TransportSingleOptions | undefined;
 if (env.LOG_PRETTY) {
   transport = {target: 'pino-pretty', options: {colorize: true}};
 } else if (env.LOG_FILE) {
