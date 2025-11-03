@@ -1,5 +1,11 @@
 # @shipfox/tool-utils
 
+## 1.1.1
+
+### Patch Changes
+
+- 9bd640b: Modify repository structure
+
 ## 1.1.0
 
 ### Minor Changes

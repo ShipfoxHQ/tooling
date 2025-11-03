@@ -1,5 +1,19 @@
 # @shipfox/swc
 
+## 1.2.0
+
+### Minor Changes
+
+- 0e6a02c: Allow passign extra args to SWC
+- fe126a6: Update package dependencies for vite and SWC
+
+### Patch Changes
+
+- f8c8018: Handle spaces in paths
+- 9bd640b: Modify repository structure
+- Updated dependencies [9bd640b]
+  - @shipfox/tool-utils@1.1.1
+
 ## 1.1.0
 
 ### Minor Changes

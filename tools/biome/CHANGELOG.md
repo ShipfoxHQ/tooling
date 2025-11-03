@@ -1,5 +1,14 @@
 # @shipfox/biome
 
+## 1.2.1
+
+### Patch Changes
+
+- f8c8018: Handle spaces in paths
+- 9bd640b: Modify repository structure
+- Updated dependencies [9bd640b]
+  - @shipfox/tool-utils@1.1.1
+
 ## 1.2.0
 
 ### Minor Changes
