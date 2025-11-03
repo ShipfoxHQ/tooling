@@ -5,4 +5,4 @@ import {getProjectBinaryPath} from '@shipfox/tool-utils';
 
 const binPath = getProjectBinaryPath('vitest', import.meta.url);
 
-execSync(`${binPath} run`, {stdio: 'inherit'});
+execSync(`'${binPath}' run`, {stdio: 'inherit'});

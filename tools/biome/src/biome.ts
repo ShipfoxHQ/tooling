@@ -10,6 +10,6 @@ const extraArgs: string[] = [];
 
 if (process.argv.includes('--fix')) extraArgs.push('--fix');
 
-const biomeCommand = `${binPath} check --config-path ${biomeConfigFile} ${extraArgs.join(' ')} ${process.cwd()}`;
+const biomeCommand = `'${binPath}' check --config-path '${biomeConfigFile}' ${extraArgs.join(' ')} '${process.cwd()}'`;
 
 execSync(biomeCommand, {stdio: 'inherit'});

@@ -9,6 +9,6 @@ if (!existsSync(configPath)) configPath = getProjectFilePath('tsconfig.json');
 
 const binPath = getProjectBinaryPath('tsc', import.meta.url);
 
-execSync(`${binPath} --project ${configPath} --noEmit`, {
+execSync(`'${binPath}' --project '${configPath}' --noEmit`, {
   stdio: 'inherit',
 });

@@ -19,7 +19,7 @@ async function run() {
   const binPath = join(__dirname, '..', 'node_modules', '.bin', 'tsc');
 
   execSync(
-    `${binPath} --project ${configFile} --declaration --emitDeclarationOnly --outDir ${outDir}`,
+    `'${binPath}' --project '${configFile}' --declaration --emitDeclarationOnly --outDir '${outDir}'`,
     {
       stdio: 'inherit',
     },

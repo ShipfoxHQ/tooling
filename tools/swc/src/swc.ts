@@ -11,7 +11,7 @@ async function run() {
   const ownedFiles = await getOwnedFileStats(outputPath);
   const extraArgs = process.argv.slice(2);
   execSync(
-    `${swcPath} --strip-leading-paths --config-file ${configPath} -d ${outputPath} ${extraArgs.join(' ')} src`,
+    `'${swcPath}' --strip-leading-paths --config-file '${configPath}' -d '${outputPath}' ${extraArgs.join(' ')} src`,
     {stdio: 'inherit'},
   );
   await cleanup(outputPath, ownedFiles);
