@@ -9,9 +9,11 @@ async function run() {
   const configPath = getProjectFilePath('.swcrc', import.meta.url);
   const outputPath = getProjectFilePath('dist');
   const ownedFiles = await getOwnedFileStats(outputPath);
-  execSync(`${swcPath} --strip-leading-paths --config-file ${configPath} -d ${outputPath}  src`, {
-    stdio: 'inherit',
-  });
+  const extraArgs = process.argv.slice(2);
+  execSync(
+    `${swcPath} --strip-leading-paths --config-file ${configPath} -d ${outputPath} ${extraArgs.join(' ')} src`,
+    {stdio: 'inherit'},
+  );
   await cleanup(outputPath, ownedFiles);
 
   const tsConfigPath = getProjectFilePath('tsconfig.build.json');
