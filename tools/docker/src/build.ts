@@ -1,7 +1,7 @@
 #! /usr/bin/env node
 
 import {execSync} from 'node:child_process';
-import {log} from '@shipfox/tool-utils';
+import {buildShellCommand, log} from '@shipfox/tool-utils';
 import {prepareOutDir} from './turbo';
 import {makeTagLatest} from './utils';
 
@@ -50,6 +50,6 @@ if (process.env.PNPM_VERSION) {
 
 if (process.argv.length > 2) args.push(...process.argv.slice(2));
 
-const command = `docker buildx build ${args.join(' ')} .`;
+const command = buildShellCommand(['docker', 'buildx', 'build', ...args, '.']);
 log.info(command);
 execSync(command, {stdio: 'inherit'});

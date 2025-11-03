@@ -1,12 +1,13 @@
 #! /usr/bin/env node
 
 import {execSync} from 'node:child_process';
-import {log} from '@shipfox/tool-utils';
+import {buildShellCommand, log} from '@shipfox/tool-utils';
 import {makeTagLatest} from './utils';
 
 function imageExists(image: string): boolean {
   try {
-    execSync(`docker manifest inspect ${image}`, {stdio: 'inherit'});
+    const command = buildShellCommand(['docker', 'manifest', 'inspect', image]);
+    execSync(command, {stdio: 'inherit'});
     return true;
   } catch (_) {
     return false;
@@ -19,8 +20,16 @@ interface CreateManifestOptions {
 }
 
 function createManifest({manifest, platformImages}: CreateManifestOptions) {
-  execSync(`docker manifest create ${manifest} ${platformImages.join(' ')}`, {stdio: 'inherit'});
-  execSync(`docker manifest push ${manifest}`, {stdio: 'inherit'});
+  const createCommand = buildShellCommand([
+    'docker',
+    'manifest',
+    'create',
+    manifest,
+    ...platformImages,
+  ]);
+  execSync(createCommand, {stdio: 'inherit'});
+  const pushCommand = buildShellCommand(['docker', 'manifest', 'push', manifest]);
+  execSync(pushCommand, {stdio: 'inherit'});
 }
 
 if (process.argv.length !== 3)
