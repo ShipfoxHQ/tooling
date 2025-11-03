@@ -1,1 +1,1 @@
-export {defineConfig, defineProject} from './config';
+export * from './config';

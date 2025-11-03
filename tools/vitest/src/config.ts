@@ -9,7 +9,7 @@ import {
   defineProject as vitestDefineProject,
 } from 'vitest/config';
 
-type UserConfig = ReturnType<UserConfigFnObject>;
+export type UserConfig = ReturnType<UserConfigFnObject>;
 
 function mergeConfig<T extends UserConfig | UserWorkspaceConfig>(config: T, callerUrl?: string): T {
   const projectRoot = callerUrl ? getProjectRootPath(callerUrl) : undefined;
