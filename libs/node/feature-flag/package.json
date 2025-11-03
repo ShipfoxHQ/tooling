@@ -15,12 +15,18 @@
   "dependencies": {
     "@shipfox/config": "workspace:*",
     "@shipfox/node-log": "workspace:*",
-    "@launchdarkly/node-server-sdk": "^9.7.2"
+    "@launchdarkly/node-server-sdk": "^9.7.2",
+    "@fastify/type-provider-typebox": "^5.1.0",
+    "@shipfox/node-opentelemetry": "workspace:*",
+    "ajv": "^8.17.1",
+    "ajv-errors": "^3.0.0",
+    "ajv-formats": "^3.0.1"
   },
   "devDependencies": {
     "@shipfox/biome": "workspace:*",
     "@shipfox/swc": "workspace:*",
     "@shipfox/ts-config": "workspace:*",
-    "@shipfox/typescript": "workspace:*"
+    "@shipfox/typescript": "workspace:*",
+    "@shipfox/vitest": "workspace:*"
   }
 }
