@@ -2,7 +2,7 @@
   "name": "@shipfox/node-pg",
   "license": "MIT",
   "private": false,
-  "packageManager": "pnpm@9.15.7",
+  "packageManager": "pnpm@9.15.9",
   "version": "0.1.0",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
