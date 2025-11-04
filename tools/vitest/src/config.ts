@@ -13,10 +13,9 @@ export type UserConfig = ReturnType<UserConfigFnObject>;
 
 function mergeConfig<T extends UserConfig | UserWorkspaceConfig>(config: T, callerUrl?: string): T {
   const projectRoot = callerUrl ? getProjectRootPath(callerUrl) : undefined;
-
+  if (projectRoot && !config.root) config.root = projectRoot;
   return {
     ...config,
-    root: projectRoot,
     plugins: [tsconfigPaths(), ...(config.plugins || [])],
     test: {
       ...config.test,
