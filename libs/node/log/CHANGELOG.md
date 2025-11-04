@@ -1,5 +1,18 @@
 # @shipfox/node-log
 
+## 0.2.0
+
+### Minor Changes
+
+- 2b64d6d: Expose the package's config for users of the library
+
+### Patch Changes
+
+- 674ecbb: Add README for all packages
+- Updated dependencies [89dc459]
+- Updated dependencies [674ecbb]
+  - @shipfox/config@1.2.0
+
 ## 0.1.0
 
 ### Minor Changes

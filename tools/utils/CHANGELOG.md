@@ -1,5 +1,11 @@
 # @shipfox/tool-utils
 
+## 1.1.2
+
+### Patch Changes
+
+- 674ecbb: Add README for all packages
+
 ## 1.1.1
 
 ### Patch Changes

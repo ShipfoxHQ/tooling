@@ -1,5 +1,13 @@
 # @shipfox/vite
 
+## 1.2.1
+
+### Patch Changes
+
+- 674ecbb: Add README for all packages
+- Updated dependencies [674ecbb]
+  - @shipfox/tool-utils@1.1.2
+
 ## 1.2.0
 
 ### Minor Changes
