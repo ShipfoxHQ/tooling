@@ -9,6 +9,13 @@ import {
   defineProject as vitestDefineProject,
 } from 'vitest/config';
 
+export type {
+  TestProjectConfiguration,
+  UserConfigExport,
+  UserConfigFnObject,
+  UserWorkspaceConfig,
+} from 'vitest/config';
+
 export type UserConfig = ReturnType<UserConfigFnObject>;
 
 function mergeConfig<T extends UserConfig | UserWorkspaceConfig>(config: T, callerUrl?: string): T {
