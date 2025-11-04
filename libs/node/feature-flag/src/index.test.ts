@@ -1,5 +1,5 @@
 import {Type} from '@fastify/type-provider-typebox';
-import {describe, expect, it} from 'vitest';
+import {describe, expect, it} from '@shipfox/vitest/vi';
 import {isValidJsonFeatureFlagPayload} from './index';
 
 const testSchema = Type.Object({
