@@ -784,22 +784,4 @@
       "calt" 1,
       "lnum" 1;
   }
-  .textarea-resize-custom::-webkit-resizer {
-    display: none;
-    visibility: hidden;
-    opacity: 0;
-    width: 0;
-    height: 0;
-  }
-  .textarea-resize-custom {
-    scrollbar-width: thin;
-    resize: none;
-  }
-  .textarea-resize-custom::-moz-resizer {
-    display: none;
-    visibility: hidden;
-    opacity: 0;
-    width: 0;
-    height: 0;
-  }
 }
