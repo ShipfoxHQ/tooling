@@ -1,5 +1,15 @@
 # @shipfox/config
 
+## 1.2.0
+
+### Minor Changes
+
+- 89dc459: Allow partial update of config
+
+### Patch Changes
+
+- 674ecbb: Add README for all packages
+
 ## 1.1.1
 
 ### Patch Changes

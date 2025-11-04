@@ -1,5 +1,11 @@
 # @shipfox/ts-config
 
+## 1.3.5
+
+### Patch Changes
+
+- 674ecbb: Add README for all packages
+
 ## 1.3.4
 
 ### Patch Changes
