@@ -791,6 +791,10 @@
     width: 0;
     height: 0;
   }
+  .textarea-resize-custom {
+    scrollbar-width: thin;
+    resize: none;
+  }
   .textarea-resize-custom::-moz-resizer {
     display: none;
     visibility: hidden;
