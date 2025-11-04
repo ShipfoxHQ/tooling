@@ -6,6 +6,9 @@ import {
 } from 'vite';
 import tsconfigPaths from 'vite-tsconfig-paths';
 
+export type {UserConfig, UserConfigFnObject} from 'vite';
+export {loadEnv} from 'vite';
+
 export function defineConfig(configOrFn?: UserConfig | UserConfigFnObject) {
   const mergeConfig = (config?: UserConfig) => ({
     ...config,
@@ -17,5 +20,3 @@ export function defineConfig(configOrFn?: UserConfig | UserConfigFnObject) {
       : mergeConfig(configOrFn ?? {});
   return viteDefinedConfig(config);
 }
-
-export {loadEnv} from 'vite';
