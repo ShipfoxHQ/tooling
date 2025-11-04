@@ -784,4 +784,18 @@
       "calt" 1,
       "lnum" 1;
   }
+  .textarea-resize-custom::-webkit-resizer {
+    display: none !important;
+    visibility: hidden !important;
+    opacity: 0 !important;
+    width: 0 !important;
+    height: 0 !important;
+  }
+  .textarea-resize-custom::-moz-resizer {
+    display: none !important;
+    visibility: hidden !important;
+    opacity: 0 !important;
+    width: 0 !important;
+    height: 0 !important;
+  }
 }
