@@ -1,6 +1,11 @@
+import type {Static, TSchema} from '@fastify/type-provider-typebox';
 import {init, type LDClient, type LDContext} from '@launchdarkly/node-server-sdk';
 import {createConfig, str} from '@shipfox/config';
 import {log} from '@shipfox/node-log';
+import Ajv from 'ajv';
+import addErrors from 'ajv-errors';
+import addFormats from 'ajv-formats';
+import {jsonFeatureFlagValidationErrorCount} from 'metrics';
 
 let _client: LDClient | undefined;
 
@@ -76,12 +81,18 @@ export function getNumberFeatureFlag(
   return getClient().numberVariation(key, mapContext(context), defaultValue ?? 0);
 }
 
-export function getJsonFeatureFlag<T = unknown>(
+export async function getJsonFeatureFlag<T extends TSchema>(
   key: string,
   context: Context,
-  defaultValue?: T,
-): Promise<T> {
-  return getClient().jsonVariation(key, mapContext(context), defaultValue) as Promise<T>;
+  schema: T,
+  defaultValue: Static<T>,
+): Promise<Static<T>> {
+  const response = await getClient().jsonVariation(key, mapContext(context), defaultValue);
+  if (!isValidJsonFeatureFlagPayload(schema, response)) {
+    jsonFeatureFlagValidationErrorCount.add(1, {key});
+    return defaultValue;
+  }
+  return response;
 }
 
 export function onFeatureFlagChange(key: string, callback: () => void) {
@@ -109,4 +120,21 @@ export async function getAllFeatureFlags(context: Context): Promise<FeatureFlag[
       name: key,
       value: value as FeatureFlagValue,
     }));
+}
+
+const ajv = new Ajv({strict: true, allErrors: true, removeAdditional: false});
+addFormats(ajv);
+addErrors(ajv);
+
+export function isValidJsonFeatureFlagPayload<T extends TSchema>(
+  schema: T,
+  payload: unknown,
+): payload is Static<T> {
+  const validateBody = ajv.compile<T>(schema);
+
+  const isValid = validateBody(payload);
+  if (!isValid)
+    log.error({error: validateBody.errors}, 'Failed to validate JSON feature flag body');
+
+  return isValid;
 }
