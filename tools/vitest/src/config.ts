@@ -30,8 +30,8 @@ function mergeConfig<T extends UserConfig | UserWorkspaceConfig>(config: T, call
   };
 }
 
-export function defineConfig(configOrFn: UserConfig, callerUrl?: string): UserConfigExport {
-  return vitestDefineConfig(mergeConfig(configOrFn, callerUrl));
+export function defineConfig(config: UserConfig, callerUrl?: string): UserConfigExport {
+  return vitestDefineConfig(mergeConfig(config, callerUrl));
 }
 
 export function defineProject(
