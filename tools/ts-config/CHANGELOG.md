@@ -1,5 +1,11 @@
 # @shipfox/ts-config
 
+## 1.3.4
+
+### Patch Changes
+
+- 9bd640b: Modify repository structure
+
 ## 1.3.3
 
 ### Patch Changes

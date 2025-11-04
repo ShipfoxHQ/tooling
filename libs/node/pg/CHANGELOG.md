@@ -1,0 +1,13 @@
+# @shipfox/node-pg
+
+## 0.1.0
+
+### Minor Changes
+
+- 853d506: Update dependencies for PostgreSQL packages
+
+### Patch Changes
+
+- 9bd640b: Modify repository structure
+- Updated dependencies [9bd640b]
+  - @shipfox/config@1.1.1
