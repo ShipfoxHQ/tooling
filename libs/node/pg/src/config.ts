@@ -6,4 +6,5 @@ export const config = createConfig({
   POSTGRES_USERNAME: str({default: 'shipfox'}),
   POSTGRES_PASSWORD: str({default: 'password'}),
   POSTGRES_DATABASE: str({default: 'api'}),
+  POSTGRES_MAX_CONNECTIONS: num({default: 10}),
 });

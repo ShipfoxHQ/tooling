@@ -7,7 +7,7 @@
     "biome": "pnpm --filter @shipfox/biome exec biome"
   },
   "private": false,
-  "packageManager": "pnpm@9.15.7",
+  "packageManager": "pnpm@9.15.9",
   "type": "module",
   "devDependencies": {
     "@types/node": "22.13.14",

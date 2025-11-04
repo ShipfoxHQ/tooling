@@ -12,6 +12,7 @@ export function createPostgresClient(options?: pg.PoolConfig): pg.Pool {
     database: config.POSTGRES_DATABASE,
     user: config.POSTGRES_USERNAME,
     password: config.POSTGRES_PASSWORD,
+    max: config.POSTGRES_MAX_CONNECTIONS,
     ...options,
   });
   return _pool;
