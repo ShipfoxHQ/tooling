@@ -188,4 +188,3 @@ DesignMock.parameters = {
     focusVisible: '.focus',
   },
 };
-
