@@ -1,7 +1,7 @@
 import {cva, type VariantProps} from 'class-variance-authority';
 import type {ComponentProps} from 'react';
 import {cn} from 'utils/cn';
-import {ResizeIcon} from '../icon/custom/resize';
+import {Icon} from '../icon/icon';
 
 export const textareaVariants = cva('', {
   variants: {
@@ -41,7 +41,7 @@ export function Textarea({className, variant, size, ...props}: TextareaProps) {
         {...props}
       />
       <div className="absolute bottom-6 right-6 w-12 h-12 pointer-events-none flex items-end justify-end text-foreground-neutral-muted z-10">
-        <ResizeIcon />
+        <Icon name="resize" />
       </div>
     </div>
   );
