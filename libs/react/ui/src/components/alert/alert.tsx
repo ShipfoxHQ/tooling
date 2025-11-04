@@ -107,7 +107,7 @@ function AlertActions({className, ...props}: ComponentProps<'div'>) {
   );
 }
 
-function AlertAction({className, onClick, ...props}: ComponentProps<'button'>) {
+function AlertAction({className, ...props}: ComponentProps<'button'>) {
   return (
     <button
       data-slot="alert-action"
@@ -123,7 +123,6 @@ function AlertAction({className, onClick, ...props}: ComponentProps<'button'>) {
 
 function AlertClose({
   className,
-  onClick,
   variant = 'default',
   ...props
 }: ComponentProps<'button'> & VariantProps<typeof closeIconVariants>) {
@@ -131,9 +130,8 @@ function AlertClose({
     <button
       data-slot="alert-close"
       type="button"
-      onClick={onClick}
       className={cn(
-        'absolute cursor-pointer top-12 right-12 rounded-4 p-4 text-foreground-neutral-muted hover:text-foreground-neutral-base hover:bg-background-components-hover transition-colors duration-150 outline-none focus-visible:ring-2 focus-visible:ring-background-accent-blue-base focus-visible:ring-offset-2',
+        'absolute cursor-pointer top-12 right-12 rounded-4 p-4 bg-transparent border-none text-foreground-neutral-muted hover:text-foreground-neutral-base hover:bg-background-components-hover transition-colors duration-150 outline-none focus-visible:ring-2 focus-visible:ring-background-accent-blue-base focus-visible:ring-offset-2',
         className,
       )}
       aria-label="Close"
