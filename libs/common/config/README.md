@@ -2,7 +2,7 @@
 
 This is a utility library handling configuration used by other packages for [Shipfox](https://www.shipfox.io/) projects.
 
-### What it does
+## What it does
 
 Typed, validated environment configuration built on top of `envalid`.
 
@@ -10,7 +10,7 @@ Typed, validated environment configuration built on top of `envalid`.
 - **Re-exports common validators**: `str`, `num`, `bool`, `email`, `host`, `port`, `url` (from `envalid`).
 - **Fail-fast**: Throws at startup if required variables are missing/invalid.
 
-### Installation
+## Installation
 
 ```bash
 pnpm add @shipfox/config
@@ -20,7 +20,7 @@ yarn add @shipfox/config
 npm install @shipfox/config
 ```
 
-### Usage
+## Usage
 
 ```ts
 import { createConfig, str, num, bool } from "@shipfox/config";

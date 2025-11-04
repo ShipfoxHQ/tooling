@@ -2,7 +2,7 @@
 
 Typed logging for Node services built on top of `pino`, with consistent defaults, environment-driven configuration, and convenient helpers. It should be used with other packages from [Shipfox](https://www.shipfox.io/).
 
-### What it does
+## What it does
 
 - **log**: Ready-to-use logger with levels `trace`, `debug`, `info`, `warn`, `error`, `fatal`.
 - **createLogger(options)**: Create a new `pino` logger merging your options with Shipfox defaults.
@@ -22,7 +22,7 @@ Environment variables (via `@shipfox/config`):
 - `LOG_PRETTY` (default: `false`) — pretty print to stdout via `pino-pretty`
 - `LOG_FILE` (default: `undefined`) — if set, logs to file using `pino/file` (creates directory if needed)
 
-### Installation
+## Installation
 
 ```bash
 pnpm add @shipfox/node-log
@@ -32,7 +32,7 @@ yarn add @shipfox/node-log
 npm install @shipfox/node-log
 ```
 
-### Usage
+## Usage
 
 ```ts
 import { log, createLogger, settings, type Level } from "@shipfox/node-log";

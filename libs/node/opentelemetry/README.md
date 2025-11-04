@@ -8,7 +8,7 @@ Opinionated OpenTelemetry setup for Node services with:
 
 It should be used with other packages from [Shipfox](https://www.shipfox.io/).
 
-### What it does
+## What it does
 
 - **startInstanceInstrumentation(options)**: Boots a NodeSDK with auto-instrumentations, Fastify instrumentation, Prometheus metrics reader, and optional OTLP trace exporter.
 - **getFastifyInstrumentation()**: Access the Fastify instrumentation instance created during startup.
@@ -27,7 +27,7 @@ Exported ports and endpoints (defaults):
 - Instance metrics: `:9464/metrics`
 - Service metrics: `:9474/metrics`
 
-### Installation
+## Installation
 
 ```bash
 pnpm add @shipfox/node-opentelemetry
@@ -37,7 +37,7 @@ yarn add @shipfox/node-opentelemetry
 npm install @shipfox/node-opentelemetry
 ```
 
-### Quick start
+## Quick start
 
 ```ts
 import {
@@ -70,7 +70,7 @@ function onRequestHandled() {
 }
 ```
 
-### Service-level custom metrics
+## Service-level custom metrics
 
 Use a dedicated provider (separate port) for application-specific metrics:
 
@@ -86,11 +86,11 @@ meter.addBatchObservableCallback((observableResult) => {
 });
 ```
 
-### Traces (OTLP over HTTP)
+## Traces (OTLP over HTTP)
 
 If `TRACES_COLLECTOR_URL` is set (e.g., to an OTLP endpoint like `http://otel-collector:4318/v1/traces`), the instance instrumentation will export traces via the OTLP HTTP exporter. Leave it unset to disable trace exporting.
 
-### Configuration via environment
+## Configuration via environment
 
 ```bash
 export OTEL_SERVICE_NAME="billing-api"

@@ -2,7 +2,7 @@
 
 A thin wrapper around `@clickhouse/client` with sane defaults, environment-based configuration, and convenient helpers for lifecycle and health checks. It should be used with other packages from [Shipfox](https://www.shipfox.io/).
 
-### What it does
+## What it does
 
 - **createClickHouseClient(options?)**: Creates and stores a singleton `ClickHouseClient` configured from environment variables and safe defaults.
 - **chClient()**: Returns the previously created client instance; throws if not initialized.
@@ -17,7 +17,7 @@ Environment variables (with defaults):
 - `CLICKHOUSE_PASSWORD` (default: `password`)
 - `CLICKHOUSE_DATABASE` (default: `api`)
 
-### Installation
+## Installation
 
 ```bash
 pnpm add @shipfox/node-clickhouse
@@ -27,7 +27,7 @@ yarn add @shipfox/node-clickhouse
 npm install @shipfox/node-clickhouse
 ```
 
-### Usage
+## Usage
 
 ```ts
 import {

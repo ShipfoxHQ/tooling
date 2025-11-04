@@ -4,7 +4,7 @@ Thin wrapper around `pg` that centralizes connection config via environment vari
 
 It should be used with other packages from [Shipfox](https://www.shipfox.io/).
 
-### What it does
+## What it does
 
 - **createPostgresClient(options?)**: Creates and stores a singleton `pg.Pool` configured from environment variables and optional overrides.
 - **pgClient()**: Returns the previously created pool; throws if not initialized.
@@ -20,7 +20,7 @@ Environment variables (with defaults):
 - `POSTGRES_PASSWORD` (default: `password`)
 - `POSTGRES_DATABASE` (default: `api`)
 
-### Installation
+## Installation
 
 ```bash
 pnpm add @shipfox/node-pg
@@ -30,7 +30,7 @@ yarn add @shipfox/node-pg
 npm install @shipfox/node-pg
 ```
 
-### Usage
+## Usage
 
 ```ts
 import {
@@ -78,5 +78,3 @@ export POSTGRES_USERNAME="service_user"
 export POSTGRES_PASSWORD="supersecret"
 export POSTGRES_DATABASE="appdb"
 ```
-
-

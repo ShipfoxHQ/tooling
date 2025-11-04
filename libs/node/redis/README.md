@@ -4,7 +4,7 @@ Thin wrapper around `ioredis` that centralizes connection config via environment
 
 It should be used with other packages from [Shipfox](https://www.shipfox.io/).
 
-### What it does
+## What it does
 
 - **createRedisClient(options)**: Creates and stores a singleton `ioredis` client configured from environment variables and optional overrides.
 - **redisClient()**: Returns the previously created client; throws if not initialized.
@@ -19,7 +19,7 @@ Environment variables (with defaults):
 - `REDIS_PASSWORD` (default: `password`)
 - `REDIS_DATABASE` (default: `0`)
 
-### Installation
+## Installation
 
 ```bash
 pnpm add @shipfox/node-redis
@@ -29,7 +29,7 @@ yarn add @shipfox/node-redis
 npm install @shipfox/node-redis
 ```
 
-### Usage
+## Usage
 
 ```ts
 import {

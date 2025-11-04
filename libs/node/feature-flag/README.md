@@ -2,7 +2,7 @@
 
 A thin wrapper around LaunchDarkly's Node SDK that standardizes initialization, context mapping, and flag access across [Shipfox](https://www.shipfox.io/) Node services.
 
-### What it does
+## What it does
 
 - **initFeatureFlagging()**: Initializes a singleton LaunchDarkly client from environment variables and resolves when ready.
 - **Typed context helpers**: `BlankContext`, `OrganizationContext`, `UserContext` mapped to LaunchDarkly `LDContext`.
@@ -15,7 +15,7 @@ Environment variables:
 - `LAUNCH_DARKLY_SDK_KEY` (required)
 - `LAUNCH_DARKLY_BASE_URI` (optional; overrides `baseUri`, `streamUri`, and `eventsUri`)
 
-### Installation
+## Installation
 
 ```bash
 pnpm add @shipfox/node-feature-flag
@@ -25,7 +25,7 @@ yarn add @shipfox/node-feature-flag
 npm install @shipfox/node-feature-flag
 ```
 
-### Usage
+## Usage
 
 ```ts
 import {
