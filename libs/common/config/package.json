@@ -21,7 +21,6 @@
     "@shipfox/swc": "workspace:*",
     "@shipfox/ts-config": "workspace:*",
     "@shipfox/typescript": "workspace:*",
-    "@shipfox/vitest": "workspace:*",
-    "vitest": "^3.0.5"
+    "@shipfox/vitest": "workspace:*"
   }
 }

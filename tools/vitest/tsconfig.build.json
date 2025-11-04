@@ -6,5 +6,12 @@
     "outDir": "dist"
   },
   "include": ["src"],
-  "exclude": ["**/*.test.tsx", "**/*.test.ts"]
+  "exclude": ["**/*.test.tsx", "**/*.test.ts"],
+  "tsc-alias": {
+    "replacers": {
+      "vitest": {
+        "enabled": false
+      }
+    }
+  }
 }

@@ -1,4 +1,4 @@
-import {describe, expect, it} from 'vitest';
+import {describe, expect, it} from '@shipfox/vitest/vi';
 import {formatNumber, formatNumberCompact, formatPercent} from './number';
 
 describe('Format - Number', () => {
