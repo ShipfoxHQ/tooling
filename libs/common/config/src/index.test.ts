@@ -1,7 +1,14 @@
-import {describe, expect, it} from 'vitest';
+import {afterEach, describe, expect, it} from 'vitest';
 import {bool, createConfig, num, str} from './index';
 
 describe('config', () => {
+  afterEach(() => {
+    delete process.env.TEST_STRING;
+    delete process.env.TEST_NUMBER;
+    delete process.env.TEST_BOOL;
+    delete process.env.TEST_STRING;
+  });
+
   it('should create config with string validation', () => {
     const schema = {
       TEST_STRING: str(),
@@ -13,9 +20,6 @@ describe('config', () => {
     const config = createConfig(schema);
 
     expect(config.TEST_STRING).toBe('test-value');
-
-    // Clean up
-    process.env.TEST_STRING = undefined;
   });
 
   it('should create config with number validation', () => {
@@ -29,9 +33,6 @@ describe('config', () => {
     const config = createConfig(schema);
 
     expect(config.TEST_NUMBER).toBe(42);
-
-    // Clean up
-    process.env.TEST_NUMBER = undefined;
   });
 
   it('should create config with boolean validation', () => {
@@ -45,9 +46,6 @@ describe('config', () => {
     const config = createConfig(schema);
 
     expect(config.TEST_BOOL).toBe(true);
-
-    // Clean up
-    process.env.TEST_BOOL = undefined;
   });
 
   it('should update config', () => {
@@ -62,7 +60,5 @@ describe('config', () => {
     config = createConfig(schema, {TEST_STRING: 'test-value2'});
 
     expect(config.TEST_STRING).toBe('test-value2');
-
-    process.env.TEST_STRING = undefined;
   });
 });
