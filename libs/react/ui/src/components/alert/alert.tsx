@@ -4,12 +4,11 @@ import type {ComponentProps} from 'react';
 import {cn} from 'utils/cn';
 
 const alertVariants = cva(
-  'relative w-full rounded-6 px-16 py-12 text-sm flex gap-12 items-start border',
+  'relative w-full rounded-l-4 rounded-r-8 px-16 py-12 text-sm flex gap-12 items-start border',
   {
     variants: {
       variant: {
-        default:
-          'bg-background-components-base text-foreground-neutral-base border-tag-neutral-border',
+        default: 'bg-tag-neutral-bg text-foreground-neutral-base border-tag-neutral-border',
         info: 'bg-tag-blue-bg text-foreground-neutral-base border-tag-blue-border',
         success: 'bg-tag-success-bg text-foreground-neutral-base border-tag-success-border',
         warning: 'bg-tag-warning-bg text-foreground-neutral-base border-tag-warning-border',
