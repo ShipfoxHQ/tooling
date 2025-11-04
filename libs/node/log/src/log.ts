@@ -7,19 +7,19 @@ import {
   stdTimeFunctions,
   type TransportSingleOptions,
 } from 'pino';
-import {env} from './env';
+import {config} from './config';
 
 export type {Level, LogFn} from 'pino';
 
 let transport: TransportSingleOptions | undefined;
-if (env.LOG_PRETTY) {
+if (config.LOG_PRETTY) {
   transport = {target: 'pino-pretty', options: {colorize: true}};
-} else if (env.LOG_FILE) {
-  transport = {target: 'pino/file', options: {destination: env.LOG_FILE, mkdir: true}};
+} else if (config.LOG_FILE) {
+  transport = {target: 'pino/file', options: {destination: config.LOG_FILE, mkdir: true}};
 }
 
 export const settings: LoggerOptions = {
-  level: env.LOG_LEVEL,
+  level: config.LOG_LEVEL,
   transport,
   timestamp: stdTimeFunctions.isoTime,
   formatters: {
