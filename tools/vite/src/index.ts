@@ -6,7 +6,7 @@ import {
 } from 'vite';
 import tsconfigPaths from 'vite-tsconfig-paths';
 
-export type {UserConfig, UserConfigFnObject} from 'vite';
+export type {ConfigEnv, UserConfig, UserConfigFnObject} from 'vite';
 export {loadEnv} from 'vite';
 
 export function defineConfig(configOrFn?: UserConfig | UserConfigFnObject) {
