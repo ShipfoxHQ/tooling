@@ -30,7 +30,7 @@ Install development dependencies.
 
 ## Run
 
-We use [Turborepo](https://turbo.build/) as a task manager for the monorepo. Therefor all commands can be triggered through it.
+We use [Turborepo](https://turbo.build/) as a task manager for the monorepo. Therefore all commands can be triggered through it.
 
 `pnpm turbo {command}`
 
