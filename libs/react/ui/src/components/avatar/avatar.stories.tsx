@@ -1,8 +1,7 @@
 import type {Meta, StoryObj} from '@storybook/react';
 import {Code} from 'components/typography';
-import {isValidElement} from 'react';
-import {Avatar, type AvatarProps} from './avatar';
-import {AvatarGroup, type AvatarGroupItem} from './avatar-group';
+import {Avatar} from './avatar';
+import {AvatarGroup, AvatarGroupTooltip} from './avatar-group';
 
 const contentOptions = ['letters', 'logo', 'logoPlaceholder', 'image', 'upload'] as const;
 const radiusOptions = ['full', 'rounded'] as const;
@@ -76,71 +75,96 @@ const avatarGroupMeta = {
       control: 'select',
       options: sizeOptions,
     },
-    radius: {
-      control: 'select',
-      options: radiusOptions,
-    },
     maxVisible: {
       control: 'number',
     },
   },
   args: {
     size: 'md',
-    radius: 'full',
+    children: [],
   },
 } satisfies Meta<typeof AvatarGroup>;
 
-export const AvatarGroupWithRenderItem: StoryObj<typeof avatarGroupMeta> = {
+export const AvatarGroupDefault: StoryObj<typeof avatarGroupMeta> = {
   args: {
-    avatars: [],
+    children: [],
   },
   render: () => {
-    const avatars: AvatarGroupItem[] = [
-      {content: 'image', fallback: 'John Doe'},
-      {content: 'image', fallback: 'Jane Smith'},
-      {content: 'image', fallback: 'Bob Johnson'},
-      {content: 'image', fallback: 'Alice Brown'},
-      {content: 'image', fallback: 'Carlos Vega'},
-      {content: 'image', fallback: 'Linda Tran'},
-      {content: 'image', fallback: 'Raj Patel'},
-      {content: 'image', fallback: 'Sara Kim'},
-    ];
-
-    const renderItem = (
-      avatar: React.ReactElement,
-      index: number,
-      item: AvatarGroupItem,
-    ): React.ReactElement => {
-      const tooltipText = isValidElement(item)
-        ? (item.props as AvatarProps).fallback || 'User'
-        : (item as AvatarProps).fallback || 'User';
-
-      return (
-        <div key={index} className="group relative" title={tooltipText}>
-          {avatar}
-        </div>
-      );
-    };
+    const avatars = [
+      {name: 'John Doe', content: 'image'},
+      {name: 'Jane Smith', content: 'image'},
+      {name: 'Bob Johnson', content: 'image'},
+      {name: 'Alice Brown', content: 'image'},
+    ] as const;
 
     return (
       <div className="flex flex-col gap-16">
         <div className="flex flex-col gap-8">
           <Code variant="label" className="text-foreground-neutral-base">
-            With renderItem
+            Default (without tooltips)
           </Code>
-          <AvatarGroup avatars={avatars} size="md" renderItem={renderItem} maxVisible={4} />
+          <AvatarGroup size="md">
+            {avatars.map((avatar) => (
+              <Avatar key={avatar.name} content={avatar.content} fallback={avatar.name} />
+            ))}
+          </AvatarGroup>
+        </div>
+      </div>
+    );
+  },
+};
+
+export const AvatarGroupWithTooltips: StoryObj<typeof avatarGroupMeta> = {
+  args: {
+    children: [],
+  },
+  render: () => {
+    const avatars = [
+      {name: 'John Doe', content: 'image'},
+      {name: 'Jane Smith', content: 'image'},
+      {name: 'Bob Johnson', content: 'image'},
+      {name: 'Alice Brown', content: 'image'},
+      {name: 'Carlos Vega', content: 'image'},
+      {name: 'Linda Tran', content: 'image'},
+    ] as const;
+
+    return (
+      <div className="flex flex-col gap-16">
+        <div className="flex flex-col gap-8">
+          <Code variant="label" className="text-foreground-neutral-base">
+            With Tooltips
+          </Code>
+          <AvatarGroup size="md">
+            {avatars.map((avatar) => (
+              <Avatar key={avatar.name} content={avatar.content} fallback={avatar.name}>
+                <AvatarGroupTooltip>{avatar.name}</AvatarGroupTooltip>
+              </Avatar>
+            ))}
+          </AvatarGroup>
         </div>
         <div className="flex flex-col gap-8">
           <Code variant="label" className="text-foreground-neutral-base">
-            Without renderItem (Default)
+            With Tooltips (maxVisible: 4)
           </Code>
-          <AvatarGroup avatars={avatars} size="md" maxVisible={4} />
+          <AvatarGroup size="md" maxVisible={4}>
+            {avatars.map((avatar) => (
+              <Avatar key={avatar.name} content={avatar.content} fallback={avatar.name}>
+                <AvatarGroupTooltip>{avatar.name}</AvatarGroupTooltip>
+              </Avatar>
+            ))}
+          </AvatarGroup>
         </div>
         <div className="flex flex-col gap-8">
           <Code variant="label" className="text-foreground-neutral-base">
-            With animation on hover
+            With Tooltips and Hover Animation
           </Code>
-          <AvatarGroup avatars={avatars} size="md" maxVisible={4} animateOnHover />
+          <AvatarGroup size="md" maxVisible={4} animateOnHover>
+            {avatars.map((avatar) => (
+              <Avatar key={avatar.name} content={avatar.content} fallback={avatar.name}>
+                <AvatarGroupTooltip>{avatar.name}</AvatarGroupTooltip>
+              </Avatar>
+            ))}
+          </AvatarGroup>
         </div>
       </div>
     );

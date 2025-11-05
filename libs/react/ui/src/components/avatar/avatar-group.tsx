@@ -1,7 +1,15 @@
+import * as TooltipPrimitive from '@radix-ui/react-tooltip';
 import {cva, type VariantProps} from 'class-variance-authority';
-import {type ComponentProps, isValidElement, type ReactElement, useCallback, useMemo} from 'react';
+import {
+  Children,
+  type ComponentProps,
+  cloneElement,
+  type ReactElement,
+  type ReactNode,
+  useMemo,
+} from 'react';
 import {cn} from 'utils/cn';
-import {Avatar, type AvatarProps} from './avatar';
+import {TooltipContent, TooltipProvider, TooltipTrigger} from '../tooltip/tooltip';
 
 const avatarGroupVariants = cva('flex items-start', {
   variants: {
@@ -44,104 +52,135 @@ const avatarGroupOverflowVariants = cva(
   },
 );
 
-export type AvatarGroupItem = AvatarProps | ReactElement<typeof Avatar>;
+type TooltipContentProps = ComponentProps<typeof TooltipContent>;
 
-/**
- * Render prop for wrapping each avatar item (e.g., with tooltip).
- * @param avatar - The rendered avatar element
- * @param index - The index of the avatar in the group
- * @param item - The original avatar item (props or element)
- * @returns The wrapped avatar element
- */
-export type AvatarGroupRenderItem = (
-  avatar: ReactElement,
-  index: number,
-  item: AvatarGroupItem,
-) => ReactElement;
+type AvatarContainerProps = {
+  children: ReactNode;
+  zIndex: number;
+  tooltipContent?: ReactNode;
+  tooltipProps?: Partial<TooltipContentProps>;
+  animateOnHover?: boolean;
+};
+
+function AvatarContainer({
+  children,
+  zIndex,
+  tooltipContent,
+  tooltipProps,
+  animateOnHover = false,
+}: AvatarContainerProps) {
+  return (
+    <TooltipPrimitive.Root>
+      <TooltipTrigger asChild>
+        <div
+          data-slot="avatar-container"
+          className={cn(
+            'relative',
+            animateOnHover && 'transition-transform duration-300 ease-out hover:-translate-y-2',
+          )}
+          style={{zIndex}}
+        >
+          {children}
+        </div>
+      </TooltipTrigger>
+      {tooltipContent && (
+        <AvatarGroupTooltip {...tooltipProps}>{tooltipContent}</AvatarGroupTooltip>
+      )}
+    </TooltipPrimitive.Root>
+  );
+}
+
+function getTooltipContent(children: ReactNode): ReactNode | null {
+  const tooltip = Children.toArray(children).find(
+    (child) =>
+      typeof child === 'object' &&
+      child !== null &&
+      'type' in child &&
+      child.type === AvatarGroupTooltip,
+  ) as ReactElement<ComponentProps<typeof AvatarGroupTooltip>> | undefined;
+
+  return tooltip?.props.children || null;
+}
+
+type AvatarGroupTooltipProps = TooltipContentProps;
+
+function AvatarGroupTooltip(props: AvatarGroupTooltipProps) {
+  return <TooltipContent {...props} />;
+}
 
 type AvatarGroupProps = ComponentProps<'div'> &
   VariantProps<typeof avatarGroupVariants> & {
-    avatars: AvatarGroupItem[];
+    children: ReactElement[];
     maxVisible?: number;
-    radius?: AvatarProps['radius'];
-    renderItem?: AvatarGroupRenderItem;
     animateOnHover?: boolean;
+    tooltipProps?: Partial<TooltipContentProps>;
   };
 
 export function AvatarGroup({
   className,
   size = 'md',
-  avatars,
+  children,
   maxVisible,
-  radius = 'full',
-  renderItem,
   animateOnHover = false,
+  tooltipProps = {side: 'top', sideOffset: 8},
   ...props
 }: AvatarGroupProps) {
   const normalizedSize = size ?? 'md';
 
+  const childrenArray = Children.toArray(children) as ReactElement[];
+
   const {visibleCount, visibleAvatars, overflowCount} = useMemo(() => {
-    const count = maxVisible !== undefined ? Math.min(maxVisible, avatars.length) : avatars.length;
+    const count =
+      maxVisible !== undefined ? Math.min(maxVisible, childrenArray.length) : childrenArray.length;
     return {
       visibleCount: count,
-      visibleAvatars: avatars.slice(0, count),
-      overflowCount: avatars.length - count,
+      visibleAvatars: childrenArray.slice(0, count),
+      overflowCount: childrenArray.length - count,
     };
-  }, [avatars, maxVisible]);
-
-  const renderAvatar = useCallback(
-    (avatar: AvatarGroupItem, index: number): ReactElement => {
-      let renderedAvatar: ReactElement;
-
-      if (isValidElement(avatar)) {
-        renderedAvatar = (
-          <div key={index} className="relative" style={{zIndex: index + 1}}>
-            {avatar}
-          </div>
-        );
-      } else {
-        const avatarProps = avatar as AvatarProps;
-        renderedAvatar = (
-          <Avatar
-            key={index}
-            {...avatarProps}
-            size={normalizedSize}
-            radius={radius}
-            animateOnHover={animateOnHover}
-            className={cn('relative', avatarProps.className)}
-            style={{zIndex: index + 1, ...avatarProps.style}}
-          />
-        );
-      }
-
-      if (renderItem) {
-        return renderItem(renderedAvatar, index, avatar);
-      }
-
-      return renderedAvatar;
-    },
-    [normalizedSize, radius, renderItem, animateOnHover],
-  );
+  }, [childrenArray, maxVisible]);
 
   return (
-    <div
-      className={cn(avatarGroupVariants({size: normalizedSize}), className)}
-      data-slot="avatar-group"
-      {...props}
-    >
-      {visibleAvatars.map((avatar, index) => renderAvatar(avatar, index))}
-      {overflowCount > 0 && (
-        <div
-          className={cn(
-            'relative',
-            avatarGroupOverflowVariants({size: normalizedSize}),
-            radius === 'rounded' ? 'rounded-6' : 'rounded-full',
-          )}
-          style={{zIndex: visibleCount + 1}}
-        >
-          +{overflowCount}
-        </div>
-      )}
-    </div>
+    <TooltipProvider delayDuration={0}>
+      <div
+        className={cn(avatarGroupVariants({size: normalizedSize}), className)}
+        data-slot="avatar-group"
+        {...props}
+      >
+        {visibleAvatars.map((child, index) => {
+          const zIndex = index + 1;
+          const childProps = 'props' in child ? (child.props as {children?: ReactNode}) : {};
+          const tooltipContent = getTooltipContent(childProps.children);
+
+          return (
+            <AvatarContainer
+              key={child.key || index}
+              zIndex={zIndex}
+              tooltipContent={tooltipContent}
+              tooltipProps={tooltipProps}
+              animateOnHover={animateOnHover}
+            >
+              {cloneElement(child, {
+                ...childProps,
+                children: tooltipContent ? undefined : childProps.children,
+              } as Partial<typeof childProps>)}
+            </AvatarContainer>
+          );
+        })}
+        {overflowCount > 0 && (
+          <div
+            className={cn(
+              'relative',
+              avatarGroupOverflowVariants({size: normalizedSize}),
+              'rounded-full',
+            )}
+            style={{zIndex: visibleCount + 1}}
+          >
+            +{overflowCount}
+          </div>
+        )}
+      </div>
+    </TooltipProvider>
   );
 }
+
+export {AvatarGroupTooltip, type AvatarGroupTooltipProps};
