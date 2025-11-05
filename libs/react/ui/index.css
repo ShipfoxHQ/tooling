@@ -307,7 +307,7 @@
   --background-highlight-base: var(--color-primary-950);
   --background-neutral-hover: var(--color-neutral-800);
   --background-neutral-overlay: var(--color-neutral-800);
-  --background-components-base: var(--color-neutral-900);
+  --background-components-base: var(--color-neutral-800);
   --background-field-component: var(--color-neutral-900);
   --background-switch-off-hover: var(--color-neutral-600);
   --background-field-component-hover: var(--color-neutral-800);
