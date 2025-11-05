@@ -2,6 +2,7 @@ import {
   type RemixiconComponentType,
   RiCloseLine,
   RiGoogleFill,
+  RiImageAddFill,
   RiMicrosoftFill,
 } from '@remixicon/react';
 import type {ComponentProps} from 'react';
@@ -33,6 +34,7 @@ const iconsMap = {
   spinner: SpinnerIcon,
   ellipseMiniSolid: EllipseMiniSolidIcon,
   componentLine: ComponentLineIcon,
+  imageAdd: RiImageAddFill,
   close: RiCloseLine,
 } as const satisfies Record<string, RemixiconComponentType>;
 
