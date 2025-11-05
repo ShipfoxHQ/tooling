@@ -5,16 +5,9 @@ type ShipfoxLogoProps = ComponentProps<RemixiconComponentType> & {
   color?: string;
 };
 
-export function ShipfoxLogoIcon({color = '#FF4B00', ...props}: ShipfoxLogoProps) {
+export function ShipfoxLogo({color = '#FF4B00', ...props}: ShipfoxLogoProps) {
   return (
-    <svg
-      width="88"
-      height="88"
-      viewBox="0 0 88 88"
-      fill="none"
-      xmlns="http://www.w3.org/2000/svg"
-      {...props}
-    >
+    <svg viewBox="0 0 88 88" fill="none" xmlns="http://www.w3.org/2000/svg" {...props}>
       <title>Shipfox Logo</title>
       <path
         fillRule="evenodd"

@@ -1,8 +1,8 @@
 import * as AvatarPrimitive from '@radix-ui/react-avatar';
 import {cva, type VariantProps} from 'class-variance-authority';
-import type {ComponentProps} from 'react';
+import type {ComponentProps, ReactNode} from 'react';
+import {getInitial, getPlaceholderImageUrl} from 'utils';
 import {cn} from 'utils/cn';
-import {ShipfoxLogoIcon} from '../icon/custom/shipfox-logo';
 import {Icon} from '../icon/icon';
 
 export const avatarVariants = cva(
@@ -53,12 +53,20 @@ const avatarInnerVariants = cva('flex h-full w-full items-center justify-center'
 
 export type AvatarContent = 'letters' | 'logo' | 'logoPlaceholder' | 'image' | 'upload';
 
-const getInitial = (fallbackText?: string): string => {
-  if (fallbackText) {
-    return fallbackText.trim()[0]?.toUpperCase() ?? 'L';
-  }
-  return 'L';
-};
+const UPLOAD_ICON_SIZE_MAP: Record<
+  NonNullable<VariantProps<typeof avatarVariants>['size']>,
+  string
+> = {
+  '3xs': 'size-[10px]',
+  '2xs': 'size-[12px]',
+  xs: 'size-[14px]',
+  sm: 'size-[16px]',
+  md: 'size-[18px]',
+  lg: 'size-[20px]',
+  xl: 'size-[24px]',
+  '2xl': 'size-[40px]',
+  '3xl': 'size-[60px]',
+} as const;
 
 function AvatarRoot({
   className,
@@ -88,7 +96,7 @@ function AvatarImage({className, ...props}: ComponentProps<typeof AvatarPrimitiv
 function AvatarFallback({className, ...props}: ComponentProps<typeof AvatarPrimitive.Fallback>) {
   return (
     <AvatarPrimitive.Fallback
-      data-slot="avatar-fallback"
+      data-slot="avatar-name"
       className={cn('flex size-full items-center justify-center', className)}
       {...props}
     />
@@ -101,45 +109,26 @@ export type AvatarProps = ComponentProps<typeof AvatarPrimitive.Root> &
     src?: string;
     alt?: string;
     fallback?: string;
-    lightTheme?: boolean;
     animateOnHover?: boolean;
   };
 
 export function Avatar({
   className,
   radius,
-  size,
+  size = 'md',
   content = 'letters',
   src,
   alt,
   fallback,
-  lightTheme = false,
   animateOnHover = false,
   ...props
 }: AvatarProps) {
-  const innerBgClass = lightTheme ? 'bg-background-neutral-base' : 'bg-background-components-base';
-  const innerTextClass = lightTheme
-    ? 'text-foreground-neutral-base'
-    : 'text-foreground-neutral-subtle';
+  const innerClassName =
+    'flex h-full w-full items-center justify-center rounded-inherit relative bg-background-neutral-base dark:bg-background-components-base text-foreground-neutral-subtle';
 
-  const innerClassName = `flex h-full w-full items-center justify-center ${innerBgClass} rounded-inherit relative`;
-
-  const renderContent = () => {
+  const renderContent = (): ReactNode => {
     if (content === 'image') {
-      const backgroundColors = [
-        'BFDFFF',
-        'BFEAFF',
-        'CFBFFF',
-        'FFBFC3',
-        'FFEABF',
-        'E3E6EA',
-        'EAEAEA',
-      ];
-      const randomColor = backgroundColors[Math.floor(Math.random() * backgroundColors.length)];
-      const randomSeed = Math.random().toString(36).substring(7);
-      const imageSrc =
-        src ||
-        `https://api.dicebear.com/9.x/micah/svg?backgroundColor=${randomColor}&seed=${randomSeed}`;
+      const imageSrc = src || getPlaceholderImageUrl(fallback);
       return (
         <>
           <AvatarImage
@@ -154,7 +143,7 @@ export function Avatar({
                 avatarInnerVariants({size}),
               )}
             >
-              <span className={cn('font-medium', innerTextClass)}>{getInitial(fallback)}</span>
+              <span className="font-medium">{getInitial(fallback)}</span>
             </div>
           </AvatarFallback>
         </>
@@ -164,7 +153,7 @@ export function Avatar({
     if (content === 'logo') {
       return (
         <AvatarFallback className={cn(innerClassName, 'p-[15%]')}>
-          <ShipfoxLogoIcon color="#FF4B00" className="h-full w-full p-2" />
+          <Icon name="shipfoxLogo" color="#FF4B00" className="h-full w-full p-2" />
         </AvatarFallback>
       );
     }
@@ -172,7 +161,8 @@ export function Avatar({
     if (content === 'logoPlaceholder') {
       return (
         <AvatarFallback className={cn(innerClassName, 'p-[15%]')}>
-          <ShipfoxLogoIcon
+          <Icon
+            name="shipfoxLogo"
             color="var(--foreground-neutral-subtle, #a1a1aa)"
             className="h-full w-full p-2 opacity-50"
           />
@@ -189,25 +179,14 @@ export function Avatar({
               avatarInnerVariants({size}),
             )}
           >
-            <span className={cn('font-medium', innerTextClass)}>{getInitial(fallback)}</span>
+            <span className="font-medium">{getInitial(fallback)}</span>
           </div>
         </AvatarFallback>
       );
     }
 
     if (content === 'upload') {
-      const iconSizeMap: Record<NonNullable<typeof size>, string> = {
-        '3xs': 'size-[10px]',
-        '2xs': 'size-[12px]',
-        xs: 'size-[14px]',
-        sm: 'size-[16px]',
-        md: 'size-[18px]',
-        lg: 'size-[20px]',
-        xl: 'size-[24px]',
-        '2xl': 'size-[40px]',
-        '3xl': 'size-[60px]',
-      };
-      const iconSizeClass = size ? iconSizeMap[size] : iconSizeMap.md;
+      const iconSizeClass = UPLOAD_ICON_SIZE_MAP[size as keyof typeof UPLOAD_ICON_SIZE_MAP];
       return (
         <AvatarFallback className={innerClassName}>
           <Icon name="imageAdd" className={cn('text-foreground-neutral-subtle', iconSizeClass)} />

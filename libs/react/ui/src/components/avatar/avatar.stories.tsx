@@ -1,6 +1,7 @@
 import type {Meta, StoryObj} from '@storybook/react';
 import {Code} from 'components/typography';
-import {Avatar} from './avatar';
+import {isValidElement} from 'react';
+import {Avatar, type AvatarProps} from './avatar';
 import {AvatarGroup, type AvatarGroupItem} from './avatar-group';
 
 const contentOptions = ['letters', 'logo', 'logoPlaceholder', 'image', 'upload'] as const;
@@ -48,8 +49,7 @@ type Story = StoryObj<typeof meta>;
 export const Default: Story = {
   args: {
     content: 'upload',
-    fallback: 'Leek ',
-    size: '3xs',
+    fallback: 'Kyle Nguyen',
   },
 
   render: (args) => (
@@ -90,7 +90,7 @@ const avatarGroupMeta = {
   },
 } satisfies Meta<typeof AvatarGroup>;
 
-export const AvatarGroupDefault: StoryObj<typeof avatarGroupMeta> = {
+export const AvatarGroupWithRenderItem: StoryObj<typeof avatarGroupMeta> = {
   args: {
     avatars: [],
   },
@@ -99,160 +99,49 @@ export const AvatarGroupDefault: StoryObj<typeof avatarGroupMeta> = {
       {content: 'image', fallback: 'John Doe'},
       {content: 'image', fallback: 'Jane Smith'},
       {content: 'image', fallback: 'Bob Johnson'},
+      {content: 'image', fallback: 'Alice Brown'},
+      {content: 'image', fallback: 'Carlos Vega'},
+      {content: 'image', fallback: 'Linda Tran'},
+      {content: 'image', fallback: 'Raj Patel'},
+      {content: 'image', fallback: 'Sara Kim'},
     ];
+
+    const renderItem = (
+      avatar: React.ReactElement,
+      index: number,
+      item: AvatarGroupItem,
+    ): React.ReactElement => {
+      const tooltipText = isValidElement(item)
+        ? (item.props as AvatarProps).fallback || 'User'
+        : (item as AvatarProps).fallback || 'User';
+
+      return (
+        <div key={index} className="group relative" title={tooltipText}>
+          {avatar}
+        </div>
+      );
+    };
 
     return (
       <div className="flex flex-col gap-16">
         <div className="flex flex-col gap-8">
           <Code variant="label" className="text-foreground-neutral-base">
-            2 Avatars
+            With renderItem
           </Code>
-          <AvatarGroup avatars={avatars.slice(0, 2)} size="md" />
+          <AvatarGroup avatars={avatars} size="md" renderItem={renderItem} maxVisible={4} />
         </div>
         <div className="flex flex-col gap-8">
           <Code variant="label" className="text-foreground-neutral-base">
-            3 Avatars
+            Without renderItem (Default)
           </Code>
-          <AvatarGroup avatars={avatars} size="md" />
+          <AvatarGroup avatars={avatars} size="md" maxVisible={4} />
         </div>
         <div className="flex flex-col gap-8">
           <Code variant="label" className="text-foreground-neutral-base">
-            4+ Avatars (maxVisible: 4)
+            With animation on hover
           </Code>
-          <AvatarGroup
-            avatars={[
-              ...avatars,
-              {content: 'image', fallback: 'Alice Brown'},
-              {content: 'image', fallback: 'Charlie Davis'},
-              {content: 'image', fallback: 'Diana Wilson'},
-            ]}
-            size="md"
-            maxVisible={4}
-          />
+          <AvatarGroup avatars={avatars} size="md" maxVisible={4} animateOnHover />
         </div>
-      </div>
-    );
-  },
-};
-
-export const AvatarGroupSizes: StoryObj<typeof avatarGroupMeta> = {
-  args: {
-    avatars: [],
-  },
-  render: () => {
-    const avatars: AvatarGroupItem[] = [
-      {content: 'image', fallback: 'User 1'},
-      {content: 'image', fallback: 'User 2'},
-      {content: 'image', fallback: 'User 3'},
-    ];
-
-    return (
-      <div className="flex flex-col gap-16">
-        {sizeOptions.map((size) => (
-          <div key={size} className="flex flex-col gap-8">
-            <Code variant="label" className="text-foreground-neutral-base">
-              {size}
-            </Code>
-            <AvatarGroup avatars={avatars} size={size} />
-          </div>
-        ))}
-      </div>
-    );
-  },
-};
-
-export const AvatarGroupWithOverflow: StoryObj<typeof avatarGroupMeta> = {
-  args: {
-    avatars: [],
-  },
-  render: () => {
-    const manyAvatars: AvatarGroupItem[] = Array.from({length: 10}, (_, i) => ({
-      content: 'image' as const,
-      fallback: `User ${i + 1}`,
-    }));
-
-    return (
-      <div className="flex flex-col gap-16">
-        <div className="flex flex-col gap-8">
-          <Code variant="label" className="text-foreground-neutral-base">
-            10 Avatars, maxVisible: 3
-          </Code>
-          <AvatarGroup avatars={manyAvatars} size="md" maxVisible={3} />
-        </div>
-        <div className="flex flex-col gap-8">
-          <Code variant="label" className="text-foreground-neutral-base">
-            10 Avatars, maxVisible: 4
-          </Code>
-          <AvatarGroup avatars={manyAvatars} size="xl" maxVisible={4} />
-        </div>
-        <div className="flex flex-col gap-8">
-          <Code variant="label" className="text-foreground-neutral-base">
-            10 Avatars, maxVisible: 5
-          </Code>
-          <AvatarGroup avatars={manyAvatars} size="2xl" maxVisible={5} />
-        </div>
-      </div>
-    );
-  },
-};
-
-export const AvatarGroupMixedContent: StoryObj<typeof avatarGroupMeta> = {
-  args: {
-    avatars: [],
-  },
-  render: () => {
-    const mixedAvatars: AvatarGroupItem[] = [
-      {content: 'image', fallback: 'John Doe'},
-      {content: 'letters', fallback: 'Jane Smith'},
-      {content: 'logo'},
-      {content: 'letters', fallback: 'Bob Johnson'},
-    ];
-
-    return (
-      <div className="flex flex-col gap-16">
-        <div className="flex flex-col gap-8">
-          <Code variant="label" className="text-foreground-neutral-base">
-            Mixed Content Types
-          </Code>
-          <AvatarGroup avatars={mixedAvatars} size="md" />
-        </div>
-        <div className="flex flex-col gap-8">
-          <Code variant="label" className="text-foreground-neutral-base">
-            With Overflow
-          </Code>
-          <AvatarGroup
-            avatars={[
-              ...mixedAvatars,
-              {content: 'image', fallback: 'Alice Brown'},
-              {content: 'letters', fallback: 'Charlie Davis'},
-            ]}
-            size="xl"
-            maxVisible={4}
-          />
-        </div>
-      </div>
-    );
-  },
-};
-
-export const AvatarGroupAnimateOnHover: StoryObj<typeof avatarGroupMeta> = {
-  args: {
-    avatars: [],
-  },
-  render: () => {
-    const avatars: AvatarGroupItem[] = [
-      {content: 'image', fallback: 'Alice Green', animateOnHover: true},
-      {content: 'image', fallback: 'Bob White', animateOnHover: true},
-      {content: 'image', fallback: 'Carol Black', animateOnHover: true},
-      {content: 'image', fallback: 'David Gray', animateOnHover: true},
-    ];
-
-    return (
-      <div className="flex flex-col gap-8">
-        <Code variant="label" className="text-foreground-neutral-base">
-          Animate On Hover (Group)
-        </Code>
-        <AvatarGroup avatars={avatars} size="md" />
       </div>
     );
   },

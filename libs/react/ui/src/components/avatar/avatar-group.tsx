@@ -1,5 +1,5 @@
 import {cva, type VariantProps} from 'class-variance-authority';
-import {type ComponentProps, isValidElement, type ReactElement} from 'react';
+import {type ComponentProps, isValidElement, type ReactElement, useCallback, useMemo} from 'react';
 import {cn} from 'utils/cn';
 import {Avatar, type AvatarProps} from './avatar';
 
@@ -46,11 +46,26 @@ const avatarGroupOverflowVariants = cva(
 
 export type AvatarGroupItem = AvatarProps | ReactElement<typeof Avatar>;
 
+/**
+ * Render prop for wrapping each avatar item (e.g., with tooltip).
+ * @param avatar - The rendered avatar element
+ * @param index - The index of the avatar in the group
+ * @param item - The original avatar item (props or element)
+ * @returns The wrapped avatar element
+ */
+export type AvatarGroupRenderItem = (
+  avatar: ReactElement,
+  index: number,
+  item: AvatarGroupItem,
+) => ReactElement;
+
 type AvatarGroupProps = ComponentProps<'div'> &
   VariantProps<typeof avatarGroupVariants> & {
     avatars: AvatarGroupItem[];
     maxVisible?: number;
     radius?: AvatarProps['radius'];
+    renderItem?: AvatarGroupRenderItem;
+    animateOnHover?: boolean;
   };
 
 export function AvatarGroup({
@@ -59,43 +74,67 @@ export function AvatarGroup({
   avatars,
   maxVisible,
   radius = 'full',
+  renderItem,
+  animateOnHover = false,
   ...props
 }: AvatarGroupProps) {
-  const visibleCount =
-    maxVisible !== undefined ? Math.min(maxVisible, avatars.length) : avatars.length;
-  const visibleAvatars = avatars.slice(0, visibleCount);
-  const overflowCount = avatars.length - visibleCount;
+  const normalizedSize = size ?? 'md';
 
-  const renderAvatar = (avatar: AvatarGroupItem, index: number): ReactElement => {
-    if (isValidElement(avatar)) {
-      return (
-        <div key={index} className="relative" style={{zIndex: index + 1}}>
-          {avatar}
-        </div>
-      );
-    }
+  const {visibleCount, visibleAvatars, overflowCount} = useMemo(() => {
+    const count = maxVisible !== undefined ? Math.min(maxVisible, avatars.length) : avatars.length;
+    return {
+      visibleCount: count,
+      visibleAvatars: avatars.slice(0, count),
+      overflowCount: avatars.length - count,
+    };
+  }, [avatars, maxVisible]);
 
-    const avatarProps = avatar as AvatarProps;
-    return (
-      <Avatar
-        key={index}
-        {...avatarProps}
-        size={size}
-        radius={radius}
-        className={cn('relative', avatarProps.className)}
-        style={{zIndex: index + 1, ...avatarProps.style}}
-      />
-    );
-  };
+  const renderAvatar = useCallback(
+    (avatar: AvatarGroupItem, index: number): ReactElement => {
+      let renderedAvatar: ReactElement;
+
+      if (isValidElement(avatar)) {
+        renderedAvatar = (
+          <div key={index} className="relative" style={{zIndex: index + 1}}>
+            {avatar}
+          </div>
+        );
+      } else {
+        const avatarProps = avatar as AvatarProps;
+        renderedAvatar = (
+          <Avatar
+            key={index}
+            {...avatarProps}
+            size={normalizedSize}
+            radius={radius}
+            animateOnHover={animateOnHover}
+            className={cn('relative', avatarProps.className)}
+            style={{zIndex: index + 1, ...avatarProps.style}}
+          />
+        );
+      }
+
+      if (renderItem) {
+        return renderItem(renderedAvatar, index, avatar);
+      }
+
+      return renderedAvatar;
+    },
+    [normalizedSize, radius, renderItem, animateOnHover],
+  );
 
   return (
-    <div className={cn(avatarGroupVariants({size}), className)} data-slot="avatar-group" {...props}>
+    <div
+      className={cn(avatarGroupVariants({size: normalizedSize}), className)}
+      data-slot="avatar-group"
+      {...props}
+    >
       {visibleAvatars.map((avatar, index) => renderAvatar(avatar, index))}
       {overflowCount > 0 && (
         <div
           className={cn(
             'relative',
-            avatarGroupOverflowVariants({size}),
+            avatarGroupOverflowVariants({size: normalizedSize}),
             radius === 'rounded' ? 'rounded-6' : 'rounded-full',
           )}
           style={{zIndex: visibleCount + 1}}

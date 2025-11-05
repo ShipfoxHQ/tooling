@@ -15,6 +15,7 @@ import {
   EllipseMiniSolidIcon,
   InfoTooltipFillIcon,
   ResizeIcon,
+  ShipfoxLogo,
   SpinnerIcon,
   ThunderIcon,
   XCircleSolidIcon,
@@ -36,6 +37,7 @@ const iconsMap = {
   componentLine: ComponentLineIcon,
   imageAdd: RiImageAddFill,
   close: RiCloseLine,
+  shipfoxLogo: ShipfoxLogo,
 } as const satisfies Record<string, RemixiconComponentType>;
 
 export type IconName = keyof typeof iconsMap;
