@@ -324,7 +324,7 @@ importers:
         version: 19.1.1
       react-day-picker:
         specifier: ^9.5.1
-        version: 9.8.0(react@19.1.1)
+        version: 9.11.1(react@19.1.1)
       react-dom:
         specifier: ^19.1.1
         version: 19.1.1(react@19.1.1)
@@ -827,8 +827,8 @@ packages:
     resolution: {integrity: sha512-Vd/9EVDiu6PPJt9yAh6roZP6El1xHrdvIVGjyBsHR0RYwNHgL7FJPyIIW4fANJNG6FtyZfvlRPpFI4ZM/lubvw==}
     engines: {node: '>=18'}
 
-  '@date-fns/tz@1.2.0':
-    resolution: {integrity: sha512-LBrd7MiJZ9McsOgxqWX7AaxrDjcFVjWH/tIKJd7pnR7McaslGYOP1QmmiBXdJH/H/yLCT+rcQ7FaPBUxRGUtrg==}
+  '@date-fns/tz@1.4.1':
+    resolution: {integrity: sha512-P5LUNhtbj6YfI3iJjw5EL9eUAG6OitD0W3fWQcpQjDRc/QIsL0tRNuO1PcDvPccWL1fSTXXdE1ds+l95DV/OFA==}
 
   '@esbuild/aix-ppc64@0.25.12':
     resolution: {integrity: sha512-Hhmwd6CInZ3dwpuGTF8fJG6yoWmsToE+vYgD4nytZVxcu1ulHpUQRAB1UJ8+N1Am3Mz4+xOByoQoSZf4D+CpkA==}
@@ -4171,8 +4171,8 @@ packages:
     resolution: {integrity: sha512-WuyALRjWPDGtt/wzJiadO5AXY+8hZ80hVpe6MyivgraREW751X3SbhRvG3eLKOYN+8VEvqLcf3wdnt44Z4S4SA==}
     engines: {node: '>=10'}
 
-  react-day-picker@9.8.0:
-    resolution: {integrity: sha512-E0yhhg7R+pdgbl/2toTb0xBhsEAtmAx1l7qjIWYfcxOy8w4rTSVfbtBoSzVVhPwKP/5E9iL38LivzoE3AQDhCQ==}
+  react-day-picker@9.11.1:
+    resolution: {integrity: sha512-l3ub6o8NlchqIjPKrRFUCkTUEq6KwemQlfv3XZzzwpUeGwmDJ+0u0Upmt38hJyd7D/vn2dQoOoLV/qAp0o3uUw==}
     engines: {node: '>=18'}
     peerDependencies:
       react: '>=16.8.0'
@@ -5359,7 +5359,7 @@ snapshots:
 
   '@csstools/css-tokenizer@3.0.4': {}
 
-  '@date-fns/tz@1.2.0': {}
+  '@date-fns/tz@1.4.1': {}
 
   '@esbuild/aix-ppc64@0.25.12':
     optional: true
@@ -8716,9 +8716,9 @@ snapshots:
 
   quick-lru@5.1.1: {}
 
-  react-day-picker@9.8.0(react@19.1.1):
+  react-day-picker@9.11.1(react@19.1.1):
     dependencies:
-      '@date-fns/tz': 1.2.0
+      '@date-fns/tz': 1.4.1
       date-fns: 4.1.0
       date-fns-jalali: 4.1.0-0
       react: 19.1.1
