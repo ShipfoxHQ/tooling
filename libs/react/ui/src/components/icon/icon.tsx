@@ -1,9 +1,12 @@
 import {
   type RemixiconComponentType,
+  RiCheckLine,
   RiCloseLine,
   RiGoogleFill,
   RiImageAddFill,
+  RiInformationFill,
   RiMicrosoftFill,
+  RiSubtractLine,
 } from '@remixicon/react';
 import type {ComponentProps} from 'react';
 import {
@@ -38,6 +41,9 @@ const iconsMap = {
   imageAdd: RiImageAddFill,
   close: RiCloseLine,
   shipfoxLogo: ShipfoxLogo,
+  check: RiCheckLine,
+  subtractLine: RiSubtractLine,
+  info: RiInformationFill,
 } as const satisfies Record<string, RemixiconComponentType>;
 
 export type IconName = keyof typeof iconsMap;

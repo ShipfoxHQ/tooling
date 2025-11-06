@@ -321,6 +321,36 @@
   --shadow-button-danger-focus:
     0 -1px 0 0 var(--color-alpha-white-16), 0 0 0 1px var(--color-alpha-white-12), 0 0 0 1px
     var(--color-red-700), 0 0 0 2px var(--color-alpha-white-88), 0 0 0 4px var(--color-primary-500);
+
+  /* Checkbox */
+  /* Checkbox - Unchecked States */
+  --checkbox-unchecked-bg: var(--background-components-base);
+  --checkbox-unchecked-bg-hover: var(--background-components-hover);
+  --checkbox-unchecked-border: var(--color-alpha-black-8);
+  --checkbox-unchecked-shadow:
+    0px 1px 2px 0px var(--color-alpha-black-12), 0px 0px 0px 1px var(--color-alpha-black-8);
+  --checkbox-unchecked-focus-shadow:
+    0px 1px 2px 0px rgba(30, 58, 138, 0.5), 0px 0px 0px 1px #ff4b00, 0px 0px 0px 2px
+    var(--color-neutral-0), 0px 0px 0px 4px rgba(255, 75, 0, 0.6);
+
+  /* Checkbox - Checked States */
+  --checkbox-checked-bg: var(--foreground-highlight-interactive);
+  --checkbox-checked-bg-hover: var(--foreground-highlight-interactive-hover);
+  --checkbox-checked-border: rgba(255, 75, 0, 0.69);
+  --checkbox-checked-shadow:
+    0px 1px 2px 0px rgba(30, 58, 138, 0.5), 0px 0px 0px 1px rgba(255, 75, 0, 0.69);
+  --checkbox-checked-focus-shadow:
+    0px 1px 2px 0px rgba(30, 58, 138, 0.5), 0px 0px 0px 1px #ff4b00, 0px 0px 0px 2px
+    var(--color-neutral-0), 0px 0px 0px 4px rgba(255, 75, 0, 0.6);
+
+  /* Checkbox - Indeterminate States */
+  --checkbox-indeterminate-bg: var(--foreground-highlight-interactive);
+  --checkbox-indeterminate-bg-hover: var(--foreground-highlight-interactive-hover);
+  --checkbox-indeterminate-border: rgba(255, 75, 0, 0.69);
+  --checkbox-indeterminate-shadow:
+    0px 1px 2px 0px rgba(30, 58, 138, 0.5), 0px 0px 0px 1px rgba(255, 75, 0, 0.69);
+  --checkbox-indeterminate-focus-shadow:
+    0px 0px 0px 1px var(--color-neutral-0), 0px 0px 0px 3px rgba(255, 75, 0, 0.6);
 }
 
 .dark {
@@ -479,6 +509,40 @@
   --shadow-button-danger-focus:
     0 -1px 0 0 var(--color-alpha-white-16), 0 0 0 1px var(--color-alpha-white-12), 0 0 0 1px
     var(--color-red-700), 0 0 0 2px var(--color-neutral-950), 0 0 0 4px var(--color-primary-500);
+
+  /* Checkbox */
+  /* Checkbox - Unchecked States */
+  --checkbox-unchecked-bg: var(--background-components-base);
+  --checkbox-unchecked-bg-hover: var(--background-components-hover);
+  --checkbox-unchecked-border: var(--color-alpha-white-10);
+  --checkbox-unchecked-shadow:
+    0px 1px 2px 0px var(--color-alpha-black-12), 0px 0px 0px 1px var(--color-alpha-white-10);
+  --checkbox-unchecked-focus-shadow:
+    0px 1px 2px 0px rgba(30, 58, 138, 0.5), 0px 0px 0px 1px #ff4b00, 0px 0px 0px 2px var(
+      --color-alpha-black-80
+    ),
+    0px 0px 0px 4px rgba(255, 75, 0, 0.6);
+
+  /* Checkbox - Checked States */
+  --checkbox-checked-bg: var(--foreground-highlight-interactive);
+  --checkbox-checked-bg-hover: var(--foreground-highlight-interactive-hover);
+  --checkbox-checked-border: rgba(255, 75, 0, 0.69);
+  --checkbox-checked-shadow:
+    0px 1px 2px 0px rgba(30, 58, 138, 0.5), 0px 0px 0px 1px rgba(255, 75, 0, 0.69);
+  --checkbox-checked-focus-shadow:
+    0px 1px 2px 0px rgba(30, 58, 138, 0.5), 0px 0px 0px 1px #ff4b00, 0px 0px 0px 2px var(
+      --color-alpha-black-80
+    ),
+    0px 0px 0px 4px rgba(255, 75, 0, 0.6);
+
+  /* Checkbox - Indeterminate States */
+  --checkbox-indeterminate-bg: var(--foreground-highlight-interactive);
+  --checkbox-indeterminate-bg-hover: var(--foreground-highlight-interactive-hover);
+  --checkbox-indeterminate-border: rgba(255, 75, 0, 0.69);
+  --checkbox-indeterminate-shadow:
+    0px 1px 2px 0px rgba(30, 58, 138, 0.5), 0px 0px 0px 1px rgba(255, 75, 0, 0.69);
+  --checkbox-indeterminate-focus-shadow:
+    0px 0px 0px 1px var(--color-alpha-black-80), 0px 0px 0px 3px rgba(255, 75, 0, 0.6);
 }
 
 @theme inline {
@@ -802,6 +866,23 @@
   --shadow-button-neutral-focus: var(--shadow-button-neutral-focus);
   --shadow-button-danger: var(--shadow-button-danger);
   --shadow-button-danger-focus: var(--shadow-button-danger-focus);
+
+  /* Checkbox */
+  --color-checkbox-unchecked-bg: var(--checkbox-unchecked-bg);
+  --color-checkbox-unchecked-bg-hover: var(--checkbox-unchecked-bg-hover);
+  --color-checkbox-unchecked-border: var(--checkbox-unchecked-border);
+  --shadow-checkbox-unchecked: var(--checkbox-unchecked-shadow);
+  --shadow-checkbox-unchecked-focus: var(--checkbox-unchecked-focus-shadow);
+  --color-checkbox-checked-bg: var(--checkbox-checked-bg);
+  --color-checkbox-checked-bg-hover: var(--checkbox-checked-bg-hover);
+  --color-checkbox-checked-border: var(--checkbox-checked-border);
+  --shadow-checkbox-checked: var(--checkbox-checked-shadow);
+  --shadow-checkbox-checked-focus: var(--checkbox-checked-focus-shadow);
+  --color-checkbox-indeterminate-bg: var(--checkbox-indeterminate-bg);
+  --color-checkbox-indeterminate-bg-hover: var(--checkbox-indeterminate-bg-hover);
+  --color-checkbox-indeterminate-border: var(--checkbox-indeterminate-border);
+  --shadow-checkbox-indeterminate: var(--checkbox-indeterminate-shadow);
+  --shadow-checkbox-indeterminate-focus: var(--checkbox-indeterminate-focus-shadow);
 }
 
 @layer base {
