@@ -6,7 +6,7 @@
   "packageManager": "pnpm@9.15.9",
   "type": "module",
   "bin": {
-    "biome": "./bin/biome.js"
+    "biome-check": "./bin/biome-check.js"
   },
   "scripts": {
     "build": "swc",

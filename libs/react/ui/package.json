@@ -9,7 +9,7 @@
   "type": "module",
   "scripts": {
     "build": "swc",
-    "check": "biome",
+    "check": "biome-check",
     "storybook": "storybook dev",
     "storybook:build": "storybook build -o storybook-static",
     "test": "vitest-run",

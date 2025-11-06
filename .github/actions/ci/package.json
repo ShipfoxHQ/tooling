@@ -6,7 +6,7 @@
   "type": "module",
   "scripts": {
     "build": "node_modules/.bin/vite-build",
-    "check": "node_modules/.bin/biome",
+    "check": "node_modules/.bin/biome-check",
     "type": "node_modules/.bin/tsc-check"
   },
   "dependencies": {
