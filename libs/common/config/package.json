@@ -9,7 +9,7 @@
   "type": "module",
   "scripts": {
     "build": "swc",
-    "check": "biome",
+    "check": "biome-check",
     "test": "vitest-run",
     "type": "tsc-emit"
   },
