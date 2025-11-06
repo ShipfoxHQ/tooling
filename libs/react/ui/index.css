@@ -290,6 +290,37 @@
   /* Alpha */
   --alpha-250: var(--color-alpha-black-10);
   --alpha-400: var(--color-alpha-black-24);
+
+  /* Shadow */
+  --shadow-border-base:
+    0 -1px 0 0 var(--color-alpha-white-6), 0 0 0 1px var(--color-alpha-white-6), 0 0 0 1px
+    var(--color-neutral-800), 0 0 1px 1.5px var(--color-alpha-black-24), 0 2px 2px 0
+    var(--color-alpha-black-24);
+  --shadow-border-interactive-with-active: 0 0 0 1px #ff8b16, 0 0 0 4px rgba(255, 49, 0, 0.25);
+  --shadow-border-error: 0 0 0 1px #ff1f5a, 0 0 0 3px rgba(246, 0, 67, 0.25);
+  --shadow-button-inverted:
+    0 -1px 0 0 var(--color-alpha-white-12), 0 0 0 1px var(--color-alpha-white-10), 0 0 0 1px
+    var(--color-neutral-600), 0 0 1px 1.5px var(--color-alpha-black-24), 0 2px 2px 0
+    var(--color-alpha-black-24);
+  --shadow-button-inverted-focus:
+    0 -1px 0 0 var(--color-alpha-white-12), 0 0 0 1px var(--color-alpha-white-12), 0 0 0 1px
+    var(--color-neutral-600), 0 0 0 2px var(--color-alpha-white-88), 0 0 0 4px
+    var(--color-primary-500);
+  --shadow-button-neutral:
+    0 -1px 0 0 var(--color-alpha-white-6), 0 0 0 1px var(--color-alpha-white-6), 0 0 0 1px
+    var(--color-neutral-800), 0 0 1px 1.5px var(--color-alpha-black-24), 0 2px 2px 0
+    var(--color-alpha-black-24);
+  --shadow-button-neutral-focus:
+    0 -1px 0 0 var(--color-alpha-white-6), 0 0 0 1px var(--color-alpha-white-6), 0 0 0 1px
+    var(--color-neutral-800), 0 0 0 2px var(--color-alpha-white-88), 0 0 0 4px
+    var(--color-primary-500);
+  --shadow-button-danger:
+    0 -1px 0 0 var(--color-alpha-white-16), 0 0 0 1px var(--color-alpha-white-12), 0 0 0 1px
+    var(--color-red-700), 0 0 1px 1.5px var(--color-alpha-black-24), 0 2px 2px 0
+    var(--color-alpha-black-24);
+  --shadow-button-danger-focus:
+    0 -1px 0 0 var(--color-alpha-white-16), 0 0 0 1px var(--color-alpha-white-12), 0 0 0 1px
+    var(--color-red-700), 0 0 0 2px var(--color-alpha-white-88), 0 0 0 4px var(--color-primary-500);
 }
 
 .dark {
@@ -307,7 +338,7 @@
   --background-highlight-base: var(--color-primary-950);
   --background-neutral-hover: var(--color-neutral-800);
   --background-neutral-overlay: var(--color-neutral-800);
-  --background-components-base: var(--color-neutral-900);
+  --background-components-base: var(--color-neutral-800);
   --background-field-component: var(--color-neutral-900);
   --background-switch-off-hover: var(--color-neutral-600);
   --background-field-component-hover: var(--color-neutral-800);

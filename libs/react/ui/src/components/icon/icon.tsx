@@ -1,4 +1,10 @@
-import {type RemixiconComponentType, RiGoogleFill, RiMicrosoftFill} from '@remixicon/react';
+import {
+  type RemixiconComponentType,
+  RiCloseLine,
+  RiGoogleFill,
+  RiImageAddFill,
+  RiMicrosoftFill,
+} from '@remixicon/react';
 import type {ComponentProps} from 'react';
 import {
   BadgeIcon,
@@ -9,6 +15,7 @@ import {
   EllipseMiniSolidIcon,
   InfoTooltipFillIcon,
   ResizeIcon,
+  ShipfoxLogo,
   SpinnerIcon,
   ThunderIcon,
   XCircleSolidIcon,
@@ -28,6 +35,9 @@ const iconsMap = {
   spinner: SpinnerIcon,
   ellipseMiniSolid: EllipseMiniSolidIcon,
   componentLine: ComponentLineIcon,
+  imageAdd: RiImageAddFill,
+  close: RiCloseLine,
+  shipfoxLogo: ShipfoxLogo,
 } as const satisfies Record<string, RemixiconComponentType>;
 
 export type IconName = keyof typeof iconsMap;

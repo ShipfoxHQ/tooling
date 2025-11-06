@@ -21,5 +21,11 @@
     ":gitSignOff",
     "schedule:daily"
   ],
-  "packageRules": []
+  "packageRules": [
+    {
+      "groupName": "biome packages",
+      "groupSlug": "biome",
+      "matchPackageNames": ["@biomejs/**"]
+    }
+  ]
 }
