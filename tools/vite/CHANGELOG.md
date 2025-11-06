@@ -1,5 +1,11 @@
 # @shipfox/vite
 
+## 1.2.2
+
+### Patch Changes
+
+- 49d3179: Add type hinting for return type of vite's defineConfig function
+
 ## 1.2.1
 
 ### Patch Changes
