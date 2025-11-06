@@ -48,7 +48,7 @@ export const Required: Story = {
   render: () => (
     <div className="flex flex-col gap-8">
       <Label htmlFor="required-field">
-        Required Field <span className="text-foreground-error">*</span>
+        Required Field <span className="text-foreground-highlight-error">*</span>
       </Label>
       <Input id="required-field" type="text" placeholder="This field is required" />
     </div>

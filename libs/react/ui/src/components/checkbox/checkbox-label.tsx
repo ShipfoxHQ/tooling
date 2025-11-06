@@ -1,3 +1,4 @@
+import {useId} from 'react';
 import {cn} from 'utils/cn';
 import {Icon} from '../icon/icon';
 import {Label} from '../label/label';
@@ -27,8 +28,51 @@ export function CheckboxLabel({
   descriptionClassName,
   ...checkboxProps
 }: CheckboxLabelProps) {
-  const checkboxId = id || `checkbox-${label.toLowerCase().replace(/\s+/g, '-')}`;
+  const generateId = useId();
+  const checkboxId = id || generateId;
   const isDisabled = checkboxProps.disabled ?? false;
+
+  const renderContent = (checkboxId: string) => (
+    <div className="flex flex-col gap-4 flex-1 min-w-0">
+      <div className="flex gap-4 items-center">
+        <Label
+          className={cn(
+            'text-sm leading-20 overflow-hidden text-ellipsis whitespace-nowrap',
+            isDisabled
+              ? 'font-normal text-foreground-neutral-subtle'
+              : 'font-medium text-foreground-neutral-base',
+            labelClassName,
+          )}
+          htmlFor={checkboxId}
+        >
+          {label}
+        </Label>
+        {optional && (
+          <span className="text-sm leading-20 font-regular text-foreground-neutral-muted whitespace-nowrap">
+            (Optional)
+          </span>
+        )}
+        {showInfoIcon && (
+          <Icon
+            name="info"
+            className="size-16 text-foreground-neutral-muted shrink-0"
+            aria-hidden="true"
+          />
+        )}
+      </div>
+      {description && (
+        <p
+          className={cn(
+            'text-sm leading-20',
+            isDisabled ? 'text-foreground-neutral-disabled' : 'text-foreground-neutral-subtle',
+            descriptionClassName,
+          )}
+        >
+          {description}
+        </p>
+      )}
+    </div>
+  );
 
   if (border) {
     return (
@@ -36,7 +80,7 @@ export function CheckboxLabel({
         htmlFor={checkboxId}
         className={cn(
           // Base container styles with border
-          'flex items-start gap-10 rounded-8 p-8 transition-colors',
+          'flex items-start gap-10 rounded-8 p-8 transition-all duration-100',
           // Unchecked state - default
           'bg-checkbox-unchecked-bg shadow-checkbox-unchecked',
           // Unchecked state - hover
@@ -62,46 +106,9 @@ export function CheckboxLabel({
         )}
       >
         <span className="p-4">
-          <Checkbox id={checkboxId} disabled={isDisabled} {...checkboxProps} />
+          <Checkbox id={checkboxId} {...checkboxProps} />
         </span>
-        <div className="flex flex-col gap-4 flex-1 min-w-0">
-          <div className="flex gap-4 items-center">
-            <p
-              className={cn(
-                'text-sm leading-20 overflow-hidden text-ellipsis whitespace-nowrap',
-                isDisabled
-                  ? 'font-normal text-foreground-neutral-subtle'
-                  : 'font-medium text-foreground-neutral-base',
-                labelClassName,
-              )}
-            >
-              {label}
-            </p>
-            {optional && (
-              <span className="text-sm leading-20 font-regular text-foreground-neutral-muted whitespace-nowrap">
-                (Optional)
-              </span>
-            )}
-            {showInfoIcon && (
-              <Icon
-                name="info"
-                className="size-16 text-foreground-neutral-muted shrink-0"
-                aria-hidden="true"
-              />
-            )}
-          </div>
-          {description && (
-            <p
-              className={cn(
-                'text-sm leading-20',
-                isDisabled ? 'text-foreground-neutral-disabled' : 'text-foreground-neutral-subtle',
-                descriptionClassName,
-              )}
-            >
-              {description}
-            </p>
-          )}
-        </div>
+        {renderContent(checkboxId)}
       </Label>
     );
   }
@@ -110,46 +117,9 @@ export function CheckboxLabel({
   return (
     <div className={cn('flex items-start gap-10', className)}>
       <span className="p-2">
-        <Checkbox id={checkboxId} disabled={isDisabled} {...checkboxProps} />
+        <Checkbox id={checkboxId} {...checkboxProps} />
       </span>
-      <div className="flex flex-col gap-4 flex-1 min-w-0">
-        <div className="flex gap-4 items-center">
-          <p
-            className={cn(
-              'text-sm leading-20 overflow-hidden text-ellipsis whitespace-nowrap',
-              isDisabled
-                ? 'font-normal text-foreground-neutral-subtle'
-                : 'font-medium text-foreground-neutral-base',
-              labelClassName,
-            )}
-          >
-            {label}
-          </p>
-          {optional && (
-            <span className="text-sm leading-20 font-regular text-foreground-neutral-muted whitespace-nowrap">
-              (Optional)
-            </span>
-          )}
-          {showInfoIcon && (
-            <Icon
-              name="info"
-              className="size-16 text-foreground-neutral-muted shrink-0"
-              aria-hidden="true"
-            />
-          )}
-        </div>
-        {description && (
-          <p
-            className={cn(
-              'text-sm leading-20',
-              isDisabled ? 'text-foreground-neutral-disabled' : 'text-foreground-neutral-subtle',
-              descriptionClassName,
-            )}
-          >
-            {description}
-          </p>
-        )}
-      </div>
+      {renderContent(checkboxId)}
     </div>
   );
 }

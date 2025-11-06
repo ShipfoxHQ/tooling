@@ -2,11 +2,10 @@ import * as CheckboxPrimitive from '@radix-ui/react-checkbox';
 import {cva, type VariantProps} from 'class-variance-authority';
 import {Icon} from 'components/icon';
 import type {ComponentProps} from 'react';
-import {useEffect, useState} from 'react';
 import {cn} from 'utils/cn';
 
 export const checkboxVariants = cva(
-  'peer shrink-0 border-none transition-[background-color,box-shadow,opacity] outline-none',
+  'peer shrink-0 border-none transition-all duration-100 outline-none cursor-pointer',
   {
     variants: {
       size: {
@@ -32,25 +31,12 @@ export function Checkbox({
   onCheckedChange,
   ...props
 }: CheckboxProps) {
-  const [isIndeterminate, setIsIndeterminate] = useState(
-    checked === 'indeterminate' || defaultChecked === 'indeterminate',
-  );
-
-  const handleCheckedChange = (newChecked: boolean | 'indeterminate') => {
-    setIsIndeterminate(newChecked === 'indeterminate');
-    onCheckedChange?.(newChecked);
-  };
-
-  useEffect(() => {
-    setIsIndeterminate(checked === 'indeterminate' || defaultChecked === 'indeterminate');
-  }, [checked, defaultChecked]);
-
   return (
     <CheckboxPrimitive.Root
       data-slot="checkbox"
       checked={checked}
       defaultChecked={defaultChecked}
-      onCheckedChange={handleCheckedChange}
+      onCheckedChange={onCheckedChange}
       className={cn(
         checkboxVariants({size}),
         // Unchecked state - default
@@ -74,7 +60,7 @@ export function Checkbox({
       {...props}
     >
       <CheckboxPrimitive.Indicator className="flex items-center justify-center text-current">
-        {isIndeterminate ? (
+        {checked === 'indeterminate' ? (
           <Icon name="subtractLine" className="size-16" aria-hidden="true" />
         ) : (
           <Icon name="check" className="size-16" aria-hidden="true" />

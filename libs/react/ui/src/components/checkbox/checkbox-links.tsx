@@ -1,5 +1,5 @@
 import {Label} from 'components/label';
-import type {ReactNode} from 'react';
+import {type ReactNode, useId} from 'react';
 import {cn} from 'utils/cn';
 import {Checkbox, type CheckboxProps} from './checkbox';
 
@@ -29,8 +29,9 @@ export function CheckboxLinks({
   linkClassName,
   ...checkboxProps
 }: CheckboxLinksProps) {
-  const checkboxId = id || `checkbox-${label.toLowerCase().replace(/\s+/g, '-')}`;
-
+  const generateId = useId();
+  const checkboxId = id || generateId;
+  const isDisabled = checkboxProps.disabled ?? false;
   const defaultSeparator = (
     <span className="size-3 rounded-full bg-foreground-neutral-muted" aria-hidden="true" />
   );
@@ -45,7 +46,7 @@ export function CheckboxLinks({
           htmlFor={checkboxId}
           className={cn(
             'text-sm leading-20 font-medium text-foreground-neutral-base',
-            'peer-disabled:cursor-not-allowed peer-disabled:opacity-50',
+            isDisabled && 'cursor-not-allowed opacity-50',
             labelClassName,
           )}
         >

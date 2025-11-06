@@ -342,6 +342,10 @@ CheckboxLabelStory.parameters = {
 };
 
 export const CheckboxLinksStory: StoryObj = {
+  args: {
+    disabled: true,
+  },
+
   render: () => (
     <div className="flex flex-col gap-32 pb-64 pt-32 px-32 bg-background-neutral-base">
       <Code variant="label" className="text-foreground-neutral-subtle">
