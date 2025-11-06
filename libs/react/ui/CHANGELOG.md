@@ -1,5 +1,11 @@
 # @shipfox/react-ui
 
+## 0.2.0
+
+### Minor Changes
+
+- d2f5795: Add textarea component
+
 ## 0.1.0
 
 ### Minor Changes

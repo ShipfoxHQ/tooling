@@ -1,5 +1,11 @@
 # @shipfox/vitest
 
+## 1.1.3
+
+### Patch Changes
+
+- ae8fd17: Export dditional type hints for vitest
+
 ## 1.1.2
 
 ### Patch Changes
