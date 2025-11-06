@@ -1,5 +1,11 @@
 # @shipfox/react-ui
 
+## 0.3.0
+
+### Minor Changes
+
+- ab01d39: Add Avatar and Avatar Group components
+
 ## 0.2.0
 
 ### Minor Changes
