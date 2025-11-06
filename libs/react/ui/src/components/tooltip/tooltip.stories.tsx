@@ -176,28 +176,28 @@ export const Types: Story = {
                         <div className="size-6 rounded-full bg-purple-500" />
                         <span className="text-xs">Data A</span>
                       </div>
-                      <span className="text-xs">6.14</span>
+                      <span className="text-xs">$6.14</span>
                     </div>
                     <div className="flex items-center justify-between gap-12">
                       <div className="flex flex-1 items-center gap-4">
                         <div className="size-6 rounded-full bg-green-500" />
                         <span className="text-xs">Data B</span>
                       </div>
-                      <span className="text-xs">4.37</span>
+                      <span className="text-xs">$4.37</span>
                     </div>
                     <div className="flex items-center justify-between gap-12">
                       <div className="flex flex-1 items-center gap-4">
                         <div className="size-6 rounded-full bg-orange-500" />
                         <span className="text-xs">Data C</span>
                       </div>
-                      <span className="text-xs">12.88</span>
+                      <span className="text-xs">$12.88</span>
                     </div>
                     <div className="flex items-center justify-between gap-12">
                       <div className="flex flex-1 items-center gap-4">
                         <div className="size-6 rounded-full bg-blue-500" />
                         <span className="text-xs">Data D</span>
                       </div>
-                      <span className="text-xs">2.91</span>
+                      <span className="text-xs">$2.91</span>
                     </div>
                   </div>
                 </div>

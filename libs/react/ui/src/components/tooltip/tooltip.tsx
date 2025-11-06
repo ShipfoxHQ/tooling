@@ -5,14 +5,13 @@ import type {ComponentProps} from 'react';
 import {cn} from 'utils/cn';
 
 const tooltipContentVariants = cva(
-  'rounded-8 bg-background-components-base text-foreground-neutral-base px-8 py-4 text-xs font-medium leading-20 z-50 w-fit text-balance',
+  'rounded-8 px-8 py-4 text-xs font-medium leading-20 z-50 w-fit text-balance shadow-tooltip',
   {
     variants: {
       variant: {
-        default: 'bg-background-components-base text-foreground-neutral-base shadow-tooltip',
-        inverted:
-          'bg-background-button-inverted-default text-foreground-contrast-primary shadow-tooltip',
-        muted: 'bg-background-neutral-subtle text-foreground-neutral-muted shadow-tooltip',
+        default: 'bg-background-components-base text-foreground-neutral-base',
+        inverted: 'bg-background-button-inverted-default text-foreground-contrast-primary',
+        muted: 'bg-background-neutral-subtle text-foreground-neutral-muted',
       },
       size: {
         sm: 'px-6 py-2 text-xs',
