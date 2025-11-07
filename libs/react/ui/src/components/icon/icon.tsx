@@ -1,10 +1,13 @@
 import {
   type RemixiconComponentType,
+  RiCheckLine,
   RiCloseLine,
   RiGithubFill,
   RiGoogleFill,
   RiImageAddFill,
+  RiInformationFill,
   RiMicrosoftFill,
+  RiSubtractLine,
 } from '@remixicon/react';
 import type {ComponentProps} from 'react';
 import {
@@ -44,6 +47,9 @@ const iconsMap = {
   slack: SlackLogo,
   stripe: StripeLogo,
   github: RiGithubFill,
+  check: RiCheckLine,
+  subtractLine: RiSubtractLine,
+  info: RiInformationFill,
 } as const satisfies Record<string, RemixiconComponentType>;
 
 export type IconName = keyof typeof iconsMap;

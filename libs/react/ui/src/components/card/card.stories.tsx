@@ -1,5 +1,5 @@
 import type {Meta, StoryObj} from '@storybook/react';
-import shipfoxIllustration from '../../assets/illutration-1.svg';
+import shipfoxIllustration from '../../assets/illustration-1.svg';
 import {useBreakpoint} from '../../hooks/useBreakpoint';
 import {Avatar} from '../avatar/avatar';
 import {AvatarGroup, AvatarGroupTooltip} from '../avatar/avatar-group';

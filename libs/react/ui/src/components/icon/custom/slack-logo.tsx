@@ -1,11 +1,9 @@
 import type {RemixiconComponentType} from '@remixicon/react';
 import type {ComponentProps} from 'react';
 
-type SlackLogoProps = ComponentProps<RemixiconComponentType> & {
-  color?: string;
-};
+type SlackLogoProps = ComponentProps<RemixiconComponentType>;
 
-export function SlackLogo({color = '#FF4B00', ...props}: SlackLogoProps) {
+export function SlackLogo(props: SlackLogoProps) {
   return (
     <svg
       viewBox="0 0 28 28"

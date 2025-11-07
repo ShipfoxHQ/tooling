@@ -75,7 +75,7 @@ export function CardContent({
 
         {hasContent && (
           <div className="flex min-w-0 flex-1 flex-col gap-4 text-center sm:text-left">
-            {title && typeof title === 'string' ? <CardTitle>{title}</CardTitle> : title}
+            {title && <CardTitle>{title}</CardTitle>}
             {description && <CardDescription>{description}</CardDescription>}
             {action && <CardAction>{action}</CardAction>}
           </div>
