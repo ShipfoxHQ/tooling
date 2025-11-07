@@ -64,3 +64,4 @@ jobs:
           body: A new release of the packages was created.
           branch: release
           branch-suffix: short-commit-hash
+          base: main
