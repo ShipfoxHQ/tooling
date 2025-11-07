@@ -1,38 +1,18 @@
-import type {ComponentProps, ReactNode} from 'react';
+import type {ReactNode} from 'react';
 import {cn} from 'utils/cn';
+import type {CardProps} from './card';
 import {Card} from './card';
 import {CardAction} from './card-action';
 import {CardDescription} from './card-description';
 import {CardTitle} from './card-title';
 
-export type CardContentProps = ComponentProps<typeof Card> & {
-  /**
-   * Optional left side element (Avatar, Icon, or any custom ReactNode)
-   */
+export type CardContentProps = Omit<CardProps, 'children' | 'title'> & {
   leftElement?: ReactNode;
-  /**
-   * Optional title text
-   */
-  title?: string;
-  /**
-   * Optional description text
-   */
+  title?: ReactNode;
   description?: string;
-  /**
-   * Optional action element (Button, Buttons, or Badge)
-   */
   action?: ReactNode;
-  /**
-   * Optional right side element (AvatarGroup, Button, or any custom ReactNode)
-   */
   rightElement?: ReactNode;
-  /**
-   * Custom padding override
-   */
   padding?: string;
-  /**
-   * Custom alignment override
-   */
   align?: 'center' | 'start';
 };
 
@@ -75,7 +55,7 @@ export function CardContent({
 
         {hasContent && (
           <div className="flex min-w-0 flex-1 flex-col gap-4 text-center sm:text-left">
-            {title && <CardTitle>{title}</CardTitle>}
+            {title && typeof title === 'string' ? <CardTitle>{title}</CardTitle> : title}
             {description && <CardDescription>{description}</CardDescription>}
             {action && <CardAction>{action}</CardAction>}
           </div>

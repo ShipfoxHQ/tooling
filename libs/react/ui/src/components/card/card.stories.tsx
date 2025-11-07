@@ -1,11 +1,15 @@
 import type {Meta, StoryObj} from '@storybook/react';
-import shipfoxIllustration from '../../assets/illustration-1.svg';
+import {cn} from 'utils/cn';
+import illustration1 from '../../assets/illustration-1.svg';
+import illustration2 from '../../assets/illustration-2.svg';
+import illustrationBg from '../../assets/illustration-bg.svg';
 import {useBreakpoint} from '../../hooks/useBreakpoint';
 import {Avatar} from '../avatar/avatar';
 import {AvatarGroup, AvatarGroupTooltip} from '../avatar/avatar-group';
 import {Button} from '../button';
 import {Icon} from '../icon/icon';
-import {Card, CardContent} from './';
+import {MovingBorder} from '../moving-border/moving-border';
+import {Card, CardContent, CardTitle} from './';
 
 const meta = {
   title: 'Components/Card',
@@ -45,7 +49,7 @@ const cardContentMeta = {
 export const OrganizationCard: StoryObj<typeof cardContentMeta> = {
   args: {},
   render: () => (
-    <div className="flex flex-col gap-8 w-full max-w-476">
+    <div className="flex flex-col gap-16 w-full max-w-476">
       <CardContent
         variant="primary"
         leftElement={<Avatar content="logo" logoName="slack" radius="rounded" size="xl" />}
@@ -232,13 +236,58 @@ export const WithCustomElements: StoryObj<typeof cardContentMeta> = {
             rightElement={
               isSm ? (
                 <img
-                  src={shipfoxIllustration}
-                  alt="Shipfox Illustration"
+                  src={illustration1}
+                  alt="illustration-1"
                   className="absolute overflow-clip right-2 top-1/2 -translate-y-1/2 -translate-x-46 w-fit object-contain"
                 />
               ) : null
             }
           />
+          <div className="relative">
+            <img
+              src={illustration2}
+              alt="illustration-2"
+              className="absolute overflow-clip right-2 top-1/2 -translate-y-1/2 translate-x-8 w-fit object-contain z-50 hidden sm:block"
+            />
+            <div className={cn('relative overflow-hidden bg-transparent p-px border rounded-8')}>
+              <div className="absolute inset-0" style={{borderRadius: 'calc(0.5rem * 0.96)'}}>
+                <MovingBorder duration={6000} rx="30%" ry="30%">
+                  <div className="h-100 w-200 bg-[radial-gradient(#ff9e7a_40%,transparent_60%)]" />
+                </MovingBorder>
+              </div>
+              <div
+                className="relative"
+                style={{
+                  borderRadius: 'calc(0.5rem * 0.96)',
+                }}
+              >
+                <CardContent
+                  variant="primary"
+                  align={isSm ? 'start' : 'center'}
+                  title={
+                    <div className="flex items-center gap-6">
+                      <span className="flex shrink-0 items-center justify-center text-tag-success-icon w-16 h-16">
+                        <Icon
+                          name="money"
+                          size="sm"
+                          color="var(--foreground-neutral-subtle, #a1a1aa)"
+                        />
+                      </span>
+                      <CardTitle>6000 free credits/month to run your jobs</CardTitle>
+                    </div>
+                  }
+                  description="~500 builds/month. No payment required."
+                  rightElement={
+                    <img
+                      src={illustrationBg}
+                      alt="illustration-bg"
+                      className="hidden sm:block absolute overflow-clip right-4 w-fit object-contain scale-105"
+                    />
+                  }
+                />
+              </div>
+            </div>
+          </div>
         </div>
       );
     }

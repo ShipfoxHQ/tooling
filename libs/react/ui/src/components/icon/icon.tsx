@@ -7,6 +7,7 @@ import {
   RiImageAddFill,
   RiInformationFill,
   RiMicrosoftFill,
+  RiMoneyDollarCircleLine,
   RiSubtractLine,
 } from '@remixicon/react';
 import type {ComponentProps} from 'react';
@@ -50,6 +51,7 @@ const iconsMap = {
   check: RiCheckLine,
   subtractLine: RiSubtractLine,
   info: RiInformationFill,
+  money: RiMoneyDollarCircleLine,
 } as const satisfies Record<string, RemixiconComponentType>;
 
 export type IconName = keyof typeof iconsMap;
