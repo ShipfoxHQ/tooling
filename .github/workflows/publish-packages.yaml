@@ -4,10 +4,10 @@ on:
   workflow_dispatch:
     inputs:
       package_name:
-        description: 'Name of the package to publish (leave empty to publish all packages)'
+        description: "Name of the package to publish (leave empty to publish all packages)"
         required: false
         type: string
-        default: ''
+        default: ""
 
 jobs:
   publish:
@@ -41,12 +41,12 @@ jobs:
         run: pnpm publish --access public --no-git-checks --filter ${{ inputs.package_name }}
         env:
           NPM_ACCESS_TOKEN: ${{ secrets.NPM_ACCESS_TOKEN }}
-      - name: Publish all packages
-        if: inputs.package_name == ''
-        shell: nix develop --command bash {0}
-        run: pnpm publish --access public --no-git-checks --recursive
-        env:
-          NPM_ACCESS_TOKEN: ${{ secrets.NPM_ACCESS_TOKEN }}
+      # - name: Publish all packages
+      #   if: inputs.package_name == ''
+      #   shell: nix develop --command bash {0}
+      #   run: pnpm publish --access public --no-git-checks --recursive
+      #   env:
+      #     NPM_ACCESS_TOKEN: ${{ secrets.NPM_ACCESS_TOKEN }}
       - uses: crazy-max/ghaction-import-gpg@e89d40939c28e39f97cf32126055eeae86ba74ec # v6
         with:
           gpg_private_key: ${{ secrets.DEPLOY_BOT_GPG_PRIVATE_KEY }}
