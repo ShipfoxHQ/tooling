@@ -351,6 +351,9 @@
     0px 1px 2px 0px rgba(30, 58, 138, 0.5), 0px 0px 0px 1px rgba(255, 75, 0, 0.69);
   --checkbox-indeterminate-focus-shadow:
     0px 0px 0px 1px var(--color-neutral-0), 0px 0px 0px 3px rgba(255, 75, 0, 0.6);
+  --shadow-tooltip:
+    0 0 0 1px var(--color-alpha-black-8), 0 2px 4px 0 var(--color-alpha-black-8), 0 4px 8px 0
+    var(--color-alpha-black-8);
 }
 
 .dark {
@@ -543,6 +546,9 @@
     0px 1px 2px 0px rgba(30, 58, 138, 0.5), 0px 0px 0px 1px rgba(255, 75, 0, 0.69);
   --checkbox-indeterminate-focus-shadow:
     0px 0px 0px 1px var(--color-alpha-black-80), 0px 0px 0px 3px rgba(255, 75, 0, 0.6);
+  --shadow-tooltip:
+    0 -1px 0 0 var(--color-alpha-white-4), 0 2px 4px 0 var(--color-alpha-black-40), 0 0 0 1px
+    var(--color-alpha-white-10), 0 4px 8px 0 var(--color-alpha-black-40);
 }
 
 @theme inline {
@@ -883,6 +889,7 @@
   --color-checkbox-indeterminate-border: var(--checkbox-indeterminate-border);
   --shadow-checkbox-indeterminate: var(--checkbox-indeterminate-shadow);
   --shadow-checkbox-indeterminate-focus: var(--checkbox-indeterminate-focus-shadow);
+  --shadow-tooltip: var(--shadow-tooltip);
 }
 
 @layer base {
