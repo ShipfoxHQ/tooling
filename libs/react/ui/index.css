@@ -308,9 +308,9 @@
     var(--color-neutral-600), 0 0 0 2px var(--color-alpha-white-88), 0 0 0 4px
     var(--color-primary-500);
   --shadow-button-neutral:
-    0 -1px 0 0 var(--color-alpha-white-6), 0 0 0 1px var(--color-alpha-white-6), 0 0 0 1px
-    var(--color-neutral-800), 0 0 1px 1.5px var(--color-alpha-black-24), 0 2px 2px 0
-    var(--color-alpha-black-24);
+    0 0 0 1px var(--color-alpha-black-8), 0 2px 4px 0 var(--color-alpha-black-8), 0 4px 8px 0
+    var(--color-alpha-black-8);
+    
   --shadow-button-neutral-focus:
     0 -1px 0 0 var(--color-alpha-white-6), 0 0 0 1px var(--color-alpha-white-6), 0 0 0 1px
     var(--color-neutral-800), 0 0 0 2px var(--color-alpha-white-88), 0 0 0 4px
@@ -500,9 +500,8 @@
     0 -1px 0 0 var(--color-alpha-white-12), 0 0 0 1px var(--color-alpha-white-12), 0 0 0 1px
     var(--color-neutral-600), 0 0 0 2px var(--color-neutral-950), 0 0 0 4px var(--color-primary-500);
   --shadow-button-neutral:
-    0 -1px 0 0 var(--color-alpha-white-6), 0 0 0 1px var(--color-alpha-white-6), 0 0 0 1px
-    var(--color-neutral-800), 0 0 1px 1.5px var(--color-alpha-black-24), 0 2px 2px 0
-    var(--color-alpha-black-24);
+    0 -1px 0 0 var(--color-alpha-white-4), 0 2px 4px 0 var(--color-alpha-black-40), 0 0 0 1px
+    var(--color-alpha-white-10), 0 4px 8px 0 var(--color-alpha-black-40);
   --shadow-button-neutral-focus:
     0 -1px 0 0 var(--color-alpha-white-6), 0 0 0 1px var(--color-alpha-white-6), 0 0 0 1px
     var(--color-neutral-800), 0 0 0 2px var(--color-neutral-950), 0 0 0 4px var(--color-primary-500);
