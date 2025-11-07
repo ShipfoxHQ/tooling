@@ -310,7 +310,6 @@
   --shadow-button-neutral:
     0 0 0 1px var(--color-alpha-black-8), 0 2px 4px 0 var(--color-alpha-black-8), 0 4px 8px 0
     var(--color-alpha-black-8);
-    
   --shadow-button-neutral-focus:
     0 -1px 0 0 var(--color-alpha-white-6), 0 0 0 1px var(--color-alpha-white-6), 0 0 0 1px
     var(--color-neutral-800), 0 0 0 2px var(--color-alpha-white-88), 0 0 0 4px
