@@ -1,6 +1,7 @@
 import {
   type RemixiconComponentType,
   RiCloseLine,
+  RiGithubFill,
   RiGoogleFill,
   RiImageAddFill,
   RiMicrosoftFill,
@@ -16,7 +17,9 @@ import {
   InfoTooltipFillIcon,
   ResizeIcon,
   ShipfoxLogo,
+  SlackLogo,
   SpinnerIcon,
+  StripeLogo,
   ThunderIcon,
   XCircleSolidIcon,
 } from './custom';
@@ -37,7 +40,10 @@ const iconsMap = {
   componentLine: ComponentLineIcon,
   imageAdd: RiImageAddFill,
   close: RiCloseLine,
-  shipfoxLogo: ShipfoxLogo,
+  shipfox: ShipfoxLogo,
+  slack: SlackLogo,
+  stripe: StripeLogo,
+  github: RiGithubFill,
 } as const satisfies Record<string, RemixiconComponentType>;
 
 export type IconName = keyof typeof iconsMap;

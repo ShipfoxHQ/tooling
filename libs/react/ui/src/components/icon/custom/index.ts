@@ -7,6 +7,8 @@ export * from './ellipse-mini-solid';
 export * from './info-tooltip-fill';
 export * from './resize';
 export * from './shipfox-logo';
+export * from './slack-logo';
 export * from './spinner';
+export * from './stripe-logo';
 export * from './thunder';
 export * from './x-circle-solid';

@@ -4,9 +4,10 @@
 @import "tailwindcss";
 @import "tw-animate-css";
 
-@theme {
+/* Commented because it breaks default Tailwind theme with breakpoints */
+/* @theme {
   --\*: initial;
-}
+} */
 
 @custom-variant hover (&:hover);
 
