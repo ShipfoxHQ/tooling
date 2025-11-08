@@ -14,9 +14,7 @@ export function startInstanceInstrumentation(options: StartInstrumentationOption
     endpoint: '/metrics',
     ...options.exporter?.instance,
   });
-  fastifyInstrumentation = new FastifyOtelInstrumentation({
-    servername: options.serviceName,
-  });
+  fastifyInstrumentation = new FastifyOtelInstrumentation();
   instanceInstrumentation = new NodeSDK({
     serviceName: options.serviceName,
     metricReader,
