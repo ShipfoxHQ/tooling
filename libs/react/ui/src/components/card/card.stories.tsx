@@ -3,7 +3,6 @@ import {cn} from 'utils/cn';
 import illustration1 from '../../assets/illustration-1.svg';
 import illustration2 from '../../assets/illustration-2.svg';
 import illustrationBg from '../../assets/illustration-bg.svg';
-import {useBreakpoint} from '../../hooks/useBreakpoint';
 import {Avatar} from '../avatar/avatar';
 import {AvatarGroup, AvatarGroupTooltip} from '../avatar/avatar-group';
 import {Button} from '../button';
@@ -209,18 +208,15 @@ export const WithCustomElements: StoryObj<typeof cardContentMeta> = {
   args: {},
   render: () => {
     function CardWithBreakpoint() {
-      const isSm = useBreakpoint('sm');
-
       return (
         <div className="flex flex-col gap-16 w-full max-w-672">
           <CardContent
             variant="primary"
             leftElement={
-              <div className="flex shrink-0 items-center justify-center pt-2 text-tag-success-icon">
+              <div className="flex shrink-0 items-center justify-center text-tag-success-icon">
                 <Icon name="checkCircleSolid" size="sm" />
               </div>
             }
-            align={isSm ? 'start' : 'center'}
             title="Give access to your Github organizations"
             description="We'll use this permission to sync your organization's."
             action={
@@ -234,22 +230,20 @@ export const WithCustomElements: StoryObj<typeof cardContentMeta> = {
               </div>
             }
             rightElement={
-              isSm ? (
-                <img
-                  src={illustration1}
-                  alt="illustration-1"
-                  className="absolute overflow-clip right-2 top-1/2 -translate-y-1/2 -translate-x-46 w-fit object-contain"
-                />
-              ) : null
+              <img
+                src={illustration1}
+                alt="illustration-1"
+                className="hidden sm:block absolute overflow-clip right-2 top-1/2 -translate-y-1/2 -translate-x-46 w-fit object-contain"
+              />
             }
           />
           <div className="relative">
             <img
               src={illustration2}
               alt="illustration-2"
-              className="absolute overflow-clip right-2 top-1/2 -translate-y-1/2 translate-x-8 w-fit object-contain z-50 hidden sm:block"
+              className="hidden sm:block absolute overflow-clip right-2 top-1/2 -translate-y-1/2 translate-x-8 w-fit object-contain z-50"
             />
-            <div className={cn('relative overflow-hidden bg-transparent p-px border rounded-8')}>
+            <div className={cn('relative overflow-hidden bg-transparent p-1 rounded-8')}>
               <div className="absolute inset-0" style={{borderRadius: 'calc(0.5rem * 0.96)'}}>
                 <MovingBorder duration={6000} rx="30%" ry="30%">
                   <div className="h-100 w-200 bg-[radial-gradient(#ff9e7a_40%,transparent_60%)]" />
@@ -263,7 +257,6 @@ export const WithCustomElements: StoryObj<typeof cardContentMeta> = {
               >
                 <CardContent
                   variant="primary"
-                  align={isSm ? 'start' : 'center'}
                   title={
                     <div className="flex items-center gap-6">
                       <span className="flex shrink-0 items-center justify-center text-tag-success-icon w-16 h-16">

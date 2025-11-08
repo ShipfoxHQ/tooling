@@ -12,8 +12,7 @@ export type CardContentProps = Omit<CardProps, 'children' | 'title'> & {
   description?: string;
   action?: ReactNode;
   rightElement?: ReactNode;
-  padding?: string;
-  align?: 'center' | 'start';
+  contentClassName?: string;
 };
 
 export function CardContent({
@@ -24,31 +23,27 @@ export function CardContent({
   description,
   action,
   rightElement,
-  padding,
-  align = 'center',
+  contentClassName,
   ...props
 }: CardContentProps) {
   const hasLeftSide = Boolean(leftElement);
   const hasRightSide = Boolean(rightElement);
   const hasContent = Boolean(title || description || action);
 
-  const defaultPadding = 'px-12 py-12';
-  const paddingClass = padding ?? defaultPadding;
-
-  const alignClass = align === 'start' ? 'self-start' : 'self-center';
-
   return (
     <Card variant={variant} className={className} {...props}>
       <div
         className={cn(
-          'relative flex items-center gap-16',
-          paddingClass,
-          'flex-col sm:flex-row',
-          'min-h-64',
+          'relative flex flex-col sm:flex-row justify-center items-center gap-16 min-h-64 px-12 py-12',
+          contentClassName,
         )}
       >
         {hasLeftSide && (
-          <div className={cn('flex shrink-0 items-center justify-center', alignClass)}>
+          <div
+            className={cn(
+              'flex shrink-0 items-center justify-center self-center sm:self-start pt-2',
+            )}
+          >
             {leftElement}
           </div>
         )}
