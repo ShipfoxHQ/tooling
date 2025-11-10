@@ -27,7 +27,6 @@ export type ToastCustomProps = VariantProps<typeof toastCustomVariants> & {
   title?: string;
   description?: string;
   content?: string;
-  variant?: 'default' | 'info' | 'success' | 'warning' | 'error';
   actions?: ToastAction[];
   onClose?: () => void;
   className?: string;
