@@ -27,7 +27,7 @@ export function Input({className, type, variant, size, ...props}: InputProps) {
       type={type}
       data-slot="input"
       className={cn(
-        'placeholder:text-foreground-neutral-muted w-full min-w-0 rounded-6 px-8 text-sm leading-20 text-foreground-neutral-base shadow-border-base transition-[color,box-shadow] outline-none',
+        'placeholder:text-foreground-neutral-muted w-full min-w-0 rounded-6 px-8 text-sm leading-20 text-foreground-neutral-base shadow-button-neutral transition-[color,box-shadow] outline-none',
         'hover:bg-background-field-hover',
         'selection:bg-background-accent-neutral-soft selection:text-foreground-neutral-on-inverted',
         'file:text-foreground-neutral-base file:inline-flex file:font-medium',
