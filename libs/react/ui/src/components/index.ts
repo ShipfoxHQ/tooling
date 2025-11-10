@@ -5,6 +5,7 @@ export * from './checkbox';
 export * from './dynamic-item';
 export * from './icon';
 export * from './inline-tips';
+export * from './input';
 export * from './item';
 export * from './label';
 export * from './textarea';

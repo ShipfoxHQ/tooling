@@ -1,4 +1,5 @@
 import type {Meta, StoryObj} from '@storybook/react';
+import {Button} from 'components/button/button';
 import {ItemTitle} from 'components/item';
 import {cn} from 'utils/cn';
 import illustration1 from '../../assets/illustration-1.svg';
@@ -6,7 +7,6 @@ import illustration2 from '../../assets/illustration-2.svg';
 import illustrationBg from '../../assets/illustration-gradient.svg';
 import {Avatar} from '../avatar/avatar';
 import {AvatarGroup, AvatarGroupTooltip} from '../avatar/avatar-group';
-import {Button} from '../button';
 import {Icon} from '../icon/icon';
 import {MovingBorder} from '../moving-border/moving-border';
 import {DynamicItem} from './dynamic-item';

@@ -1,8 +1,8 @@
 import type {Meta, StoryObj} from '@storybook/react';
-import {Button} from '../button';
-import {Icon} from '../icon/icon';
-import {Input} from '../input';
-import {Label} from '../label/label';
+import {Button} from 'components/button/button';
+import {Icon} from 'components/icon/icon';
+import {Input} from 'components/input/input';
+import {Label} from 'components/label/label';
 import {
   Item,
   ItemActions,
@@ -13,7 +13,7 @@ import {
   ItemHeader,
   ItemSeparator,
   ItemTitle,
-} from './';
+} from './item';
 
 const meta = {
   title: 'Components/Item',

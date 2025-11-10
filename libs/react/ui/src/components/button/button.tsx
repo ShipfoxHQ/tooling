@@ -1,8 +1,8 @@
 import {Slot} from '@radix-ui/react-slot';
 import {cva, type VariantProps} from 'class-variance-authority';
+import {Icon, type IconName} from 'components/icon';
 import type {ComponentProps} from 'react';
 import {cn} from 'utils/cn';
-import {Icon, type IconName} from './icon/icon';
 
 export const buttonVariants = cva(
   'rounded-6 inline-flex items-center justify-center whitespace-nowrap transition-colors disabled:pointer-events-none shrink-0 outline-none',
