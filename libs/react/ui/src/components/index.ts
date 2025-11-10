@@ -9,4 +9,5 @@ export * from './item';
 export * from './label';
 export * from './textarea';
 export * from './theme-provider';
+export * from './toast';
 export * from './typography';

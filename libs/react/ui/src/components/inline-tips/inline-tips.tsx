@@ -21,7 +21,7 @@ const inlineTipsLineVariants = cva('w-4 self-stretch my-4 rounded-full', {
       default: 'bg-tag-neutral-icon',
       info: 'bg-tag-warning-icon',
       success: 'bg-tag-success-icon',
-      destructive: 'bg-tag-error-icon',
+      error: 'bg-tag-error-icon',
     },
   },
   defaultVariants: {
@@ -31,7 +31,7 @@ const inlineTipsLineVariants = cva('w-4 self-stretch my-4 rounded-full', {
 
 type InlineTipsProps = ComponentProps<'div'> &
   VariantProps<typeof inlineTipsBaseVariants> & {
-    type?: 'default' | 'info' | 'success' | 'destructive';
+    type?: 'default' | 'info' | 'success' | 'error';
   };
 
 function InlineTips({className, variant, type = 'default', children, ...props}: InlineTipsProps) {
