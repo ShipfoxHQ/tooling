@@ -1,4 +1,5 @@
 import type {Meta, StoryObj} from '@storybook/react';
+import {ItemTitle} from 'components/item';
 import {cn} from 'utils/cn';
 import illustration1 from '../../assets/illustration-1.svg';
 import illustration2 from '../../assets/illustration-2.svg';
@@ -8,49 +9,23 @@ import {AvatarGroup, AvatarGroupTooltip} from '../avatar/avatar-group';
 import {Button} from '../button';
 import {Icon} from '../icon/icon';
 import {MovingBorder} from '../moving-border/moving-border';
-import {Card, CardContent, CardTitle} from './';
+import {DynamicItem} from './dynamic-item';
 
 const meta = {
-  title: 'Components/Card',
-  component: Card,
+  title: 'Components/DynamicItem',
+  component: DynamicItem,
   tags: ['autodocs'],
-  argTypes: {
-    variant: {
-      control: 'select',
-      options: ['primary'],
-    },
-  },
-  args: {
-    variant: 'primary',
-  },
-} satisfies Meta<typeof Card>;
+} satisfies Meta<typeof DynamicItem>;
 
 export default meta;
 type Story = StoryObj<typeof meta>;
 
-export const Default: Story = {
-  args: {
-    variant: 'primary',
-  },
-  render: (args) => (
-    <Card {...args} className="p-16">
-      <p className="text-foreground-neutral-base">Card content goes here</p>
-    </Card>
-  ),
-};
-
-const cardContentMeta = {
-  title: 'Components/CardContent',
-  component: CardContent,
-  tags: ['autodocs'],
-} satisfies Meta<typeof CardContent>;
-
-export const OrganizationCard: StoryObj<typeof cardContentMeta> = {
+export const OrganizationItem: Story = {
   args: {},
   render: () => (
     <div className="flex flex-col gap-16 w-full max-w-476">
-      <CardContent
-        variant="primary"
+      <DynamicItem
+        variant="default"
         leftElement={<Avatar content="logo" logoName="slack" radius="rounded" size="xl" />}
         title="Slack"
         description="3 members"
@@ -68,8 +43,8 @@ export const OrganizationCard: StoryObj<typeof cardContentMeta> = {
           </AvatarGroup>
         }
       />
-      <CardContent
-        variant="primary"
+      <DynamicItem
+        variant="default"
         leftElement={<Avatar content="logo" logoName="stripe" radius="rounded" size="xl" />}
         title="Stripe"
         description="2 members"
@@ -84,8 +59,8 @@ export const OrganizationCard: StoryObj<typeof cardContentMeta> = {
           </AvatarGroup>
         }
       />
-      <CardContent
-        variant="primary"
+      <DynamicItem
+        variant="default"
         leftElement={<Avatar content="logo" logoName="shipfox" radius="rounded" size="xl" />}
         title="Shipfox"
         description="9 members"
@@ -125,12 +100,12 @@ export const OrganizationCard: StoryObj<typeof cardContentMeta> = {
   ),
 };
 
-export const ConnectGithubAccount: StoryObj<typeof cardContentMeta> = {
+export const ConnectGithubAccountItem: Story = {
   args: {},
   render: () => (
     <div className="flex flex-col gap-16 w-full max-w-476">
-      <CardContent
-        variant="primary"
+      <DynamicItem
+        variant="default"
         leftElement={
           <div className="relative">
             <Avatar content="logoPlaceholder" logoName="slack" radius="full" size="lg" />
@@ -153,8 +128,8 @@ export const ConnectGithubAccount: StoryObj<typeof cardContentMeta> = {
         }
       />
 
-      <CardContent
-        variant="primary"
+      <DynamicItem
+        variant="default"
         leftElement={
           <div className="relative">
             <Avatar content="logoPlaceholder" logoName="slack" radius="full" size="lg" />
@@ -177,8 +152,8 @@ export const ConnectGithubAccount: StoryObj<typeof cardContentMeta> = {
         }
       />
 
-      <CardContent
-        variant="primary"
+      <DynamicItem
+        variant="default"
         leftElement={
           <div className="relative">
             <Avatar content="logoPlaceholder" logoName="slack" radius="full" size="lg" />
@@ -204,87 +179,83 @@ export const ConnectGithubAccount: StoryObj<typeof cardContentMeta> = {
   ),
 };
 
-export const WithCustomElements: StoryObj<typeof cardContentMeta> = {
+export const WithCustomElementsItem: Story = {
   args: {},
   render: () => {
-    function CardWithBreakpoint() {
-      return (
-        <div className="flex flex-col gap-16 w-full max-w-672">
-          <CardContent
-            variant="primary"
-            leftElement={
-              <div className="flex shrink-0 items-center justify-center text-tag-success-icon">
-                <Icon name="checkCircleSolid" size="sm" />
-              </div>
-            }
-            title="Give access to your Github organizations"
-            description="We'll use this permission to sync your organization's."
-            action={
-              <div className="flex gap-8 mx-auto sm:mx-0">
-                <Button variant="primary" size="sm">
-                  Github access
-                </Button>
-                <Button variant="transparentMuted" size="sm">
-                  Skip for now
-                </Button>
-              </div>
-            }
-            rightElement={
-              <img
-                src={illustration1}
-                alt="illustration-1"
-                className="hidden sm:block absolute overflow-clip right-2 top-1/2 -translate-y-1/2 -translate-x-46 w-fit object-contain"
-              />
-            }
-          />
-          <div className="relative">
+    return (
+      <div className="flex flex-col gap-16 w-full max-w-672">
+        <DynamicItem
+          variant="default"
+          leftElement={
+            <div className="flex shrink-0 items-center justify-center text-tag-success-icon">
+              <Icon name="checkCircleSolid" size="sm" />
+            </div>
+          }
+          title="Give access to your Github organizations"
+          description="We'll use this permission to sync your organization's."
+          action={
+            <div className="flex gap-8 mx-auto sm:mx-0">
+              <Button variant="primary" size="sm">
+                Github access
+              </Button>
+              <Button variant="transparentMuted" size="sm">
+                Skip for now
+              </Button>
+            </div>
+          }
+          rightElement={
             <img
-              src={illustration2}
-              alt="illustration-2"
-              className="hidden sm:block absolute overflow-clip right-2 top-1/2 -translate-y-1/2 translate-x-8 w-fit object-contain z-50"
+              src={illustration1}
+              alt="illustration-1"
+              className="hidden sm:block absolute overflow-clip right-2 top-1/2 -translate-y-1/2 -translate-x-46 w-fit object-contain"
             />
-            <div className={cn('relative overflow-hidden bg-transparent p-1 rounded-8')}>
-              <div className="absolute inset-0" style={{borderRadius: 'calc(0.5rem * 0.96)'}}>
-                <MovingBorder duration={6000} rx="30%" ry="30%">
-                  <div className="h-100 w-200 bg-[radial-gradient(#ff9e7a_40%,transparent_60%)]" />
-                </MovingBorder>
-              </div>
-              <div
-                className="relative"
-                style={{
-                  borderRadius: 'calc(0.5rem * 0.96)',
-                }}
-              >
-                <CardContent
-                  variant="primary"
-                  title={
-                    <div className="flex items-center gap-6">
-                      <span className="flex shrink-0 items-center justify-center text-tag-success-icon w-16 h-16">
-                        <Icon
-                          name="money"
-                          size="sm"
-                          color="var(--foreground-neutral-subtle, #a1a1aa)"
-                        />
-                      </span>
-                      <CardTitle>6000 free credits/month to run your jobs</CardTitle>
-                    </div>
-                  }
-                  description="~500 builds/month. No payment required."
-                  rightElement={
-                    <img
-                      src={illustrationBg}
-                      alt="illustration-bg"
-                      className="hidden sm:block absolute overflow-clip right-4 w-fit object-contain scale-105"
-                    />
-                  }
-                />
-              </div>
+          }
+        />
+        <div className="relative">
+          <img
+            src={illustration2}
+            alt="illustration-2"
+            className="hidden sm:block absolute overflow-clip right-2 top-1/2 -translate-y-1/2 translate-x-8 w-fit object-contain z-50"
+          />
+          <div className={cn('relative overflow-hidden bg-transparent p-1 rounded-8')}>
+            <div className="absolute inset-0" style={{borderRadius: 'calc(0.5rem * 0.96)'}}>
+              <MovingBorder duration={6000} rx="30%" ry="30%">
+                <div className="h-100 w-200 bg-[radial-gradient(#ff9e7a_40%,transparent_60%)]" />
+              </MovingBorder>
+            </div>
+            <div
+              className="relative"
+              style={{
+                borderRadius: 'calc(0.5rem * 0.96)',
+              }}
+            >
+              <DynamicItem
+                variant="default"
+                title={
+                  <div className="flex items-center gap-6">
+                    <span className="flex shrink-0 items-center justify-center text-tag-success-icon w-16 h-16">
+                      <Icon
+                        name="money"
+                        size="sm"
+                        color="var(--foreground-neutral-subtle, #a1a1aa)"
+                      />
+                    </span>
+                    <ItemTitle>6000 free credits/month to run your jobs</ItemTitle>
+                  </div>
+                }
+                description="~500 builds/month. No payment required."
+                rightElement={
+                  <img
+                    src={illustrationBg}
+                    alt="illustration-bg"
+                    className="hidden sm:block absolute overflow-clip right-4 w-fit object-contain scale-105"
+                  />
+                }
+              />
             </div>
           </div>
         </div>
-      );
-    }
-
-    return <CardWithBreakpoint />;
+      </div>
+    );
   },
 };
