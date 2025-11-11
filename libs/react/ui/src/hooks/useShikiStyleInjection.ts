@@ -23,5 +23,12 @@ export function useShikiStyleInjection(syntaxHighlighting: boolean): void {
       }
     `;
     document.head.appendChild(style);
+
+    return () => {
+      const existingStyle = document.getElementById(styleId);
+      if (existingStyle) {
+        existingStyle.remove();
+      }
+    };
   }, [syntaxHighlighting]);
 }

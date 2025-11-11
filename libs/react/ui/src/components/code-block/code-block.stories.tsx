@@ -245,34 +245,12 @@ export function printGreetings(): void {
 }`,
 };
 
-export const SyntaxHighlighting: Story = {
+export const SyntaxHighlighting: StoryObj<typeof CodeTabs> = {
   args: {
-    data: [
-      {
-        language: 'typescript',
-        filename: 'index.ts',
-        code: syntaxHighlightingCode['index.ts'],
-      },
-    ],
-    defaultValue: 'typescript',
+    codes: syntaxHighlightingCode,
+    defaultValue: 'index.ts',
+    syntaxHighlighting: true,
+    lang: 'typescript',
   },
-  argTypes: {
-    // @ts-expect-error - syntaxHighlighting is not part of CodeBlock props but needed for this story
-    syntaxHighlighting: {
-      control: 'boolean',
-      description: 'Enable syntax highlighting',
-    },
-  },
-  render: (_args, context) => {
-    const syntaxHighlighting =
-      ((context.args as Record<string, unknown>).syntaxHighlighting as boolean | undefined) ?? true;
-    return (
-      <CodeTabs
-        codes={syntaxHighlightingCode}
-        defaultValue="index.ts"
-        syntaxHighlighting={syntaxHighlighting}
-        lang="typescript"
-      />
-    );
-  },
+  render: (args) => <CodeTabs {...args} />,
 };

@@ -1,7 +1,7 @@
 import type {HTMLAttributes} from 'react';
 import {cn} from 'utils/cn';
 
-type CodeContentProps = HTMLAttributes<HTMLDivElement> & {
+type CodeContentProps = HTMLAttributes<HTMLElement> & {
   code: string;
   highlightedCode?: string;
   isLoading: boolean;
@@ -40,10 +40,7 @@ export function CodeContent({
   const lines = lineNumbers ? code.split('\n') : null;
 
   return (
-    <pre
-      className={cn('m-0 p-0 bg-transparent font-code', className)}
-      {...(props as HTMLAttributes<HTMLPreElement>)}
-    >
+    <pre className={cn('m-0 p-0 bg-transparent font-code', className)} {...props}>
       <code
         className={cn(
           'w-full overflow-x-auto bg-transparent font-code text-xs leading-20 text-foreground-neutral-base',

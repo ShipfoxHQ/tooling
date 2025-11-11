@@ -29,6 +29,7 @@ export function useShikiHighlight({
       return;
     }
 
+    setIsLoading(true);
     let cancelled = false;
 
     const loadHighlightedCode = async () => {
@@ -73,9 +74,6 @@ type UseShikiHighlightMultipleOptions = {
   syntaxHighlighting: boolean;
 };
 
-/**
- * Hook to load and highlight multiple code strings using Shiki.
- */
 export function useShikiHighlightMultiple({
   codes,
   lang,
@@ -95,6 +93,7 @@ export function useShikiHighlightMultiple({
       return;
     }
 
+    setIsLoading(true);
     let cancelled = false;
 
     const loadHighlightedCode = async () => {

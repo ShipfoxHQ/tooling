@@ -10,7 +10,7 @@ import {cn} from 'utils/cn';
 
 export type BundledLanguage = string;
 
-type CodeBlockData = {
+export type CodeBlockData = {
   language: string;
   filename: string;
   code: string;
@@ -85,7 +85,9 @@ export function CodeBlockFiles({className, children, ...props}: CodeBlockFilesPr
 
   return (
     <div className={cn('flex grow flex-row items-center gap-12', className)} {...props}>
-      {data.map(children)}
+      {data.map((item, index) => (
+        <div key={item.language || index}>{children(item)}</div>
+      ))}
     </div>
   );
 }
@@ -180,7 +182,13 @@ export type CodeBlockBodyProps = Omit<HTMLAttributes<HTMLDivElement>, 'children'
 export function CodeBlockBody({children, ...props}: CodeBlockBodyProps) {
   const {data} = useContext(CodeBlockContext);
 
-  return <div {...props}>{data.map(children)}</div>;
+  return (
+    <div {...props}>
+      {data.map((item, index) => (
+        <div key={item.language || index}>{children(item)}</div>
+      ))}
+    </div>
+  );
 }
 
 export type CodeBlockItemProps = HTMLAttributes<HTMLDivElement> & {
