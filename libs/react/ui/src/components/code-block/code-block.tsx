@@ -219,7 +219,7 @@ export function CodeBlockItem({
           'flex min-h-0 min-w-0 flex-1 shrink-0 rounded-8 border border-border-contrast-bottom bg-background-neutral-base dark:bg-background-contrast-subtle font-code',
           '[&_pre]:py-12 [&_pre]:font-code',
           '[&_code]:w-full [&_code]:grid [&_code]:overflow-x-auto [&_code]:bg-transparent [&_code]:font-code [&_code]:text-xs [&_code]:leading-20 [&_code]:text-foreground-neutral-base',
-          '[&_.line]:px-12 [&_.line]:w-full [&_.line]:relative [&_.line]:font-code',
+          '[&_.line]:block [&_.line]:px-12 [&_.line]:w-full [&_.line]:relative [&_.line]:font-code [&_.line]:min-h-[1.25rem]',
           lineNumbers &&
             '[&_code]:[counter-reset:line] [&_code]:[counter-increment:line_0] [&_.line]:before:content-[counter(line)] [&_.line]:before:inline-block [&_.line]:before:[counter-increment:line] [&_.line]:before:w-16 [&_.line]:before:mr-16 [&_.line]:before:text-xs [&_.line]:before:text-right [&_.line]:before:text-foreground-neutral-subtle [&_.line]:before:font-code [&_.line]:before:select-none',
           '[&_.line.diff]:after:absolute [&_.line.diff]:after:left-0 [&_.line.diff]:after:top-0 [&_.line.diff]:after:bottom-0 [&_.line.diff]:after:w-1',

@@ -6,10 +6,11 @@ import {
   CodeBlockCopyButton,
   CodeBlockFilename,
   CodeBlockFiles,
+  CodeBlockFooter,
   CodeBlockHeader,
   CodeBlockItem,
-} from './code-block';
-import {CodeTabs} from './code-tabs';
+} from 'components/code-block';
+import {CodeTabs} from 'components/code-block/code-tabs';
 
 const meta = {
   title: 'Components/CodeBlock',
@@ -91,6 +92,72 @@ export const WithDiff: Story = {
           </CodeBlockItem>
         )}
       </CodeBlockBody>
+    </CodeBlock>
+  ),
+};
+
+export const WithFooterRunning: Story = {
+  args: {
+    data: [
+      {
+        language: 'yaml',
+        filename: '.github/workflows/<workflow-name>.yml',
+        code: diffCode,
+      },
+    ],
+    defaultValue: 'yaml',
+  },
+  render: (args) => (
+    <CodeBlock {...args}>
+      <CodeBlockHeader>
+        <CodeBlockFiles>
+          {(item) => <CodeBlockFilename value={item.language}>{item.filename}</CodeBlockFilename>}
+        </CodeBlockFiles>
+        <CodeBlockCopyButton />
+      </CodeBlockHeader>
+      <CodeBlockBody>
+        {(item) => (
+          <CodeBlockItem value={item.language}>
+            <CodeBlockContent language={item.language}>{item.code}</CodeBlockContent>
+          </CodeBlockItem>
+        )}
+      </CodeBlockBody>
+      <CodeBlockFooter
+        state="running"
+        message="Waiting for Shipfox runner event…"
+        description="This usually takes 30-60 seconds after you commit the workflow file."
+      />
+    </CodeBlock>
+  ),
+};
+
+export const WithFooterDone: Story = {
+  args: {
+    data: [
+      {
+        language: 'yaml',
+        filename: '.github/workflows/<workflow-name>.yml',
+        code: diffCode,
+      },
+    ],
+    defaultValue: 'yaml',
+  },
+  render: (args) => (
+    <CodeBlock {...args}>
+      <CodeBlockHeader>
+        <CodeBlockFiles>
+          {(item) => <CodeBlockFilename value={item.language}>{item.filename}</CodeBlockFilename>}
+        </CodeBlockFiles>
+        <CodeBlockCopyButton />
+      </CodeBlockHeader>
+      <CodeBlockBody>
+        {(item) => (
+          <CodeBlockItem value={item.language}>
+            <CodeBlockContent language={item.language}>{item.code}</CodeBlockContent>
+          </CodeBlockItem>
+        )}
+      </CodeBlockBody>
+      <CodeBlockFooter state="done" message="Runner connected!" />
     </CodeBlock>
   ),
 };
