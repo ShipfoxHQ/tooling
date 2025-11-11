@@ -8,14 +8,11 @@ const config: StorybookConfig = {
   stories: ['../src/**/*.stories.@(js|jsx|ts|tsx|mdx)'],
   addons: ['storybook-addon-pseudo-states'],
   viteFinal: (config) => {
-    // Ensure plugins array exists
-    config.plugins = config.plugins || [];
+    config.plugins = config.plugins ?? [];
 
-    // Add React and Tailwind CSS plugins
     config.plugins.push(react(), tailwindcss());
 
-    // Configure path aliases to match tsconfig baseUrl
-    config.resolve = config.resolve || {};
+    config.resolve = config.resolve ?? {};
     config.resolve.alias = {
       ...config.resolve.alias,
       components: resolve(__dirname, '../src/components'),

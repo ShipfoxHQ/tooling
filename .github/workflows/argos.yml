@@ -25,10 +25,8 @@ jobs:
       - name: Install NodeJS dependencies
         uses: ./.github/actions/pnpm
 
-      - name: Build Storybook
-        run: nix develop --command pnpm --filter @shipfox/react-ui storybook:build
-
       - name: Upload to Argos
+        shell: nix develop --command bash {0}
         env:
           ARGOS_TOKEN: ${{ secrets.ARGOS_TOKEN }}
-        run: nix develop --command pnpm --filter @shipfox/react-ui argos
+        run: turbo run argos

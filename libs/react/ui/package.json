@@ -12,7 +12,7 @@
     "check": "biome-check",
     "storybook": "storybook dev",
     "storybook:build": "storybook build -o storybook-static",
-    "argos": "argos upload storybook-static",
+    "argos": "argos upload --build-name react-ui storybook-static",
     "test": "vitest-run",
     "type": "tsc-emit"
   },
