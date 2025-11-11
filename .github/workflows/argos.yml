@@ -29,4 +29,4 @@ jobs:
         shell: nix develop --command bash {0}
         env:
           ARGOS_TOKEN: ${{ secrets.ARGOS_TOKEN }}
-        run: turbo run argos
+        run: pnpm turbo run argos
