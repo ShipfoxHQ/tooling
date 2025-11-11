@@ -5,6 +5,7 @@ import {
   RiFileCopyLine,
   RiGithubFill,
   RiGoogleFill,
+  RiHomeSmileFill,
   RiImageAddFill,
   RiInformationFill,
   RiMicrosoftFill,
@@ -53,6 +54,7 @@ const iconsMap = {
   subtractLine: RiSubtractLine,
   info: RiInformationFill,
   money: RiMoneyDollarCircleLine,
+  homeSmile: RiHomeSmileFill,
   copy: RiFileCopyLine,
 } as const satisfies Record<string, RemixiconComponentType>;
 

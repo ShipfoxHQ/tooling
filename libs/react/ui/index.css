@@ -268,7 +268,7 @@
   --tag-error-icon: var(--color-red-500);
   --tag-error-text: var(--color-red-800);
   --tag-warning-icon: var(--color-orange-400);
-  --tag-warning-text: var(--color-orange-200);
+  --tag-warning-text: var(--color-orange-800);
   --tag-success-bg: var(--color-green-100);
   --tag-success-border: var(--color-green-200);
   --tag-success-text: var(--color-green-800);
