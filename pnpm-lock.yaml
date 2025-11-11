@@ -31,8 +31,8 @@ importers:
         version: 6.0.1
     devDependencies:
       '@octokit/openapi-webhooks-types':
-        specifier: ^9.1.0
-        version: 9.1.0
+        specifier: ^12.0.0
+        version: 12.0.3
       '@shipfox/biome':
         specifier: workspace:*
         version: link:../../../tools/biome
@@ -1240,8 +1240,8 @@ packages:
   '@octokit/openapi-types@24.2.0':
     resolution: {integrity: sha512-9sIH3nSUttelJSXUrmGzl7QUBFul0/mB8HRYl3fOlgHbIWG+WnYDXU3v/2zMtAvuzZ/ed00Ei6on975FhBfzrg==}
 
-  '@octokit/openapi-webhooks-types@9.1.0':
-    resolution: {integrity: sha512-bO1D2jLdU8qEvqmbWjNxJzDYSFT4wesiYKIKP6f4LaM0XUGtn/0LBv/20hu9YqcnpdX38X5o/xANTMtIAqdwYw==}
+  '@octokit/openapi-webhooks-types@12.0.3':
+    resolution: {integrity: sha512-90MF5LVHjBedwoHyJsgmaFhEN1uzXyBDRLEBe7jlTYx/fEhPAk3P3DAJsfZwC54m8hAIryosJOL+UuZHB3K3yA==}
 
   '@octokit/plugin-paginate-rest@9.2.2':
     resolution: {integrity: sha512-u3KYkGF7GcZnSD/3UP0S7K5XUFT2FkOQdcfXZGZQPGv3lm4F2Xbf71lvjldr8c1H3nNbF+33cLEkWYbokGWqiQ==}
@@ -5655,7 +5655,7 @@ snapshots:
 
   '@octokit/openapi-types@24.2.0': {}
 
-  '@octokit/openapi-webhooks-types@9.1.0': {}
+  '@octokit/openapi-webhooks-types@12.0.3': {}
 
   '@octokit/plugin-paginate-rest@9.2.2(@octokit/core@5.2.2)':
     dependencies:
