@@ -43,36 +43,42 @@ export type BadgeVariant = VariantProps<typeof badgeVariants>['variant'];
 type BaseBadgeProps = ComponentProps<'span'> &
   VariantProps<typeof badgeVariants> & {
     asChild?: boolean;
-    iconLeft?: IconName;
-    iconRight?: IconName;
   };
 
 type BadgePropsWithLeftClick = BaseBadgeProps & {
+  iconLeft: IconName;
   onIconLeftClick: (e: React.MouseEvent<HTMLButtonElement>) => void;
   iconLeftAriaLabel: string;
+  iconRight?: IconName;
   onIconRightClick?: (e: React.MouseEvent<HTMLButtonElement>) => void;
   iconRightAriaLabel?: string;
 };
 
 type BadgePropsWithRightClick = BaseBadgeProps & {
+  iconRight: IconName;
   onIconRightClick: (e: React.MouseEvent<HTMLButtonElement>) => void;
   iconRightAriaLabel: string;
+  iconLeft?: IconName;
   onIconLeftClick?: (e: React.MouseEvent<HTMLButtonElement>) => void;
   iconLeftAriaLabel?: string;
 };
 
 type BadgePropsWithBothClicks = BaseBadgeProps & {
+  iconLeft: IconName;
   onIconLeftClick: (e: React.MouseEvent<HTMLButtonElement>) => void;
   iconLeftAriaLabel: string;
+  iconRight: IconName;
   onIconRightClick: (e: React.MouseEvent<HTMLButtonElement>) => void;
   iconRightAriaLabel: string;
 };
 
 type BadgePropsWithoutClicks = BaseBadgeProps & {
+  iconLeft?: IconName;
+  iconRight?: IconName;
   onIconLeftClick?: never;
   onIconRightClick?: never;
-  iconLeftAriaLabel?: string;
-  iconRightAriaLabel?: string;
+  iconLeftAriaLabel?: never;
+  iconRightAriaLabel?: never;
 };
 
 export type BadgeProps =
@@ -112,6 +118,8 @@ export function Badge({
         console.warn(
           `Badge: Missing aria-label for interactive ${position} icon. Please provide icon${position === 'left' ? 'Left' : 'Right'}AriaLabel prop.`,
         );
+
+        return null;
       }
 
       return (
@@ -130,7 +138,7 @@ export function Badge({
   };
 
   return (
-    <Comp className={cn(badgeVariants({variant, size, radius, className}))} {...props}>
+    <Comp className={cn(badgeVariants({variant, size, radius}), className)} {...props}>
       {iconLeft && renderIcon(iconLeft, 'left', onIconLeftClick, iconLeftAriaLabel)}
       {children}
       {iconRight && renderIcon(iconRight, 'right', onIconRightClick, iconRightAriaLabel)}

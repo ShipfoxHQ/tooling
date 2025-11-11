@@ -1,9 +1,9 @@
 import type {ComponentProps} from 'react';
 import {cn} from 'utils/cn';
-import {type BadgeVariant, badgeVariants} from './badge';
+import {badgeVariants} from './badge';
 
 export type StatusBadgeProps = ComponentProps<'span'> & {
-  variant?: BadgeVariant;
+  variant?: StatusVariant;
   dotClassName?: string;
 };
 
@@ -25,14 +25,17 @@ export function StatusBadge({
   dotClassName,
   ...props
 }: StatusBadgeProps) {
-  const variantKey = variant ?? 'neutral';
   return (
     <span
       className={cn(badgeVariants({variant, size: '2xs', radius: 'default'}), 'gap-6', className)}
       {...props}
     >
       <span
-        className={cn('size-8.5 rounded-2 shrink-0', dotVariantStyles[variantKey], dotClassName)}
+        className={cn(
+          'size-8.5 rounded-2 shrink-0',
+          dotVariantStyles[variant as StatusVariant],
+          dotClassName,
+        )}
       />
       {children}
     </span>
