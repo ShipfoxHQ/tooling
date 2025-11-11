@@ -1,6 +1,6 @@
 import type {Meta, StoryObj} from '@storybook/react';
 import {Checkbox} from 'components/checkbox';
-import {Input} from 'components/input';
+import {Input} from 'components/input/input';
 import {Textarea} from 'components/textarea';
 import {Label} from './label';
 
