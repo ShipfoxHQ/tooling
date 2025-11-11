@@ -1,7 +1,7 @@
 import {Icon} from 'components/icon';
 import {useCopyToClipboard} from 'hooks/useCopyToClipboard';
 import type {ComponentProps} from 'react';
-import {useEffect, useState} from 'react';
+import {useEffect, useRef, useState} from 'react';
 import {cn} from 'utils/cn';
 
 type CodeCopyButtonProps = Omit<ComponentProps<'button'>, 'onCopy'> & {
@@ -22,24 +22,31 @@ export function CodeCopyButton({
   ...props
 }: CodeCopyButtonProps) {
   const [isCopied, setIsCopied] = useState(false);
+  const timeoutRef = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
 
   const {copy} = useCopyToClipboard({
     text: content,
     onCopy: () => {
       setIsCopied(true);
       onCopy?.(content);
+
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current);
+      }
+
+      timeoutRef.current = setTimeout(() => {
+        setIsCopied(false);
+      }, timeout);
     },
   });
 
   useEffect(() => {
-    if (!isCopied) return;
-
-    const timer = setTimeout(() => {
-      setIsCopied(false);
-    }, timeout);
-
-    return () => clearTimeout(timer);
-  }, [isCopied, timeout]);
+    return () => {
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current);
+      }
+    };
+  }, []);
 
   const handleClick = async () => {
     try {

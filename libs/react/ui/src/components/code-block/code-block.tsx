@@ -159,13 +159,13 @@ function CodeBlockFallback({children, className, ...props}: CodeBlockFallbackPro
       {...(props as HTMLAttributes<HTMLPreElement>)}
     >
       <code>
-        {lines.map((line, i) => {
+        {lines.map((line) => {
           const isDiffRemove = line.trim().startsWith('-');
           const isDiffAdd = line.trim().startsWith('+');
           const diffClass = isDiffRemove ? 'diff remove' : isDiffAdd ? 'diff add' : '';
 
           return (
-            <span className={cn('line', diffClass)} key={`line-${i}-${line.slice(0, 10)}`}>
+            <span className={cn('line', diffClass)} key={line}>
               {line}
             </span>
           );

@@ -1,36 +1,34 @@
-import {useEffect, useState} from 'react';
+import {useSyncExternalStore} from 'react';
 import {useTheme} from './useTheme';
 
 export function useResolvedTheme(): 'light' | 'dark' {
   const {theme} = useTheme();
 
-  const [resolvedTheme, setResolvedTheme] = useState<'light' | 'dark'>(() => {
-    if (typeof window === 'undefined') {
-      return theme !== 'system' ? theme : 'light';
-    }
-    if (theme === 'system') {
-      return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
-    }
-    return theme;
-  });
-
-  useEffect(() => {
-    if (theme === 'system') {
-      const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
-      const handleChange = (e: MediaQueryListEvent) => {
-        setResolvedTheme(e.matches ? 'dark' : 'light');
-      };
-
-      setResolvedTheme(mediaQuery.matches ? 'dark' : 'light');
-      mediaQuery.addEventListener('change', handleChange);
-
+  const systemTheme = useSyncExternalStore<'light' | 'dark'>(
+    (callback) => {
+      if (typeof window === 'undefined' || theme !== 'system') {
+        return () => {
+          // No-op unsubscribe
+        };
+      }
+      const mql = window.matchMedia('(prefers-color-scheme: dark)');
+      mql.addEventListener('change', callback);
       return () => {
-        mediaQuery.removeEventListener('change', handleChange);
+        mql.removeEventListener('change', callback);
       };
-    } else {
-      setResolvedTheme(theme);
-    }
-  }, [theme]);
+    },
+    (): 'light' | 'dark' =>
+      typeof window !== 'undefined' && theme === 'system'
+        ? window.matchMedia('(prefers-color-scheme: dark)').matches
+          ? 'dark'
+          : 'light'
+        : 'light',
+    (): 'light' | 'dark' => 'light', // Server snapshot
+  );
 
-  return resolvedTheme;
+  if (theme === 'system') {
+    return systemTheme;
+  }
+  // TypeScript should narrow theme to 'light' | 'dark' here
+  return theme as 'light' | 'dark';
 }
