@@ -2,6 +2,7 @@ import {
   type RemixiconComponentType,
   RiCheckLine,
   RiCloseLine,
+  RiFileCopyLine,
   RiGithubFill,
   RiGoogleFill,
   RiImageAddFill,
@@ -52,6 +53,7 @@ const iconsMap = {
   subtractLine: RiSubtractLine,
   info: RiInformationFill,
   money: RiMoneyDollarCircleLine,
+  copy: RiFileCopyLine,
 } as const satisfies Record<string, RemixiconComponentType>;
 
 export type IconName = keyof typeof iconsMap;
