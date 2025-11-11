@@ -17,7 +17,7 @@ const meta = {
   argTypes: {
     variant: {
       control: 'select',
-      options: ['default', 'info', 'success', 'warning', 'destructive'],
+      options: ['default', 'info', 'success', 'warning', 'error'],
     },
   },
   args: {
@@ -29,7 +29,7 @@ export default meta;
 
 type Story = StoryObj<typeof meta>;
 
-const variants = ['default', 'info', 'success', 'warning', 'destructive'] as const;
+const variants = ['default', 'info', 'success', 'warning', 'error'] as const;
 
 export const Default: Story = {
   render: (args) => {
