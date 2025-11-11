@@ -16,7 +16,7 @@ npm install @shipfox/react-ui
 
 ## Storybook
 
-The storybook is [publicly accessible online](react-ui.shipfox.vercel.app).
+The storybook is [publicly accessible online](https://react-ui.shipfox.vercel.app).
 
 You can also launch it locally by running `pnpm storybook` from within this package's directory.
 

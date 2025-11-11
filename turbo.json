@@ -40,7 +40,7 @@
     "argos": {
       "cache": false,
       "dependsOn": ["storybook:build"],
-      "env": ["ARGOS_TOKEN"]
+      "passThroughEnv": ["ARGOS_TOKEN"]
     }
   }
 }
