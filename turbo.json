@@ -31,6 +31,16 @@
     "test": {
       "cache": true,
       "dependsOn": ["^build"]
+    },
+    "storybook:build": {
+      "cache": true,
+      "outputs": ["storybook-static/**/*"],
+      "dependsOn": ["build"]
+    },
+    "argos": {
+      "cache": false,
+      "dependsOn": ["storybook:build"],
+      "env": ["ARGOS_TOKEN"]
     }
   }
 }

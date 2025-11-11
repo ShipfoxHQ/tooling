@@ -12,6 +12,7 @@
     "check": "biome-check",
     "storybook": "storybook dev",
     "storybook:build": "storybook build -o storybook-static",
+    "argos": "argos upload storybook-static",
     "test": "vitest-run",
     "type": "tsc-emit"
   },
@@ -50,6 +51,7 @@
     "react-hook-form": "^7.52.1"
   },
   "devDependencies": {
+    "@argos-ci/cli": "^3.2.1",
     "@shipfox/biome": "workspace:*",
     "@shipfox/swc": "workspace:*",
     "@shipfox/ts-config": "workspace:*",
