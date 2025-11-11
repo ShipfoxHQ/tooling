@@ -14,7 +14,7 @@
     "@actions/github": "^6.0.0"
   },
   "devDependencies": {
-    "@octokit/openapi-webhooks-types": "^9.1.0",
+    "@octokit/openapi-webhooks-types": "^12.0.0",
     "@shipfox/biome": "workspace:*",
     "@shipfox/ts-config": "workspace:*",
     "@shipfox/typescript": "workspace:*",
