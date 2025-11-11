@@ -26,9 +26,9 @@ jobs:
         uses: ./.github/actions/pnpm
 
       - name: Build Storybook
-        run: pnpm --filter @shipfox/react-ui storybook:build
+        run: nix develop --command pnpm --filter @shipfox/react-ui storybook:build
 
       - name: Upload to Argos
         env:
           ARGOS_TOKEN: ${{ secrets.ARGOS_TOKEN }}
-        run: pnpm --filter @shipfox/react-ui argos
+        run: nix develop --command pnpm --filter @shipfox/react-ui argos
