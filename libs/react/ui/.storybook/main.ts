@@ -1,3 +1,4 @@
+import {resolve} from 'node:path';
 import type {StorybookConfig} from '@storybook/react-vite';
 import tailwindcss from '@tailwindcss/vite';
 import react from '@vitejs/plugin-react';
@@ -12,6 +13,16 @@ const config: StorybookConfig = {
 
     // Add React and Tailwind CSS plugins
     config.plugins.push(react(), tailwindcss());
+
+    // Configure path aliases to match tsconfig baseUrl
+    config.resolve = config.resolve || {};
+    config.resolve.alias = {
+      ...config.resolve.alias,
+      components: resolve(__dirname, '../src/components'),
+      hooks: resolve(__dirname, '../src/hooks'),
+      utils: resolve(__dirname, '../src/utils'),
+      state: resolve(__dirname, '../src/state'),
+    };
 
     return config;
   },
