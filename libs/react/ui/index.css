@@ -268,7 +268,7 @@
   --tag-error-icon: var(--color-red-500);
   --tag-error-text: var(--color-red-800);
   --tag-warning-icon: var(--color-orange-400);
-  --tag-warning-text: var(--color-orange-200);
+  --tag-warning-text: var(--color-orange-800);
   --tag-success-bg: var(--color-green-100);
   --tag-success-border: var(--color-green-200);
   --tag-success-text: var(--color-green-800);
@@ -354,6 +354,8 @@
   --shadow-tooltip:
     0 0 0 1px var(--color-alpha-black-8), 0 2px 4px 0 var(--color-alpha-black-8), 0 4px 8px 0
     var(--color-alpha-black-8);
+  --shadow-separator-inset:
+    inset 0 1px 0 0 rgba(255, 255, 255, 0.15), inset 0 -1px 0 0 rgba(0, 0, 0, 0.06);
 }
 
 .dark {
@@ -548,6 +550,8 @@
   --shadow-tooltip:
     0 -1px 0 0 var(--color-alpha-white-4), 0 2px 4px 0 var(--color-alpha-black-40), 0 0 0 1px
     var(--color-alpha-white-10), 0 4px 8px 0 var(--color-alpha-black-40);
+  --shadow-separator-inset:
+    inset 0 1px 0 0 rgba(255, 255, 255, 0.06), inset 0 -1px 0 0 rgba(0, 0, 0, 0.1);
 }
 
 @theme inline {
@@ -889,6 +893,7 @@
   --shadow-checkbox-indeterminate: var(--checkbox-indeterminate-shadow);
   --shadow-checkbox-indeterminate-focus: var(--checkbox-indeterminate-focus-shadow);
   --shadow-tooltip: var(--shadow-tooltip);
+  --shadow-separator-inset: var(--shadow-separator-inset);
 }
 
 @layer base {
