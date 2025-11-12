@@ -15,18 +15,20 @@ export const buttonVariants = cva(
           'bg-background-button-neutral-default text-foreground-neutral-base shadow-button-neutral hover:bg-background-button-neutral-hover active:bg-background-button-neutral-pressed disabled:bg-background-neutral-disabled focus-visible:shadow-button-neutral-focus disabled:text-foreground-neutral-disabled disabled:shadow-none',
         danger:
           'bg-background-button-danger-default text-foreground-neutral-on-color shadow-button-danger hover:bg-background-button-danger-hover active:bg-background-button-danger-pressed focus-visible:shadow-button-danger-focus disabled:bg-background-neutral-disabled disabled:text-foreground-neutral-disabled disabled:shadow-none',
+        success:
+          'bg-background-button-success-default text-foreground-neutral-on-color shadow-button-success hover:bg-background-button-success-hover active:bg-background-button-success-pressed focus-visible:shadow-button-success-focus disabled:bg-background-neutral-disabled disabled:text-foreground-neutral-disabled disabled:shadow-none',
         transparent:
           'bg-background-button-transparent-default text-foreground-neutral-base hover:bg-background-button-transparent-hover active:bg-background-button-transparent-pressed focus-visible:shadow-button-neutral-focus disabled:text-foreground-neutral-disabled',
         transparentMuted:
           'bg-background-button-transparent-default text-foreground-neutral-muted hover:bg-background-button-transparent-hover active:bg-background-button-transparent-pressed focus-visible:shadow-button-neutral-focus disabled:text-foreground-neutral-disabled',
       },
       size: {
-        '2xs': 'px-6 text-xs gap-4',
-        xs: 'px-6 py-2 text-xs gap-4',
-        sm: 'px-8 py-4 text-sm gap-6',
-        md: 'px-10 py-6 text-md gap-8',
-        lg: 'px-12 py-8 text-lg gap-8',
-        xl: 'px-12 py-10 text-xl gap-10',
+        '2xs': 'h-20 px-6 text-xs gap-4',
+        xs: 'h-24 px-6 text-xs gap-4',
+        sm: 'h-28 px-8 text-sm gap-6',
+        md: 'h-32 px-10 text-md gap-8',
+        lg: 'h-36 px-12 text-lg gap-8',
+        xl: 'h-40 px-12 text-xl gap-10',
       },
     },
     defaultVariants: {

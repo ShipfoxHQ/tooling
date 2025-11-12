@@ -1,0 +1,68 @@
+import {Slot} from '@radix-ui/react-slot';
+import {cva, type VariantProps} from 'class-variance-authority';
+import {Icon, type IconName} from 'components/icon';
+import type {ComponentProps} from 'react';
+import {cn} from 'utils/cn';
+
+export const buttonLinkVariants = cva(
+  'inline-flex items-center justify-center gap-4 whitespace-nowrap transition-colors disabled:pointer-events-none outline-none font-medium',
+  {
+    variants: {
+      variant: {
+        base: 'text-foreground-neutral-base hover:text-foreground-neutral-base focus-visible:text-foreground-neutral-base disabled:text-foreground-neutral-disabled',
+        interactive:
+          'text-foreground-highlight-interactive hover:text-foreground-highlight-interactive-hover focus-visible:text-foreground-highlight-interactive disabled:text-foreground-neutral-disabled',
+        muted:
+          'text-foreground-neutral-muted hover:text-foreground-neutral-base focus-visible:text-foreground-neutral-base disabled:text-foreground-neutral-disabled',
+        subtle:
+          'text-foreground-neutral-subtle hover:text-foreground-neutral-base focus-visible:text-foreground-neutral-base disabled:text-foreground-neutral-disabled',
+      },
+      size: {
+        xs: 'text-xs',
+        sm: 'text-sm',
+        md: 'text-md',
+        xl: 'text-xl',
+      },
+      underline: {
+        true: 'underline decoration-solid [text-underline-position:from-font]',
+        false: '',
+      },
+    },
+    defaultVariants: {
+      variant: 'base',
+      size: 'sm',
+      underline: false,
+    },
+  },
+);
+
+export function ButtonLink({
+  className,
+  variant,
+  size,
+  underline,
+  asChild = false,
+  children,
+  iconLeft,
+  iconRight,
+  ...props
+}: ComponentProps<'a'> &
+  VariantProps<typeof buttonLinkVariants> & {
+    asChild?: boolean;
+    iconLeft?: IconName;
+    iconRight?: IconName;
+  }) {
+  const Comp = asChild ? Slot : 'a';
+
+  return (
+    <Comp
+      data-slot="button-link"
+      className={cn(buttonLinkVariants({variant, size, underline, className}))}
+      {...props}
+    >
+      {iconLeft && <Icon name={iconLeft} size={16} />}
+      {children}
+      {iconRight && <Icon name={iconRight} size={16} />}
+    </Comp>
+  );
+}
