@@ -36,10 +36,17 @@ export const buttonLinkVariants = cva(
   },
 );
 
+const iconSizeMap = {
+  xs: 14,
+  sm: 14,
+  md: 16,
+  xl: 20,
+} as const;
+
 export function ButtonLink({
   className,
   variant,
-  size,
+  size = 'sm',
   underline,
   asChild = false,
   children,
@@ -53,6 +60,7 @@ export function ButtonLink({
     iconRight?: IconName;
   }) {
   const Comp = asChild ? Slot : 'a';
+  const iconSize = iconSizeMap[size as keyof typeof iconSizeMap];
 
   return (
     <Comp
@@ -60,9 +68,9 @@ export function ButtonLink({
       className={cn(buttonLinkVariants({variant, size, underline, className}))}
       {...props}
     >
-      {iconLeft && <Icon name={iconLeft} size={16} />}
+      {iconLeft && <Icon name={iconLeft} size={iconSize} />}
       {children}
-      {iconRight && <Icon name={iconRight} size={16} />}
+      {iconRight && <Icon name={iconRight} size={iconSize} />}
     </Comp>
   );
 }

@@ -74,6 +74,7 @@ export const Variants: Story = {
                       <IconButton
                         {...args}
                         icon="addLine"
+                        aria-label="Add"
                         variant={variant}
                         size={size}
                         radius={radius}
@@ -83,6 +84,7 @@ export const Variants: Story = {
                       <IconButton
                         {...args}
                         icon="addLine"
+                        aria-label="Add"
                         variant={variant}
                         className="hover"
                         size={size}
@@ -93,6 +95,7 @@ export const Variants: Story = {
                       <IconButton
                         {...args}
                         icon="addLine"
+                        aria-label="Add"
                         variant={variant}
                         className="focus"
                         size={size}
@@ -103,6 +106,7 @@ export const Variants: Story = {
                       <IconButton
                         {...args}
                         icon="addLine"
+                        aria-label="Add"
                         variant={variant}
                         disabled
                         size={size}
@@ -132,31 +136,45 @@ export const Muted: Story = {
     <div className="flex flex-col gap-16">
       <div className="flex gap-16 items-center">
         <Code variant="label">Normal:</Code>
-        <IconButton {...args} icon="addLine" />
-        <IconButton {...args} icon="addLine" variant="transparent" />
+        <IconButton {...args} icon="addLine" aria-label="Add" />
+        <IconButton {...args} icon="addLine" aria-label="Add" variant="transparent" />
       </div>
       <div className="flex gap-16 items-center">
         <Code variant="label">Muted:</Code>
-        <IconButton {...args} icon="addLine" muted />
-        <IconButton {...args} icon="addLine" variant="transparent" muted />
+        <IconButton {...args} icon="addLine" aria-label="Add" muted />
+        <IconButton {...args} icon="addLine" aria-label="Add" variant="transparent" muted />
       </div>
     </div>
   ),
 };
 
 export const Sizes: Story = {
-  render: (args) => (
+  render: ({children: _children, ...args}) => (
     <div className="flex flex-col gap-16">
       <div className="flex gap-16 items-center">
         <Code variant="label">Rounded:</Code>
         {sizeOptions.map((size) => (
-          <IconButton {...args} key={size} icon="addLine" size={size} radius="rounded" />
+          <IconButton
+            {...args}
+            key={size}
+            icon="addLine"
+            aria-label="Add"
+            size={size}
+            radius="rounded"
+          />
         ))}
       </div>
       <div className="flex gap-16 items-center">
         <Code variant="label">Full:</Code>
         {sizeOptions.map((size) => (
-          <IconButton {...args} key={size} icon="addLine" size={size} radius="full" />
+          <IconButton
+            {...args}
+            key={size}
+            icon="addLine"
+            aria-label="Add"
+            size={size}
+            radius="full"
+          />
         ))}
       </div>
     </div>

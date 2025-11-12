@@ -60,7 +60,7 @@ export function IconButton({
   return (
     <Comp
       data-slot="icon-button"
-      className={cn(iconButtonVariants({variant, size, radius, muted, className}))}
+      className={cn(iconButtonVariants({variant, size, radius, muted}), className)}
       {...props}
     >
       {icon ? <Icon name={icon} /> : children}
