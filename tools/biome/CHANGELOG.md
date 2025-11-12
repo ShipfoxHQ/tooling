@@ -1,5 +1,11 @@
 # @shipfox/biome
 
+## 1.3.1
+
+### Patch Changes
+
+- 0ae2b6b: Update Biome dependency
+
 ## 1.3.0
 
 ### Minor Changes

@@ -1,5 +1,16 @@
 # @shipfox/react-ui
 
+## 0.4.0
+
+### Minor Changes
+
+- 2cfbf33: Add Codeblock components
+- dd023e1: Add checkbox and label components
+- a808a32: Add toast components and refactor
+- feeb725: Add Item and DynamicItem components
+- 34000b7: Add Badge component
+- 090e011: Add tooltip component
+
 ## 0.3.0
 
 ### Minor Changes
