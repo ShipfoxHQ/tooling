@@ -3,7 +3,7 @@ import {cva, type VariantProps} from 'class-variance-authority';
 import type {ComponentProps, ReactNode} from 'react';
 import {getInitial, getPlaceholderImageUrl} from 'utils';
 import {cn} from 'utils/cn';
-import {Icon} from '../icon/icon';
+import {Icon, type IconName} from '../icon/icon';
 
 export const avatarVariants = cva(
   'relative flex shrink-0 overflow-hidden bg-background-button-neutral-default text-foreground-neutral-base ring-1 ring-border-neutral-base-component ring-offset-1 ring-offset-background-neutral-base shadow-button-neutral',
@@ -110,6 +110,8 @@ export type AvatarProps = ComponentProps<typeof AvatarPrimitive.Root> &
     alt?: string;
     fallback?: string;
     animateOnHover?: boolean;
+    logoName?: IconName;
+    logoClassName?: string;
   };
 
 export function Avatar({
@@ -121,6 +123,8 @@ export function Avatar({
   alt,
   fallback,
   animateOnHover = false,
+  logoName = 'shipfox',
+  logoClassName,
   ...props
 }: AvatarProps) {
   const innerClassName =
@@ -152,19 +156,19 @@ export function Avatar({
 
     if (content === 'logo') {
       return (
-        <AvatarFallback className={cn(innerClassName, 'p-[15%]')}>
-          <Icon name="shipfoxLogo" color="#FF4B00" className="h-full w-full p-2" />
+        <AvatarFallback className={cn(innerClassName, logoClassName ?? 'p-[15%]')}>
+          <Icon name={logoName} className="h-full w-full" />
         </AvatarFallback>
       );
     }
 
     if (content === 'logoPlaceholder') {
       return (
-        <AvatarFallback className={cn(innerClassName, 'p-[15%]')}>
+        <AvatarFallback className={cn(innerClassName, logoClassName ?? 'p-[15%]')}>
           <Icon
-            name="shipfoxLogo"
+            name={logoName}
             color="var(--foreground-neutral-subtle, #a1a1aa)"
-            className="h-full w-full p-2 opacity-50"
+            className="h-full w-full opacity-50"
           />
         </AvatarFallback>
       );

@@ -27,7 +27,7 @@ export function Textarea({className, variant, size, ...props}: TextareaProps) {
     <textarea
       data-slot="textarea"
       className={cn(
-        'textarea-resize-custom placeholder:text-foreground-neutral-muted w-full min-w-0 rounded-6 px-8 pr-24 text-sm leading-20 text-foreground-neutral-base shadow-border-base transition-[color,box-shadow] outline-none',
+        'textarea-resize-custom placeholder:text-foreground-neutral-muted w-full min-w-0 rounded-6 px-8 pr-24 text-sm leading-20 text-foreground-neutral-base shadow-button-neutral transition-[color,box-shadow] outline-none',
         'hover:bg-background-field-hover',
         'selection:bg-background-accent-neutral-soft selection:text-foreground-neutral-on-inverted',
         'disabled:pointer-events-none disabled:cursor-not-allowed disabled:bg-background-neutral-disabled disabled:shadow-none disabled:text-foreground-neutral-disabled',

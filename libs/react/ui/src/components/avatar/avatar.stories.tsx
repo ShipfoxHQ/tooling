@@ -6,6 +6,7 @@ import {AvatarGroup, AvatarGroupTooltip} from './avatar-group';
 const contentOptions = ['letters', 'logo', 'logoPlaceholder', 'image', 'upload'] as const;
 const radiusOptions = ['full', 'rounded'] as const;
 const sizeOptions = ['3xs', '2xs', 'xs', 'sm', 'md', 'lg', 'xl', '2xl', '3xl'] as const;
+const logoNameOptions = ['shipfox', 'slack', 'stripe', 'github'] as const;
 
 const meta = {
   title: 'Components/Avatar',
@@ -33,12 +34,18 @@ const meta = {
     alt: {
       control: 'text',
     },
+    logoName: {
+      control: 'select',
+      options: logoNameOptions,
+      description: 'Logo icon name to display when content is "logo" or "logoPlaceholder"',
+    },
   },
   args: {
     content: 'letters',
     radius: 'full',
     size: 'md',
     fallback: 'John Doe',
+    logoName: 'shipfox',
   },
 } satisfies Meta<typeof Avatar>;
 
@@ -47,8 +54,8 @@ type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {
   args: {
-    content: 'upload',
-    fallback: 'Kyle Nguyen',
+    content: 'logo',
+    fallback: 'Shipfox',
   },
 
   render: (args) => (

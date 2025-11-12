@@ -17,8 +17,8 @@ const avatarGroupVariants = cva('flex items-start', {
       '3xs': '-space-x-4',
       '2xs': '-space-x-4',
       xs: '-space-x-4',
-      sm: '-space-x-4',
-      md: '-space-x-4',
+      sm: '-space-x-6',
+      md: '-space-x-6',
       lg: '-space-x-6',
       xl: '-space-x-6',
       '2xl': '-space-x-12',
@@ -76,7 +76,7 @@ function AvatarContainer({
           data-slot="avatar-container"
           className={cn(
             'relative',
-            animateOnHover && 'transition-transform duration-300 ease-out hover:-translate-y-2',
+            animateOnHover && 'transition-transform duration-300 ease-in-out hover:-translate-y-4',
           )}
           style={{zIndex}}
         >

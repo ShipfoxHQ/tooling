@@ -16,7 +16,7 @@ const meta = {
   argTypes: {
     type: {
       control: 'select',
-      options: ['default', 'info', 'success', 'destructive'],
+      options: ['default', 'info', 'success', 'error'],
     },
     variant: {
       control: 'select',
@@ -33,7 +33,7 @@ export default meta;
 
 type Story = StoryObj<typeof meta>;
 
-const types = ['default', 'info', 'success', 'destructive'] as const;
+const types = ['default', 'info', 'success', 'error'] as const;
 const variants = ['primary', 'secondary'] as const;
 
 export const Default: Story = {
@@ -80,7 +80,7 @@ export const DesignMock: Story = {
       default: {title: 'Title', description: 'Description'},
       info: {title: 'Title', description: 'Description'},
       success: {title: 'Title', description: 'Description'},
-      destructive: {title: "Don't's", description: 'Title'},
+      error: {title: 'Title', description: 'Description'},
     };
 
     return (

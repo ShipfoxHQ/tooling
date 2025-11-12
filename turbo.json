@@ -1,10 +1,7 @@
 {
   "$schema": "https://turbo.build/schema.json",
   "globalDependencies": ["flake.lock", "flake.nix", "biome.json"],
-  "globalPassThroughEnv": [
-    "GITHUB_*",
-    "ACTIONS_*"
-  ],
+  "globalPassThroughEnv": ["GITHUB_*", "ACTIONS_*"],
   "tasks": {
     "build": {
       "cache": true,

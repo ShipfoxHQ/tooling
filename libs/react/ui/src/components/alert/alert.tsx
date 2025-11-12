@@ -12,7 +12,7 @@ const alertVariants = cva(
         info: 'bg-tag-blue-bg text-foreground-neutral-base border-tag-blue-border',
         success: 'bg-tag-success-bg text-foreground-neutral-base border-tag-success-border',
         warning: 'bg-tag-warning-bg text-foreground-neutral-base border-tag-warning-border',
-        destructive: 'bg-tag-error-bg text-foreground-neutral-base border-tag-error-border',
+        error: 'bg-tag-error-bg text-foreground-neutral-base border-tag-error-border',
       },
     },
     defaultVariants: {
@@ -28,7 +28,7 @@ const alertLineVariants = cva('w-4 self-stretch rounded-full', {
       info: 'bg-tag-blue-icon',
       success: 'bg-tag-success-icon',
       warning: 'bg-tag-warning-icon',
-      destructive: 'bg-tag-error-icon',
+      error: 'bg-tag-error-icon',
     },
   },
   defaultVariants: {
@@ -43,7 +43,7 @@ const closeIconVariants = cva('w-16 h-16', {
       info: 'text-tag-blue-icon',
       success: 'text-tag-success-icon',
       warning: 'text-tag-warning-icon',
-      destructive: 'text-tag-error-icon',
+      error: 'text-tag-error-icon',
     },
   },
   defaultVariants: {
