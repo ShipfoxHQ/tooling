@@ -1,0 +1,32 @@
+name: Argos Visual Testing
+
+on:
+  push:
+    branches:
+      - main
+  pull_request: {}
+
+jobs:
+  visual-testing:
+    name: Visual Testing with Argos
+    runs-on: shipfox-2vcpu-ubuntu-2404
+    permissions:
+      contents: read
+      pull-requests: write
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Install Nix dependencies
+        uses: ./.github/actions/nix
+
+      - name: Install NodeJS dependencies
+        uses: ./.github/actions/pnpm
+
+      - name: Upload to Argos
+        shell: nix develop --command bash {0}
+        env:
+          ARGOS_TOKEN: ${{ secrets.ARGOS_TOKEN }}
+        run: pnpm turbo run argos
