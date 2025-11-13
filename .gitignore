@@ -142,6 +142,3 @@ dist
 .DS_Store
 
 .cursorrules
-
-# Storybook build output
-storybook-static
