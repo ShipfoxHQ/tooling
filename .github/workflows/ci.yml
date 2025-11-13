@@ -27,6 +27,9 @@ jobs:
         uses: ./.github/actions/nix
       - name: Install NodeJS dependencies
         uses: ./.github/actions/pnpm
+      - name: Install Playwright browsers
+        shell: nix develop --command bash {0}
+        run: pnpm exec playwright install --with-deps chromium
       - name: Run CI - test
         uses: ./.github/actions/ci
         env:

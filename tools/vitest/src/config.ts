@@ -19,69 +19,19 @@ export type UserConfig = Parameters<typeof vitestDefineConfig>[0];
 
 type ConfigInput = UserConfig | UserWorkspaceConfig;
 
-function mergeConfig(config: ConfigInput, callerUrl?: string): ConfigInput {
-  const projectRoot = callerUrl ? getProjectRootPath(callerUrl) : undefined;
-
-  if (typeof config === 'function') {
-    return ((env) => {
-      const resolved = config(env);
-      if (resolved instanceof Promise) {
-        return resolved.then((resolvedConfig) => {
-          const existingPlugins = (resolvedConfig as {plugins?: unknown[]}).plugins || [];
-          const merged = {
-            ...resolvedConfig,
-            plugins: [tsconfigPaths(), ...existingPlugins],
-            test: {
-              ...((resolvedConfig as {test?: {exclude?: string[]}}).test || {}),
-              exclude: [
-                '**/node_modules/**',
-                '**/dist/**',
-                '**/build/**',
-                '**/out/**',
-                ...((resolvedConfig as {test?: {exclude?: string[]}}).test?.exclude || []),
-              ],
-            },
-          };
-          if (projectRoot && !(merged as {root?: string}).root) {
-            (merged as {root: string}).root = projectRoot;
-          }
-          return merged as ConfigInput;
-        });
-      }
-      const existingPlugins = (resolved as {plugins?: unknown[]}).plugins || [];
-      const merged = {
-        ...resolved,
-        plugins: [tsconfigPaths(), ...existingPlugins],
-        test: {
-          ...((resolved as {test?: {exclude?: string[]}}).test || {}),
-          exclude: [
-            '**/node_modules/**',
-            '**/dist/**',
-            '**/build/**',
-            '**/out/**',
-            ...((resolved as {test?: {exclude?: string[]}}).test?.exclude || []),
-          ],
-        },
-      };
-      if (projectRoot && !(merged as {root?: string}).root) {
-        (merged as {root: string}).root = projectRoot;
-      }
-      return merged as ConfigInput;
-    }) as typeof config;
-  }
-
-  const existingPlugins = (config as {plugins?: unknown[]}).plugins || [];
+function createMergedConfig(resolvedConfig: ConfigInput, projectRoot?: string): ConfigInput {
+  const existingPlugins = (resolvedConfig as {plugins?: unknown[]}).plugins || [];
   const merged = {
-    ...config,
+    ...resolvedConfig,
     plugins: [tsconfigPaths(), ...existingPlugins],
     test: {
-      ...((config as {test?: {exclude?: string[]}}).test || {}),
+      ...((resolvedConfig as {test?: {exclude?: string[]}}).test || {}),
       exclude: [
         '**/node_modules/**',
         '**/dist/**',
         '**/build/**',
         '**/out/**',
-        ...((config as {test?: {exclude?: string[]}}).test?.exclude || []),
+        ...((resolvedConfig as {test?: {exclude?: string[]}}).test?.exclude || []),
       ],
     },
   };
@@ -91,6 +41,22 @@ function mergeConfig(config: ConfigInput, callerUrl?: string): ConfigInput {
   }
 
   return merged as ConfigInput;
+}
+
+function mergeConfig(config: ConfigInput, callerUrl?: string): ConfigInput {
+  const projectRoot = callerUrl ? getProjectRootPath(callerUrl) : undefined;
+
+  if (typeof config === 'function') {
+    return ((env) => {
+      const resolved = config(env);
+      if (resolved instanceof Promise) {
+        return resolved.then((resolvedConfig) => createMergedConfig(resolvedConfig, projectRoot));
+      }
+      return createMergedConfig(resolved, projectRoot);
+    }) as typeof config;
+  }
+
+  return createMergedConfig(config, projectRoot);
 }
 
 export function defineConfig(config: UserConfig, callerUrl?: string): UserConfigExport {
