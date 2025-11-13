@@ -1,5 +1,6 @@
 import {Slot} from '@radix-ui/react-slot';
 import {Icon} from 'components/icon/icon';
+import {Text} from 'components/typography';
 import type {ComponentProps, HTMLAttributes, ReactNode} from 'react';
 import {cn} from 'utils/cn';
 
@@ -53,22 +54,12 @@ export function CodeBlockFooter({
       className={cn('flex w-full items-center justify-start gap-12 px-16 py-12', className)}
       {...props}
     >
-      <div className="flex shrink-0 items-center justify-center size-20 text-tag-success-icon">
-        {defaultIcon}
-      </div>
+      <CodeBlockFooterIcon className="text-tag-success-icon">{defaultIcon}</CodeBlockFooterIcon>
       {(message || description) && (
-        <div className="flex flex-col items-start justify-center gap-0">
-          {message && (
-            <div className="overflow-hidden text-ellipsis whitespace-nowrap text-xs leading-20 text-foreground-neutral-base">
-              {message}
-            </div>
-          )}
-          {description && (
-            <div className="overflow-hidden text-ellipsis whitespace-nowrap text-xs leading-20 text-foreground-neutral-subtle">
-              {description}
-            </div>
-          )}
-        </div>
+        <CodeBlockFooterContent>
+          {message && <CodeBlockFooterMessage>{message}</CodeBlockFooterMessage>}
+          {description && <CodeBlockFooterDescription>{description}</CodeBlockFooterDescription>}
+        </CodeBlockFooterContent>
       )}
     </Comp>
   );
@@ -112,7 +103,7 @@ export function CodeBlockFooterContent({
   return (
     <Comp
       data-slot="code-block-footer-content"
-      className={cn('flex flex-col items-start justify-center gap-0', className)}
+      className={cn('flex flex-col items-start justify-center gap-0 min-w-0 flex-1', className)}
       {...props}
     >
       {children}
@@ -120,7 +111,7 @@ export function CodeBlockFooterContent({
   );
 }
 
-export type CodeBlockFooterMessageProps = ComponentProps<'div'> & {
+export type CodeBlockFooterMessageProps = ComponentProps<typeof Text> & {
   asChild?: boolean;
 };
 
@@ -130,23 +121,31 @@ export function CodeBlockFooterMessage({
   children,
   ...props
 }: CodeBlockFooterMessageProps) {
-  const Comp = asChild ? Slot : 'div';
+  if (asChild) {
+    return (
+      <Slot
+        data-slot="code-block-footer-message"
+        className={cn('overflow-hidden text-ellipsis whitespace-nowrap text-xs', className)}
+        {...props}
+      >
+        {children}
+      </Slot>
+    );
+  }
 
   return (
-    <Comp
+    <Text
       data-slot="code-block-footer-message"
-      className={cn(
-        'overflow-hidden text-ellipsis whitespace-nowrap text-xs leading-20 text-foreground-neutral-base',
-        className,
-      )}
+      size="xs"
+      className={cn('overflow-hidden text-ellipsis whitespace-nowrap', className)}
       {...props}
     >
       {children}
-    </Comp>
+    </Text>
   );
 }
 
-export type CodeBlockFooterDescriptionProps = ComponentProps<'div'> & {
+export type CodeBlockFooterDescriptionProps = ComponentProps<typeof Text> & {
   asChild?: boolean;
 };
 
@@ -156,18 +155,26 @@ export function CodeBlockFooterDescription({
   children,
   ...props
 }: CodeBlockFooterDescriptionProps) {
-  const Comp = asChild ? Slot : 'div';
+  if (asChild) {
+    return (
+      <Slot
+        data-slot="code-block-footer-description"
+        className={cn('text-xs text-foreground-neutral-subtle', className)}
+        {...props}
+      >
+        {children}
+      </Slot>
+    );
+  }
 
   return (
-    <Comp
+    <Text
       data-slot="code-block-footer-description"
-      className={cn(
-        'overflow-hidden text-ellipsis whitespace-nowrap text-xs leading-20 text-foreground-neutral-subtle',
-        className,
-      )}
+      size="xs"
+      className={cn('text-foreground-neutral-subtle', className)}
       {...props}
     >
       {children}
-    </Comp>
+    </Text>
   );
 }
