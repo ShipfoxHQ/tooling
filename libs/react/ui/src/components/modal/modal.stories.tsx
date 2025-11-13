@@ -46,7 +46,11 @@ export const Default: Story = {
           <Button>Open Modal</Button>
         </ModalTrigger>
         <ModalContent>
-          <ModalHeader title="Modal Title" />
+          <ModalHeader>
+            <Text size="lg" className="flex-1 overflow-ellipsis overflow-hidden whitespace-nowrap">
+              Modal Title
+            </Text>
+          </ModalHeader>
           <ModalBody>
             <Text size="sm" className="text-foreground-neutral-subtle w-full">
               This modal automatically adapts between dialog (desktop) and drawer (mobile) based on
@@ -185,12 +189,7 @@ export const GithubActions: Story = {
                   <Text className="flex-1 font-semibold text-foreground-neutral-base overflow-ellipsis overflow-hidden whitespace-nowrap">
                     Update your GitHub Actions workflow
                   </Text>
-                  <ButtonLink
-                    variant="base"
-                    size="sm"
-                    href="https://docs.shipfox.io/docs/github-actions"
-                    iconRight="chevronRight"
-                  >
+                  <ButtonLink variant="base" size="sm" href="#" iconRight="chevronRight">
                     See docs
                   </ButtonLink>
                 </div>

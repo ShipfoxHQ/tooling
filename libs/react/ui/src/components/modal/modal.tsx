@@ -2,9 +2,10 @@ import * as DialogPrimitive from '@radix-ui/react-dialog';
 import {cva} from 'class-variance-authority';
 import {Button} from 'components/button';
 import {Icon} from 'components/icon';
+import {Text} from 'components/typography';
 import {motion, type Transition} from 'framer-motion';
 import {useMediaQuery} from 'hooks/useMediaQuery';
-import type {ComponentProps} from 'react';
+import {type ComponentProps, createContext, useContext} from 'react';
 import {cn} from 'utils/cn';
 import {Drawer as VaulDrawer} from 'vaul';
 
@@ -13,6 +14,21 @@ const modalDefaultTransition: Transition = {
   stiffness: 300,
   damping: 30,
 };
+
+type ModalContextValue = {
+  breakpoint: string;
+  isDesktop: boolean;
+};
+
+const ModalContext = createContext<ModalContextValue | null>(null);
+
+function useModalContext() {
+  const context = useContext(ModalContext);
+  if (!context) {
+    throw new Error('Modal components must be used within a Modal component');
+  }
+  return context;
+}
 
 const modalOverlayVariants = cva(
   'fixed inset-0 z-40 bg-background-backdrop-backdrop data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0',
@@ -24,22 +40,27 @@ const modalContentVariants = cva(
 
 function Modal({
   breakpoint = '(min-width: 768px)',
+  children,
   ...props
 }: ComponentProps<typeof DialogPrimitive.Root> & {breakpoint?: string}) {
   const isDesktop = useMediaQuery(breakpoint);
 
-  if (isDesktop) {
-    return <DialogPrimitive.Root {...props} />;
-  }
+  const contextValue: ModalContextValue = {
+    breakpoint,
+    isDesktop,
+  };
 
-  return <VaulDrawer.Root {...props} />;
+  const Root = isDesktop ? DialogPrimitive.Root : VaulDrawer.Root;
+
+  return (
+    <ModalContext.Provider value={contextValue}>
+      <Root {...props}>{children}</Root>
+    </ModalContext.Provider>
+  );
 }
 
-function ModalTrigger({
-  breakpoint = '(min-width: 768px)',
-  ...props
-}: ComponentProps<typeof DialogPrimitive.Trigger> & {breakpoint?: string}) {
-  const isDesktop = useMediaQuery(breakpoint);
+function ModalTrigger(props: ComponentProps<typeof DialogPrimitive.Trigger>) {
+  const {isDesktop} = useModalContext();
 
   if (isDesktop) {
     return <DialogPrimitive.Trigger {...props} />;
@@ -48,11 +69,8 @@ function ModalTrigger({
   return <VaulDrawer.Trigger {...props} />;
 }
 
-function ModalPortal({
-  breakpoint = '(min-width: 768px)',
-  ...props
-}: ComponentProps<typeof DialogPrimitive.Portal> & {breakpoint?: string}) {
-  const isDesktop = useMediaQuery(breakpoint);
+function ModalPortal(props: ComponentProps<typeof DialogPrimitive.Portal>) {
+  const {isDesktop} = useModalContext();
 
   if (isDesktop) {
     return <DialogPrimitive.Portal {...props} />;
@@ -61,11 +79,8 @@ function ModalPortal({
   return <VaulDrawer.Portal {...props} />;
 }
 
-function ModalClose({
-  breakpoint = '(min-width: 768px)',
-  ...props
-}: ComponentProps<typeof DialogPrimitive.Close> & {breakpoint?: string}) {
-  const isDesktop = useMediaQuery(breakpoint);
+function ModalClose(props: ComponentProps<typeof DialogPrimitive.Close>) {
+  const {isDesktop} = useModalContext();
 
   if (isDesktop) {
     return <DialogPrimitive.Close {...props} />;
@@ -77,17 +92,15 @@ function ModalClose({
 type ModalOverlayProps = ComponentProps<typeof DialogPrimitive.Overlay> & {
   animated?: boolean;
   transition?: Transition;
-  breakpoint?: string;
 };
 
 function ModalOverlay({
   className,
   animated = true,
   transition = modalDefaultTransition,
-  breakpoint = '(min-width: 768px)',
   ...props
 }: ModalOverlayProps) {
-  const isDesktop = useMediaQuery(breakpoint);
+  const {isDesktop} = useModalContext();
 
   if (!isDesktop) {
     return <VaulDrawer.Overlay className={cn(modalOverlayVariants(), className)} {...props} />;
@@ -112,8 +125,6 @@ function ModalOverlay({
 type ModalContentProps = ComponentProps<typeof DialogPrimitive.Content> & {
   animated?: boolean;
   transition?: Transition;
-  showClose?: boolean;
-  breakpoint?: string;
 };
 
 function ModalContent({
@@ -121,16 +132,14 @@ function ModalContent({
   children,
   animated = true,
   transition = modalDefaultTransition,
-  showClose = false,
-  breakpoint = '(min-width: 768px)',
   ...props
 }: ModalContentProps) {
-  const isDesktop = useMediaQuery(breakpoint);
+  const {isDesktop} = useModalContext();
 
   if (!isDesktop) {
     return (
-      <ModalPortal breakpoint={breakpoint}>
-        <ModalOverlay animated={animated} transition={transition} breakpoint={breakpoint} />
+      <ModalPortal>
+        <ModalOverlay animated={animated} transition={transition} />
         <VaulDrawer.Content
           className={cn(
             'fixed bottom-0 left-0 right-0 z-50 flex flex-col bg-background-neutral-base rounded-t-16 max-h-[85vh] shadow-tooltip',
@@ -153,8 +162,8 @@ function ModalContent({
   const baseClasses = cn(modalContentVariants(), className);
 
   return (
-    <ModalPortal breakpoint={breakpoint}>
-      <ModalOverlay animated={animated} transition={transition} breakpoint={breakpoint} />
+    <ModalPortal>
+      <ModalOverlay animated={animated} transition={transition} />
       <DialogPrimitive.Content className={baseClasses} {...props}>
         <div className="relative size-full">
           <div className="pointer-events-none absolute inset-0 shadow-separator-inset rounded-16" />
@@ -169,7 +178,6 @@ type ModalHeaderProps = ComponentProps<'div'> & {
   title?: string;
   showEscIndicator?: boolean;
   showClose?: boolean;
-  breakpoint?: string;
 };
 
 function ModalHeader({
@@ -177,19 +185,18 @@ function ModalHeader({
   title,
   showEscIndicator = true,
   showClose = true,
-  breakpoint = '(min-width: 768px)',
   children,
   ...props
 }: ModalHeaderProps) {
-  const isDesktop = useMediaQuery(breakpoint);
+  const {isDesktop} = useModalContext();
 
   return (
     <div className="flex flex-col w-full shrink-0" {...props}>
       <div className="bg-background-neutral-base flex items-center justify-center gap-20 overflow-clip px-24 py-16 w-full">
         {title ? (
-          <p className="flex-1 font-medium text-lg leading-20 overflow-ellipsis overflow-hidden text-foreground-neutral-base whitespace-nowrap">
+          <Text size="lg" className="flex-1 overflow-ellipsis overflow-hidden whitespace-nowrap">
             {title}
-          </p>
+          </Text>
         ) : (
           <div className="flex-1">{children}</div>
         )}
@@ -200,7 +207,7 @@ function ModalHeader({
             </kbd>
           )}
           {showClose && (
-            <ModalClose breakpoint={breakpoint} asChild>
+            <ModalClose asChild>
               <Button
                 variant="transparent"
                 size="xs"
@@ -217,13 +224,8 @@ function ModalHeader({
   );
 }
 
-function ModalBody({
-  className,
-  children,
-  breakpoint = '(min-width: 768px)',
-  ...props
-}: ComponentProps<'div'> & {breakpoint?: string}) {
-  const isDesktop = useMediaQuery(breakpoint);
+function ModalBody({className, children, ...props}: ComponentProps<'div'>) {
+  const {isDesktop} = useModalContext();
 
   return (
     <div
@@ -250,10 +252,10 @@ function ModalFooter({className, children, ...props}: ComponentProps<'div'>) {
   );
 }
 
-type ModalTitleProps = ComponentProps<typeof DialogPrimitive.Title> & {breakpoint?: string};
+type ModalTitleProps = ComponentProps<typeof DialogPrimitive.Title>;
 
-function ModalTitle({className, breakpoint = '(min-width: 768px)', ...props}: ModalTitleProps) {
-  const isDesktop = useMediaQuery(breakpoint);
+function ModalTitle({className, ...props}: ModalTitleProps) {
+  const {isDesktop} = useModalContext();
 
   const titleClassName = cn(
     'font-medium text-lg leading-20 overflow-ellipsis overflow-hidden text-foreground-neutral-base',
@@ -267,16 +269,10 @@ function ModalTitle({className, breakpoint = '(min-width: 768px)', ...props}: Mo
   return <DialogPrimitive.Title className={titleClassName} {...props} />;
 }
 
-type ModalDescriptionProps = ComponentProps<typeof DialogPrimitive.Description> & {
-  breakpoint?: string;
-};
+type ModalDescriptionProps = ComponentProps<typeof DialogPrimitive.Description>;
 
-function ModalDescription({
-  className,
-  breakpoint = '(min-width: 768px)',
-  ...props
-}: ModalDescriptionProps) {
-  const isDesktop = useMediaQuery(breakpoint);
+function ModalDescription({className, ...props}: ModalDescriptionProps) {
+  const {isDesktop} = useModalContext();
 
   const descClassName = cn('text-sm leading-20 text-foreground-neutral-subtle', className);
 

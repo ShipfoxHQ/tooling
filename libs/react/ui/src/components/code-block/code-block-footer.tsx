@@ -111,7 +111,7 @@ export function CodeBlockFooterContent({
   );
 }
 
-export type CodeBlockFooterMessageProps = ComponentProps<typeof Text> & {
+export type CodeBlockFooterMessageProps = ComponentProps<'div'> & {
   asChild?: boolean;
 };
 
@@ -145,7 +145,7 @@ export function CodeBlockFooterMessage({
   );
 }
 
-export type CodeBlockFooterDescriptionProps = ComponentProps<typeof Text> & {
+export type CodeBlockFooterDescriptionProps = ComponentProps<'div'> & {
   asChild?: boolean;
 };
 
