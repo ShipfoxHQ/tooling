@@ -6,6 +6,7 @@ const variantOptions = [
   'primary',
   'secondary',
   'danger',
+  'success',
   'transparent',
   'transparentMuted',
 ] as const;
@@ -48,7 +49,6 @@ export const Variants: Story = {
               <th>{size}</th>
               <th>Default</th>
               <th>Hover</th>
-              <th>Active</th>
               <th>Focus</th>
               <th>Disabled</th>
             </tr>
@@ -68,11 +68,6 @@ export const Variants: Story = {
                 </td>
                 <td>
                   <Button {...args} variant={variant} className="hover" size={size}>
-                    Click me
-                  </Button>
-                </td>
-                <td>
-                  <Button {...args} variant={variant} className="active" size={size}>
                     Click me
                   </Button>
                 </td>
@@ -98,7 +93,6 @@ export const Variants: Story = {
 Variants.parameters = {
   pseudo: {
     hover: '.hover',
-    active: '.active',
     focusVisible: '.focus',
   },
 };

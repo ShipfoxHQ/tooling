@@ -198,14 +198,17 @@
   --background-button-transparent-default: var(--color-alpha-white-0);
   --background-button-neutral-hover: var(--color-neutral-100);
   --background-button-danger-hover: var(--color-red-700);
+  --background-button-success-hover: var(--color-green-700);
   --background-button-neutral-pressed: var(--color-neutral-200);
   --background-button-neutral-default: var(--color-neutral-0);
-  --background-button-transparent-hover: var(--color-alpha-white-6);
+  --background-button-transparent-hover: var(--color-alpha-black-6);
   --background-button-inverted-pressed: var(--color-neutral-600);
-  --background-button-transparent-pressed: var(--color-alpha-white-10);
+  --background-button-transparent-pressed: var(--color-alpha-black-10);
   --background-button-danger-pressed: var(--color-red-800);
+  --background-button-success-pressed: var(--color-green-800);
   --background-button-inverted-hover: var(--color-neutral-700);
   --background-button-danger-default: var(--color-red-600);
+  --background-button-success-default: var(--color-green-600);
   --background-button-inverted-default: var(--color-neutral-800);
 
   /* Accent Background */
@@ -312,7 +315,7 @@
     var(--color-alpha-black-8);
   --shadow-button-neutral-focus:
     0 -1px 0 0 var(--color-alpha-white-6), 0 0 0 1px var(--color-alpha-white-6), 0 0 0 1px
-    var(--color-neutral-800), 0 0 0 2px var(--color-alpha-white-88), 0 0 0 4px
+    var(--color-alpha-black-8), 0 0 0 2px var(--color-alpha-white-88), 0 0 0 4px
     var(--color-primary-500);
   --shadow-button-danger:
     0 -1px 0 0 var(--color-alpha-white-16), 0 0 0 1px var(--color-alpha-white-12), 0 0 0 1px
@@ -321,6 +324,14 @@
   --shadow-button-danger-focus:
     0 -1px 0 0 var(--color-alpha-white-16), 0 0 0 1px var(--color-alpha-white-12), 0 0 0 1px
     var(--color-red-700), 0 0 0 2px var(--color-alpha-white-88), 0 0 0 4px var(--color-primary-500);
+  --shadow-button-success:
+    0 -1px 0 0 var(--color-alpha-white-16), 0 0 0 1px var(--color-alpha-white-12), 0 0 0 1px
+    var(--color-green-700), 0 0 1px 1.5px var(--color-alpha-black-24), 0 2px 2px 0
+    var(--color-alpha-black-24);
+  --shadow-button-success-focus:
+    0 -1px 0 0 var(--color-alpha-white-16), 0 0 0 1px var(--color-alpha-white-12), 0 0 0 1px
+    var(--color-green-700), 0 0 0 2px var(--color-alpha-white-88), 0 0 0 4px
+    var(--color-primary-500);
 
   /* Checkbox */
   /* Checkbox - Unchecked States */
@@ -392,14 +403,17 @@
   --background-button-transparent-default: var(--color-alpha-white-0);
   --background-button-neutral-hover: var(--color-alpha-white-8);
   --background-button-danger-hover: var(--color-red-700);
+  --background-button-success-hover: var(--color-green-700);
   --background-button-neutral-pressed: var(--color-alpha-white-12);
   --background-button-neutral-default: var(--color-alpha-white-4);
   --background-button-transparent-hover: var(--color-alpha-white-8);
   --background-button-inverted-pressed: var(--color-neutral-400);
   --background-button-transparent-pressed: var(--color-alpha-white-12);
   --background-button-danger-pressed: var(--color-red-600);
+  --background-button-success-pressed: var(--color-green-600);
   --background-button-inverted-hover: var(--color-neutral-500);
   --background-button-danger-default: var(--color-red-800);
+  --background-button-success-default: var(--color-green-800);
   --background-button-inverted-default: var(--color-neutral-600);
 
   /* Accent Background */
@@ -513,6 +527,13 @@
   --shadow-button-danger-focus:
     0 -1px 0 0 var(--color-alpha-white-16), 0 0 0 1px var(--color-alpha-white-12), 0 0 0 1px
     var(--color-red-700), 0 0 0 2px var(--color-neutral-950), 0 0 0 4px var(--color-primary-500);
+  --shadow-button-success:
+    0 -1px 0 0 var(--color-alpha-white-16), 0 0 0 1px var(--color-alpha-white-12), 0 0 0 1px
+    var(--color-green-700), 0 0 1px 1.5px var(--color-alpha-black-24), 0 2px 2px 0
+    var(--color-alpha-black-24);
+  --shadow-button-success-focus:
+    0 -1px 0 0 var(--color-alpha-white-16), 0 0 0 1px var(--color-alpha-white-12), 0 0 0 1px
+    var(--color-green-700), 0 0 0 2px var(--color-neutral-950), 0 0 0 4px var(--color-primary-500);
 
   /* Checkbox */
   /* Checkbox - Unchecked States */
@@ -727,14 +748,17 @@
   --color-background-button-transparent-default: var(--background-button-transparent-default);
   --color-background-button-neutral-hover: var(--background-button-neutral-hover);
   --color-background-button-danger-hover: var(--background-button-danger-hover);
+  --color-background-button-success-hover: var(--background-button-success-hover);
   --color-background-button-neutral-pressed: var(--background-button-neutral-pressed);
   --color-background-button-neutral-default: var(--background-button-neutral-default);
   --color-background-button-transparent-hover: var(--background-button-transparent-hover);
   --color-background-button-inverted-pressed: var(--background-button-inverted-pressed);
   --color-background-button-transparent-pressed: var(--background-button-transparent-pressed);
   --color-background-button-danger-pressed: var(--background-button-danger-pressed);
+  --color-background-button-success-pressed: var(--background-button-success-pressed);
   --color-background-button-inverted-hover: var(--background-button-inverted-hover);
   --color-background-button-danger-default: var(--background-button-danger-default);
+  --color-background-button-success-default: var(--background-button-success-default);
   --color-background-button-inverted-default: var(--background-button-inverted-default);
 
   /* Theme tokens - accent background */
@@ -875,6 +899,8 @@
   --shadow-button-neutral-focus: var(--shadow-button-neutral-focus);
   --shadow-button-danger: var(--shadow-button-danger);
   --shadow-button-danger-focus: var(--shadow-button-danger-focus);
+  --shadow-button-success: var(--shadow-button-success);
+  --shadow-button-success-focus: var(--shadow-button-success-focus);
 
   /* Checkbox */
   --color-checkbox-unchecked-bg: var(--checkbox-unchecked-bg);
