@@ -45,7 +45,19 @@ export interface UserContext {
   organizationId: string;
 }
 
-export type Context = BlankContext | OrganizationContext | UserContext;
+export interface RunnerContext {
+  kind: 'runner';
+  id: string;
+  organizationId?: string;
+  architecture: string;
+  cpu: number;
+  ram: number;
+  osType: string;
+  osName: string;
+  osVersion: string;
+}
+
+export type Context = BlankContext | OrganizationContext | UserContext | RunnerContext;
 
 function mapContext(context: Context): LDContext {
   if (context.kind === 'blank') return {kind: 'blank', anonymous: true, key: 'blank'};
