@@ -49,8 +49,11 @@ export function CodeContent({
             '[counter-reset:line] [counter-increment:line_0] [&_.line]:before:content-[counter(line)] [&_.line]:before:inline-block [&_.line]:before:[counter-increment:line] [&_.line]:before:w-16 [&_.line]:before:mr-16 [&_.line]:before:text-xs [&_.line]:before:text-right [&_.line]:before:text-foreground-neutral-subtle [&_.line]:before:font-code [&_.line]:before:select-none',
         )}
       >
-        {lines.map((line) => (
-          <span className="line px-12 w-full relative font-code text-xs leading-20" key={line}>
+        {lines.map((line, index) => (
+          <span
+            className="line px-12 w-full relative font-code text-xs leading-20"
+            key={`${index}-${line}`}
+          >
             {line}
           </span>
         ))}
