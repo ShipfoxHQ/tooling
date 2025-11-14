@@ -164,8 +164,8 @@ importers:
   libs/node/opentelemetry:
     dependencies:
       '@fastify/otel':
-        specifier: ^0.13.0
-        version: 0.13.1(@opentelemetry/api@1.9.0)
+        specifier: ^0.14.0
+        version: 0.14.0(@opentelemetry/api@1.9.0)
       '@opentelemetry/api':
         specifier: ^1.9.0
         version: 1.9.0
@@ -755,11 +755,13 @@ packages:
   '@biomejs/cli-darwin-arm64@2.3.4':
     resolution: {integrity: sha512-w40GvlNzLaqmuWYiDU6Ys9FNhJiclngKqcGld3iJIiy2bpJ0Q+8n3haiaC81uTPY/NA0d8Q/I3Z9+ajc14102Q==}
     engines: {node: '>=14.21.3'}
+    cpu: [arm64]
     os: [darwin]
 
   '@biomejs/cli-darwin-x64@2.3.4':
     resolution: {integrity: sha512-3s7TLVtjJ7ni1xADXsS7x7GMUrLBZXg8SemXc3T0XLslzvqKj/dq1xGeBQ+pOWQzng9MaozfacIHdK2UlJ3jGA==}
     engines: {node: '>=14.21.3'}
+    cpu: [x64]
     os: [darwin]
 
   '@biomejs/cli-linux-arm64-musl@2.3.4':
@@ -771,6 +773,7 @@ packages:
   '@biomejs/cli-linux-arm64@2.3.4':
     resolution: {integrity: sha512-y7efHyyM2gYmHy/AdWEip+VgTMe9973aP7XYKPzu/j8JxnPHuSUXftzmPhkVw0lfm4ECGbdBdGD6+rLmTgNZaA==}
     engines: {node: '>=14.21.3'}
+    cpu: [arm64]
     os: [linux]
 
   '@biomejs/cli-linux-x64-musl@2.3.4':
@@ -782,6 +785,7 @@ packages:
   '@biomejs/cli-linux-x64@2.3.4':
     resolution: {integrity: sha512-gKfjWR/6/dfIxPJCw8REdEowiXCkIpl9jycpNVHux8aX2yhWPLjydOshkDL6Y/82PcQJHn95VCj7J+BRcE5o1Q==}
     engines: {node: '>=14.21.3'}
+    cpu: [x64]
     os: [linux]
 
   '@biomejs/cli-win32-arm64@2.3.4':
@@ -1055,8 +1059,8 @@ packages:
     resolution: {integrity: sha512-vBZP4NlzfOlerQTnba4aqZoMhE/a9HY7HRqoOPaETQcSQuWEIyZMHGfVu6w9wGtGK5fED5qRs2DteVCjOH60sA==}
     engines: {node: '>=14'}
 
-  '@fastify/otel@0.13.1':
-    resolution: {integrity: sha512-SWz5jkvd1oKzv3EPuYsUq6jKs84IdMOjwTNZdG4m+WyOMqAEmi0WjGDyPxaVTWXIEHGIodzvRJmu18R5THaqyg==}
+  '@fastify/otel@0.14.0':
+    resolution: {integrity: sha512-IWSb2wrElp/LEEW5DnK7XEfX9LebHt3vZN+vhoFzIAgTGLQCq9li81mtHK4KcYf3W5jR2EEimEBv+TGVLsrEgA==}
     peerDependencies:
       '@opentelemetry/api': ^1.9.0
 
@@ -6180,7 +6184,7 @@ snapshots:
 
   '@fastify/busboy@2.1.1': {}
 
-  '@fastify/otel@0.13.1(@opentelemetry/api@1.9.0)':
+  '@fastify/otel@0.14.0(@opentelemetry/api@1.9.0)':
     dependencies:
       '@opentelemetry/api': 1.9.0
       '@opentelemetry/core': 2.2.0(@opentelemetry/api@1.9.0)
