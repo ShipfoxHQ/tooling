@@ -10,11 +10,7 @@ on:
 jobs:
   ci:
     name: Continuous integration
-    strategy:
-      fail-fast: false
-      matrix:
-        arch: ["amd64", "arm64"]
-    runs-on: ${{ matrix.arch == 'amd64' && 'shipfox-4vcpu-ubuntu-2204' || 'shipfox-4vcpu-ubuntu-2204-arm'  }}
+    runs-on: ubuntu-latest
     permissions:
       contents: read
       id-token: write
