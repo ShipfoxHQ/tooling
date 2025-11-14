@@ -6,9 +6,11 @@
   "packageManager": "pnpm@9.15.9",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
+  "style": "dist/styles.css",
   "type": "module",
   "scripts": {
-    "build": "swc",
+    "build": "swc && pnpm run build:css",
+    "build:css": "vite build --config vite.css.config.ts && rm -f dist/css-entry.js dist/css-entry.js.map",
     "check": "biome-check",
     "storybook": "storybook dev",
     "storybook:build": "storybook build -o storybook-static",
