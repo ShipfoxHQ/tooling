@@ -12,7 +12,6 @@
     flake-utils.lib.eachDefaultSystem (system:
       let 
         pkgs = import nixpkgs { inherit system; config.allowUnfree = true; };
-        isMacOs = builtins.match ".+darwin" != null;
       in
       {
         # Development environment output
