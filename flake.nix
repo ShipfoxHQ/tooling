@@ -23,6 +23,20 @@
               # Node
               nodejs_22
               pnpm
+              playwright-driver
+              chromium
+              cairo
+              pango
+              udev
+              alsa-lib
+              xorg.libX11
+              xorg.libXcomposite
+              xorg.libXdamage
+              xorg.libXext
+              xorg.libXfixes
+              xorg.libXrandr
+              libgbm
+              at-spi2-core
             ];
           };
         };
