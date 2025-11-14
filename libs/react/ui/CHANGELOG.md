@@ -1,5 +1,12 @@
 # @shipfox/react-ui
 
+## 0.5.0
+
+### Minor Changes
+
+- ec0b437: Add Button Link and Icon Button components
+- 7b73bd6: Integrate Argos CI
+
 ## 0.4.0
 
 ### Minor Changes

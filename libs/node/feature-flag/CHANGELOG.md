@@ -1,5 +1,11 @@
 # @shipfox/node-feature-flag
 
+## 0.2.0
+
+### Minor Changes
+
+- 817e1ce: Add a runner kind of context for flagging
+
 ## 0.1.0
 
 ### Minor Changes
