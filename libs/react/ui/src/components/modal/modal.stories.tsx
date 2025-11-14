@@ -189,7 +189,7 @@ export const GithubActions: Story = {
                   <Text className="flex-1 font-semibold text-foreground-neutral-base overflow-ellipsis overflow-hidden whitespace-nowrap">
                     Update your GitHub Actions workflow
                   </Text>
-                  <ButtonLink variant="base" size="sm" href="#" iconRight="chevronRight">
+                  <ButtonLink variant="base" size="sm" href="#" iconRight="bookOpen">
                     See docs
                   </ButtonLink>
                 </div>
