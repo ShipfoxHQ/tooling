@@ -2,6 +2,7 @@ import {
   type RemixiconComponentType,
   RiAddLine,
   RiArrowRightSLine,
+  RiBookOpenFill,
   RiCheckLine,
   RiCloseLine,
   RiFileCopyLine,
@@ -60,6 +61,7 @@ const iconsMap = {
   copy: RiFileCopyLine,
   addLine: RiAddLine,
   chevronRight: RiArrowRightSLine,
+  bookOpen: RiBookOpenFill,
 } as const satisfies Record<string, RemixiconComponentType>;
 
 export type IconName = keyof typeof iconsMap;
