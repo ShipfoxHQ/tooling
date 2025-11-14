@@ -25,7 +25,6 @@ jobs:
         uses: ./.github/actions/pnpm
       - name: Install Playwright browsers
         working-directory: ./libs/react/ui
-        shell: nix develop --command bash {0}
         run: node_modules/.bin/playwright install --with-deps chromium
       - name: Run CI - test
         uses: ./.github/actions/ci
