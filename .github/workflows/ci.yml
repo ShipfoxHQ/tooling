@@ -26,7 +26,7 @@ jobs:
       - name: Install Playwright browsers
         working-directory: ./libs/react/ui
         run: node_modules/.bin/playwright install --with-deps chromium
-      - name: Run CI - test
+      - name: Run CI
         uses: ./.github/actions/ci
         env:
           CLOUDFLARE_ACCOUNT_ID: ${{ vars.CLOUDFLARE_ACCOUNT_ID }}
