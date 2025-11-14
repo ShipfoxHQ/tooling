@@ -12,7 +12,6 @@
     flake-utils.lib.eachDefaultSystem (system:
       let 
         pkgs = import nixpkgs { inherit system; config.allowUnfree = true; };
-        isMacOs = builtins.match ".+darwin" != null;
       in
       {
         # Development environment output
@@ -23,20 +22,6 @@
               # Node
               nodejs_22
               pnpm
-              playwright-driver
-              chromium
-              cairo
-              pango
-              udev
-              alsa-lib
-              xorg.libX11
-              xorg.libXcomposite
-              xorg.libXdamage
-              xorg.libXext
-              xorg.libXfixes
-              xorg.libXrandr
-              libgbm
-              at-spi2-core
             ];
           };
         };
