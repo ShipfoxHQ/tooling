@@ -75,7 +75,7 @@ importers:
     dependencies:
       '@clickhouse/client':
         specifier: ^1.10.1
-        version: 1.12.1
+        version: 1.13.0
       '@shipfox/config':
         specifier: workspace:*
         version: link:../../common/config
@@ -755,11 +755,13 @@ packages:
   '@biomejs/cli-darwin-arm64@2.3.4':
     resolution: {integrity: sha512-w40GvlNzLaqmuWYiDU6Ys9FNhJiclngKqcGld3iJIiy2bpJ0Q+8n3haiaC81uTPY/NA0d8Q/I3Z9+ajc14102Q==}
     engines: {node: '>=14.21.3'}
+    cpu: [arm64]
     os: [darwin]
 
   '@biomejs/cli-darwin-x64@2.3.4':
     resolution: {integrity: sha512-3s7TLVtjJ7ni1xADXsS7x7GMUrLBZXg8SemXc3T0XLslzvqKj/dq1xGeBQ+pOWQzng9MaozfacIHdK2UlJ3jGA==}
     engines: {node: '>=14.21.3'}
+    cpu: [x64]
     os: [darwin]
 
   '@biomejs/cli-linux-arm64-musl@2.3.4':
@@ -771,6 +773,7 @@ packages:
   '@biomejs/cli-linux-arm64@2.3.4':
     resolution: {integrity: sha512-y7efHyyM2gYmHy/AdWEip+VgTMe9973aP7XYKPzu/j8JxnPHuSUXftzmPhkVw0lfm4ECGbdBdGD6+rLmTgNZaA==}
     engines: {node: '>=14.21.3'}
+    cpu: [arm64]
     os: [linux]
 
   '@biomejs/cli-linux-x64-musl@2.3.4':
@@ -782,6 +785,7 @@ packages:
   '@biomejs/cli-linux-x64@2.3.4':
     resolution: {integrity: sha512-gKfjWR/6/dfIxPJCw8REdEowiXCkIpl9jycpNVHux8aX2yhWPLjydOshkDL6Y/82PcQJHn95VCj7J+BRcE5o1Q==}
     engines: {node: '>=14.21.3'}
+    cpu: [x64]
     os: [linux]
 
   '@biomejs/cli-win32-arm64@2.3.4':
@@ -854,11 +858,11 @@ packages:
   '@changesets/write@0.4.0':
     resolution: {integrity: sha512-CdTLvIOPiCNuH71pyDu3rA+Q0n65cmAbXnwWH84rKGiFumFzkmHNT8KHTMEchcxN+Kl8I54xGUhJ7l3E7X396Q==}
 
-  '@clickhouse/client-common@1.12.1':
-    resolution: {integrity: sha512-ccw1N6hB4+MyaAHIaWBwGZ6O2GgMlO99FlMj0B0UEGfjxM9v5dYVYql6FpP19rMwrVAroYs/IgX2vyZEBvzQLg==}
+  '@clickhouse/client-common@1.13.0':
+    resolution: {integrity: sha512-QlGUMd3EaKkIRLCv0WW8Rw9cOlqhwQPT+ucNWY8eC4UALsMhJLpa0H7Cd7MYc9CEtTv/xlr3IcYw5Tdho4Hr2g==}
 
-  '@clickhouse/client@1.12.1':
-    resolution: {integrity: sha512-7ORY85rphRazqHzImNXMrh4vsaPrpetFoTWpZYueCO2bbO6PXYDXp/GQ4DgxnGIqbWB/Di1Ai+Xuwq2o7DJ36A==}
+  '@clickhouse/client@1.13.0':
+    resolution: {integrity: sha512-uK+zqPaJnAoq3QIOvUNbHtbWUhyg2A/aSbdJtrY2+kawp4SMBLcfIbB9ucRv5Yht1CAa3b24CiUlypkmgarukg==}
     engines: {node: '>=16'}
 
   '@csstools/color-helpers@5.0.2':
@@ -6067,11 +6071,11 @@ snapshots:
       human-id: 4.1.2
       prettier: 2.8.8
 
-  '@clickhouse/client-common@1.12.1': {}
+  '@clickhouse/client-common@1.13.0': {}
 
-  '@clickhouse/client@1.12.1':
+  '@clickhouse/client@1.13.0':
     dependencies:
-      '@clickhouse/client-common': 1.12.1
+      '@clickhouse/client-common': 1.13.0
 
   '@csstools/color-helpers@5.0.2': {}
 
