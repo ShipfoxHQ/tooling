@@ -192,7 +192,7 @@
   --background-contrast-pressed: var(--color-neutral-700);
   --background-contrast-base: var(--color-neutral-900);
   --background-neutral-background: var(--color-neutral-50);
-  --background-backdrop-backdrop: var(--color-neutral-0);
+  --background-backdrop-backdrop: var(--color-alpha-black-64);
 
   /* Button Background */
   --background-button-transparent-default: var(--color-alpha-white-0);
