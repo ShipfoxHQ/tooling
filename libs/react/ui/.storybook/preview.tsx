@@ -9,6 +9,17 @@ const withTheme: Decorator = (Story, context) => {
 const preview: Preview = {
   decorators: [withTheme],
   parameters: {
+    viewport: {
+      viewports: {
+        large: {
+          name: 'Large Viewport',
+          styles: {
+            width: '1280px',
+            height: '2000px',
+          },
+        },
+      },
+    },
     options: {
       storySort: {
         method: 'alphabetical',

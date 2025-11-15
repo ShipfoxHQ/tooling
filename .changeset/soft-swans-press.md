@@ -2,4 +2,4 @@
 "@shipfox/react-ui": minor
 ---
 
-Integrate Argos CI
+Add Modal components
