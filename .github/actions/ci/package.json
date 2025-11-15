@@ -2,7 +2,7 @@
   "name": "@shipfox/ci",
   "license": "UNLICENSED",
   "private": true,
-  "packageManager": "pnpm@9.15.9",
+  "packageManager": "pnpm@10.22.0",
   "type": "module",
   "scripts": {
     "build": "node_modules/.bin/vite-build",

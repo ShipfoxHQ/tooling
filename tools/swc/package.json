@@ -3,7 +3,7 @@
   "version": "1.2.1",
   "license": "MIT",
   "private": false,
-  "packageManager": "pnpm@9.15.9",
+  "packageManager": "pnpm@10.22.0",
   "type": "module",
   "bin": {
     "swc": "./bin/swc.js"
