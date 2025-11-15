@@ -9,5 +9,11 @@
     "types": ["@shipfox/vite/client"]
   },
   "include": ["src"],
-  "exclude": ["**/*.test.tsx", "**/*.test.ts", "**/*.stories.tsx", "**/*.stories.ts"]
+  "exclude": [
+    "**/*.test.tsx",
+    "**/*.test.ts",
+    "**/*.stories.tsx",
+    "**/*.stories.ts",
+    "**/build-css-entry.ts"
+  ]
 }
