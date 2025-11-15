@@ -19,6 +19,6 @@
     "@shipfox/ts-config": "workspace:*",
     "@shipfox/typescript": "workspace:*",
     "@shipfox/vite": "workspace:*",
-    "vite": "^6.2.7"
+    "vite": "^7.0.0"
   }
 }
