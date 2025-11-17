@@ -14,4 +14,5 @@ export * from './modal';
 export * from './textarea';
 export * from './theme';
 export * from './toast';
+export * from './tooltip';
 export * from './typography';
