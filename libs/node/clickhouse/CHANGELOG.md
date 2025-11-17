@@ -1,5 +1,12 @@
 # @shipfox/node-clickhouse
 
+## 0.0.3
+
+### Patch Changes
+
+- 6c43903: Update ClickHouse client dependency
+  - @shipfox/config@1.2.0
+
 ## 0.0.2
 
 ### Patch Changes

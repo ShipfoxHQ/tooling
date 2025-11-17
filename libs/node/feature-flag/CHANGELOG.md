@@ -1,5 +1,18 @@
 # @shipfox/node-feature-flag
 
+## 0.3.0
+
+### Minor Changes
+
+- 35f3c64: Add CSS bundle
+
+### Patch Changes
+
+- Updated dependencies [35f3c64]
+  - @shipfox/node-opentelemetry@0.1.0
+  - @shipfox/config@1.2.0
+  - @shipfox/node-log@0.2.0
+
 ## 0.2.0
 
 ### Minor Changes

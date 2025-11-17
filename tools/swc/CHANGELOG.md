@@ -1,5 +1,11 @@
 # @shipfox/swc
 
+## 1.2.2
+
+### Patch Changes
+
+- 6984ba1: Update SWC dependency
+
 ## 1.2.1
 
 ### Patch Changes
