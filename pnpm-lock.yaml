@@ -46,8 +46,8 @@ importers:
         specifier: workspace:*
         version: link:../../../tools/vite
       vite:
-        specifier: ^6.2.7
-        version: 6.4.1(@types/node@24.9.2)(jiti@2.6.1)(lightningcss@1.30.2)
+        specifier: ^7.0.0
+        version: 7.2.2(@types/node@24.9.2)(jiti@2.6.1)(lightningcss@1.30.2)
 
   libs/common/config:
     dependencies:
@@ -349,6 +349,9 @@ importers:
       tailwind-merge:
         specifier: ^3.2.0
         version: 3.4.0
+      vaul:
+        specifier: ^1.1.1
+        version: 1.1.2(@types/react-dom@19.1.6(@types/react@19.2.4))(@types/react@19.2.4)(react-dom@19.1.1(react@19.1.1))(react@19.1.1)
     devDependencies:
       '@argos-ci/cli':
         specifier: ^3.2.1
@@ -434,6 +437,9 @@ importers:
       tw-animate-css:
         specifier: ^1.4.0
         version: 1.4.0
+      vite:
+        specifier: ^7.1.7
+        version: 7.2.2(@types/node@24.9.2)(jiti@2.6.1)(lightningcss@1.30.2)
       vitest:
         specifier: ^4.0.8
         version: 4.0.9(@types/node@24.9.2)(@vitest/browser-playwright@4.0.9)(jiti@2.6.1)(jsdom@27.2.0)(lightningcss@1.30.2)
@@ -5456,6 +5462,12 @@ packages:
     resolution: {integrity: sha512-b+1eJOlsR9K8HJpow9Ok3fiWOWSIcIzXodvv0rQjVoOVNpWMpxf1wZNpt4y9h10odCNrqnYp1OBzRktckBe3sA==}
     hasBin: true
 
+  vaul@1.1.2:
+    resolution: {integrity: sha512-ZFkClGpWyI2WUQjdLJ/BaGuV6AVQiJ3uELGk3OYtP+B6yCO7Cmn9vPFXVJkRaGkOJu3m8bQMgtyzNHixULceQA==}
+    peerDependencies:
+      react: ^16.8 || ^17.0 || ^18.0 || ^19.0.0 || ^19.0.0-rc
+      react-dom: ^16.8 || ^17.0 || ^18.0 || ^19.0.0 || ^19.0.0-rc
+
   vfile-message@4.0.3:
     resolution: {integrity: sha512-QTHzsGd1EhbZs4AsQ20JX1rC3cOlt/IWJruk893DfLRr57lcnOeMaWG4K0JrRta4mIJZKth2Au3mM3u03/JWKw==}
 
@@ -5471,46 +5483,6 @@ packages:
       vite: '*'
     peerDependenciesMeta:
       vite:
-        optional: true
-
-  vite@6.4.1:
-    resolution: {integrity: sha512-+Oxm7q9hDoLMyJOYfUYBuHQo+dkAloi33apOPP56pzj+vsdJDzr+j1NISE5pyaAuKL4A3UD34qd0lx5+kfKp2g==}
-    engines: {node: ^18.0.0 || ^20.0.0 || >=22.0.0}
-    hasBin: true
-    peerDependencies:
-      '@types/node': ^18.0.0 || ^20.0.0 || >=22.0.0
-      jiti: '>=1.21.0'
-      less: '*'
-      lightningcss: ^1.21.0
-      sass: '*'
-      sass-embedded: '*'
-      stylus: '*'
-      sugarss: '*'
-      terser: ^5.16.0
-      tsx: ^4.8.1
-      yaml: ^2.4.2
-    peerDependenciesMeta:
-      '@types/node':
-        optional: true
-      jiti:
-        optional: true
-      less:
-        optional: true
-      lightningcss:
-        optional: true
-      sass:
-        optional: true
-      sass-embedded:
-        optional: true
-      stylus:
-        optional: true
-      sugarss:
-        optional: true
-      terser:
-        optional: true
-      tsx:
-        optional: true
-      yaml:
         optional: true
 
   vite@7.2.2:
@@ -10766,6 +10738,15 @@ snapshots:
 
   uuid@9.0.1: {}
 
+  vaul@1.1.2(@types/react-dom@19.1.6(@types/react@19.2.4))(@types/react@19.2.4)(react-dom@19.1.1(react@19.1.1))(react@19.1.1):
+    dependencies:
+      '@radix-ui/react-dialog': 1.1.15(@types/react-dom@19.1.6(@types/react@19.2.4))(@types/react@19.2.4)(react-dom@19.1.1(react@19.1.1))(react@19.1.1)
+      react: 19.1.1
+      react-dom: 19.1.1(react@19.1.1)
+    transitivePeerDependencies:
+      - '@types/react'
+      - '@types/react-dom'
+
   vfile-message@4.0.3:
     dependencies:
       '@types/unist': 3.0.3
@@ -10803,20 +10784,6 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
       - typescript
-
-  vite@6.4.1(@types/node@24.9.2)(jiti@2.6.1)(lightningcss@1.30.2):
-    dependencies:
-      esbuild: 0.25.12
-      fdir: 6.5.0(picomatch@4.0.3)
-      picomatch: 4.0.3
-      postcss: 8.5.6
-      rollup: 4.53.1
-      tinyglobby: 0.2.15
-    optionalDependencies:
-      '@types/node': 24.9.2
-      fsevents: 2.3.3
-      jiti: 2.6.1
-      lightningcss: 1.30.2
 
   vite@7.2.2(@types/node@24.9.2)(jiti@2.6.1)(lightningcss@1.30.2):
     dependencies:

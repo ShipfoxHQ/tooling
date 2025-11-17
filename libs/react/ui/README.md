@@ -14,6 +14,22 @@ yarn add @shipfox/react-ui
 npm install @shipfox/react-ui
 ```
 
+### CSS Styles
+
+This package includes a pre-built, minified CSS bundle with all Tailwind CSS styles and design tokens. Import it in your application:
+
+```typescript
+import "@shipfox/react-ui/dist/styles.css"
+```
+
+Or in your HTML:
+
+```html
+<link rel="stylesheet" href="node_modules/@shipfox/react-ui/dist/styles.css" />
+```
+
+The CSS bundle is self-contained and includes all design tokens, so you don't need to configure Tailwind CSS in your consuming project.
+
 ## Storybook
 
 The storybook is [publicly accessible online](https://react-ui.shipfox.vercel.app).
