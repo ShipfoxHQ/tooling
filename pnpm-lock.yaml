@@ -351,7 +351,7 @@ importers:
         version: 3.4.0
       vaul:
         specifier: ^1.1.1
-        version: 1.1.2(@types/react-dom@19.1.6(@types/react@19.2.4))(@types/react@19.2.4)(react-dom@19.1.1(react@19.1.1))(react@19.1.1)
+        version: 1.1.2(@types/react-dom@19.1.6(@types/react@19.2.5))(@types/react@19.2.5)(react-dom@19.1.1(react@19.1.1))(react@19.1.1)
     devDependencies:
       '@argos-ci/cli':
         specifier: ^3.2.1
@@ -770,13 +770,11 @@ packages:
   '@biomejs/cli-darwin-arm64@2.3.5':
     resolution: {integrity: sha512-fLdTur8cJU33HxHUUsii3GLx/TR0BsfQx8FkeqIiW33cGMtUD56fAtrh+2Fx1uhiCsVZlFh6iLKUU3pniZREQw==}
     engines: {node: '>=14.21.3'}
-    cpu: [arm64]
     os: [darwin]
 
   '@biomejs/cli-darwin-x64@2.3.5':
     resolution: {integrity: sha512-qpT8XDqeUlzrOW8zb4k3tjhT7rmvVRumhi2657I2aGcY4B+Ft5fNwDdZGACzn8zj7/K1fdWjgwYE3i2mSZ+vOA==}
     engines: {node: '>=14.21.3'}
-    cpu: [x64]
     os: [darwin]
 
   '@biomejs/cli-linux-arm64-musl@2.3.5':
@@ -788,7 +786,6 @@ packages:
   '@biomejs/cli-linux-arm64@2.3.5':
     resolution: {integrity: sha512-u/pybjTBPGBHB66ku4pK1gj+Dxgx7/+Z0jAriZISPX1ocTO8aHh8x8e7Kb1rB4Ms0nA/SzjtNOVJ4exVavQBCw==}
     engines: {node: '>=14.21.3'}
-    cpu: [arm64]
     os: [linux]
 
   '@biomejs/cli-linux-x64-musl@2.3.5':
@@ -800,7 +797,6 @@ packages:
   '@biomejs/cli-linux-x64@2.3.5':
     resolution: {integrity: sha512-XrIVi9YAW6ye0CGQ+yax0gLfx+BFOtKaNX74n+xHWla6Cl6huUmcKNO7HPx7BiKnJUzrxXY1qYlm7xMvi08X4g==}
     engines: {node: '>=14.21.3'}
-    cpu: [x64]
     os: [linux]
 
   '@biomejs/cli-win32-arm64@2.3.5':
@@ -10733,9 +10729,9 @@ snapshots:
 
   uuid@9.0.1: {}
 
-  vaul@1.1.2(@types/react-dom@19.1.6(@types/react@19.2.4))(@types/react@19.2.4)(react-dom@19.1.1(react@19.1.1))(react@19.1.1):
+  vaul@1.1.2(@types/react-dom@19.1.6(@types/react@19.2.5))(@types/react@19.2.5)(react-dom@19.1.1(react@19.1.1))(react@19.1.1):
     dependencies:
-      '@radix-ui/react-dialog': 1.1.15(@types/react-dom@19.1.6(@types/react@19.2.4))(@types/react@19.2.4)(react-dom@19.1.1(react@19.1.1))(react@19.1.1)
+      '@radix-ui/react-dialog': 1.1.15(@types/react-dom@19.1.6(@types/react@19.2.5))(@types/react@19.2.5)(react-dom@19.1.1(react@19.1.1))(react@19.1.1)
       react: 19.1.1
       react-dom: 19.1.1(react@19.1.1)
     transitivePeerDependencies:
