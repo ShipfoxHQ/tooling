@@ -1,5 +1,12 @@
 # @shipfox/vitest
 
+## 1.2.0
+
+### Minor Changes
+
+- 3a95f26: Add Argos CI Upload Screenshots
+- 35f3c64: Add CSS bundle
+
 ## 1.1.3
 
 ### Patch Changes
