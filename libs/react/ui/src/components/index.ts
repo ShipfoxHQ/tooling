@@ -10,6 +10,7 @@ export * from './inline-tips';
 export * from './input';
 export * from './item';
 export * from './label';
+export * from './modal';
 export * from './textarea';
 export * from './theme';
 export * from './toast';

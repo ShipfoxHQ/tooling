@@ -17,7 +17,8 @@
       "!**/out",
       "!**/coverage",
       "!**/nix/store",
-      "!**/storybook-static"
+      "!**/storybook-static",
+      "!**/screenshots"
     ],
     "ignoreUnknown": false
   },
