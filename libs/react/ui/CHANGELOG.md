@@ -1,5 +1,13 @@
 # @shipfox/react-ui
 
+## 0.6.0
+
+### Minor Changes
+
+- 3a95f26: Add Argos CI Upload Screenshots
+- 35f3c64: Add CSS bundle
+- 3a95f26: Add Modal components
+
 ## 0.5.0
 
 ### Minor Changes
