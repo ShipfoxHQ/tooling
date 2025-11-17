@@ -1,5 +1,11 @@
 # @shipfox/biome
 
+## 1.4.0
+
+### Minor Changes
+
+- 35f3c64: Add CSS bundle
+
 ## 1.3.1
 
 ### Patch Changes

@@ -1,5 +1,15 @@
 # @shipfox/node-opentelemetry
 
+## 0.1.0
+
+### Minor Changes
+
+- 35f3c64: Add CSS bundle
+
+### Patch Changes
+
+- @shipfox/config@1.2.0
+
 ## 0.0.2
 
 ### Patch Changes
