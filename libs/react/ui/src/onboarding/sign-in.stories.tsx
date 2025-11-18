@@ -35,13 +35,13 @@ export const Default: Story = {
           <DotGrid
             dotSize={2}
             gap={20}
-            baseColor="#F00"
+            baseColor="#e63e00"
             activeColor="#FF0076"
-            proximity={80}
+            proximity={100}
             shockRadius={8}
             shockStrength={100}
-            resistance={750}
-            returnDuration={5}
+            resistance={500}
+            returnDuration={1.5}
           />
         </div>
 

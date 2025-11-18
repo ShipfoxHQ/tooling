@@ -2,6 +2,7 @@ import {gsap} from 'gsap';
 import {InertiaPlugin} from 'gsap/InertiaPlugin';
 import type React from 'react';
 import {useCallback, useEffect, useMemo, useRef} from 'react';
+import {cn} from 'utils';
 
 gsap.registerPlugin(InertiaPlugin);
 
@@ -90,6 +91,20 @@ export function DotGrid({
   const baseRgb = useMemo(() => hexToRgb(baseColor), [baseColor]);
   const activeRgb = useMemo(() => hexToRgb(activeColor), [activeColor]);
 
+  const colorGradient = useMemo(() => {
+    const gradient: string[] = new Array(256);
+    for (let i = 0; i < 256; i++) {
+      const normalizedSqDist = i / 255;
+      const normalizedDist = Math.sqrt(normalizedSqDist);
+      const t = 1 - normalizedDist;
+      const r = Math.round(baseRgb.r + (activeRgb.r - baseRgb.r) * t);
+      const g = Math.round(baseRgb.g + (activeRgb.g - baseRgb.g) * t);
+      const b = Math.round(baseRgb.b + (activeRgb.b - baseRgb.b) * t);
+      gradient[i] = `rgb(${r},${g},${b})`;
+    }
+    return gradient;
+  }, [baseRgb, activeRgb]);
+
   const circlePath = useMemo(() => {
     if (typeof window === 'undefined' || !window.Path2D) return null;
 
@@ -161,12 +176,9 @@ export function DotGrid({
 
         let fillColor = baseColor;
         if (dsq <= proxSq) {
-          const dist = Math.sqrt(dsq);
-          const t = 1 - dist / proximity;
-          const r = Math.round(baseRgb.r + (activeRgb.r - baseRgb.r) * t);
-          const g = Math.round(baseRgb.g + (activeRgb.g - baseRgb.g) * t);
-          const b = Math.round(baseRgb.b + (activeRgb.b - baseRgb.b) * t);
-          fillColor = `rgb(${r},${g},${b})`;
+          const normalizedSqDist = dsq / proxSq;
+          const index = Math.min(255, Math.max(0, Math.round(normalizedSqDist * 255)));
+          fillColor = colorGradient[index];
         }
 
         ctx.save();
@@ -181,7 +193,7 @@ export function DotGrid({
 
     draw();
     return () => cancelAnimationFrame(rafId);
-  }, [proximity, baseColor, activeRgb, baseRgb, circlePath]);
+  }, [proximity, baseColor, colorGradient, circlePath]);
 
   useEffect(() => {
     buildGrid();
@@ -281,22 +293,32 @@ export function DotGrid({
     };
 
     const throttledMove = throttle(onMove, 50) as (e: MouseEvent) => void;
-    window.addEventListener('mousemove', throttledMove, {passive: true});
-    window.addEventListener('click', onClick);
-
+    const wrapper = wrapperRef.current;
+    if (wrapper) {
+      wrapper.addEventListener('mousemove', throttledMove, {passive: true});
+      wrapper.addEventListener('click', onClick);
+    }
     return () => {
-      window.removeEventListener('mousemove', throttledMove);
-      window.removeEventListener('click', onClick);
+      if (wrapper) {
+        wrapper.removeEventListener('mousemove', throttledMove);
+        wrapper.removeEventListener('click', onClick);
+      }
     };
   }, [maxSpeed, speedTrigger, proximity, resistance, returnDuration, shockRadius, shockStrength]);
 
   return (
     <section
-      className={`p-4 flex items-center justify-center h-full w-full relative ${className}`}
+      className={cn('p-4 flex items-center justify-center h-full w-full relative', className)}
       style={style}
+      role="presentation"
     >
       <div ref={wrapperRef} className="w-full h-full relative">
-        <canvas ref={canvasRef} className="absolute inset-0 w-full h-full pointer-events-none" />
+        {/** biome-ignore lint/a11y/noAriaHiddenOnFocusable: <canvas is not focusable> */}
+        <canvas
+          ref={canvasRef}
+          className="absolute inset-0 w-full h-full pointer-events-none"
+          aria-hidden="true"
+        />
       </div>
     </section>
   );
