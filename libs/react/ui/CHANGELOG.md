@@ -1,5 +1,11 @@
 # @shipfox/react-ui
 
+## 0.7.0
+
+### Minor Changes
+
+- 6054e39: Add Dot-grid component
+
 ## 0.6.0
 
 ### Minor Changes
