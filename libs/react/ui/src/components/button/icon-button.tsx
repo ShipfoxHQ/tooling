@@ -40,6 +40,18 @@ export const iconButtonVariants = cva(
   },
 );
 
+const spinnerSizeMap: Record<
+  NonNullable<VariantProps<typeof iconButtonVariants>['size']>,
+  string
+> = {
+  '2xs': 'size-8',
+  xs: 'size-10',
+  sm: 'size-12',
+  md: 'size-14',
+  lg: 'size-16',
+  xl: 'size-18',
+};
+
 export function IconButton({
   className,
   variant,
@@ -49,21 +61,34 @@ export function IconButton({
   asChild = false,
   children,
   icon,
+  isLoading = false,
+  disabled,
   ...props
 }: ComponentProps<'button'> &
   VariantProps<typeof iconButtonVariants> & {
     asChild?: boolean;
     icon?: IconName;
+    isLoading?: boolean;
   }) {
   const Comp = asChild ? Slot : 'button';
+  const spinnerSize = spinnerSizeMap[size ?? 'md'];
 
   return (
     <Comp
       data-slot="icon-button"
       className={cn(iconButtonVariants({variant, size, radius, muted}), className)}
+      disabled={disabled || isLoading}
+      aria-busy={isLoading}
+      aria-live={isLoading ? 'polite' : undefined}
       {...props}
     >
-      {icon ? <Icon name={icon} /> : children}
+      {isLoading ? (
+        <Icon name="spinner" className={spinnerSize} />
+      ) : icon ? (
+        <Icon name={icon} />
+      ) : (
+        children
+      )}
     </Comp>
   );
 }

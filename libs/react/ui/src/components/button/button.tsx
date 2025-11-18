@@ -46,18 +46,32 @@ export function Button({
   children,
   iconLeft,
   iconRight,
+  isLoading = false,
+  disabled,
   ...props
 }: ComponentProps<'button'> &
   VariantProps<typeof buttonVariants> & {
     asChild?: boolean;
     iconLeft?: IconName;
     iconRight?: IconName;
+    isLoading?: boolean;
   }) {
   const Comp = asChild ? Slot : 'button';
 
   return (
-    <Comp data-slot="button" className={cn(buttonVariants({variant, size, className}))} {...props}>
-      {iconLeft && <Icon name={iconLeft} />}
+    <Comp
+      data-slot="button"
+      className={cn(buttonVariants({variant, size, className}))}
+      disabled={disabled || isLoading}
+      aria-busy={isLoading}
+      aria-live={isLoading ? 'polite' : undefined}
+      {...props}
+    >
+      {isLoading ? (
+        <Icon name="spinner" className="size-14" />
+      ) : (
+        iconLeft && <Icon name={iconLeft} />
+      )}
       {children}
       {iconRight && <Icon name={iconRight} />}
     </Comp>
