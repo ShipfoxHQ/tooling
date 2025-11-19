@@ -1,5 +1,12 @@
 # @shipfox/react-ui
 
+## 0.8.0
+
+### Minor Changes
+
+- f3dd22c: Add Form components
+- 5e4a493: Update Spinner icon and Button loading state
+
 ## 0.7.0
 
 ### Minor Changes
