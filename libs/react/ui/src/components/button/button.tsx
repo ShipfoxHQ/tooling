@@ -38,6 +38,15 @@ export const buttonVariants = cva(
   },
 );
 
+const spinnerSizeMap: Record<NonNullable<VariantProps<typeof buttonVariants>['size']>, string> = {
+  '2xs': 'size-10',
+  xs: 'size-10',
+  sm: 'size-12',
+  md: 'size-14',
+  lg: 'size-16',
+  xl: 'size-18',
+};
+
 export function Button({
   className,
   variant,
@@ -57,6 +66,8 @@ export function Button({
     isLoading?: boolean;
   }) {
   const Comp = asChild ? Slot : 'button';
+  const spinnerSize =
+    spinnerSizeMap[(size ?? 'md') as NonNullable<VariantProps<typeof buttonVariants>['size']>];
 
   return (
     <Comp
@@ -68,7 +79,7 @@ export function Button({
       {...props}
     >
       {isLoading ? (
-        <Icon name="spinner" className="size-14" />
+        <Icon name="spinner" className={spinnerSize} />
       ) : (
         iconLeft && <Icon name={iconLeft} />
       )}
