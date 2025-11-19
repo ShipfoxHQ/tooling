@@ -26,6 +26,7 @@ const meta = {
       options: sizeOptions,
     },
     asChild: {control: 'boolean'},
+    isLoading: {control: 'boolean'},
   },
   args: {
     children: 'Click me',
@@ -113,6 +114,23 @@ export const Icons: Story = {
       <div>
         <Button {...args} iconLeft="google" iconRight="microsoft">
           Click me
+        </Button>
+      </div>
+    </div>
+  ),
+};
+
+export const Loading: Story = {
+  render: (args) => (
+    <div className="flex flex-col gap-16">
+      <div>
+        <Button {...args} isLoading>
+          Loading...
+        </Button>
+      </div>
+      <div>
+        <Button {...args} isLoading iconLeft="google">
+          Loading with left icon
         </Button>
       </div>
     </div>

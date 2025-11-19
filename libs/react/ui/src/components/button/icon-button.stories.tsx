@@ -180,3 +180,49 @@ export const Sizes: Story = {
     </div>
   ),
 };
+
+export const Loading: Story = {
+  render: ({children: _children, ...args}) => (
+    <div className="flex flex-col gap-32">
+      <div className="flex flex-col gap-16">
+        <Code variant="label">Loading by Size:</Code>
+        <div className="flex gap-16 items-center">
+          {sizeOptions.map((size) => (
+            <div key={size} className="flex flex-col gap-8 items-center">
+              <Code variant="label" className="text-foreground-neutral-subtle text-xs">
+                {size}
+              </Code>
+              <IconButton {...args} icon="addLine" aria-label="Loading" size={size} isLoading />
+            </div>
+          ))}
+        </div>
+      </div>
+      <div className="flex flex-col gap-16">
+        <Code variant="label">Loading by Variant:</Code>
+        <div className="flex gap-16 items-center">
+          {variantOptions.map((variant) => (
+            <div key={variant} className="flex flex-col gap-8 items-center">
+              <Code variant="label" className="text-foreground-neutral-subtle text-xs">
+                {variant}
+              </Code>
+              <IconButton
+                {...args}
+                icon="addLine"
+                aria-label="Loading"
+                variant={variant}
+                isLoading
+              />
+            </div>
+          ))}
+        </div>
+      </div>
+      <div className="flex flex-col gap-16">
+        <Code variant="label">Normal vs Loading:</Code>
+        <div className="flex gap-16 items-center">
+          <IconButton {...args} icon="addLine" aria-label="Add" />
+          <IconButton {...args} icon="addLine" aria-label="Loading" isLoading />
+        </div>
+      </div>
+    </div>
+  ),
+};

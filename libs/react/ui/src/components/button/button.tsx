@@ -38,6 +38,15 @@ export const buttonVariants = cva(
   },
 );
 
+const spinnerSizeMap: Record<NonNullable<VariantProps<typeof buttonVariants>['size']>, string> = {
+  '2xs': 'size-10',
+  xs: 'size-10',
+  sm: 'size-12',
+  md: 'size-14',
+  lg: 'size-16',
+  xl: 'size-18',
+};
+
 export function Button({
   className,
   variant,
@@ -46,18 +55,34 @@ export function Button({
   children,
   iconLeft,
   iconRight,
+  isLoading = false,
+  disabled,
   ...props
 }: ComponentProps<'button'> &
   VariantProps<typeof buttonVariants> & {
     asChild?: boolean;
     iconLeft?: IconName;
     iconRight?: IconName;
+    isLoading?: boolean;
   }) {
   const Comp = asChild ? Slot : 'button';
+  const spinnerSize =
+    spinnerSizeMap[(size ?? 'md') as NonNullable<VariantProps<typeof buttonVariants>['size']>];
 
   return (
-    <Comp data-slot="button" className={cn(buttonVariants({variant, size, className}))} {...props}>
-      {iconLeft && <Icon name={iconLeft} />}
+    <Comp
+      data-slot="button"
+      className={cn(buttonVariants({variant, size, className}))}
+      disabled={disabled || isLoading}
+      aria-busy={isLoading}
+      aria-live={isLoading ? 'polite' : undefined}
+      {...props}
+    >
+      {isLoading ? (
+        <Icon name="spinner" className={spinnerSize} />
+      ) : (
+        iconLeft && <Icon name={iconLeft} />
+      )}
       {children}
       {iconRight && <Icon name={iconRight} />}
     </Comp>
