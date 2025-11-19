@@ -6,6 +6,7 @@ export * from './checkbox';
 export * from './code-block';
 export * from './dot-grid';
 export * from './dynamic-item';
+export * from './form';
 export * from './icon';
 export * from './inline-tips';
 export * from './input';
