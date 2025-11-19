@@ -5,7 +5,7 @@ runs:
   using: composite
   steps:
     - name: Install Nix
-      uses: cachix/install-nix-action@fd24c48048070c1be9acd18c9d369a83f0fe94d7 # v31
+      uses: cachix/install-nix-action@0b0e072294b088b73964f1d72dfdac0951439dbd # v31
     - name: Cache dependencies
       uses: nix-community/cache-nix-action@135667ec418502fa5a3598af6fb9eb733888ce6a # v6
       with:
