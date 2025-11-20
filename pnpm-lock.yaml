@@ -361,7 +361,7 @@ importers:
         version: 3.2.1
       '@argos-ci/storybook':
         specifier: ^5.2.1
-        version: 5.2.1
+        version: 5.2.3
       '@hookform/resolvers':
         specifier: ^5.2.2
         version: 5.2.2(react-hook-form@7.60.0(react@19.1.1))
@@ -642,8 +642,8 @@ packages:
     resolution: {integrity: sha512-lVWN8MrRYEbCjcZcutTzdJEA9tNB1IBqjIUJyjxR1iHMXZJYVLQbWQcmlZz33sIHkicLgAKTKrSVUOjf34MXAA==}
     engines: {node: '>=20.0.0'}
 
-  '@argos-ci/browser@5.0.0':
-    resolution: {integrity: sha512-SKAD7EXoLX4u50dzTIT/ABnpD284+DnBfoJM0ZrTIav2eiiVJyknNKSznF5w118lYGnYvugTXbKMnukGPzJeOA==}
+  '@argos-ci/browser@5.1.0':
+    resolution: {integrity: sha512-4UEM8MSPrlSKbzWMTa2KFXQ5SH/GB8tBl7TRXRk10McgzDwjNO3lG28KP10MTrWnn67cww7gzXPP8umSI048WQ==}
     engines: {node: '>=20.0.0'}
 
   '@argos-ci/cli@3.2.1':
@@ -655,12 +655,12 @@ packages:
     resolution: {integrity: sha512-jERRoj+da36Y9NwFyws00LKFmCLHBTklIE0DYRptrPUSf3aitly6KmllkKHGi2UU1XcIqAO2Pzy1l5shCs/FXw==}
     engines: {node: '>=20.0.0'}
 
-  '@argos-ci/playwright@6.3.1':
-    resolution: {integrity: sha512-E4zl8i/+l4v7eK8NUzp0J3clok+urHGe2WP/FRtOMPuQ9vmZ/FF4LTZ3obMhmeyu9/PMIdV545w4KPaTZl3Y5w==}
+  '@argos-ci/playwright@6.3.3':
+    resolution: {integrity: sha512-bnnTMdHlH2GPDWKZAamZ9g5htVE1KpJ5DU94PH00uxbzpIB6wlHX2c+DTxNchDxnPAqvyhT1T4xZT0LtAif57w==}
     engines: {node: '>=20.0.0'}
 
-  '@argos-ci/storybook@5.2.1':
-    resolution: {integrity: sha512-MldADhlxKPRFvd39TqK8Nf5FDKo1EL1x6Wy6+UZbinvfBEwJ4Gjfw59WS642rPgcnlaSr8QlGTxzMwURa+L1Bw==}
+  '@argos-ci/storybook@5.2.3':
+    resolution: {integrity: sha512-nGBiYdGA4f9+guG6mzNwK66rc5brZLix0FqrJqH08rp5cEWF6WOfLyyGuwPXJGnr/Bz/UWQXP6wsl43dK00IQQ==}
     engines: {node: '>=20.0.0'}
 
   '@argos-ci/util@3.2.0':
@@ -5692,7 +5692,7 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@argos-ci/browser@5.0.0': {}
+  '@argos-ci/browser@5.1.0': {}
 
   '@argos-ci/cli@3.2.1':
     dependencies:
@@ -5716,9 +5716,9 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@argos-ci/playwright@6.3.1':
+  '@argos-ci/playwright@6.3.3':
     dependencies:
-      '@argos-ci/browser': 5.0.0
+      '@argos-ci/browser': 5.1.0
       '@argos-ci/core': 4.5.0
       '@argos-ci/util': 3.2.0
       chalk: 5.6.2
@@ -5726,9 +5726,9 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@argos-ci/storybook@5.2.1':
+  '@argos-ci/storybook@5.2.3':
     dependencies:
-      '@argos-ci/playwright': 6.3.1
+      '@argos-ci/playwright': 6.3.3
       '@argos-ci/util': 3.2.0
     transitivePeerDependencies:
       - supports-color
