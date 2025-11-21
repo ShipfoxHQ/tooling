@@ -1,4 +1,4 @@
-import {ButtonLink} from 'components/button/button-link';
+import {buttonLinkVariants} from 'components/button/button-link';
 import {Label} from 'components/label';
 import {type ReactNode, useId} from 'react';
 import {cn} from 'utils/cn';
@@ -71,14 +71,16 @@ export function CheckboxLinks({
                   {link.label}
                 </a>
               ) : (
-                <ButtonLink
-                  variant="interactive"
-                  size="sm"
+                <button
+                  type="button"
                   onClick={link.onClick}
-                  className={linkClassName}
+                  className={cn(
+                    buttonLinkVariants({variant: 'interactive', size: 'sm'}),
+                    linkClassName,
+                  )}
                 >
                   {link.label}
-                </ButtonLink>
+                </button>
               )}
               {index < links.length - 1 && (separator ?? defaultSeparator)}
             </div>

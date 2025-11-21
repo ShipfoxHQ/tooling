@@ -76,7 +76,7 @@ export function Button({
       disabled={disabled || isLoading}
       aria-busy={isLoading}
       aria-live={isLoading ? 'polite' : undefined}
-      aria-disabled={disabled || isLoading}
+      {...(asChild ? {'aria-disabled': disabled || isLoading} : {})}
       {...props}
     >
       {isLoading ? (
