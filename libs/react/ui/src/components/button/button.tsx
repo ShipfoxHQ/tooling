@@ -5,7 +5,7 @@ import type {ComponentProps} from 'react';
 import {cn} from 'utils/cn';
 
 export const buttonVariants = cva(
-  'rounded-6 inline-flex items-center justify-center whitespace-nowrap transition-colors disabled:pointer-events-none shrink-0 outline-none',
+  'rounded-6 inline-flex items-center justify-center whitespace-nowrap transition-colors cursor-pointer disabled:pointer-events-none shrink-0 outline-none',
   {
     variants: {
       variant: {
@@ -76,6 +76,7 @@ export function Button({
       disabled={disabled || isLoading}
       aria-busy={isLoading}
       aria-live={isLoading ? 'polite' : undefined}
+      {...(asChild ? {'aria-disabled': disabled || isLoading} : {})}
       {...props}
     >
       {isLoading ? (
