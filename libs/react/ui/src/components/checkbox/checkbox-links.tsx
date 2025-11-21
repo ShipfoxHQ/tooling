@@ -1,3 +1,4 @@
+import {ButtonLink} from 'components/button/button-link';
 import {Label} from 'components/label';
 import {type ReactNode, useId} from 'react';
 import {cn} from 'utils/cn';
@@ -58,27 +59,26 @@ export function CheckboxLinks({
               {link.href ? (
                 <a
                   href={link.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
                   onClick={link.onClick}
                   className={cn(
                     'text-sm leading-20 font-medium text-foreground-highlight-interactive',
-                    'hover:text-foreground-highlight-interactive-hover',
+                    'hover:text-foreground-highlight-interactive-hover transition-colors',
                     linkClassName,
                   )}
                 >
                   {link.label}
                 </a>
               ) : (
-                <button
-                  type="button"
+                <ButtonLink
+                  variant="interactive"
+                  size="sm"
                   onClick={link.onClick}
-                  className={cn(
-                    'text-sm leading-20 font-medium text-foreground-highlight-interactive',
-                    'hover:text-foreground-highlight-interactive-hover',
-                    linkClassName,
-                  )}
+                  className={linkClassName}
                 >
                   {link.label}
-                </button>
+                </ButtonLink>
               )}
               {index < links.length - 1 && (separator ?? defaultSeparator)}
             </div>
