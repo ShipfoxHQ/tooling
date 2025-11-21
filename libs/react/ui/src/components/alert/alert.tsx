@@ -4,6 +4,7 @@ import {AnimatePresence, motion, type Transition} from 'framer-motion';
 import {
   type ComponentProps,
   createContext,
+  type MouseEvent,
   useCallback,
   useContext,
   useEffect,
@@ -254,7 +255,7 @@ function AlertClose({
   const {onClose, variant: contextVariant} = useAlertContext();
   const variant = variantProp ?? contextVariant ?? 'default';
 
-  const handleClick = (e: React.MouseEvent<HTMLButtonElement>) => {
+  const handleClick = (e: MouseEvent<HTMLButtonElement>) => {
     onClose();
     onClick?.(e);
   };
