@@ -75,7 +75,7 @@ importers:
     dependencies:
       '@clickhouse/client':
         specifier: ^1.10.1
-        version: 1.13.0
+        version: 1.14.0
       '@shipfox/config':
         specifier: workspace:*
         version: link:../../common/config
@@ -882,11 +882,11 @@ packages:
   '@changesets/write@0.4.0':
     resolution: {integrity: sha512-CdTLvIOPiCNuH71pyDu3rA+Q0n65cmAbXnwWH84rKGiFumFzkmHNT8KHTMEchcxN+Kl8I54xGUhJ7l3E7X396Q==}
 
-  '@clickhouse/client-common@1.13.0':
-    resolution: {integrity: sha512-QlGUMd3EaKkIRLCv0WW8Rw9cOlqhwQPT+ucNWY8eC4UALsMhJLpa0H7Cd7MYc9CEtTv/xlr3IcYw5Tdho4Hr2g==}
+  '@clickhouse/client-common@1.14.0':
+    resolution: {integrity: sha512-CyUcv2iCkZ1A++vmOSufYRpHR3aAWVfbrWed7ATzf0yyx/BW/2SEqlL07vBpSRa3BIkQe/DSOHVv8JkWZpUOwQ==}
 
-  '@clickhouse/client@1.13.0':
-    resolution: {integrity: sha512-uK+zqPaJnAoq3QIOvUNbHtbWUhyg2A/aSbdJtrY2+kawp4SMBLcfIbB9ucRv5Yht1CAa3b24CiUlypkmgarukg==}
+  '@clickhouse/client@1.14.0':
+    resolution: {integrity: sha512-co2spjR7wZoZ3Ck0H/jv76bpiuO3oJHtOmq9/gxFiod2DcT9NFg01u/hXcG8MJFnEJuMB6e3vGqS6IOnLwHqRw==}
     engines: {node: '>=16'}
 
   '@csstools/color-helpers@5.1.0':
@@ -6048,11 +6048,11 @@ snapshots:
       human-id: 4.1.2
       prettier: 2.8.8
 
-  '@clickhouse/client-common@1.13.0': {}
+  '@clickhouse/client-common@1.14.0': {}
 
-  '@clickhouse/client@1.13.0':
+  '@clickhouse/client@1.14.0':
     dependencies:
-      '@clickhouse/client-common': 1.13.0
+      '@clickhouse/client-common': 1.14.0
 
   '@csstools/color-helpers@5.1.0': {}
 
