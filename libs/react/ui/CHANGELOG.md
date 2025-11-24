@@ -1,5 +1,11 @@
 # @shipfox/react-ui
 
+## 0.9.0
+
+### Minor Changes
+
+- 00b8126: Enhance Alert, Buttons, Checkbox components
+
 ## 0.8.0
 
 ### Minor Changes
