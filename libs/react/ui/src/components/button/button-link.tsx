@@ -5,7 +5,7 @@ import type {ComponentProps} from 'react';
 import {cn} from 'utils/cn';
 
 export const buttonLinkVariants = cva(
-  'inline-flex items-center justify-center gap-4 whitespace-nowrap transition-colors disabled:pointer-events-none outline-none font-medium',
+  'inline-flex items-center justify-center gap-4 whitespace-nowrap transition-colors cursor-pointer disabled:pointer-events-none outline-none font-medium',
   {
     variants: {
       variant: {

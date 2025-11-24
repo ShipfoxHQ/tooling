@@ -356,16 +356,32 @@ export const CheckboxLinksStory: StoryObj = {
           id="checkbox-links-default"
           label="Accept policies"
           links={[
-            {label: 'Terms of use', href: '#'},
-            {label: 'Privacy Policy', href: '#'},
+            {label: 'Terms of use', href: 'https://www.shipfox.io/legal/terms-of-service'},
+            {
+              label: 'Privacy Policy',
+              onClick: () =>
+                window.open(
+                  'https://www.shipfox.io/legal/privacy-policy',
+                  '_blank',
+                  'noopener,noreferrer',
+                ),
+            },
           ]}
         />
         <CheckboxLinks
           id="checkbox-links-checked"
           label="Accept policies"
           links={[
-            {label: 'Terms of use', href: '#'},
-            {label: 'Privacy Policy', href: '#'},
+            {label: 'Terms of use', href: 'https://www.shipfox.io/legal/terms-of-service'},
+            {
+              label: 'Privacy Policy',
+              onClick: () =>
+                window.open(
+                  'https://www.shipfox.io/legal/privacy-policy',
+                  '_blank',
+                  'noopener,noreferrer',
+                ),
+            },
           ]}
           checked
         />
