@@ -1,4 +1,20 @@
 import type {RemixiconComponentType} from '@remixicon/react';
+import {
+  RiAddLine,
+  RiArrowRightSLine,
+  RiBookOpenFill,
+  RiCheckLine,
+  RiCloseLine,
+  RiFileCopyLine,
+  RiGithubFill,
+  RiGoogleFill,
+  RiHomeSmileFill,
+  RiImageAddFill,
+  RiInformationFill,
+  RiMicrosoftFill,
+  RiMoneyDollarCircleLine,
+  RiSubtractLine,
+} from '@remixicon/react';
 import type {ComponentProps} from 'react';
 import {
   BadgeIcon,
@@ -17,6 +33,23 @@ import {
   XCircleSolidIcon,
 } from './custom';
 import {remixiconMap} from './remixicon-registry';
+
+const commonRemixicons = {
+  addLine: RiAddLine,
+  close: RiCloseLine,
+  check: RiCheckLine,
+  copy: RiFileCopyLine,
+  info: RiInformationFill,
+  imageAdd: RiImageAddFill,
+  chevronRight: RiArrowRightSLine,
+  homeSmile: RiHomeSmileFill,
+  money: RiMoneyDollarCircleLine,
+  google: RiGoogleFill,
+  microsoft: RiMicrosoftFill,
+  github: RiGithubFill,
+  subtractLine: RiSubtractLine,
+  bookOpen: RiBookOpenFill,
+} as const satisfies Record<string, RemixiconComponentType>;
 
 const customIconsMap = {
   shipfox: ShipfoxLogo,
@@ -37,6 +70,7 @@ const customIconsMap = {
 
 const iconsMap = {
   ...remixiconMap,
+  ...commonRemixicons,
   ...customIconsMap,
 } as Record<string, RemixiconComponentType> & typeof customIconsMap;
 

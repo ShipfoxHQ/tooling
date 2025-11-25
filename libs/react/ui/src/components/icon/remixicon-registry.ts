@@ -2,8 +2,7 @@ import type {RemixiconComponentType} from '@remixicon/react';
 import * as RemixIcons from '@remixicon/react';
 
 const remixiconEntries = Object.entries(RemixIcons).filter(
-  ([key, value]) =>
-    key.startsWith('Ri') && typeof value === 'function' && key !== 'RemixiconComponentType',
+  ([key, value]) => key.startsWith('Ri') && typeof value === 'function',
 ) as Array<[string, RemixiconComponentType]>;
 
 function iconNameToKey(iconName: string): string {
