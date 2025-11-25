@@ -32,11 +32,26 @@ import {
   ThunderIcon,
   XCircleSolidIcon,
 } from './custom';
+import {remixiconMap} from './remixicon-registry';
 
-const iconsMap = {
+const commonRemixicons = {
+  addLine: RiAddLine,
+  close: RiCloseLine,
+  check: RiCheckLine,
+  copy: RiFileCopyLine,
+  info: RiInformationFill,
+  imageAdd: RiImageAddFill,
+  chevronRight: RiArrowRightSLine,
+  homeSmile: RiHomeSmileFill,
+  money: RiMoneyDollarCircleLine,
   google: RiGoogleFill,
   microsoft: RiMicrosoftFill,
   github: RiGithubFill,
+  subtractLine: RiSubtractLine,
+  bookOpen: RiBookOpenFill,
+} as const satisfies Record<string, RemixiconComponentType>;
+
+const customIconsMap = {
   shipfox: ShipfoxLogo,
   slack: SlackLogo,
   stripe: StripeLogo,
@@ -51,23 +66,18 @@ const iconsMap = {
   spinner: SpinnerIcon,
   thunder: ThunderIcon,
   xCircleSolid: XCircleSolidIcon,
-  addLine: RiAddLine,
-  bookOpen: RiBookOpenFill,
-  check: RiCheckLine,
-  chevronRight: RiArrowRightSLine,
-  close: RiCloseLine,
-  copy: RiFileCopyLine,
-  homeSmile: RiHomeSmileFill,
-  imageAdd: RiImageAddFill,
-  info: RiInformationFill,
-  money: RiMoneyDollarCircleLine,
-  subtractLine: RiSubtractLine,
 } as const satisfies Record<string, RemixiconComponentType>;
+
+const iconsMap = {
+  ...remixiconMap,
+  ...commonRemixicons,
+  ...customIconsMap,
+} as Record<string, RemixiconComponentType> & typeof customIconsMap;
 
 export type IconName = keyof typeof iconsMap;
 export const iconNames = Object.keys(iconsMap) as IconName[];
 
-type BaseIconProps = ComponentProps<typeof RiGoogleFill>;
+type BaseIconProps = ComponentProps<RemixiconComponentType>;
 type IconProps = {name: IconName} & Omit<BaseIconProps, 'name'>;
 
 export function Icon({name, ...props}: IconProps) {
