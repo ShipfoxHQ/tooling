@@ -1,5 +1,11 @@
 # @shipfox/react-ui
 
+## 0.10.0
+
+### Minor Changes
+
+- 43f0699: Enhance Icon Component
+
 ## 0.9.0
 
 ### Minor Changes
