@@ -164,8 +164,8 @@ importers:
   libs/node/opentelemetry:
     dependencies:
       '@fastify/otel':
-        specifier: ^0.14.0
-        version: 0.14.0(@opentelemetry/api@1.9.0)
+        specifier: ^0.15.0
+        version: 0.15.0(@opentelemetry/api@1.9.0)
       '@opentelemetry/api':
         specifier: ^1.9.0
         version: 1.9.0
@@ -1125,8 +1125,8 @@ packages:
     resolution: {integrity: sha512-vBZP4NlzfOlerQTnba4aqZoMhE/a9HY7HRqoOPaETQcSQuWEIyZMHGfVu6w9wGtGK5fED5qRs2DteVCjOH60sA==}
     engines: {node: '>=14'}
 
-  '@fastify/otel@0.14.0':
-    resolution: {integrity: sha512-IWSb2wrElp/LEEW5DnK7XEfX9LebHt3vZN+vhoFzIAgTGLQCq9li81mtHK4KcYf3W5jR2EEimEBv+TGVLsrEgA==}
+  '@fastify/otel@0.15.0':
+    resolution: {integrity: sha512-zy9Devicg0bmmQD3N4QrHGFaj8r7t1T0ZTszPzP6OkZ1f+PABug7Fabzpgq3nx+JhU3MIuDsH5Jzzfk4boWLxA==}
     peerDependencies:
       '@opentelemetry/api': ^1.9.0
 
@@ -6451,7 +6451,7 @@ snapshots:
 
   '@fastify/busboy@2.1.1': {}
 
-  '@fastify/otel@0.14.0(@opentelemetry/api@1.9.0)':
+  '@fastify/otel@0.15.0(@opentelemetry/api@1.9.0)':
     dependencies:
       '@opentelemetry/api': 1.9.0
       '@opentelemetry/core': 2.2.0(@opentelemetry/api@1.9.0)
