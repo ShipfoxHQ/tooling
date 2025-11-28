@@ -5,6 +5,7 @@ export * from './button';
 export * from './checkbox';
 export * from './code-block';
 export * from './dot-grid';
+export * from './dropdown-menu';
 export * from './dynamic-item';
 export * from './form';
 export * from './icon';

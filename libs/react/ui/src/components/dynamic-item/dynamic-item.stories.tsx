@@ -144,7 +144,12 @@ export const ConnectGithubAccountItem: Story = {
           </div>
         }
         title="Slack"
-        description="Personal account (kye-nguyen)"
+        description={
+          <p className="text-xs leading-20 text-tag-warning-icon inline-flex items-center gap-2">
+            Personal account (kyle-nguyen)
+            <Icon name="info" size="sm" className="shrink-0 size-16 text-tag-warning-icon" />
+          </p>
+        }
         rightElement={
           <Button variant="primary" size="sm">
             Change account
