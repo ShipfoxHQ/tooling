@@ -39,12 +39,12 @@ export const buttonVariants = cva(
 );
 
 const iconSizeMap: Record<NonNullable<VariantProps<typeof buttonVariants>['size']>, string> = {
-  '2xs': 'size-10',
-  xs: 'size-10',
-  sm: 'size-12',
-  md: 'size-14',
-  lg: 'size-16',
-  xl: 'size-18',
+  '2xs': 'size-14',
+  xs: 'size-16',
+  sm: 'size-20',
+  md: 'size-20',
+  lg: 'size-20',
+  xl: 'size-20',
 };
 
 export function Button({
