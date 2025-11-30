@@ -14,7 +14,7 @@ export type DynamicItemProps = Omit<ItemProps, 'variant' | 'children' | 'title'>
   variant?: 'default' | 'neutral';
   leftElement?: ReactNode;
   title?: ReactNode;
-  description?: string;
+  description?: ReactNode;
   action?: ReactNode;
   rightElement?: ReactNode;
   contentClassName?: string;
@@ -49,8 +49,14 @@ export function DynamicItem({
 
         {hasContent && (
           <ItemContent className="text-center sm:text-left">
-            {title && typeof title === 'string' ? <ItemTitle>{title}</ItemTitle> : title}
-            {description && <ItemDescription>{description}</ItemDescription>}
+            {title ? typeof title === 'string' ? <ItemTitle>{title}</ItemTitle> : title : null}
+            {description ? (
+              typeof description === 'string' ? (
+                <ItemDescription>{description}</ItemDescription>
+              ) : (
+                description
+              )
+            ) : null}
             {action && (
               <ItemActions className={cn('mt-8 flex flex-wrap items-center gap-16')}>
                 {action}
