@@ -1,5 +1,11 @@
 # @shipfox/biome
 
+## 1.5.0
+
+### Minor Changes
+
+- 2fb16bb: Add dropdown component
+
 ## 1.4.0
 
 ### Minor Changes
