@@ -1,5 +1,11 @@
 # @shipfox/react-ui
 
+## 0.11.0
+
+### Minor Changes
+
+- 2fb16bb: Add dropdown component
+
 ## 0.10.0
 
 ### Minor Changes
