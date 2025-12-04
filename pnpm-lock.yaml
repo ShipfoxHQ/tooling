@@ -361,7 +361,7 @@ importers:
         version: 3.2.1
       '@argos-ci/storybook':
         specifier: ^5.2.1
-        version: 5.2.4
+        version: 5.2.5
       '@hookform/resolvers':
         specifier: ^5.2.2
         version: 5.2.2(react-hook-form@7.60.0(react@19.1.1))
@@ -659,8 +659,8 @@ packages:
     resolution: {integrity: sha512-QI8JuMPS7+9xxs4akNBtw2NntzMT/NPP83s5ygmUK5xq8S+Pqudyh23YFpCa7ytn93E5L/1XyoAq2aVYgwbrag==}
     engines: {node: '>=20.0.0'}
 
-  '@argos-ci/storybook@5.2.4':
-    resolution: {integrity: sha512-/g55lu+L9xFIoiUIgKQPygM2+pI/wNO/ZL0jojaS7/6NcMkNhIetlfjPo4RIGbHQZJUori94zVvntiMVf086Qg==}
+  '@argos-ci/storybook@5.2.5':
+    resolution: {integrity: sha512-ms9QGejk5tIB2wFdXrzEFE9SmCGkh273w2SF48hpSaFa4HjcpEKgVOvzmCaGjBayIKynm8uSDlfDzpUFpEEckw==}
     engines: {node: '>=20.0.0'}
 
   '@argos-ci/util@3.2.0':
@@ -5881,7 +5881,7 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@argos-ci/storybook@5.2.4':
+  '@argos-ci/storybook@5.2.5':
     dependencies:
       '@argos-ci/playwright': 6.3.4
       '@argos-ci/util': 3.2.0
