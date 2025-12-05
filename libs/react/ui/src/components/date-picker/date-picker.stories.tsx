@@ -1,4 +1,7 @@
+import {argosScreenshot} from '@argos-ci/storybook/vitest';
 import type {Meta, StoryObj} from '@storybook/react';
+import {within} from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import {subDays} from 'date-fns';
 import {useState} from 'react';
 import {
@@ -10,75 +13,80 @@ import {DatePicker} from './date-picker';
 const meta: Meta<typeof DatePicker> = {
   title: 'Components/DatePicker',
   component: DatePicker,
+  parameters: {
+    layout: 'centered',
+  },
 };
 export default meta;
 
 type Story = StoryObj<typeof DatePicker>;
 
-// ========== Single Date Picker Stories ==========
+const OPEN_CALENDAR_REGEX = /open calendar/i;
 
-export const SingleDate: Story = {
-  render: () => {
-    const [date, setDate] = useState<Date | undefined>();
-    return (
-      <DatePicker
-        date={date}
-        onDateSelect={setDate}
-        onClear={() => setDate(undefined)}
-        placeholder="DD/MM/YYYY"
-      />
-    );
-  },
-};
+const isTestEnvironment = () => typeof navigator !== 'undefined' && navigator.webdriver === true;
 
-export const SingleDateWithValue: Story = {
+type StoryContext = Parameters<NonNullable<Story['play']>>[0];
+
+async function openCalendarAndScreenshot(ctx: StoryContext, screenshotName: string): Promise<void> {
+  const {canvasElement, step} = ctx;
+  const canvas = within(canvasElement);
+  const user = userEvent.setup();
+
+  let triggerButton: HTMLElement | null = null;
+
+  await step('Open the calendar popover', async () => {
+    triggerButton = canvas.getByRole('button', {name: OPEN_CALENDAR_REGEX});
+    await user.click(triggerButton);
+  });
+
+  await step('Wait for calendar to appear and render', async () => {
+    await new Promise((resolve) => setTimeout(resolve, 300));
+
+    if (isTestEnvironment() && triggerButton instanceof HTMLElement) {
+      triggerButton.style.display = 'none';
+    }
+    await new Promise((resolve) => setTimeout(resolve, 100));
+  });
+
+  await argosScreenshot(ctx, screenshotName);
+}
+
+export const DatePickerStory: Story = {
+  play: (ctx) => openCalendarAndScreenshot(ctx, 'DatePicker Calendar Open'),
   render: () => {
     const [date, setDate] = useState<Date | undefined>(new Date('2023-11-10'));
     return (
-      <DatePicker
-        date={date}
-        onDateSelect={setDate}
-        onClear={() => setDate(undefined)}
-        placeholder="DD/MM/YYYY"
-      />
+      <div className="relative flex h-600 w-500 items-center justify-center rounded-16 bg-background-subtle-base shadow-tooltip overflow-visible">
+        <DatePicker
+          date={date}
+          onDateSelect={setDate}
+          onClear={() => setDate(undefined)}
+          placeholder="DD/MM/YYYY"
+        />
+      </div>
     );
   },
 };
 
-// ========== Date Range Picker Stories ==========
-
-export const DateRange_Default: Story = {
-  render: () => {
-    const [dateRange, setDateRange] = useState<DateRange | undefined>();
-    return (
-      <DateTimeRangePicker
-        dateRange={dateRange}
-        onDateRangeSelect={setDateRange}
-        onClear={() => setDateRange(undefined)}
-        placeholder="DD/MM/YYYY - DD/MM/YYYY"
-      />
-    );
-  },
-};
-
-export const DateRange_WithValue: Story = {
+export const DateRangePickerStory: Story = {
+  play: (ctx) => openCalendarAndScreenshot(ctx, 'DateRangePicker Calendar Open'),
   render: () => {
     const [dateRange, setDateRange] = useState<DateRange | undefined>({
       start: new Date('2023-11-10'),
       end: new Date('2023-12-10'),
     });
     return (
-      <DateTimeRangePicker
-        dateRange={dateRange}
-        onDateRangeSelect={setDateRange}
-        onClear={() => setDateRange(undefined)}
-        placeholder="DD/MM/YYYY - DD/MM/YYYY"
-      />
+      <div className="relative flex h-600 w-800 items-center justify-center rounded-16 bg-background-subtle-base shadow-tooltip overflow-visible">
+        <DateTimeRangePicker
+          dateRange={dateRange}
+          onDateRangeSelect={setDateRange}
+          onClear={() => setDateRange(undefined)}
+          placeholder="DD/MM/YYYY - DD/MM/YYYY"
+        />
+      </div>
     );
   },
 };
-
-// ========== All States Overview ==========
 
 export const AllStates: Story = {
   render: () => {
@@ -86,7 +94,6 @@ export const AllStates: Story = {
     const past = subDays(now, 30);
     return (
       <div className="flex flex-col gap-32 p-32">
-        {/* Single Date Picker */}
         <div>
           <h3 className="text-lg font-semibold mb-16 text-foreground-neutral-base">
             Single Date Picker
@@ -134,7 +141,6 @@ export const AllStates: Story = {
           </div>
         </div>
 
-        {/* Date Range Picker */}
         <div>
           <h3 className="text-lg font-semibold mb-16 text-foreground-neutral-base">
             Date Range Picker
