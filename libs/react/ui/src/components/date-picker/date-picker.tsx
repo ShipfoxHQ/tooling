@@ -7,28 +7,32 @@ import type {ComponentProps, ReactNode} from 'react';
 import {forwardRef, useState} from 'react';
 import {cn} from 'utils/cn';
 
-export const datePickerVariants = cva('', {
-  variants: {
-    variant: {
-      base: 'bg-background-field-base hover:bg-background-field-hover',
-      component: 'bg-background-field-component hover:bg-background-field-component-hover',
+export const datePickerVariants = cva(
+  'relative flex items-center rounded-6 shadow-button-neutral transition-[background-color,box-shadow] outline-none',
+  {
+    variants: {
+      variant: {
+        base: 'bg-background-field-base hover:bg-background-field-hover',
+        component: 'bg-background-field-component hover:bg-background-field-component-hover',
+      },
+      size: {
+        base: 'h-32',
+        small: 'h-28',
+      },
+      state: {
+        default: '',
+        error: 'shadow-border-error',
+        disabled:
+          'bg-background-neutral-disabled shadow-none pointer-events-none cursor-not-allowed',
+      },
     },
-    size: {
-      base: 'h-32',
-      small: 'h-28',
-    },
-    state: {
-      default: '',
-      error: 'shadow-border-error',
-      disabled: 'bg-background-neutral-disabled shadow-none pointer-events-none cursor-not-allowed',
+    defaultVariants: {
+      variant: 'base',
+      size: 'base',
+      state: 'default',
     },
   },
-  defaultVariants: {
-    variant: 'base',
-    size: 'base',
-    state: 'default',
-  },
-});
+);
 
 export type DatePickerProps = Omit<ComponentProps<'input'>, 'size' | 'type'> &
   VariantProps<typeof datePickerVariants> & {
@@ -83,7 +87,6 @@ export const DatePicker = forwardRef<HTMLInputElement, DatePickerProps>(
       <Popover open={open} onOpenChange={setOpen}>
         <div
           className={cn(
-            'relative flex items-center rounded-6 shadow-button-neutral transition-[background-color,box-shadow] outline-none',
             open && 'shadow-border-interactive-with-active',
             datePickerVariants({variant, size, state: isDisabled ? 'disabled' : state}),
             className,
@@ -136,19 +139,21 @@ export const DatePicker = forwardRef<HTMLInputElement, DatePickerProps>(
           />
 
           {/* Clear Button (shown when date is selected) */}
-          {date && onClear && !isDisabled && (
-            <button
-              type="button"
-              onClick={handleClear}
-              className={cn(
-                'flex items-center justify-center shrink-0 transition-colors hover:text-foreground-neutral-base',
-                size === 'small' ? 'size-28' : 'size-32',
-              )}
-              aria-label="Clear date"
-            >
-              <Icon name="closeLine" className="size-16 text-foreground-neutral-muted" />
-            </button>
-          )}
+          <button
+            type="button"
+            onClick={handleClear}
+            className={cn(
+              'flex items-center justify-center shrink-0 cursor-pointer',
+              size === 'small' ? 'size-28' : 'size-32',
+              date && onClear && !isDisabled ? 'visible' : 'invisible',
+            )}
+            aria-label="Clear date"
+          >
+            <Icon
+              name="closeLine"
+              className="size-16 text-foreground-neutral-muted hover:text-foreground-neutral-subtle transition-colors"
+            />
+          </button>
 
           {/* Custom Right Icon */}
           {rightIcon && !date && (

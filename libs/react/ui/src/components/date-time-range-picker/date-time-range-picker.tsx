@@ -8,28 +8,32 @@ import {forwardRef, useState} from 'react';
 import type {DateRange as DayPickerDateRange} from 'react-day-picker';
 import {cn} from 'utils/cn';
 
-export const dateTimeRangePickerVariants = cva('', {
-  variants: {
-    variant: {
-      base: 'bg-background-field-base hover:bg-background-field-hover',
-      component: 'bg-background-field-component hover:bg-background-field-component-hover',
+export const dateTimeRangePickerVariants = cva(
+  'min-w-240 relative flex items-center rounded-6 shadow-button-neutral transition-[background-color,box-shadow] outline-none',
+  {
+    variants: {
+      variant: {
+        base: 'bg-background-field-base hover:bg-background-field-hover',
+        component: 'bg-background-field-component hover:bg-background-field-component-hover',
+      },
+      size: {
+        base: 'h-32',
+        small: 'h-28',
+      },
+      state: {
+        default: '',
+        error: 'shadow-border-error',
+        disabled:
+          'bg-background-neutral-disabled shadow-none pointer-events-none cursor-not-allowed',
+      },
     },
-    size: {
-      base: 'h-32',
-      small: 'h-28',
-    },
-    state: {
-      default: '',
-      error: 'shadow-border-error',
-      disabled: 'bg-background-neutral-disabled shadow-none pointer-events-none cursor-not-allowed',
+    defaultVariants: {
+      variant: 'base',
+      size: 'base',
+      state: 'default',
     },
   },
-  defaultVariants: {
-    variant: 'base',
-    size: 'base',
-    state: 'default',
-  },
-});
+);
 
 export type DateRange = {
   start?: Date;
@@ -112,7 +116,6 @@ export const DateTimeRangePicker = forwardRef<HTMLInputElement, DateTimeRangePic
       <Popover open={open} onOpenChange={setOpen}>
         <div
           className={cn(
-            'relative flex items-center rounded-6 shadow-button-neutral transition-[background-color,box-shadow] outline-none',
             open && 'shadow-border-interactive-with-active',
             dateTimeRangePickerVariants({variant, size, state: isDisabled ? 'disabled' : state}),
             className,
@@ -165,19 +168,18 @@ export const DateTimeRangePicker = forwardRef<HTMLInputElement, DateTimeRangePic
           />
 
           {/* Clear Button (shown when date range is selected) */}
-          {hasRange && onClear && !isDisabled && (
-            <button
-              type="button"
-              onClick={handleClear}
-              className={cn(
-                'flex items-center justify-center shrink-0 transition-colors hover:text-foreground-neutral-base',
-                size === 'small' ? 'size-28' : 'size-32',
-              )}
-              aria-label="Clear date range"
-            >
-              <Icon name="closeLine" className="size-16 text-foreground-neutral-muted" />
-            </button>
-          )}
+          <button
+            type="button"
+            onClick={handleClear}
+            className={cn(
+              'flex items-center justify-center shrink-0 transition-colors hover:text-foreground-neutral-base',
+              size === 'small' ? 'size-28' : 'size-32',
+              hasRange && onClear && !isDisabled ? 'visible' : 'invisible',
+            )}
+            aria-label="Clear date range"
+          >
+            <Icon name="closeLine" className="size-16 text-foreground-neutral-muted" />
+          </button>
 
           {/* Custom Right Icon */}
           {rightIcon && !hasRange && (

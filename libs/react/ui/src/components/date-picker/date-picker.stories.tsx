@@ -93,7 +93,7 @@ export const AllStates: Story = {
     const now = new Date();
     const past = subDays(now, 30);
     return (
-      <div className="flex flex-col gap-32 p-32">
+      <div className="flex flex-col gap-32 p-32 min-w-350">
         <div>
           <h3 className="text-lg font-semibold mb-16 text-foreground-neutral-base">
             Single Date Picker

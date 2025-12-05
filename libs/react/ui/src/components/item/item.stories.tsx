@@ -40,6 +40,8 @@ const meta = {
 export default meta;
 type Story = StoryObj<typeof meta>;
 
+const DEFAULT_START_DATE = new Date('2024-01-01T00:00:00.000Z');
+
 export const Default: Story = {
   args: {
     variant: 'default',
@@ -92,13 +94,14 @@ export const Variants: Story = {
 export const ImportPastJobsModal: Story = {
   args: {},
   render: () => {
-    const [date, setDate] = useState<Date | undefined>(new Date());
+    const [date, setDate] = useState<Date | undefined>(DEFAULT_START_DATE);
+
     return (
       <div className="flex w-full max-w-lg flex-col">
         <Item variant="neutral">
           <ItemHeader className="justify-between px-24 py-16">
             <ItemTitle className="text-lg font-medium text-foreground-neutral-base">
-              Import past jobs from Github
+              Import past jobs from GitHub
             </ItemTitle>
             <div className="flex items-center gap-8">
               <kbd className="flex items-center justify-center rounded-8 border border-border-neutral-base shadow-button-neutral bg-background-field-base text-xs text-foreground-neutral-subtle px-4">
@@ -116,7 +119,7 @@ export const ImportPastJobsModal: Story = {
           <ItemSeparator />
           <ItemContent className="px-24 py-16">
             <ItemDescription className="mb-16 text-sm text-foreground-neutral-subtle">
-              Backfill your CI history by importing past runs from your Github repo. We'll handle
+              Backfill your CI history by importing past runs from your GitHub repo. We'll handle
               the rest by creating a background task to import the data for you.
             </ItemDescription>
             <div className="flex flex-col gap-20">
@@ -131,6 +134,7 @@ export const ImportPastJobsModal: Story = {
               <div className="flex flex-col gap-8">
                 <Label htmlFor="start-date">Start date</Label>
                 <DatePicker
+                  id="start-date"
                   date={date}
                   onDateSelect={setDate}
                   onClear={() => setDate(undefined)}
