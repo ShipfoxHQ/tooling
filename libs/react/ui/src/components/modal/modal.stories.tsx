@@ -14,6 +14,7 @@ import {
   CodeBlockHeader,
   CodeBlockItem,
 } from 'components/code-block';
+import {DatePicker} from 'components/date-picker';
 import {DynamicItem} from 'components/dynamic-item';
 import {Icon} from 'components/icon';
 import {Input} from 'components/input';
@@ -129,6 +130,7 @@ export const ImportForm: Story = {
   },
   render: () => {
     const [open, setOpen] = useState(false);
+    const [date, setDate] = useState<Date | undefined>(new Date());
 
     return (
       <div className="flex h-[calc(100vh/2)] w-[calc(100vw/2)] items-center justify-center rounded-16 bg-background-subtle-base shadow-tooltip">
@@ -155,7 +157,12 @@ export const ImportForm: Story = {
                 </div>
                 <div className="flex flex-col gap-8 w-full">
                   <Label>Start date</Label>
-                  <Input placeholder="September 5th, 2025" />
+                  <DatePicker
+                    date={date}
+                    onDateSelect={setDate}
+                    onClear={() => setDate(undefined)}
+                    placeholder="DD/MM/YYYY"
+                  />
                 </div>
               </div>
             </ModalBody>
