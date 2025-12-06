@@ -1,3 +1,4 @@
+import {argosScreenshot} from '@argos-ci/storybook/vitest';
 import type {Meta, StoryObj} from '@storybook/react';
 import {Code, Header} from 'components/typography';
 import {
@@ -37,6 +38,10 @@ const types = ['default', 'info', 'success', 'error'] as const;
 const variants = ['primary', 'secondary'] as const;
 
 export const Default: Story = {
+  play: async (ctx) => {
+    await new Promise((resolve) => setTimeout(resolve, 100));
+    await argosScreenshot(ctx, 'InlineTips Default');
+  },
   render: (args) => {
     return (
       <InlineTips {...args}>

@@ -82,6 +82,7 @@ export const DateRangePickerStory: Story = {
           onDateRangeSelect={setDateRange}
           onClear={() => setDateRange(undefined)}
           placeholder="DD/MM/YYYY - DD/MM/YYYY"
+          className="min-w-280"
         />
       </div>
     );

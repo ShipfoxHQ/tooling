@@ -42,7 +42,11 @@ export function Calendar({className, classNames, showOutsideDays = true, ...prop
           'text-foreground-neutral-subtle text-xs font-medium w-36 h-32 flex items-center justify-center',
         week: 'flex mt-4',
         day: cn(
-          'relative text-center size-36 p-0 text-sm font-normal rounded-6 focus-within:relative focus-within:z-20',
+          'relative text-center size-36 p-0 text-sm font-normal [&:last-child[data-selected=true]_button]:rounded-r-md group/day aspect-square select-none',
+          '[&:last-child[data-selected=true]_button]:rounded-r-6',
+          props.showWeekNumber
+            ? '[&:nth-child(2)[data-selected=true]_button]:rounded-l-6'
+            : '[&:first-child[data-selected=true]_button]:rounded-l-6',
         ),
         day_button: cn(
           'size-36 p-0 text-sm font-normal rounded-6',
@@ -55,9 +59,9 @@ export function Calendar({className, classNames, showOutsideDays = true, ...prop
         range_start: 'day-range-start rounded-6',
         range_end: 'day-range-end rounded-6',
         selected: cn(
-          'bg-foreground-highlight-interactive/80 text-foreground-contrast-primary font-medium',
-          'hover:bg-foreground-highlight-interactive-hover/80 hover:text-foreground-contrast-primary',
-          'focus:bg-foreground-highlight-interactive/80 focus:text-foreground-contrast-primary',
+          'bg-foreground-highlight-interactive/80 !text-foreground-neutral-base font-medium',
+          'hover:bg-foreground-highlight-interactive-hover/80',
+          'focus:bg-foreground-highlight-interactive/80',
         ),
         today: cn(
           'bg-background-field-base text-foreground-neutral-base font-medium',
