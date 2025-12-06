@@ -1,3 +1,4 @@
+import {argosScreenshot} from '@argos-ci/storybook/vitest';
 import type {Meta, StoryObj} from '@storybook/react';
 import {Code, Header} from 'components/typography';
 import {Textarea} from './textarea';
@@ -25,7 +26,12 @@ export default meta;
 
 type Story = StoryObj<typeof meta>;
 
-export const Default: Story = {};
+export const Default: Story = {
+  play: async (ctx) => {
+    await new Promise((resolve) => setTimeout(resolve, 100));
+    await argosScreenshot(ctx, 'Textarea Default');
+  },
+};
 
 const variants = ['base', 'component'] as const;
 const sizes = ['base', 'small'] as const;
@@ -163,7 +169,7 @@ export const DesignMock: Story = {
                   <Code variant="label" className="text-foreground-neutral-subtle">
                     Size=Base (32), State={state.name}, Color={variant.label}
                   </Code>
-                  <div className="w-[280px]">
+                  <div className="w-280">
                     <Textarea
                       placeholder="Placeholder"
                       variant={variant.key}
