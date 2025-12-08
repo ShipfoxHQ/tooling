@@ -54,7 +54,7 @@ async function openCalendarAndScreenshot(ctx: StoryContext, screenshotName: stri
 export const DatePickerStory: Story = {
   play: (ctx) => openCalendarAndScreenshot(ctx, 'DatePicker Calendar Open'),
   render: () => {
-    const [date, setDate] = useState<Date | undefined>(new Date('2023-11-10'));
+    const [date, setDate] = useState<Date | undefined>(new Date());
     return (
       <div className="relative flex h-600 w-500 items-center justify-center rounded-16 bg-background-subtle-base shadow-tooltip overflow-visible">
         <DatePicker
@@ -72,8 +72,8 @@ export const DateRangePickerStory: Story = {
   play: (ctx) => openCalendarAndScreenshot(ctx, 'DateRangePicker Calendar Open'),
   render: () => {
     const [dateRange, setDateRange] = useState<DateRange | undefined>({
-      start: new Date('2023-11-10'),
-      end: new Date('2023-12-10'),
+      start: new Date(),
+      end: subDays(new Date(), -30),
     });
     return (
       <div className="relative flex h-600 w-800 items-center justify-center rounded-16 bg-background-subtle-base shadow-tooltip overflow-visible">
@@ -107,7 +107,7 @@ export const AllStates: Story = {
             <div>
               <p className="text-xs text-foreground-neutral-subtle mb-8 font-mono">FILLED</p>
               <DatePicker
-                date={new Date('2023-11-10')}
+                date={new Date()}
                 onClear={() => {
                   /* noop for demo */
                 }}
@@ -117,7 +117,7 @@ export const AllStates: Story = {
             <div>
               <p className="text-xs text-foreground-neutral-subtle mb-8 font-mono">ERROR</p>
               <DatePicker
-                date={new Date('2023-11-10')}
+                date={new Date()}
                 onClear={() => {
                   /* noop for demo */
                 }}

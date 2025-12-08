@@ -59,12 +59,12 @@ export function Calendar({className, classNames, showOutsideDays = true, ...prop
         range_start: 'day-range-start rounded-6',
         range_end: 'day-range-end rounded-6',
         selected: cn(
-          'bg-foreground-highlight-interactive/80 !text-foreground-neutral-base font-medium',
+          'bg-foreground-highlight-interactive/80 !text-foreground-neutral-base font-medium rounded-6',
           'hover:bg-foreground-highlight-interactive-hover/80',
           'focus:bg-foreground-highlight-interactive/80',
         ),
         today: cn(
-          'bg-background-field-base text-foreground-neutral-base font-medium',
+          'bg-background-field-base text-foreground-neutral-base font-medium rounded-6',
           'border border-border-neutral-base',
         ),
         outside: 'day-outside text-foreground-neutral-muted',
