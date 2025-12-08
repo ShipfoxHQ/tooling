@@ -192,3 +192,39 @@ export const AllStates: Story = {
     );
   },
 };
+
+export const DateFormats: Story = {
+  render: () => {
+    const [date, setDate] = useState<Date | undefined>(new Date());
+    const formats = [
+      {format: 'MMMM dd, yyyy', placeholder: 'Month DD, YYYY', label: 'MMMM dd, yyyy'},
+      {format: 'MMMM d, yyyy', placeholder: 'Month D, YYYY', label: 'MMMM d, yyyy'},
+      {format: 'MMM dd, yyyy', placeholder: 'Mon DD, YYYY', label: 'MMM dd, yyyy'},
+      {format: 'dd/MM/yyyy', placeholder: 'DD/MM/YYYY', label: 'dd/MM/yyyy'},
+      {format: 'MM/dd/yyyy', placeholder: 'MM/DD/YYYY', label: 'MM/dd/yyyy'},
+      {format: 'yyyy-MM-dd', placeholder: 'YYYY-MM-DD', label: 'yyyy-MM-dd'},
+    ];
+
+    return (
+      <div className="flex flex-col gap-32 p-32 min-w-350">
+        <h3 className="text-lg font-semibold mb-16 text-foreground-neutral-base">
+          Date Format Examples
+        </h3>
+        <div className="flex flex-col gap-16">
+          {formats.map(({format, placeholder, label}) => (
+            <div key={format}>
+              <p className="text-xs text-foreground-neutral-subtle mb-8 font-mono">{label}</p>
+              <DatePicker
+                date={date}
+                onDateSelect={setDate}
+                onClear={() => setDate(undefined)}
+                dateFormat={format}
+                placeholder={placeholder}
+              />
+            </div>
+          ))}
+        </div>
+      </div>
+    );
+  },
+};
