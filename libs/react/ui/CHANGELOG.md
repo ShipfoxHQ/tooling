@@ -1,5 +1,11 @@
 # @shipfox/react-ui
 
+## 0.12.0
+
+### Minor Changes
+
+- 5da4917: Add Date Picker component
+
 ## 0.11.0
 
 ### Minor Changes
