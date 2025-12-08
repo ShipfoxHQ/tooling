@@ -14,6 +14,7 @@ import {
   CodeBlockHeader,
   CodeBlockItem,
 } from 'components/code-block';
+import {DatePicker} from 'components/date-picker';
 import {DynamicItem} from 'components/dynamic-item';
 import {Icon} from 'components/icon';
 import {Input} from 'components/input';
@@ -38,6 +39,8 @@ import {
 const OPEN_MODAL_REGEX = /open modal/i;
 const IMPORT_JOBS_REGEX = /import past jobs from github/i;
 const GITHUB_ACTIONS_REGEX = /run github actions on shipfox/i;
+
+const DEFAULT_START_DATE = new Date('2025-12-06T00:00:00.000Z');
 
 const meta = {
   title: 'Components/Modal',
@@ -129,19 +132,20 @@ export const ImportForm: Story = {
   },
   render: () => {
     const [open, setOpen] = useState(false);
+    const [date, setDate] = useState<Date | undefined>(DEFAULT_START_DATE);
 
     return (
       <div className="flex h-[calc(100vh/2)] w-[calc(100vw/2)] items-center justify-center rounded-16 bg-background-subtle-base shadow-tooltip">
         <Modal open={open} onOpenChange={setOpen}>
           <ModalTrigger asChild>
-            <Button>Import past jobs from Github</Button>
+            <Button>Import past jobs from GitHub</Button>
           </ModalTrigger>
           <ModalContent aria-describedby={undefined}>
-            <ModalTitle className="sr-only">Import past jobs from Github</ModalTitle>
-            <ModalHeader title="Import past jobs from Github" />
+            <ModalTitle className="sr-only">Import past jobs from GitHub</ModalTitle>
+            <ModalHeader title="Import past jobs from GitHub" />
             <ModalBody className="gap-20">
               <Text size="sm" className="text-foreground-neutral-subtle w-full">
-                Backfill your CI history by importing past runs from your Github repo. We&apos;ll
+                Backfill your CI history by importing past runs from your GitHub repo. We&apos;ll
                 handle the rest by creating a background task to import the data for you.
               </Text>
               <div className="flex flex-col gap-20 w-full">
@@ -154,8 +158,14 @@ export const ImportForm: Story = {
                   <Input placeholder="kafka" />
                 </div>
                 <div className="flex flex-col gap-8 w-full">
-                  <Label>Start date</Label>
-                  <Input placeholder="September 5th, 2025" />
+                  <Label htmlFor="start-date">Start date</Label>
+                  <DatePicker
+                    id="start-date"
+                    date={date}
+                    onDateSelect={setDate}
+                    onClear={() => setDate(undefined)}
+                    placeholder="DD/MM/YYYY"
+                  />
                 </div>
               </div>
             </ModalBody>

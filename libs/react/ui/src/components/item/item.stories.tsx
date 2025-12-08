@@ -1,8 +1,10 @@
 import type {Meta, StoryObj} from '@storybook/react';
 import {Button} from 'components/button/button';
+import {DatePicker} from 'components/date-picker';
 import {Icon} from 'components/icon/icon';
 import {Input} from 'components/input/input';
 import {Label} from 'components/label/label';
+import {useState} from 'react';
 import {
   Item,
   ItemActions,
@@ -37,6 +39,8 @@ const meta = {
 
 export default meta;
 type Story = StoryObj<typeof meta>;
+
+const DEFAULT_START_DATE = new Date('2024-01-01T00:00:00.000Z');
 
 export const Default: Story = {
   args: {
@@ -89,62 +93,67 @@ export const Variants: Story = {
 
 export const ImportPastJobsModal: Story = {
   args: {},
-  render: () => (
-    <div className="flex w-full max-w-lg flex-col">
-      <Item variant="neutral">
-        <ItemHeader className="justify-between px-24 py-16">
-          <ItemTitle className="text-lg font-medium text-foreground-neutral-base">
-            Import past jobs from Github
-          </ItemTitle>
-          <div className="flex items-center gap-8">
-            <kbd className="flex items-center justify-center rounded-8 border border-border-neutral-base shadow-button-neutral bg-background-field-base text-xs text-foreground-neutral-subtle px-4">
-              esc
-            </kbd>
-            <Button
-              variant="transparent"
-              size="xs"
-              className="rounded-4 p-2 cursor-pointer bg-transparent border-none text-foreground-neutral-muted hover:text-foreground-neutral-base hover:bg-background-components-hover transition-colors duration-150 outline-none focus-visible:ring-2 focus-visible:ring-background-accent-blue-base focus-visible:ring-offset-2 w-24 h-24"
-            >
-              <Icon name="close" />
+  render: () => {
+    const [date, setDate] = useState<Date | undefined>(DEFAULT_START_DATE);
+
+    return (
+      <div className="flex w-full max-w-lg flex-col">
+        <Item variant="neutral">
+          <ItemHeader className="justify-between px-24 py-16">
+            <ItemTitle className="text-lg font-medium text-foreground-neutral-base">
+              Import past jobs from GitHub
+            </ItemTitle>
+            <div className="flex items-center gap-8">
+              <kbd className="flex items-center justify-center rounded-8 border border-border-neutral-base shadow-button-neutral bg-background-field-base text-xs text-foreground-neutral-subtle px-4">
+                esc
+              </kbd>
+              <Button
+                variant="transparent"
+                size="xs"
+                className="rounded-4 p-2 cursor-pointer bg-transparent border-none text-foreground-neutral-muted hover:text-foreground-neutral-base hover:bg-background-components-hover transition-colors duration-150 outline-none focus-visible:ring-2 focus-visible:ring-background-accent-blue-base focus-visible:ring-offset-2 w-24 h-24"
+              >
+                <Icon name="close" />
+              </Button>
+            </div>
+          </ItemHeader>
+          <ItemSeparator />
+          <ItemContent className="px-24 py-16">
+            <ItemDescription className="mb-16 text-sm text-foreground-neutral-subtle">
+              Backfill your CI history by importing past runs from your GitHub repo. We'll handle
+              the rest by creating a background task to import the data for you.
+            </ItemDescription>
+            <div className="flex flex-col gap-20">
+              <div className="flex flex-col gap-8">
+                <Label htmlFor="repo-owner">Repository owner</Label>
+                <Input id="repo-owner" type="text" defaultValue="apache" />
+              </div>
+              <div className="flex flex-col gap-8">
+                <Label htmlFor="repo-name">Repository name</Label>
+                <Input id="repo-name" type="text" defaultValue="kafka" />
+              </div>
+              <div className="flex flex-col gap-8">
+                <Label htmlFor="start-date">Start date</Label>
+                <DatePicker
+                  id="start-date"
+                  date={date}
+                  onDateSelect={setDate}
+                  onClear={() => setDate(undefined)}
+                  placeholder="DD/MM/YYYY"
+                />
+              </div>
+            </div>
+          </ItemContent>
+          <ItemSeparator />
+          <ItemFooter className="justify-end gap-8 px-24 py-16">
+            <Button variant="transparent" size="sm">
+              Cancel
             </Button>
-          </div>
-        </ItemHeader>
-        <ItemSeparator />
-        <ItemContent className="px-24 py-16">
-          <ItemDescription className="mb-16 text-sm text-foreground-neutral-subtle">
-            Backfill your CI history by importing past runs from your Github repo. We'll handle the
-            rest by creating a background task to import the data for you.
-          </ItemDescription>
-          <div className="flex flex-col gap-20">
-            <div className="flex flex-col gap-8">
-              <Label htmlFor="repo-owner">Repository owner</Label>
-              <Input id="repo-owner" type="text" defaultValue="apache" />
-            </div>
-            <div className="flex flex-col gap-8">
-              <Label htmlFor="repo-name">Repository name</Label>
-              <Input id="repo-name" type="text" defaultValue="kafka" />
-            </div>
-            <div className="flex flex-col gap-8">
-              <Label htmlFor="start-date">Start date</Label>
-              <Input
-                id="start-date"
-                type="datetime-local"
-                defaultValue="September 5th, 2025"
-                className="pl-32"
-              />
-            </div>
-          </div>
-        </ItemContent>
-        <ItemSeparator />
-        <ItemFooter className="justify-end gap-8 px-24 py-16">
-          <Button variant="transparent" size="sm">
-            Cancel
-          </Button>
-          <Button variant="primary" size="sm">
-            Import
-          </Button>
-        </ItemFooter>
-      </Item>
-    </div>
-  ),
+            <Button variant="primary" size="sm">
+              Import
+            </Button>
+          </ItemFooter>
+        </Item>
+      </div>
+    );
+  },
 };
