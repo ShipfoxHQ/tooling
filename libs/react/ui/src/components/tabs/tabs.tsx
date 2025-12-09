@@ -16,12 +16,14 @@ import {
   useState,
 } from 'react';
 import {cn} from 'utils/cn';
+import {debounce} from 'utils/debounce';
 
 type TabsContextType<T extends string = string> = {
   activeValue: T;
   handleValueChange: (value: T) => void;
   registerTrigger: (value: string, node: HTMLElement | null) => void;
   getTriggerElement: (value: string) => HTMLElement | undefined;
+  getAllTriggerValues: () => string[];
 };
 
 const TabsContext = createContext<TabsContextType<string> | undefined>(undefined);
@@ -29,7 +31,7 @@ const TabsContext = createContext<TabsContextType<string> | undefined>(undefined
 function useTabs<T extends string = string>(): TabsContextType<T> {
   const context = useContext(TabsContext);
   if (!context) {
-    throw new Error('useTabs must be used within a TabsProvider');
+    throw new Error('useTabs must be used within a Tabs component');
   }
   return context as unknown as TabsContextType<T>;
 }
@@ -105,6 +107,10 @@ function Tabs<T extends string = string>({
     return triggersRef.current.get(val);
   }, []);
 
+  const getAllTriggerValues = useCallback(() => {
+    return Array.from(triggersRef.current.keys());
+  }, []);
+
   const resolvedActiveValue: T = useMemo(() => {
     if (value !== undefined) return value;
     if (activeValue !== undefined) return activeValue;
@@ -119,6 +125,7 @@ function Tabs<T extends string = string>({
         handleValueChange: handleValueChange as (value: string) => void,
         registerTrigger,
         getTriggerElement,
+        getAllTriggerValues,
       }}
     >
       <div
@@ -144,8 +151,8 @@ function TabsList({
   activeClassName,
   transition = {
     type: 'spring',
-    stiffness: 200,
-    damping: 25,
+    stiffness: 400,
+    damping: 30,
   },
   ...props
 }: TabsListProps) {
@@ -156,30 +163,28 @@ function TabsList({
   } | null>(null);
   const listRef = useRef<HTMLDivElement>(null);
 
-  useEffect(() => {
-    const updateIndicator = () => {
-      const activeTrigger = getTriggerElement(activeValue);
+  const updateIndicator = useCallback(() => {
+    const activeTrigger = getTriggerElement(activeValue);
 
-      if (activeTrigger && listRef.current) {
-        const listRect = listRef.current.getBoundingClientRect();
-        const triggerRect = activeTrigger.getBoundingClientRect();
-        setIndicatorStyle({
-          left: triggerRect.left - listRect.left,
-          width: triggerRect.width,
-        });
-      }
-    };
-
-    const rafId = requestAnimationFrame(() => {
-      updateIndicator();
-    });
-
-    window.addEventListener('resize', updateIndicator);
-    return () => {
-      cancelAnimationFrame(rafId);
-      window.removeEventListener('resize', updateIndicator);
-    };
+    if (activeTrigger && listRef.current) {
+      const listRect = listRef.current.getBoundingClientRect();
+      const triggerRect = activeTrigger.getBoundingClientRect();
+      setIndicatorStyle({
+        left: triggerRect.left - listRect.left,
+        width: triggerRect.width,
+      });
+    }
   }, [activeValue, getTriggerElement]);
+
+  useEffect(() => {
+    const debouncedUpdate = debounce(updateIndicator, 100);
+    window.addEventListener('resize', debouncedUpdate);
+    requestAnimationFrame(updateIndicator);
+
+    return () => {
+      window.removeEventListener('resize', debouncedUpdate);
+    };
+  }, [updateIndicator]);
 
   return (
     <div
@@ -214,8 +219,14 @@ type TabsTriggerProps = Omit<HTMLMotionProps<'button'>, 'ref'> & {
 };
 
 const TabsTrigger = forwardRef<HTMLButtonElement, TabsTriggerProps>(
-  ({value, children, className, ...props}, ref) => {
-    const {activeValue, handleValueChange, registerTrigger} = useTabs();
+  ({value, children, className, onKeyDown, ...props}, ref) => {
+    const {
+      activeValue,
+      handleValueChange,
+      registerTrigger,
+      getAllTriggerValues,
+      getTriggerElement,
+    } = useTabs();
 
     const localRef = useRef<HTMLButtonElement | null>(null);
     useImperativeHandle(ref, () => localRef.current as HTMLButtonElement);
@@ -227,16 +238,69 @@ const TabsTrigger = forwardRef<HTMLButtonElement, TabsTriggerProps>(
 
     const isActive = activeValue === value;
 
+    const handleKeyDown = useCallback(
+      (event: React.KeyboardEvent<HTMLButtonElement>) => {
+        onKeyDown?.(event);
+
+        const allValues = getAllTriggerValues();
+        const currentIndex = allValues.indexOf(value);
+
+        if (currentIndex === -1) return;
+
+        let targetIndex = currentIndex;
+        let shouldPreventDefault = true;
+
+        switch (event.key) {
+          case 'ArrowLeft': {
+            targetIndex = currentIndex > 0 ? currentIndex - 1 : allValues.length - 1;
+            break;
+          }
+          case 'ArrowRight': {
+            targetIndex = currentIndex < allValues.length - 1 ? currentIndex + 1 : 0;
+            break;
+          }
+          case 'Home': {
+            targetIndex = 0;
+            break;
+          }
+          case 'End': {
+            targetIndex = allValues.length - 1;
+            break;
+          }
+          default: {
+            shouldPreventDefault = false;
+            return;
+          }
+        }
+
+        if (shouldPreventDefault) {
+          event.preventDefault();
+          const targetValue = allValues[targetIndex];
+          if (targetValue) {
+            handleValueChange(targetValue);
+            const targetElement = getTriggerElement(targetValue);
+            targetElement?.focus();
+          }
+        }
+      },
+      [value, getAllTriggerValues, getTriggerElement, handleValueChange, onKeyDown],
+    );
+
     return (
       <motion.button
         ref={localRef}
         data-slot="tabs-trigger"
         role="tab"
+        tabIndex={isActive ? 0 : -1}
         whileTap={{scale: 0.95}}
         onClick={() => handleValueChange(value)}
+        onKeyDown={handleKeyDown}
         data-state={isActive ? 'active' : 'inactive'}
+        aria-selected={isActive}
+        aria-controls={`tabpanel-${value}`}
+        id={`tab-${value}`}
         className={cn(
-          'relative inline-flex cursor-pointer items-center justify-center whitespace-nowrap px-0 py-10 text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50',
+          'relative inline-flex cursor-pointer items-center justify-center whitespace-nowrap px-0 py-10 text-sm font-medium transition-colors outline-none focus-visible:shadow-border-interactive-with-active focus-visible:rounded-2 disabled:pointer-events-none disabled:opacity-50',
           isActive ? 'text-foreground-neutral-base' : 'text-foreground-neutral-muted',
           className,
         )}
@@ -268,11 +332,7 @@ function TabsContents({children, className, ...props}: TabsContentsProps) {
   );
 
   return (
-    <div
-      data-slot="tabs-contents"
-      className={cn('', className)}
-      {...(props as ComponentProps<'div'>)}
-    >
+    <div data-slot="tabs-contents" className={cn(className)} {...(props as ComponentProps<'div'>)}>
       {activeChild}
     </div>
   );
@@ -292,7 +352,13 @@ function TabsContent({children, value, className, ...props}: TabsContentProps) {
   }
 
   return (
-    <div role="tabpanel" data-slot="tabs-content" className={cn('', className)} {...props}>
+    <div
+      role="tabpanel"
+      data-slot="tabs-content"
+      aria-labelledby={`tab-${value}`}
+      className={cn(className)}
+      {...props}
+    >
       {children}
     </div>
   );
