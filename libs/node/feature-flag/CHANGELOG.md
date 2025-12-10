@@ -1,5 +1,11 @@
 # @shipfox/node-feature-flag
 
+## 0.4.2
+
+### Patch Changes
+
+- osefdeouf: Force release trigger
+
 ## 0.4.1
 
 ### Patch Changes
