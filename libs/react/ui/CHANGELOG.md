@@ -1,5 +1,11 @@
 # @shipfox/react-ui
 
+## 0.13.0
+
+### Minor Changes
+
+- 45a8a61: Add Tabs component
+
 ## 0.12.0
 
 ### Minor Changes
