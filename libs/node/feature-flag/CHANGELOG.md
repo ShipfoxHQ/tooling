@@ -1,11 +1,5 @@
 # @shipfox/node-feature-flag
 
-## 0.4.0
-
-### Minor Changes
-
-- a0bf18a: Add Infrastructure provider to runner context
-
 ## 0.3.0
 
 ### Minor Changes
