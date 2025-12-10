@@ -34,7 +34,7 @@ jobs:
         run: pnpm turbo run --affected check -- --fix
       - name: Build packages
         shell: nix develop --command bash {0}
-        run: pnpm turbo run --affected build type
+        run: pnpm turbo run build type
       - name: Publish specific package
         if: inputs.package_name != ''
         shell: nix develop --command bash {0}
