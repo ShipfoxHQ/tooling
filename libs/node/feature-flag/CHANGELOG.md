@@ -1,5 +1,11 @@
 # @shipfox/node-feature-flag
 
+## 0.4.0
+
+### Minor Changes
+
+- 627bb45: Add infrastructureProvider dimmension to runner context
+
 ## 0.3.0
 
 ### Minor Changes
