@@ -32,7 +32,7 @@ describe('feature-flag', () => {
     expect(isValid).toBe(true);
   });
 
-  it('should  not validate a JSON feature flag', () => {
+  it('should not validate a JSON feature flag', () => {
     const payload = {default: 'virtual-machine'};
     const isValid = isValidJsonFeatureFlagPayload(testSchema, payload);
     expect(isValid).toBe(false);

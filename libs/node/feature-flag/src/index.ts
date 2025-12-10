@@ -55,6 +55,7 @@ export interface RunnerContext {
   osType: string;
   osName: string;
   osVersion: string;
+  infrastructureProvider: string;
 }
 
 export type Context = BlankContext | OrganizationContext | UserContext | RunnerContext;
@@ -62,11 +63,7 @@ export type Context = BlankContext | OrganizationContext | UserContext | RunnerC
 function mapContext(context: Context): LDContext {
   if (context.kind === 'blank') return {kind: 'blank', anonymous: true, key: 'blank'};
   const {kind, id, ...rest} = context;
-  return {
-    kind,
-    key: id,
-    ...rest,
-  };
+  return {kind, key: id, ...rest};
 }
 
 export function getBooleanFeatureFlag(
