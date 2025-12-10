@@ -193,6 +193,7 @@
   --background-contrast-base: var(--color-neutral-900);
   --background-neutral-background: var(--color-neutral-50);
   --background-backdrop-backdrop: var(--color-alpha-black-64);
+  --background-modal-overlay: var(--color-alpha-black-88);
 
   /* Button Background */
   --background-button-transparent-default: var(--color-alpha-white-0);
@@ -398,6 +399,7 @@
   --background-contrast-base: var(--color-neutral-800);
   --background-neutral-background: var(--color-neutral-1000);
   --background-backdrop-backdrop: var(--color-alpha-black-64);
+  --background-modal-overlay: var(--color-alpha-black-88);
 
   /* Button Background */
   --background-button-transparent-default: var(--color-alpha-white-0);
@@ -743,6 +745,7 @@
   --color-background-contrast-base: var(--background-contrast-base);
   --color-background-neutral-background: var(--background-neutral-background);
   --color-background-backdrop-backdrop: var(--background-backdrop-backdrop);
+  --color-background-modal-overlay: var(--background-modal-overlay);
 
   /* Theme tokens - button background */
   --color-background-button-transparent-default: var(--background-button-transparent-default);

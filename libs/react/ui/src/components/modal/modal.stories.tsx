@@ -140,7 +140,7 @@ export const ImportForm: Story = {
           <ModalTrigger asChild>
             <Button>Import past jobs from GitHub</Button>
           </ModalTrigger>
-          <ModalContent aria-describedby={undefined}>
+          <ModalContent aria-describedby={undefined} overlayClassName="bg-background-modal-overlay">
             <ModalTitle className="sr-only">Import past jobs from GitHub</ModalTitle>
             <ModalHeader title="Import past jobs from GitHub" />
             <ModalBody className="gap-20">
@@ -221,7 +221,7 @@ export const GithubActions: Story = {
           <ModalTrigger asChild>
             <Button>Run GitHub Actions on Shipfox</Button>
           </ModalTrigger>
-          <ModalContent aria-describedby={undefined}>
+          <ModalContent aria-describedby={undefined} overlayClassName="bg-background-modal-overlay">
             <ModalTitle className="sr-only">Run GitHub Actions on Shipfox</ModalTitle>
             <ModalHeader title="Run GitHub Actions on Shipfox" />
             <ModalBody className="gap-32">
