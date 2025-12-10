@@ -55,6 +55,7 @@ export interface RunnerContext {
   osType: string;
   osName: string;
   osVersion: string;
+  infrastructureProvider: string;
 }
 
 export type Context = BlankContext | OrganizationContext | UserContext | RunnerContext;
