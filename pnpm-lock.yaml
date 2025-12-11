@@ -100,7 +100,7 @@ importers:
         version: 6.1.0(typebox@1.0.53)
       '@launchdarkly/node-server-sdk':
         specifier: ^9.7.2
-        version: 9.10.4
+        version: 9.10.5
       '@shipfox/config':
         specifier: workspace:*
         version: link:../../common/config
@@ -1474,11 +1474,11 @@ packages:
   '@launchdarkly/js-sdk-common@2.20.0':
     resolution: {integrity: sha512-g1Lyi5xL7AXAP6BP8BzRcqVqIhqOSVpA5Bx8Vvj8A/4A6sIHVz2vIZluykD/bJiKg1+G9ojm+OCfdL/c0ebi0A==}
 
-  '@launchdarkly/js-server-sdk-common@2.17.0':
-    resolution: {integrity: sha512-Y77vt/zCWN5xs4Ci4IsB84wcyIm6y69+cjSJhvk0++Zgs8LD15wGSkn43K8YCW0yHLedf44x15dQ9U/c/5q/Dg==}
+  '@launchdarkly/js-server-sdk-common@2.17.1':
+    resolution: {integrity: sha512-rAFzuBgYFhF/R6N26403J79T7wJ0nBXfdxfnS3gKMcQm+n/oioiZBes5MbrHk8Q4JAZYYhlBCL80xxsoBFPxdg==}
 
-  '@launchdarkly/node-server-sdk@9.10.4':
-    resolution: {integrity: sha512-WNPfYGLYh6BEXxx55T6CBfVNJNHJ9J2NrXjyOspWNj4+LSkSUDw2iboACoSTb32++QuselsKl/DX55DCOM5Mvg==}
+  '@launchdarkly/node-server-sdk@9.10.5':
+    resolution: {integrity: sha512-vsq+afEcbC3UNd7XXC0ZNwjP0pU9jpO7Jx+m2OO2csFeWLf6HBoIVSABbY/1A0iIUuBIjj6OeuZWWhMYXF98bg==}
 
   '@manypkg/find-root@1.1.0':
     resolution: {integrity: sha512-mki5uBvhHzO8kYYix/WRy2WX8S3B5wdVSc9D6KcU5lQNglP2yt58/VfLuAK49glRXChosY8ap2oJ1qgma3GUVA==}
@@ -6597,14 +6597,14 @@ snapshots:
 
   '@launchdarkly/js-sdk-common@2.20.0': {}
 
-  '@launchdarkly/js-server-sdk-common@2.17.0':
+  '@launchdarkly/js-server-sdk-common@2.17.1':
     dependencies:
       '@launchdarkly/js-sdk-common': 2.20.0
       semver: 7.5.4
 
-  '@launchdarkly/node-server-sdk@9.10.4':
+  '@launchdarkly/node-server-sdk@9.10.5':
     dependencies:
-      '@launchdarkly/js-server-sdk-common': 2.17.0
+      '@launchdarkly/js-server-sdk-common': 2.17.1
       https-proxy-agent: 7.0.6
       launchdarkly-eventsource: 2.2.0
     transitivePeerDependencies:
