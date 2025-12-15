@@ -937,3 +937,34 @@
       "lnum" 1;
   }
 }
+
+.shiny-text {
+  color: var(--foreground-neutral-subtle);
+  background: linear-gradient(
+    120deg,
+    var(--foreground-neutral-subtle) 0%,
+    var(--foreground-neutral-subtle) 30%,
+    rgba(255, 255, 255, 0.95) 50%,
+    var(--foreground-neutral-subtle) 70%,
+    var(--foreground-neutral-subtle) 100%
+  );
+  background-size: 200% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  display: inline-block;
+  animation: shine 5s linear infinite;
+}
+
+@keyframes shine {
+  0% {
+    background-position: 100%;
+  }
+  100% {
+    background-position: -100%;
+  }
+}
+
+.shiny-text.disabled {
+  animation: none;
+}
