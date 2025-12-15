@@ -14,6 +14,7 @@ import {
   CodeBlockHeader,
   CodeBlockItem,
 } from 'components/code-block';
+import {Confetti, type ConfettiRef} from 'components/confetti';
 import {DatePicker} from 'components/date-picker';
 import {DynamicItem} from 'components/dynamic-item';
 import {Icon} from 'components/icon';
@@ -22,7 +23,7 @@ import {ItemTitle} from 'components/item';
 import {Label} from 'components/label';
 import {MovingBorder} from 'components/moving-border';
 import {Text} from 'components/typography';
-import {useState} from 'react';
+import {useEffect, useRef, useState} from 'react';
 import {cn} from 'utils/cn';
 import illustration2 from '../../assets/illustration-2.svg';
 import illustrationBg from '../../assets/illustration-gradient.svg';
@@ -214,9 +215,54 @@ export const GithubActions: Story = {
   },
   render: () => {
     const [open, setOpen] = useState(false);
+    const [footerState, setFooterState] = useState<'running' | 'done'>('running');
+    const confettiRef = useRef<ConfettiRef>(null);
+
+    useEffect(() => {
+      if (open && footerState === 'running') {
+        const timer = setTimeout(() => {
+          setFooterState('done');
+        }, 3000);
+
+        return () => {
+          clearTimeout(timer);
+        };
+      }
+    }, [open, footerState]);
+
+    useEffect(() => {
+      if (footerState === 'done' && open) {
+        const timer = setTimeout(() => {
+          if (confettiRef.current) {
+            void confettiRef.current.fire();
+          }
+        }, 200);
+
+        return () => {
+          clearTimeout(timer);
+        };
+      }
+    }, [footerState, open]);
+
+    useEffect(() => {
+      if (!open) {
+        setFooterState('running');
+      }
+    }, [open]);
 
     return (
       <div className="flex h-[50vh] w-[calc(100vw/2)] items-center justify-center rounded-16 bg-background-subtle-base shadow-tooltip">
+        <Confetti
+          ref={confettiRef}
+          manualstart
+          options={{
+            particleCount: 200,
+            spread: 100,
+            colors: ['#ff6b6b', '#4ecdc4', '#ffe66d', '#95e1d3'],
+          }}
+          className="fixed inset-0 pointer-events-none z-100"
+          style={{width: '100%', height: '100%'}}
+        />
         <Modal open={open} onOpenChange={setOpen}>
           <ModalTrigger asChild>
             <Button>Run GitHub Actions on Shipfox</Button>
@@ -316,9 +362,17 @@ export const GithubActions: Story = {
                     )}
                   </CodeBlockBody>
                   <CodeBlockFooter
-                    state="running"
-                    message="Waiting for Shipfox runner event…"
-                    description="This usually takes 30-60 seconds after you commit the workflow file."
+                    state={footerState}
+                    message={
+                      footerState === 'running'
+                        ? 'Waiting for Shipfox runner event…'
+                        : 'Runners connected!'
+                    }
+                    description={
+                      footerState === 'running'
+                        ? 'This usually takes 30-60 seconds after you commit the workflow file.'
+                        : ''
+                    }
                   />
                 </CodeBlock>
               </div>
