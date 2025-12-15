@@ -5,7 +5,7 @@ import type {
 } from 'canvas-confetti';
 import confetti from 'canvas-confetti';
 import {Button} from 'components/button';
-import type {ComponentProps, ReactNode} from 'react';
+import type {ComponentProps, MouseEvent, ReactNode} from 'react';
 import {
   createContext,
   forwardRef,
@@ -20,9 +20,7 @@ type ConfettiApi = {
   fire: (options?: ConfettiOptions) => Promise<void>;
 };
 
-type ConfettiContextValue = ConfettiApi;
-
-const ConfettiContext = createContext<ConfettiContextValue | null>(null);
+const ConfettiContext = createContext<ConfettiApi | null>(null);
 
 export type ConfettiRef = ConfettiApi | null;
 
@@ -45,14 +43,21 @@ const ConfettiComponent = forwardRef<ConfettiRef, ConfettiProps>(
     ref,
   ) => {
     const instanceRef = useRef<ConfettiInstance | null>(null);
+    const hasAutoFiredRef = useRef<boolean>(false);
+    const optionsRef = useRef<ConfettiOptions | undefined>(options);
+
+    useEffect(() => {
+      optionsRef.current = options;
+    }, [options]);
 
     const canvasRef = useCallback(
       (node: HTMLCanvasElement | null) => {
         if (node !== null) {
-          if (instanceRef.current) return;
+          if (instanceRef.current) {
+            instanceRef.current.reset();
+          }
           instanceRef.current = confetti.create(node, {
             ...globalOptions,
-            resize: true,
           });
         } else {
           if (instanceRef.current) {
@@ -64,17 +69,14 @@ const ConfettiComponent = forwardRef<ConfettiRef, ConfettiProps>(
       [globalOptions],
     );
 
-    const fire = useCallback(
-      async (opts: ConfettiOptions = {}) => {
-        try {
-          await instanceRef.current?.({...options, ...opts});
-        } catch (error) {
-          // biome-ignore lint/suspicious/noConsole: we need to log the error
-          console.error('Confetti error:', error);
-        }
-      },
-      [options],
-    );
+    const fire = useCallback(async (opts: ConfettiOptions = {}) => {
+      try {
+        await instanceRef.current?.({...optionsRef.current, ...opts});
+      } catch (error) {
+        // biome-ignore lint/suspicious/noConsole: we need to log the error
+        console.error('Confetti error:', error);
+      }
+    }, []);
 
     const api = useMemo<ConfettiApi>(
       () => ({
@@ -86,10 +88,11 @@ const ConfettiComponent = forwardRef<ConfettiRef, ConfettiProps>(
     useImperativeHandle(ref, () => api, [api]);
 
     useEffect(() => {
-      if (!manualstart) {
-        void fire();
+      if (!manualstart && !hasAutoFiredRef.current && instanceRef.current) {
+        hasAutoFiredRef.current = true;
+        void instanceRef.current(optionsRef.current);
       }
-    }, [manualstart, fire]);
+    }, [manualstart]);
 
     return (
       <ConfettiContext.Provider value={api}>
@@ -109,7 +112,7 @@ export type ConfettiButtonProps = ComponentProps<'button'> & {
 };
 
 export function ConfettiButton({options, children, ...props}: ConfettiButtonProps) {
-  const handleClick = async (event: React.MouseEvent<HTMLButtonElement>) => {
+  const handleClick = async (event: MouseEvent<HTMLButtonElement>) => {
     try {
       const rect = event.currentTarget.getBoundingClientRect();
       const x = rect.left + rect.width / 2;

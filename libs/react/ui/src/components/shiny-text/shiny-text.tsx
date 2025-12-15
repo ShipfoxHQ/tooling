@@ -1,16 +1,18 @@
-interface ShinyTextProps {
+import {cn} from 'utils/cn';
+
+type ShinyTextProps = {
   text: string;
   disabled?: boolean;
   speed?: number;
   className?: string;
-}
+};
 
 function ShinyText({text, disabled = false, speed = 5, className = ''}: ShinyTextProps) {
   const animationDuration = `${speed}s`;
 
   return (
     <div
-      className={`shiny-text ${disabled ? 'disabled' : ''} ${className}`}
+      className={cn('shiny-text', {['disabled']: disabled}, className)}
       style={{animationDuration}}
     >
       {text}
@@ -19,3 +21,4 @@ function ShinyText({text, disabled = false, speed = 5, className = ''}: ShinyTex
 }
 
 export {ShinyText};
+export type {ShinyTextProps};
