@@ -5,7 +5,7 @@ import type {
 } from 'canvas-confetti';
 import confetti from 'canvas-confetti';
 import {Button} from 'components/button';
-import type {ComponentProps, MouseEvent, ReactNode} from 'react';
+import type {ComponentProps, ReactNode} from 'react';
 import {
   createContext,
   forwardRef,
@@ -111,8 +111,8 @@ export type ConfettiButtonProps = ComponentProps<'button'> & {
   options?: ConfettiOptions & ConfettiGlobalOptions & {canvas?: HTMLCanvasElement};
 };
 
-export function ConfettiButton({options, children, ...props}: ConfettiButtonProps) {
-  const handleClick = async (event: MouseEvent<HTMLButtonElement>) => {
+export function ConfettiButton({options, onClick, children, ...props}: ConfettiButtonProps) {
+  const handleClick: ComponentProps<'button'>['onClick'] = async (event) => {
     try {
       const rect = event.currentTarget.getBoundingClientRect();
       const x = rect.left + rect.width / 2;
@@ -128,6 +128,8 @@ export function ConfettiButton({options, children, ...props}: ConfettiButtonProp
       // biome-ignore lint/suspicious/noConsole: we need to log the error
       console.error('Confetti button error:', error);
     }
+
+    onClick?.(event);
   };
 
   return (
