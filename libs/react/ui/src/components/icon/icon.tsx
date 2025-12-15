@@ -78,9 +78,13 @@ export type IconName = keyof typeof iconsMap;
 export const iconNames = Object.keys(iconsMap) as IconName[];
 
 type BaseIconProps = ComponentProps<RemixiconComponentType>;
-type IconProps = {name: IconName} & Omit<BaseIconProps, 'name'>;
+type IconProps = {name: IconName; size?: number | string} & Omit<
+  BaseIconProps,
+  'name' | 'size' | 'width' | 'height'
+>;
 
-export function Icon({name, ...props}: IconProps) {
+export function Icon({name, size, ...props}: IconProps) {
   const IconComponent = iconsMap[name];
-  return <IconComponent {...props} />;
+  const svgProps = size && typeof size === 'number' ? {...props, width: size, height: size} : props;
+  return <IconComponent {...svgProps} />;
 }

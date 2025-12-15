@@ -11,9 +11,9 @@ function ShinyText({text, disabled = false, speed = 5, className = ''}: ShinyTex
   const animationDuration = `${speed}s`;
 
   return (
-    <div className={cn('shiny-text', {disabled: disabled}, className)} style={{animationDuration}}>
+    <span className={cn('shiny-text', {disabled: disabled}, className)} style={{animationDuration}}>
       {text}
-    </div>
+    </span>
   );
 }
 
