@@ -1,5 +1,11 @@
 # @shipfox/react-ui
 
+## 0.14.0
+
+### Minor Changes
+
+- 18f4ab3: Add shiny text, confetti and shipfox loader components
+
 ## 0.13.0
 
 ### Minor Changes
