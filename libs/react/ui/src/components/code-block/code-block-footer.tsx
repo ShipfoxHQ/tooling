@@ -1,7 +1,9 @@
 import {Slot} from '@radix-ui/react-slot';
 import {Icon} from 'components/icon/icon';
+import {ShinyText} from 'components/shiny-text';
 import {Text} from 'components/typography';
 import type {ComponentProps, HTMLAttributes, ReactNode} from 'react';
+import {ShipfoxLoader} from 'shipfox-loader-react';
 import {cn} from 'utils/cn';
 
 export type CodeBlockFooterProps = HTMLAttributes<HTMLDivElement> & {
@@ -27,7 +29,7 @@ export function CodeBlockFooter({
   const defaultIcon =
     icon ??
     (state === 'running' ? (
-      <Icon name="shipfox" className="size-20" aria-hidden="true" />
+      <ShipfoxLoader size={20} animation="circular" color="white" background="dark" />
     ) : (
       <Icon
         name="checkCircleSolid"
@@ -57,7 +59,15 @@ export function CodeBlockFooter({
       <CodeBlockFooterIcon className="text-tag-success-icon">{defaultIcon}</CodeBlockFooterIcon>
       {(message || description) && (
         <CodeBlockFooterContent>
-          {message && <CodeBlockFooterMessage>{message}</CodeBlockFooterMessage>}
+          {message && (
+            <CodeBlockFooterMessage>
+              {state === 'running' && typeof message === 'string' ? (
+                <ShinyText text={message} speed={3} />
+              ) : (
+                message
+              )}
+            </CodeBlockFooterMessage>
+          )}
           {description && <CodeBlockFooterDescription>{description}</CodeBlockFooterDescription>}
         </CodeBlockFooterContent>
       )}

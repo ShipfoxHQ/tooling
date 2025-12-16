@@ -1,5 +1,11 @@
 # @shipfox/node-feature-flag
 
+## 0.5.0
+
+### Minor Changes
+
+- 9e32782: Force release
+
 ## 0.4.0
 
 ### Minor Changes
