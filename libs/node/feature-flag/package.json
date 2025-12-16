@@ -2,7 +2,7 @@
   "name": "@shipfox/node-feature-flag",
   "license": "MIT",
   "private": false,
-  "version": "0.5.0",
+  "version": "0.6.0",
   "packageManager": "pnpm@9.15.9",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",

@@ -1,5 +1,11 @@
 # @shipfox/node-feature-flag
 
+## 0.6.0
+
+### Minor Changes
+
+- ae7bf24: downgrade typebox version
+
 ## 0.5.0
 
 ### Minor Changes
