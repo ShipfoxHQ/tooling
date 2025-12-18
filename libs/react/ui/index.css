@@ -968,3 +968,51 @@
 .shiny-text.disabled {
   animation: none;
 }
+
+/* Custom Scrollbar Styles */
+.scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: var(--border-neutral-base) transparent;
+}
+
+.scrollbar::-webkit-scrollbar {
+  width: 4px;
+  height: 4px;
+}
+
+.scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+  margin: 8px 0;
+}
+
+.scrollbar::-webkit-scrollbar-thumb {
+  background-color: var(--border-neutral-base);
+  border-radius: 8px;
+}
+
+.scrollbar::-webkit-scrollbar-thumb:hover {
+  background-color: var(--border-neutral-strong);
+}
+
+/* Dark mode scrollbar */
+.dark .scrollbar {
+  scrollbar-color: var(--border-neutral-strong) transparent;
+}
+
+.dark .scrollbar::-webkit-scrollbar-thumb {
+  background-color: var(--border-neutral-strong);
+}
+
+.dark .scrollbar::-webkit-scrollbar-thumb:hover {
+  background-color: var(--color-neutral-600);
+}
+
+/* Hide scrollbar variant */
+.scrollbar-hidden {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.scrollbar-hidden::-webkit-scrollbar {
+  display: none;
+}
