@@ -1,6 +1,6 @@
 import {cva, type VariantProps} from 'class-variance-authority';
 import {Command as CommandPrimitive} from 'cmdk';
-import {type ComponentProps, forwardRef, useState} from 'react';
+import {type ComponentProps, forwardRef, useCallback, useState} from 'react';
 import {cn} from 'utils/cn';
 import {Icon} from '../icon';
 import {Kbd} from '../kbd';
@@ -89,9 +89,7 @@ function CommandDialog({children, ...props}: ComponentProps<typeof CommandPrimit
 }
 
 type CommandInputProps = ComponentProps<typeof CommandPrimitive.Input> & {
-  /** Whether to show the clear button when input has value */
   showClearButton?: boolean;
-  /** Callback when input is cleared */
   onClear?: () => void;
 };
 
@@ -108,28 +106,34 @@ function CommandInput({
   const inputValue = isControlled ? value : internalValue;
   const hasValue = Boolean(inputValue);
 
-  const handleValueChange = (newValue: string) => {
-    if (!isControlled) {
-      setInternalValue(newValue);
-    }
-    onValueChange?.(newValue);
-  };
+  const handleValueChange = useCallback(
+    (newValue: string) => {
+      if (!isControlled) {
+        setInternalValue(newValue);
+      }
+      onValueChange?.(newValue);
+    },
+    [isControlled, onValueChange],
+  );
 
-  const handleClear = () => {
+  const handleClear = useCallback(() => {
     if (!isControlled) {
       setInternalValue('');
     }
     onValueChange?.('');
     onClear?.();
-  };
+  }, [isControlled, onValueChange, onClear]);
 
-  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === 'Escape' && hasValue) {
-      e.preventDefault();
-      e.stopPropagation();
-      handleClear();
-    }
-  };
+  const handleKeyDown = useCallback(
+    (e: React.KeyboardEvent<HTMLInputElement>) => {
+      if (e.key === 'Escape' && hasValue) {
+        e.preventDefault();
+        e.stopPropagation();
+        handleClear();
+      }
+    },
+    [hasValue, handleClear],
+  );
 
   return (
     <div className="flex items-center gap-8 border-b border-border-neutral-strong p-8">
@@ -190,10 +194,10 @@ function CommandGroup({className, ...props}: ComponentProps<typeof CommandPrimit
       data-slot="command-group"
       className={cn(
         'overflow-hidden',
-        '**:[[cmdk-group-heading]]:px-8 **:[[cmdk-group-heading]]:py-4',
-        '**:[[cmdk-group-heading]]:text-xs **:[[cmdk-group-heading]]:leading-20',
-        '**:[[cmdk-group-heading]]:text-foreground-neutral-subtle',
-        '**:[[cmdk-group-heading]]:select-none',
+        '[&_[cmdk-group-heading]]:px-8 [&_[cmdk-group-heading]]:py-4',
+        '[&_[cmdk-group-heading]]:text-xs [&_[cmdk-group-heading]]:leading-20',
+        '[&_[cmdk-group-heading]]:text-foreground-neutral-subtle',
+        '[&_[cmdk-group-heading]]:select-none',
         className,
       )}
       {...props}

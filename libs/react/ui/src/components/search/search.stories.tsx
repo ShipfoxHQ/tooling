@@ -14,7 +14,7 @@ import {
   SearchOverlay,
   SearchSeparator,
   SearchTrigger,
-} from './search';
+} from './index';
 
 const meta: Meta = {
   title: 'Components/Search',
@@ -32,10 +32,6 @@ const meta: Meta = {
 export default meta;
 
 type Story = StoryObj;
-
-// ============================================
-// INLINE SEARCH STORIES
-// ============================================
 
 export const Inline: Story = {
   render: () => {
@@ -134,10 +130,6 @@ export const InlineSizes: Story = {
   ),
 };
 
-// ============================================
-// MODAL SEARCH STORIES
-// ============================================
-
 function ModalSearchDemo() {
   const [open, setOpen] = useState(false);
 
@@ -193,7 +185,6 @@ export const Modal: Story = {
   render: () => <ModalSearchDemo />,
 };
 
-// Wrapper component to provide Search context for trigger-only previews
 function TriggerPreview({
   variant,
   size,

@@ -43,7 +43,7 @@ function SelectExample() {
       <ButtonGroup className="w-280" aria-label="Currency converter">
         <Select value={currency} onValueChange={setCurrency}>
           <SelectTrigger
-            className="!flex-none w-80 font-mono text-foreground-neutral-subtle"
+            className="w-80 font-mono text-foreground-neutral-subtle"
             aria-label="Select currency"
           >
             <SelectValue />
@@ -59,7 +59,7 @@ function SelectExample() {
         <Input placeholder="10.00" pattern="[0-9]*" aria-label="Amount" />
       </ButtonGroup>
       <ButtonGroup aria-label="Send action">
-        <Button variant="secondary" className="!flex-none" aria-label="Send">
+        <Button variant="secondary" aria-label="Send">
           <Icon name="arrowRightLine" className="size-16 text-foreground-neutral-subtle" />
         </Button>
       </ButtonGroup>
@@ -82,7 +82,7 @@ function PopoverExample() {
           <Button
             variant="secondary"
             size="sm"
-            className="!flex-none !text-foreground-neutral-subtle"
+            className="!text-foreground-neutral-subtle"
             aria-label="Open Copilot options"
           >
             <Icon name="arrowDownSLine" className="size-16" />
@@ -125,15 +125,15 @@ export const Default: Story = {
           Basic Button Group
         </Code>
         <ButtonGroup aria-label="Text alignment">
-          <Button variant="secondary" size="sm" className="!flex-none" aria-label="Align left">
+          <Button variant="secondary" size="sm" aria-label="Align left">
             <Icon name="rewindFill" className="size-14 text-foreground-neutral-subtle" />
           </Button>
           <ButtonGroupSeparator />
-          <Button variant="secondary" size="sm" className="!flex-none" aria-label="Align center">
+          <Button variant="secondary" size="sm" aria-label="Align center">
             <Icon name="playFill" className="size-14 text-foreground-neutral-subtle" />
           </Button>
           <ButtonGroupSeparator />
-          <Button variant="secondary" size="sm" className="!flex-none" aria-label="Align right">
+          <Button variant="secondary" size="sm" aria-label="Align right">
             <Icon name="speedFill" className="size-14 text-foreground-neutral-subtle" />
           </Button>
         </ButtonGroup>
@@ -146,41 +146,41 @@ export const Default: Story = {
         </Code>
         <div className="flex flex-col gap-8">
           <ButtonGroup aria-label="Small buttons">
-            <Button variant="secondary" size="sm" className="!flex-none" aria-label="Cut">
+            <Button variant="secondary" size="sm" aria-label="Cut">
               <Icon name="rewindFill" className="size-14 text-foreground-neutral-subtle" />
             </Button>
             <ButtonGroupSeparator />
-            <Button variant="secondary" size="sm" className="!flex-none" aria-label="Copy">
+            <Button variant="secondary" size="sm" aria-label="Copy">
               <Icon name="playFill" className="size-14 text-foreground-neutral-subtle" />
             </Button>
             <ButtonGroupSeparator />
-            <Button variant="secondary" size="sm" className="!flex-none" aria-label="Paste">
+            <Button variant="secondary" size="sm" aria-label="Paste">
               <Icon name="speedFill" className="size-14 text-foreground-neutral-subtle" />
             </Button>
           </ButtonGroup>
           <ButtonGroup aria-label="Medium buttons">
-            <Button variant="secondary" size="md" className="!flex-none" aria-label="Cut">
+            <Button variant="secondary" size="md" aria-label="Cut">
               <Icon name="rewindFill" className="size-16 text-foreground-neutral-subtle" />
             </Button>
             <ButtonGroupSeparator />
-            <Button variant="secondary" size="md" className="!flex-none" aria-label="Copy">
+            <Button variant="secondary" size="md" aria-label="Copy">
               <Icon name="playFill" className="size-16 text-foreground-neutral-subtle" />
             </Button>
             <ButtonGroupSeparator />
-            <Button variant="secondary" size="md" className="!flex-none" aria-label="Paste">
+            <Button variant="secondary" size="md" aria-label="Paste">
               <Icon name="speedFill" className="size-16 text-foreground-neutral-subtle" />
             </Button>
           </ButtonGroup>
           <ButtonGroup aria-label="Large buttons">
-            <Button variant="secondary" size="lg" className="!flex-none" aria-label="Cut">
+            <Button variant="secondary" size="lg" aria-label="Cut">
               <Icon name="rewindFill" className="size-16 text-foreground-neutral-subtle" />
             </Button>
             <ButtonGroupSeparator />
-            <Button variant="secondary" size="lg" className="!flex-none" aria-label="Copy">
+            <Button variant="secondary" size="lg" aria-label="Copy">
               <Icon name="playFill" className="size-16 text-foreground-neutral-subtle" />
             </Button>
             <ButtonGroupSeparator />
-            <Button variant="secondary" size="lg" className="!flex-none" aria-label="Paste">
+            <Button variant="secondary" size="lg" aria-label="Paste">
               <Icon name="speedFill" className="size-16 text-foreground-neutral-subtle" />
             </Button>
           </ButtonGroup>
@@ -194,20 +194,20 @@ export const Default: Story = {
         </Code>
         <div className="flex gap-24 items-start">
           <ButtonGroup aria-label="Horizontal">
-            <Button variant="secondary" size="sm" className="!flex-none" aria-label="Zoom in">
+            <Button variant="secondary" size="sm" aria-label="Zoom in">
               <Icon name="addLine" className="size-16 text-foreground-neutral-subtle" />
             </Button>
             <ButtonGroupSeparator />
-            <Button variant="secondary" size="sm" className="!flex-none" aria-label="Zoom out">
+            <Button variant="secondary" size="sm" aria-label="Zoom out">
               <Icon name="subtractLine" className="size-16 text-foreground-neutral-subtle" />
             </Button>
           </ButtonGroup>
           <ButtonGroup orientation="vertical" className="h-fit w-fit" aria-label="Vertical">
-            <Button variant="secondary" size="sm" className="!flex-none" aria-label="Increase">
+            <Button variant="secondary" size="sm" aria-label="Increase">
               <Icon name="addLine" className="size-16 text-foreground-neutral-subtle" />
             </Button>
             <ButtonGroupSeparator orientation="horizontal" />
-            <Button variant="secondary" size="sm" className="!flex-none" aria-label="Decrease">
+            <Button variant="secondary" size="sm" aria-label="Decrease">
               <Icon name="subtractLine" className="size-16 text-foreground-neutral-subtle" />
             </Button>
           </ButtonGroup>
@@ -220,15 +220,11 @@ export const Default: Story = {
           Split Button
         </Code>
         <ButtonGroup aria-label="Save actions">
-          <Button
-            variant="secondary"
-            size="sm"
-            className="!flex-none !text-foreground-neutral-subtle"
-          >
+          <Button variant="secondary" size="sm" className=" !text-foreground-neutral-subtle">
             Save
           </Button>
           <ButtonGroupSeparator />
-          <Button variant="secondary" size="sm" className="!flex-none" aria-label="More options">
+          <Button variant="secondary" size="sm" aria-label="More options">
             <Icon name="arrowDownSLine" className="size-16 text-foreground-neutral-subtle" />
           </Button>
         </ButtonGroup>
@@ -242,7 +238,7 @@ export const Default: Story = {
         <ButtonGroup className="w-320" aria-label="Search">
           <Input placeholder="Search..." aria-label="Search input" />
           <ButtonGroupSeparator />
-          <Button variant="secondary" className="!flex-none" aria-label="Submit search">
+          <Button variant="secondary" aria-label="Submit search">
             <Icon name="searchLine" className="size-16 text-foreground-neutral-subtle" />
           </Button>
         </ButtonGroup>
@@ -254,13 +250,13 @@ export const Default: Story = {
           Quantity Selector
         </Code>
         <ButtonGroup className="w-280" aria-label="Quantity selector">
-          <Button variant="secondary" className="!flex-none" aria-label="Decrease">
+          <Button variant="secondary" aria-label="Decrease">
             <Icon name="subtractLine" className="size-16 text-foreground-neutral-subtle" />
           </Button>
           <ButtonGroupSeparator />
           <Input placeholder="1" className="text-center" aria-label="Quantity" />
           <ButtonGroupSeparator />
-          <Button variant="secondary" className="!flex-none" aria-label="Increase">
+          <Button variant="secondary" aria-label="Increase">
             <Icon name="addLine" className="size-16 text-foreground-neutral-subtle" />
           </Button>
         </ButtonGroup>
@@ -330,11 +326,11 @@ export const Default: Story = {
             </Button>
           </ButtonGroup>
           <ButtonGroup aria-label="Pagination controls">
-            <Button variant="transparent" className="!flex-none" aria-label="Previous page">
+            <Button variant="transparent" aria-label="Previous page">
               <Icon name="arrowLeftSLine" className="size-16 text-foreground-neutral-subtle" />
             </Button>
             <ButtonGroupSeparator />
-            <Button variant="transparent" className="!flex-none" aria-label="Next page">
+            <Button variant="transparent" aria-label="Next page">
               <Icon name="arrowRightSLine" className="size-16 text-foreground-neutral-subtle" />
             </Button>
           </ButtonGroup>
@@ -347,11 +343,7 @@ export const Default: Story = {
           Disabled State
         </Code>
         <ButtonGroup aria-label="Button group with disabled state">
-          <Button
-            variant="secondary"
-            size="sm"
-            className="!flex-none !text-foreground-neutral-subtle"
-          >
+          <Button variant="secondary" size="sm" className=" !text-foreground-neutral-subtle">
             Enabled
           </Button>
           <ButtonGroupSeparator />
@@ -359,11 +351,7 @@ export const Default: Story = {
             Disabled
           </Button>
           <ButtonGroupSeparator />
-          <Button
-            variant="secondary"
-            size="sm"
-            className="!flex-none !text-foreground-neutral-subtle"
-          >
+          <Button variant="secondary" size="sm" className=" !text-foreground-neutral-subtle">
             Enabled
           </Button>
         </ButtonGroup>
