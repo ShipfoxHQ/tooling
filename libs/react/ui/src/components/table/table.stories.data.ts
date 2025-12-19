@@ -39,19 +39,28 @@ export type User = {
  * Generate mock job data
  */
 export const generateJobData = (count: number): JobData[] => {
-  return Array.from({length: count}, (_, i) => ({
-    id: `job-${i + 1}`,
-    name: 'Dependabot updates',
-    total: 46,
-    success: 46,
-    failed: 46,
-    neutral: 46,
-    flaked: 46,
-    failureRate: '14%',
-    flakeRate: '0%',
-    repository: 'shipfox/tooling',
-    branch: 'main',
-  }));
+  return Array.from({length: count}, (_, i) => {
+    const total = 40 + (i % 20); // keeps totals in a reasonable range
+    const failed = i % 7;
+    const flaked = i % 5;
+    const neutral = i % 3;
+    const success = total - failed - flaked - neutral;
+    const failureRate = `${Math.round((failed / total) * 100)}%`;
+    const flakeRate = `${Math.round((flaked / total) * 100)}%`;
+    return {
+      id: `job-${i + 1}`,
+      name: 'Dependabot updates',
+      total,
+      success,
+      failed,
+      neutral,
+      flaked,
+      failureRate,
+      flakeRate,
+      repository: 'shipfox/tooling',
+      branch: 'main',
+    };
+  });
 };
 
 /**

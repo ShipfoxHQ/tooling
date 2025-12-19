@@ -46,8 +46,9 @@ export function SearchInline({
 
     // Always call onChange to ensure parent state is updated
     if (onChange && inputRef.current) {
-      // Set input value to empty
-      inputRef.current.value = '';
+      if (!isControlled) {
+        inputRef.current.value = '';
+      }
 
       // Create a proper synthetic event
       const syntheticEvent = {

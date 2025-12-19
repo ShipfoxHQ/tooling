@@ -3,24 +3,69 @@ import {Text} from 'components/typography';
 import type {ComponentProps} from 'react';
 import {Button} from '../button';
 import {Icon} from '../icon';
+import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from '../select/select';
 import {TableCell, TableFooter, TableRow} from './table';
 
+/**
+ * Props for the {@link TablePagination} component.
+ *
+ * Provides pagination controls for data tables, including page navigation,
+ * page size selection, and row count displays.
+ *
+ * @typeParam TData - The shape of the row data in the table.
+ */
 interface TablePaginationProps<TData> extends ComponentProps<'tfoot'> {
+  /**
+   * The TanStack Table instance that manages the table state and behavior.
+   *
+   * This is typically created using `useReactTable` from `@tanstack/react-table`.
+   * The table instance provides access to pagination state, row data, and methods
+   * for controlling pagination (e.g., `setPageSize`, `nextPage`, `previousPage`).
+   *
+   * @see {@link https://tanstack.com/table/latest/docs/api/core/table TanStack Table API}
+   */
   table: Table<TData>;
+  /**
+   * Array of page size options to display in the page size selector.
+   * When provided, a dropdown will be rendered allowing users to change the number of rows per page.
+   *
+   * @default [10, 20, 50, 100]
+   * @example
+   * ```tsx
+   * <TablePagination table={table} pageSizeOptions={[10, 25, 50]} />
+   * ```
+   */
   pageSizeOptions?: number[];
+  /**
+   * When `true`, displays the count of selected rows instead of pagination range.
+   *
+   * - If `true`: Shows "X of Y row(s) selected" where X is the number of selected rows
+   * - If `false`: Shows "A — B of C results" where A-B is the current page range
+   *
+   * This is useful when row selection is enabled and you want to give users feedback
+   * on how many rows they have selected.
+   *
+   * @default false
+   * @example
+   * ```tsx
+   * <TablePagination table={table} showSelectedCount={true} />
+   * // Displays: "5 of 100 row(s) selected"
+   * ```
+   */
   showSelectedCount?: boolean;
 }
 
 export function TablePagination<TData>({
   table,
   className,
+  pageSizeOptions = [10, 20, 50, 100],
   showSelectedCount = false,
   ...props
 }: TablePaginationProps<TData>) {
   const currentPage = table.getState().pagination.pageIndex + 1;
   const pageSize = table.getState().pagination.pageSize;
   const totalRows = table.getFilteredRowModel().rows.length;
-  const startRow = currentPage === 1 ? 1 : (currentPage - 1) * pageSize + 1;
+  const startRow = totalRows === 0 ? 0 : currentPage === 1 ? 1 : (currentPage - 1) * pageSize + 1;
   const endRow = Math.min(currentPage * pageSize, totalRows);
 
   return (
@@ -42,6 +87,28 @@ export function TablePagination<TData>({
                   {startRow} — {endRow} of {totalRows} results
                 </Text>
               )}
+              <div className="flex items-center gap-8">
+                <Text size="sm" className="text-foreground-neutral-muted">
+                  Rows per page
+                </Text>
+                <Select
+                  value={String(pageSize)}
+                  onValueChange={(value) => {
+                    table.setPageSize(Number(value));
+                  }}
+                >
+                  <SelectTrigger className="h-28 w-80" size="small">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {pageSizeOptions.map((size) => (
+                      <SelectItem key={size} value={String(size)}>
+                        {size}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
             </div>
 
             <div className="flex items-center">

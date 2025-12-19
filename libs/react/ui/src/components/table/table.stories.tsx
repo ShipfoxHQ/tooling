@@ -1,7 +1,7 @@
 import type {Meta, StoryObj} from '@storybook/react';
 import type {ColumnDef} from '@tanstack/react-table';
 import {Search, SearchContent, SearchOverlay, SearchTrigger} from 'components/search';
-import {Header} from 'components/typography';
+import {Header, Text} from 'components/typography';
 import {useMemo, useState} from 'react';
 import {Button} from '../button';
 import {Icon} from '../icon';
@@ -33,7 +33,13 @@ export const Simple: Story = {
 export const WithPagination: Story = {
   render: () => (
     <div className="w-full min-h-screen bg-background-neutral-background p-24">
-      <DataTable columns={jobColumns} data={jobsData} pagination={true} pageSize={10} />
+      <DataTable
+        columns={jobColumns}
+        data={jobsData}
+        pagination={true}
+        pageSize={10}
+        pageSizeOptions={[5, 10, 20, 50]}
+      />
     </div>
   ),
 };
@@ -47,14 +53,6 @@ export const EmptyState: Story = {
 };
 
 export const UserTable: Story = {
-  render: () => (
-    <div className="w-full min-h-screen bg-background-neutral-background p-24">
-      <DataTable columns={userColumns} data={users} pagination={false} />
-    </div>
-  ),
-};
-
-export const SortableTable: Story = {
   render: () => (
     <div className="w-full min-h-screen bg-background-neutral-background p-24">
       <DataTable columns={userColumns} data={users} pagination={false} />
@@ -89,20 +87,20 @@ export const JobsOverview: Story = {
 
     return (
       <div className="w-full min-h-screen bg-background-neutral-background p-24">
-        <div className="flex items-center justify-between p-12 border-t border-x border-border-neutral-base rounded-t-8 rounded-b-none bg-background-neutral-base">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-12 sm:gap-0 p-12 border-t border-x border-border-neutral-base rounded-t-8 rounded-b-none bg-background-neutral-base">
           <Header variant="h3" className="text-foreground-neutral-base">
             Jobs overview
           </Header>
 
-          <div className="flex items-center justify-between gap-16">
+          <div className="flex items-center gap-12 sm:gap-16 w-full sm:w-auto">
             <SearchInline
               placeholder="Search..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               onClear={() => setSearchQuery('')}
-              className="w-240"
+              className="flex-1 sm:w-240"
             />
-            <Button variant="secondary" aria-label="Insert column left">
+            <Button variant="secondary" aria-label="Insert column left" className="shrink-0">
               <Icon name="insertColumnLeft" className="size-16 text-foreground-neutral-subtle" />
             </Button>
           </div>
@@ -113,6 +111,7 @@ export const JobsOverview: Story = {
           data={filteredData}
           pagination={true}
           pageSize={10}
+          pageSizeOptions={[10, 20, 50, 100]}
           className="rounded-t-none"
         />
       </div>
@@ -148,25 +147,25 @@ export const WithSearchModal: Story = {
 
       return (
         <div className="w-full min-h-screen bg-background-neutral-background p-24">
-          <div className="flex items-center justify-between p-12 border-t border-x border-border-neutral-base rounded-t-8 rounded-b-none bg-background-neutral-base">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-12 sm:gap-0 p-12 border-t border-x border-border-neutral-base rounded-t-8 rounded-b-none bg-background-neutral-base">
             <Header variant="h3" className="text-foreground-neutral-base">
               Jobs Breakdown
             </Header>
 
-            <div className="flex items-center gap-16">
+            <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-12 sm:gap-16 w-full sm:w-auto">
               {selectedJob && (
                 <Button
                   variant="transparentMuted"
                   size="sm"
                   onClick={handleClearSelection}
-                  className="text-foreground-neutral-muted gap-4"
+                  className="text-foreground-neutral-muted gap-4 w-full sm:w-auto justify-center sm:justify-start"
                   iconRight="closeLine"
                 >
                   Clear filter
                 </Button>
               )}
               <Search open={open} onOpenChange={setOpen} shortcutKey="meta+k" shouldFilter={false}>
-                <SearchTrigger placeholder="Filter jobs..." className="w-280" />
+                <SearchTrigger placeholder="Filter jobs..." className="w-full sm:w-280" />
                 <SearchOverlay />
                 <SearchContent>
                   <SearchModalContent onSelectJob={handleSelectJob} />
@@ -180,6 +179,7 @@ export const WithSearchModal: Story = {
             data={filteredData}
             pagination={true}
             pageSize={10}
+            pageSizeOptions={[10, 25, 50]}
             className="rounded-t-none"
           />
         </div>
@@ -188,4 +188,30 @@ export const WithSearchModal: Story = {
 
     return <SearchModalDemo />;
   },
+};
+
+export const WithRowSelection: Story = {
+  render: () => (
+    <div className="w-full min-h-screen bg-background-neutral-background p-24">
+      <div className="space-y-16">
+        <div>
+          <Header variant="h3" className="text-foreground-neutral-base mb-8">
+            Selectable Rows
+          </Header>
+          <Text size="sm" className="text-foreground-neutral-muted">
+            Use the checkboxes to select rows. The pagination footer shows the count of selected
+            rows.
+          </Text>
+        </div>
+        <DataTable
+          columns={jobColumns}
+          data={jobsData}
+          pagination={true}
+          pageSize={10}
+          pageSizeOptions={[5, 10, 20, 50]}
+          showSelectedCount={true}
+        />
+      </div>
+    </div>
+  ),
 };
