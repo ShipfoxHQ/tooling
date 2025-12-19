@@ -2,6 +2,7 @@ import {Slot} from '@radix-ui/react-slot';
 import {Icon} from 'components/icon/icon';
 import {ShinyText} from 'components/shiny-text';
 import {Text} from 'components/typography';
+import {useResolvedTheme} from 'hooks/useResolvedTheme';
 import type {ComponentProps, HTMLAttributes, ReactNode} from 'react';
 import {ShipfoxLoader} from 'shipfox-loader-react';
 import {cn} from 'utils/cn';
@@ -25,11 +26,17 @@ export function CodeBlockFooter({
   ...props
 }: CodeBlockFooterProps) {
   const Comp = asChild ? Slot : 'div';
+  const resolvedTheme = useResolvedTheme();
 
   const defaultIcon =
     icon ??
     (state === 'running' ? (
-      <ShipfoxLoader size={20} animation="circular" color="white" background="dark" />
+      <ShipfoxLoader
+        size={20}
+        animation="circular"
+        color={resolvedTheme === 'dark' ? 'white' : 'orange'}
+        background={resolvedTheme === 'dark' ? 'dark' : 'light'}
+      />
     ) : (
       <Icon
         name="checkCircleSolid"
