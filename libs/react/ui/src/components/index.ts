@@ -27,6 +27,7 @@ export * from './search';
 export * from './select';
 export * from './shiny-text';
 export * from './skeleton';
+export * from './table';
 export * from './tabs';
 export * from './textarea';
 export * from './theme';

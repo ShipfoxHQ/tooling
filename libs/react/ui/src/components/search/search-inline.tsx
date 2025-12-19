@@ -44,19 +44,25 @@ export function SearchInline({
       setInternalValue('');
     }
 
+    // Always call onChange to ensure parent state is updated
     if (onChange && inputRef.current) {
+      // Set input value to empty
       inputRef.current.value = '';
 
-      const nativeEvent = new InputEvent('input', {bubbles: true, cancelable: true});
-      const syntheticEvent = Object.assign(nativeEvent, {
+      // Create a proper synthetic event
+      const syntheticEvent = {
         target: inputRef.current,
         currentTarget: inputRef.current,
-      }) as unknown as React.ChangeEvent<HTMLInputElement>;
+      } as React.ChangeEvent<HTMLInputElement>;
 
       onChange(syntheticEvent);
     }
 
+    // Call the onClear callback if provided
     onClear?.();
+
+    // Focus back on input after clearing
+    inputRef.current?.focus();
   }, [isControlled, onChange, onClear]);
 
   const handleKeyDown = useCallback(
