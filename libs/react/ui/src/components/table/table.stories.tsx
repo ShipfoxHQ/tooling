@@ -23,6 +23,11 @@ export default meta;
 type Story = StoryObj;
 
 export const Simple: Story = {
+  parameters: {
+    viewport: {
+      defaultViewport: 'extraLarge',
+    },
+  },
   render: () => (
     <div className="w-full min-h-screen bg-background-neutral-background p-24">
       <DataTable columns={jobColumns.slice(0, 4)} data={jobsData.slice(0, 5)} pagination={false} />
@@ -31,6 +36,11 @@ export const Simple: Story = {
 };
 
 export const WithPagination: Story = {
+  parameters: {
+    viewport: {
+      defaultViewport: 'extraLarge',
+    },
+  },
   render: () => (
     <div className="w-full min-h-screen bg-background-neutral-background p-24">
       <DataTable
@@ -45,6 +55,11 @@ export const WithPagination: Story = {
 };
 
 export const EmptyState: Story = {
+  parameters: {
+    viewport: {
+      defaultViewport: 'extraLarge',
+    },
+  },
   render: () => (
     <div className="w-full min-h-screen bg-background-neutral-background p-24">
       <DataTable columns={jobColumns} data={[]} pagination={true} emptyState={<JobsEmptyState />} />
@@ -53,6 +68,11 @@ export const EmptyState: Story = {
 };
 
 export const UserTable: Story = {
+  parameters: {
+    viewport: {
+      defaultViewport: 'extraLarge',
+    },
+  },
   render: () => (
     <div className="w-full min-h-screen bg-background-neutral-background p-24">
       <DataTable columns={userColumns} data={users} pagination={false} />
@@ -61,6 +81,11 @@ export const UserTable: Story = {
 };
 
 export const CompactTable: Story = {
+  parameters: {
+    viewport: {
+      defaultViewport: 'extraLarge',
+    },
+  },
   render: () => {
     const compactColumns: ColumnDef<JobData>[] = [
       jobColumns[0], // name
@@ -77,6 +102,11 @@ export const CompactTable: Story = {
 };
 
 export const JobsOverview: Story = {
+  parameters: {
+    viewport: {
+      defaultViewport: 'extraLarge',
+    },
+  },
   render: () => {
     const [searchQuery, setSearchQuery] = useState('');
 
@@ -120,6 +150,11 @@ export const JobsOverview: Story = {
 };
 
 export const WithSearchModal: Story = {
+  parameters: {
+    viewport: {
+      defaultViewport: 'extraLarge',
+    },
+  },
   render: () => {
     function SearchModalDemo() {
       const [open, setOpen] = useState(false);
@@ -191,6 +226,11 @@ export const WithSearchModal: Story = {
 };
 
 export const WithRowSelection: Story = {
+  parameters: {
+    viewport: {
+      defaultViewport: 'extraLarge',
+    },
+  },
   render: () => (
     <div className="w-full min-h-screen bg-background-neutral-background p-24">
       <div className="space-y-16">

@@ -104,28 +104,31 @@ export function TableColumnHeader<TData, TValue>({
           <Button
             variant="transparent"
             size="xs"
-            className="-ml-12 h-32 px-8 data-[state=open]:bg-background-components-hover"
+            className="-ml-12 h-32 px-8 data-[state=open]:bg-background-components-hover gap-0"
           >
             <span className="text-xs font-medium text-foreground-neutral-subtle">{title}</span>
             {isSorted === 'desc' ? (
-              <Icon name="arrowDownSLine" className="ml-4 size-16 text-foreground-neutral-muted" />
+              <Icon
+                name="arrowDownLongLine"
+                className="ml-2 size-14 text-foreground-neutral-muted"
+              />
             ) : isSorted === 'asc' ? (
-              <Icon name="arrowUpSLine" className="ml-4 size-16 text-foreground-neutral-muted" />
+              <Icon name="arrowUpLongLine" className="ml-2 size-14 text-foreground-neutral-muted" />
             ) : (
               <Icon name="arrowUpDownLine" className="ml-4 size-16 text-foreground-neutral-muted" />
             )}
           </Button>
         </DropdownMenuTrigger>
-        <DropdownMenuContent align="start">
+        <DropdownMenuContent align="start" size="sm">
           <DropdownMenuItem
-            icon="arrowUpSLine"
+            icon="arrowUpLongLine"
             onClick={() => column.toggleSorting(false)}
             closeOnSelect
           >
             Asc
           </DropdownMenuItem>
           <DropdownMenuItem
-            icon="arrowDownSLine"
+            icon="arrowDownLongLine"
             onClick={() => column.toggleSorting(true)}
             closeOnSelect
           >

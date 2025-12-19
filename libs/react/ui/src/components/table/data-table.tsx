@@ -127,6 +127,7 @@ export function DataTable<TData, TValue>({
           <Checkbox
             checked={isAllSelected ? true : isSomeSelected ? 'indeterminate' : false}
             onCheckedChange={(checked) => table.toggleAllPageRowsSelected(!!checked)}
+            onClick={(e) => e.stopPropagation()}
             aria-label="Select all"
           />
         );
@@ -135,6 +136,7 @@ export function DataTable<TData, TValue>({
         <Checkbox
           checked={row.getIsSelected()}
           onCheckedChange={(checked) => row.toggleSelected(!!checked)}
+          onClick={(e) => e.stopPropagation()}
           aria-label="Select row"
         />
       ),
@@ -215,7 +217,7 @@ export function DataTable<TData, TValue>({
             ))
           ) : (
             <TableRow className="hover:bg-transparent">
-              <TableCell colSpan={columns.length} className="h-240 text-center">
+              <TableCell colSpan={table.getAllColumns().length} className="h-240 text-center">
                 {emptyState || (
                   <div className="flex flex-col items-center justify-center gap-12 py-48">
                     <div className="size-32 rounded-6 bg-transparent border border-border-neutral-strong flex items-center justify-center">

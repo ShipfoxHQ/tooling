@@ -44,25 +44,15 @@ export function SearchInline({
       setInternalValue('');
     }
 
-    // Always call onChange to ensure parent state is updated
     if (onChange && inputRef.current) {
-      if (!isControlled) {
-        inputRef.current.value = '';
-      }
-
-      // Create a proper synthetic event
+      inputRef.current.value = '';
       const syntheticEvent = {
         target: inputRef.current,
         currentTarget: inputRef.current,
       } as React.ChangeEvent<HTMLInputElement>;
-
       onChange(syntheticEvent);
     }
-
-    // Call the onClear callback if provided
     onClear?.();
-
-    // Focus back on input after clearing
     inputRef.current?.focus();
   }, [isControlled, onChange, onClear]);
 
