@@ -46,17 +46,14 @@ export function SearchInline({
 
     if (onChange && inputRef.current) {
       inputRef.current.value = '';
-
-      const nativeEvent = new InputEvent('input', {bubbles: true, cancelable: true});
-      const syntheticEvent = Object.assign(nativeEvent, {
+      const syntheticEvent = {
         target: inputRef.current,
         currentTarget: inputRef.current,
-      }) as unknown as React.ChangeEvent<HTMLInputElement>;
-
+      } as React.ChangeEvent<HTMLInputElement>;
       onChange(syntheticEvent);
     }
-
     onClear?.();
+    inputRef.current?.focus();
   }, [isControlled, onChange, onClear]);
 
   const handleKeyDown = useCallback(

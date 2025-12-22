@@ -1,96 +1,52 @@
 import {Command as CommandPrimitive} from 'cmdk';
-import {AnimatePresence, motion, type Transition} from 'framer-motion';
 import type {ComponentProps, ReactNode} from 'react';
-import {useEffect} from 'react';
+import {useCallback} from 'react';
 import {cn} from 'utils/cn';
 import {Icon} from '../icon';
 import {Kbd} from '../kbd';
+import {Modal, ModalBody, ModalContent, type ModalContentProps} from '../modal/modal';
 import {useSearchContext} from './search-context';
-import {searchDefaultTransition} from './search-variants';
-
-export type SearchOverlayProps = {
-  className?: string;
-  transition?: Transition;
-};
-
-export function SearchOverlay({
-  className,
-  transition = searchDefaultTransition,
-}: SearchOverlayProps) {
-  const {open, setOpen} = useSearchContext();
-
-  return (
-    <AnimatePresence>
-      {open && (
-        <motion.div
-          data-slot="search-overlay"
-          initial={{opacity: 0}}
-          animate={{opacity: 1}}
-          exit={{opacity: 0}}
-          transition={transition}
-          onClick={() => setOpen(false)}
-          className={cn(
-            'fixed inset-0 z-40 bg-background-backdrop-backdrop backdrop-blur-sm',
-            className,
-          )}
-        />
-      )}
-    </AnimatePresence>
-  );
-}
 
 export type SearchContentProps = {
-  className?: string;
-  children?: ReactNode;
-  transition?: Transition;
-};
+  breakpoint?: string;
+} & Omit<ModalContentProps, 'open' | 'onOpenChange'>;
 
 export function SearchContent({
+  breakpoint = '(min-width: 768px)',
   className,
   children,
-  transition = searchDefaultTransition,
+  overlayClassName,
+  onEscapeKeyDown,
+  ...props
 }: SearchContentProps) {
   const {open, setOpen, searchValue, setSearchValue} = useSearchContext();
 
-  useEffect(() => {
-    if (!open) return;
-
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') {
-        e.preventDefault();
-        if (searchValue) {
-          setSearchValue('');
-        } else {
-          setOpen(false);
-        }
+  const handleEscapeKeyDown = useCallback(
+    (event: KeyboardEvent) => {
+      if (searchValue) {
+        event.preventDefault();
+        setSearchValue('');
+      } else {
+        onEscapeKeyDown?.(event);
       }
-    };
-
-    document.addEventListener('keydown', handleKeyDown);
-    return () => document.removeEventListener('keydown', handleKeyDown);
-  }, [open, searchValue, setSearchValue, setOpen]);
+    },
+    [searchValue, setSearchValue, onEscapeKeyDown],
+  );
 
   return (
-    <AnimatePresence>
-      {open && (
-        <motion.div
-          data-slot="search-content"
-          initial={{opacity: 0, scale: 0.95, y: -10}}
-          animate={{opacity: 1, scale: 1, y: 0}}
-          exit={{opacity: 0, scale: 0.95, y: -10}}
-          transition={transition}
-          className={cn(
-            'fixed left-1/2 top-[15%] z-50 w-full max-w-600 -translate-x-1/2',
-            'flex flex-col overflow-hidden rounded-12',
-            'bg-background-neutral-base text-foreground-neutral-base',
-            'shadow-tooltip border border-border-neutral-base',
-            className,
-          )}
-        >
+    <Modal open={open} onOpenChange={setOpen} breakpoint={breakpoint}>
+      <ModalContent
+        data-slot="search-content"
+        className={cn('top-[15%]! translate-y-0!', className)}
+        overlayClassName={cn('backdrop-blur-sm', overlayClassName)}
+        onEscapeKeyDown={handleEscapeKeyDown}
+        {...props}
+      >
+        <ModalBody className="flex flex-col p-0 min-h-0 overflow-hidden md:overflow-clip">
           {children}
-        </motion.div>
-      )}
-    </AnimatePresence>
+        </ModalBody>
+      </ModalContent>
+    </Modal>
   );
 }
 
@@ -103,7 +59,7 @@ export function SearchInput({className, ...props}: SearchInputProps) {
   const {open, searchValue, setSearchValue} = useSearchContext();
 
   return (
-    <div className="flex items-center gap-8 border-b border-border-neutral-strong px-16 py-12">
+    <div className="w-full shrink-0 flex items-center gap-8 border-b border-border-neutral-strong px-16 py-12">
       <Icon name="searchLine" className="size-16 shrink-0 text-foreground-neutral-muted" />
       <CommandPrimitive.Input
         data-slot="search-input"
@@ -129,7 +85,11 @@ export function SearchList({className, ...props}: SearchListProps) {
   return (
     <CommandPrimitive.List
       data-slot="search-list"
-      className={cn('max-h-400 overflow-y-auto overflow-x-hidden px-8 py-4 scrollbar', className)}
+      className={cn(
+        'flex-1 min-h-0 w-full overflow-y-auto overflow-x-hidden px-8 py-4 scrollbar',
+        'md:max-h-400',
+        className,
+      )}
       {...props}
     />
   );
@@ -214,7 +174,7 @@ export function SearchFooter({className, ...props}: SearchFooterProps) {
     <div
       data-slot="search-footer"
       className={cn(
-        'flex items-center justify-end gap-12 px-16 py-12',
+        'w-full shrink-0 flex items-center justify-end gap-12 px-16 py-12',
         'border-t border-border-neutral-strong',
         'bg-background-components-base',
         className,

@@ -18,6 +18,13 @@ const preview: Preview = {
             height: '2000px',
           },
         },
+        extraLarge: {
+          name: 'Extra Large Viewport',
+          styles: {
+            width: '1920px',
+            height: '2000px',
+          },
+        },
       },
     },
     options: {

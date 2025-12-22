@@ -9,6 +9,7 @@ export type SearchProps = {
   onOpenChange?: (open: boolean) => void;
   defaultOpen?: boolean;
   shortcutKey?: string;
+  shouldFilter?: boolean;
 };
 
 export function Search({
@@ -17,6 +18,7 @@ export function Search({
   onOpenChange,
   defaultOpen = false,
   shortcutKey,
+  shouldFilter = true,
 }: SearchProps) {
   const [open, setOpen] = useControllableState(controlledOpen, defaultOpen, onOpenChange);
   const [searchValue, setSearchValue] = useState('');
@@ -37,7 +39,9 @@ export function Search({
 
   return (
     <SearchContext.Provider value={{open, setOpen: handleSetOpen, searchValue, setSearchValue}}>
-      <CommandPrimitive data-slot="search">{children}</CommandPrimitive>
+      <CommandPrimitive data-slot="search" shouldFilter={shouldFilter}>
+        {children}
+      </CommandPrimitive>
     </SearchContext.Provider>
   );
 }

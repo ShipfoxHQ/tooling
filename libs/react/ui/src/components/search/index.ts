@@ -16,8 +16,6 @@ export {
   type SearchItemProps,
   SearchList,
   type SearchListProps,
-  SearchOverlay,
-  type SearchOverlayProps,
   SearchSeparator,
   type SearchSeparatorProps,
 } from './search-modal';
