@@ -1,6 +1,6 @@
 import type {Meta, StoryObj} from '@storybook/react';
 import type {ColumnDef} from '@tanstack/react-table';
-import {Search, SearchContent, SearchOverlay, SearchTrigger} from 'components/search';
+import {Search, SearchContent, SearchTrigger} from 'components/search';
 import {Header, Text} from 'components/typography';
 import {useMemo, useState} from 'react';
 import {Button} from '../button';
@@ -201,8 +201,7 @@ export const WithSearchModal: Story = {
               )}
               <Search open={open} onOpenChange={setOpen} shortcutKey="meta+k" shouldFilter={false}>
                 <SearchTrigger placeholder="Filter jobs..." className="w-full sm:w-280" />
-                <SearchOverlay />
-                <SearchContent>
+                <SearchContent aria-describedby={undefined}>
                   <SearchModalContent onSelectJob={handleSelectJob} />
                 </SearchContent>
               </Search>

@@ -11,7 +11,6 @@ import {
   SearchInput,
   SearchItem,
   SearchList,
-  SearchOverlay,
   SearchSeparator,
   SearchTrigger,
 } from './index';
@@ -136,8 +135,7 @@ function ModalSearchDemo() {
   return (
     <Search open={open} onOpenChange={setOpen} shortcutKey="meta+k">
       <SearchTrigger placeholder="Find..." className="w-full max-w-280" />
-      <SearchOverlay />
-      <SearchContent>
+      <SearchContent aria-describedby={undefined}>
         <SearchInput placeholder="Search for anything..." />
         <SearchList>
           <SearchEmpty>No results found.</SearchEmpty>
