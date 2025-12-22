@@ -5,12 +5,12 @@ import {OrganizationSelector} from './organization-selector';
 import {TopbarButton} from './topbar-button';
 import {UserProfile} from './user-profile';
 
-export function Topbar({hidelogo = false}: {hidelogo?: boolean}) {
+export function Topbar({hideLogo = false}: {hideLogo?: boolean}) {
   return (
     <div className="flex flex-col items-start w-full bg-background-subtle-base">
       <div className="flex items-center justify-between w-full shrink-0 border-b border-border-neutral-strong">
         <div className="flex items-center flex-1 min-w-0">
-          <div className={cn('shrink-0', hidelogo ? 'opacity-0' : 'opacity-100')}>
+          <div className={cn('shrink-0', hideLogo ? 'opacity-0' : 'opacity-100')}>
             <TopbarButton icon="shipfox" label="Shipfox" className="border-none" />
           </div>
           <OrganizationSelector />

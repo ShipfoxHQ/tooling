@@ -87,9 +87,9 @@ function BasicFormExample() {
 
 export const Basic: Story = {
   render: () => <BasicFormExample />,
-  play: async ({context: ctx}) => {
+  play: async (context) => {
     await new Promise((resolve) => setTimeout(resolve, 100));
-    await argosScreenshot(ctx, 'Form Basic');
+    await argosScreenshot(context, 'Form Basic');
   },
 };
 

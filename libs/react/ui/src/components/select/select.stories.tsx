@@ -1,7 +1,6 @@
+import {argosScreenshot} from '@argos-ci/storybook/vitest';
 import type {Meta, StoryObj} from '@storybook/react';
-import {Avatar} from 'components/avatar';
-import {Button} from 'components/button';
-import {Icon} from '../icon';
+import {OrganizationSelector} from 'components/dashboard/components/organization-selector';
 import {Kbd} from '../kbd';
 import {
   Select,
@@ -209,42 +208,10 @@ export const TimeSelector: Story = {
   ),
 };
 
-export const OrganizationSelector: Story = {
-  render: () => (
-    <Select defaultValue="stripe">
-      <SelectTrigger className="w-280">
-        <div className="flex items-center gap-8 flex-1 min-w-0">
-          <SelectValue placeholder="Select action" />
-        </div>
-      </SelectTrigger>
-      <SelectContent>
-        <SelectItem value="stripe">
-          <div className="flex items-center gap-8">
-            <Avatar size="3xs" content="logo" logoName="stripe" radius="rounded" />
-            <span>Stripe</span>
-          </div>
-        </SelectItem>
-        <SelectItem value="shipfox">
-          <div className="flex items-center gap-8">
-            <Avatar size="3xs" content="logo" logoName="shipfox" radius="rounded" />
-            <span>Shipfox</span>
-          </div>
-        </SelectItem>
-        <SelectItem value="github">
-          <div className="flex items-center gap-8">
-            <Avatar size="3xs" content="logo" logoName="github" radius="rounded" />
-            <span>GitHub</span>
-          </div>
-        </SelectItem>
-        <SelectSeparator />
-        <Button
-          variant="transparent"
-          className="w-full justify-start text-foreground-neutral-subtle"
-        >
-          <Icon name="addLine" className="size-16 shrink-0" />
-          <span>New organization</span>
-        </Button>
-      </SelectContent>
-    </Select>
-  ),
+export const OrganizationSelectorComponent: Story = {
+  render: () => <OrganizationSelector />,
+  play: async (context) => {
+    await new Promise((resolve) => setTimeout(resolve, 100));
+    await argosScreenshot(context, 'Organization Selector');
+  },
 };

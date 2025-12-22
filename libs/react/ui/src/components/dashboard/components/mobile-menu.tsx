@@ -20,12 +20,9 @@ export function MobileMenu() {
           type="button"
           variant="transparent"
           className="flex md:hidden items-center justify-center shrink-0 w-40 h-40 bg-background-subtle-base hover:bg-background-neutral-hover transition-colors rounded-none border-l border-border-neutral-strong"
+          aria-label="Menu"
         >
-          <Icon
-            name="menuLine"
-            className="size-18 text-foreground-neutral-subtle"
-            aria-label="Menu"
-          />
+          <Icon name="menuLine" className="size-18 text-foreground-neutral-subtle" />
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="w-200">

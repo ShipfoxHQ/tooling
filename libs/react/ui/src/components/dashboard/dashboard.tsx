@@ -40,7 +40,7 @@ export function Dashboard() {
 
       <div ref={containerRef} className="flex flex-col w-full h-full overflow-auto">
         <div ref={topbarRef}>
-          <Topbar hidelogo={isTopbarHidden} />
+          <Topbar hideLogo={isTopbarHidden} />
         </div>
 
         <div className="sticky top-0 z-40 border-b border-border-neutral-strong bg-background-neutral-base">

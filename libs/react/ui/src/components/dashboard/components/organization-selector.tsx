@@ -15,7 +15,7 @@ export function OrganizationSelector() {
     <Select defaultValue="stripe">
       <SelectTrigger className="w-200 h-40 shadow-none bg-background-neutral-base hover:bg-background-neutral-hover rounded-none gap-8 pl-12 border-l min-[321px]:border-r border-border-neutral-strong">
         <div className="flex items-center gap-8 flex-1 min-w-0">
-          <SelectValue placeholder="Select action" />
+          <SelectValue placeholder="Select organization" />
         </div>
       </SelectTrigger>
       <SelectContent>
