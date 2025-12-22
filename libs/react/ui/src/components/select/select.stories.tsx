@@ -1,6 +1,4 @@
-import {argosScreenshot} from '@argos-ci/storybook/vitest';
 import type {Meta, StoryObj} from '@storybook/react';
-import {OrganizationSelector} from 'components/dashboard/components/organization-selector';
 import {Kbd} from '../kbd';
 import {
   Select,
@@ -206,12 +204,4 @@ export const TimeSelector: Story = {
       </SelectContent>
     </Select>
   ),
-};
-
-export const OrganizationSelectorComponent: Story = {
-  render: () => <OrganizationSelector />,
-  play: async (context) => {
-    await new Promise((resolve) => setTimeout(resolve, 100));
-    await argosScreenshot(context, 'Organization Selector');
-  },
 };

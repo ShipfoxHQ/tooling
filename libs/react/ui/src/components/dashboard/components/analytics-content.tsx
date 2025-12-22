@@ -13,7 +13,7 @@ export function AnalyticsContent() {
         </div>
       </div>
 
-      <div className="flex gap-12 md:gap-16 overflow-x-auto pb-4 md:pb-0 -mx-12 px-12 md:mx-0 md:px-0">
+      <div className="flex gap-12 md:gap-16 overflow-x-auto scrollbar pb-4 md:pb-0 -mx-12 px-12 md:mx-0 md:px-0">
         {['Total', 'Success', 'Failed', 'Neutral', 'Failure rate'].map((label) => (
           <div
             key={label}

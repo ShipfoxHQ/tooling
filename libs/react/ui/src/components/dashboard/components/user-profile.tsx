@@ -11,7 +11,7 @@ import {
 import {ShinyText} from 'components/shiny-text';
 
 function UsageGauge({used, total}: {used: number; total: number}) {
-  const percentage = Math.min((used / total) * 100, 100);
+  const percentage = total <= 0 ? 0 : Math.min((used / total) * 100, 100);
 
   return (
     <div className="flex h-8 w-full rounded-full bg-tag-neutral-bg overflow-hidden">
