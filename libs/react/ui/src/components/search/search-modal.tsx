@@ -1,6 +1,6 @@
 import {Command as CommandPrimitive} from 'cmdk';
 import type {ComponentProps, ReactNode} from 'react';
-import {useEffect} from 'react';
+import {useCallback} from 'react';
 import {cn} from 'utils/cn';
 import {Icon} from '../icon';
 import {Kbd} from '../kbd';
@@ -9,34 +9,29 @@ import {useSearchContext} from './search-context';
 
 export type SearchContentProps = {
   breakpoint?: string;
-} & ModalContentProps;
+} & Omit<ModalContentProps, 'open' | 'onOpenChange'>;
 
 export function SearchContent({
   breakpoint = '(min-width: 768px)',
   className,
   children,
   overlayClassName,
+  onEscapeKeyDown,
   ...props
 }: SearchContentProps) {
   const {open, setOpen, searchValue, setSearchValue} = useSearchContext();
 
-  useEffect(() => {
-    if (!open) return;
-
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') {
-        e.preventDefault();
-        if (searchValue) {
-          setSearchValue('');
-        } else {
-          setOpen(false);
-        }
+  const handleEscapeKeyDown = useCallback(
+    (event: KeyboardEvent) => {
+      if (searchValue) {
+        event.preventDefault();
+        setSearchValue('');
+      } else {
+        onEscapeKeyDown?.(event);
       }
-    };
-
-    document.addEventListener('keydown', handleKeyDown);
-    return () => document.removeEventListener('keydown', handleKeyDown);
-  }, [open, searchValue, setSearchValue, setOpen]);
+    },
+    [searchValue, setSearchValue, onEscapeKeyDown],
+  );
 
   return (
     <Modal open={open} onOpenChange={setOpen} breakpoint={breakpoint}>
@@ -44,6 +39,7 @@ export function SearchContent({
         data-slot="search-content"
         className={cn('top-[15%]! translate-y-0!', className)}
         overlayClassName={cn('backdrop-blur-sm', overlayClassName)}
+        onEscapeKeyDown={handleEscapeKeyDown}
         {...props}
       >
         <ModalBody className="flex flex-col p-0 min-h-0 overflow-hidden md:overflow-clip">
