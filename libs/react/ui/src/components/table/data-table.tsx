@@ -109,7 +109,7 @@ export function DataTable<TData, TValue>({
   });
 
   useEffect(() => {
-    setPaginationState((prev) => ({...prev, pageSize}));
+    setPaginationState((prev) => ({...prev, pageSize, pageIndex: 0}));
   }, [pageSize]);
 
   // Add selection column if showSelectedCount is enabled
