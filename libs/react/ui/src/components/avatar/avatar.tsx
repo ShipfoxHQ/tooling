@@ -11,7 +11,7 @@ export const avatarVariants = cva(
     variants: {
       radius: {
         full: 'rounded-full',
-        rounded: 'rounded-6',
+        rounded: 'rounded-4',
       },
       size: {
         '3xs': 'size-[18px]',

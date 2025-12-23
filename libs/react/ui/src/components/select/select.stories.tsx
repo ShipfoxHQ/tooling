@@ -1,4 +1,5 @@
 import type {Meta, StoryObj} from '@storybook/react';
+import {Kbd} from '../kbd';
 import {
   Select,
   SelectContent,
@@ -158,5 +159,49 @@ export const Variants: Story = {
         </SelectContent>
       </Select>
     </div>
+  ),
+};
+
+export const TimeSelector: Story = {
+  render: () => (
+    <Select defaultValue="2days">
+      <SelectTrigger className="w-280">
+        <div className="flex items-center gap-8 flex-1 min-w-0">
+          <SelectValue placeholder="Select time range" />
+        </div>
+      </SelectTrigger>
+      <SelectContent>
+        <SelectItem value="1hour">
+          <div className="flex items-center gap-8">
+            <Kbd className="h-16">1h</Kbd>
+            <span>Past 1 Hour</span>
+          </div>
+        </SelectItem>
+        <SelectItem value="1day">
+          <div className="flex items-center gap-8">
+            <Kbd className="h-16">1d</Kbd>
+            <span>Past 1 Day</span>
+          </div>
+        </SelectItem>
+        <SelectItem value="2days">
+          <div className="flex items-center gap-8">
+            <Kbd className="h-16">2d</Kbd>
+            <span>Past 2 Days</span>
+          </div>
+        </SelectItem>
+        <SelectItem value="7days">
+          <div className="flex items-center gap-8">
+            <Kbd className="h-16">7d</Kbd>
+            <span>Past 7 Days</span>
+          </div>
+        </SelectItem>
+        <SelectItem value="30days">
+          <div className="flex items-center gap-8">
+            <Kbd className="h-16">30d</Kbd>
+            <span>Past 30 Days</span>
+          </div>
+        </SelectItem>
+      </SelectContent>
+    </Select>
   ),
 };

@@ -57,7 +57,7 @@ function SelectTrigger({className, variant, size, children, ...props}: SelectTri
     >
       {children}
       <SelectPrimitive.Icon asChild>
-        <Icon name="arrowDownSLine" className="size-16 text-foreground-neutral-muted shrink-0" />
+        <Icon name="expandUpDownLine" className="size-16 text-foreground-neutral-muted shrink-0" />
       </SelectPrimitive.Icon>
     </SelectPrimitive.Trigger>
   );

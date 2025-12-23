@@ -1,3 +1,4 @@
+import {argosScreenshot} from '@argos-ci/storybook/vitest';
 import {zodResolver} from '@hookform/resolvers/zod';
 import type {Meta, StoryObj} from '@storybook/react';
 import {Button} from 'components/button';
@@ -86,6 +87,10 @@ function BasicFormExample() {
 
 export const Basic: Story = {
   render: () => <BasicFormExample />,
+  play: async (context) => {
+    await new Promise((resolve) => setTimeout(resolve, 100));
+    await argosScreenshot(context, 'Form Basic');
+  },
 };
 
 const componentsFormSchema = z.object({
