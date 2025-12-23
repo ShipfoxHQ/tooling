@@ -1,5 +1,15 @@
 # @shipfox/react-ui
 
+## 0.15.0
+
+### Minor Changes
+
+- 9bd4839: Add dashboard story
+- 4e13ba7: Add button group, command, kbd, select, search, and skeleton components
+- f3c145d: Add Table component
+
+  Fix DataTable pagination issue where changing page size could result in an out-of-bounds page index, causing the table to display no rows and hide pagination controls.
+
 ## 0.14.0
 
 ### Minor Changes

@@ -1,5 +1,13 @@
 # @shipfox/biome
 
+## 1.6.0
+
+### Minor Changes
+
+- f3c145d: Add Table component
+
+  Fix DataTable pagination issue where changing page size could result in an out-of-bounds page index, causing the table to display no rows and hide pagination controls.
+
 ## 1.5.0
 
 ### Minor Changes
