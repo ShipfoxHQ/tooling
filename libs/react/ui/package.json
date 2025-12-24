@@ -60,7 +60,7 @@
     "react-hook-form": "^7.52.1"
   },
   "devDependencies": {
-    "@argos-ci/cli": "^3.2.1",
+    "@argos-ci/cli": "^4.0.0",
     "@argos-ci/storybook": "^5.2.1",
     "@hookform/resolvers": "^5.2.2",
     "@shipfox/biome": "workspace:*",
