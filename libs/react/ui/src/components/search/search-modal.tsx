@@ -4,7 +4,7 @@ import {useCallback} from 'react';
 import {cn} from 'utils/cn';
 import {Icon} from '../icon';
 import {Kbd} from '../kbd';
-import {Modal, ModalBody, ModalContent, type ModalContentProps} from '../modal/modal';
+import {Modal, ModalBody, ModalContent, type ModalContentProps, ModalTitle} from '../modal/modal';
 import {useSearchContext} from './search-context';
 
 export type SearchContentProps = {
@@ -42,6 +42,7 @@ export function SearchContent({
         onEscapeKeyDown={handleEscapeKeyDown}
         {...props}
       >
+        <ModalTitle className="sr-only">Search</ModalTitle>
         <ModalBody className="flex flex-col p-0 min-h-0 overflow-hidden md:overflow-clip">
           {children}
         </ModalBody>

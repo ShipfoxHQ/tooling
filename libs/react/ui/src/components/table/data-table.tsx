@@ -85,6 +85,19 @@ interface DataTableProps<TData, TValue> extends Omit<ComponentProps<'div'>, 'chi
    * empty state message or placeholder.
    */
   emptyState?: React.ReactNode;
+  /**
+   * Controlled column visibility state.
+   *
+   * When provided, the table will use this state to control which columns are visible.
+   * The keys should match the column IDs or accessor keys.
+   */
+  columnVisibility?: VisibilityState;
+  /**
+   * Callback invoked when column visibility changes.
+   *
+   * This is only used when {@link columnVisibility} is provided as a controlled prop.
+   */
+  onColumnVisibilityChange?: (visibility: VisibilityState) => void;
 }
 
 export function DataTable<TData, TValue>({
@@ -96,17 +109,28 @@ export function DataTable<TData, TValue>({
   showSelectedCount = false,
   onRowClick,
   emptyState,
+  columnVisibility: controlledColumnVisibility,
+  onColumnVisibilityChange,
   className,
   ...props
 }: DataTableProps<TData, TValue>) {
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
-  const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
+  const [internalColumnVisibility, setInternalColumnVisibility] = useState<VisibilityState>({});
   const [rowSelection, setRowSelection] = useState({});
   const [paginationState, setPaginationState] = useState<PaginationState>({
     pageIndex: 0,
     pageSize,
   });
+
+  const columnVisibility = controlledColumnVisibility ?? internalColumnVisibility;
+  const setColumnVisibility = onColumnVisibilityChange
+    ? (visibility: VisibilityState | ((prev: VisibilityState) => VisibilityState)) => {
+        const newVisibility =
+          typeof visibility === 'function' ? visibility(columnVisibility) : visibility;
+        onColumnVisibilityChange(newVisibility);
+      }
+    : setInternalColumnVisibility;
 
   useEffect(() => {
     setPaginationState((prev) => ({...prev, pageSize, pageIndex: 0}));

@@ -124,16 +124,16 @@ export const Default: Story = {
         <Code variant="label" className="text-foreground-neutral-subtle">
           Basic Button Group
         </Code>
-        <ButtonGroup aria-label="Text alignment">
-          <Button variant="secondary" size="sm" aria-label="Align left">
+        <ButtonGroup aria-label="Playback controls">
+          <Button variant="secondary" size="sm" aria-label="Rewind">
             <Icon name="rewindFill" className="size-14 text-foreground-neutral-subtle" />
           </Button>
           <ButtonGroupSeparator />
-          <Button variant="secondary" size="sm" aria-label="Align center">
+          <Button variant="secondary" size="sm" aria-label="Play">
             <Icon name="playFill" className="size-14 text-foreground-neutral-subtle" />
           </Button>
           <ButtonGroupSeparator />
-          <Button variant="secondary" size="sm" aria-label="Align right">
+          <Button variant="secondary" size="sm" aria-label="Speed">
             <Icon name="speedFill" className="size-14 text-foreground-neutral-subtle" />
           </Button>
         </ButtonGroup>

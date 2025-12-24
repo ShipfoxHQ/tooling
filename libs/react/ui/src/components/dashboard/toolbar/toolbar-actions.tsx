@@ -1,0 +1,78 @@
+/**
+ * Toolbar Actions Component
+ *
+ * Contains filter, search, and view controls for dashboard tables.
+ */
+
+import type {ComponentProps, ReactNode} from 'react';
+import {cn} from 'utils/cn';
+import {useDashboardContext} from '../context';
+import {FilterButton} from './filter-button';
+import {ToolbarSearch} from './toolbar-search';
+import {ViewDropdown} from './view-dropdown';
+
+export interface ToolbarActionsProps extends Omit<ComponentProps<'div'>, 'children'> {
+  /**
+   * Show filter button
+   * @default true
+   */
+  showFilter?: boolean;
+  /**
+   * Show search input
+   * @default true
+   */
+  showSearch?: boolean;
+  /**
+   * Show view dropdown
+   * @default true
+   */
+  showView?: boolean;
+  /**
+   * Search placeholder text
+   * @default 'Search...'
+   */
+  searchPlaceholder?: string;
+  /**
+   * Additional custom actions
+   */
+  children?: ReactNode;
+}
+
+/**
+ * Toolbar Actions
+ *
+ * Provides filter, search, and column visibility controls.
+ * Automatically connects to DashboardContext for state management.
+ *
+ * @example
+ * ```tsx
+ * <ToolbarActions />
+ * ```
+ *
+ * @example With custom actions
+ * ```tsx
+ * <ToolbarActions>
+ *   <Button>Custom Action</Button>
+ * </ToolbarActions>
+ * ```
+ */
+export function ToolbarActions({
+  showFilter = true,
+  showSearch = true,
+  showView = true,
+  searchPlaceholder = 'Try: job name, status, pipeline…',
+  className,
+  children,
+  ...props
+}: ToolbarActionsProps) {
+  const {setSearchQuery, filters, setFilters, columns, setColumns} = useDashboardContext();
+
+  return (
+    <div className={cn('flex items-start md:items-center gap-8 md:gap-12', className)} {...props}>
+      {showFilter && <FilterButton filters={filters} onFiltersChange={setFilters} />}
+      {showSearch && <ToolbarSearch placeholder={searchPlaceholder} onSelect={setSearchQuery} />}
+      {showView && <ViewDropdown columns={columns} onColumnsChange={setColumns} />}
+      {children}
+    </div>
+  );
+}
