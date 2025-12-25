@@ -60,7 +60,7 @@ export function ToolbarActions({
   showFilter = true,
   showSearch = true,
   showView = true,
-  searchPlaceholder = 'Try: job name, status, pipeline…',
+  searchPlaceholder = 'Try: job name, status, pipeline...',
   className,
   children,
   ...props

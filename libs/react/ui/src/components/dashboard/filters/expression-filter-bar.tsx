@@ -38,7 +38,7 @@ const DEFAULT_OPTIONS: ResourceTypeOption[] = [
   {id: 'ci-jobs', label: 'CI Jobs'},
   {id: 'ci-steps', label: 'CI Steps'},
   {id: 'runners', label: 'Runners', disabled: true},
-  {id: 'suit', label: 'Suit', disabled: true},
+  {id: 'suite', label: 'Suite', disabled: true},
   {id: 'cases', label: 'Cases', disabled: true},
 ];
 
