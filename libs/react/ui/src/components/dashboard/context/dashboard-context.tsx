@@ -6,7 +6,7 @@
  */
 
 import type {VisibilityState} from '@tanstack/react-table';
-import {createContext, type ReactNode, useContext, useMemo, useState} from 'react';
+import {createContext, type ReactNode, useCallback, useContext, useMemo, useState} from 'react';
 import type {DashboardState, FilterOption, ResourceType, TimePeriod, ViewColumn} from './types';
 import {updateViewColumnsFromVisibility, viewColumnsToVisibilityState} from './utils';
 
@@ -109,29 +109,45 @@ export function DashboardProvider({
   );
 
   // Handle column visibility updates from table
-  const updateColumnVisibility = (visibility: VisibilityState) => {
-    const updatedColumns = updateViewColumnsFromVisibility(columns, visibility, columnMapping);
-    setColumns(updatedColumns);
-  };
+  const updateColumnVisibility = useCallback(
+    (visibility: VisibilityState) => {
+      const updatedColumns = updateViewColumnsFromVisibility(columns, visibility, columnMapping);
+      setColumns(updatedColumns);
+    },
+    [columns, columnMapping],
+  );
 
-  const value: DashboardState = {
-    searchQuery,
-    setSearchQuery,
-    timePeriod,
-    setTimePeriod,
-    lastUpdated,
-    setLastUpdated,
-    columns,
-    setColumns,
-    columnVisibility,
-    updateColumnVisibility,
-    filters,
-    setFilters,
-    activeSidebarItem,
-    setActiveSidebarItem,
-    resourceType,
-    setResourceType,
-  };
+  const value: DashboardState = useMemo(
+    () => ({
+      searchQuery,
+      setSearchQuery,
+      timePeriod,
+      setTimePeriod,
+      lastUpdated,
+      setLastUpdated,
+      columns,
+      setColumns,
+      columnVisibility,
+      updateColumnVisibility,
+      filters,
+      setFilters,
+      activeSidebarItem,
+      setActiveSidebarItem,
+      resourceType,
+      setResourceType,
+    }),
+    [
+      searchQuery,
+      timePeriod,
+      lastUpdated,
+      columns,
+      columnVisibility,
+      updateColumnVisibility,
+      filters,
+      activeSidebarItem,
+      resourceType,
+    ],
+  );
 
   return <DashboardContext.Provider value={value}>{children}</DashboardContext.Provider>;
 }

@@ -9,7 +9,7 @@ import {
 } from 'components/dropdown-menu';
 import {Icon} from 'components/icon';
 import {Kbd} from 'components/kbd';
-import {useState} from 'react';
+import {useEffect, useState} from 'react';
 import {cn} from 'utils/cn';
 
 export interface FilterOption {
@@ -38,6 +38,7 @@ export function FilterButton({
   className,
 }: FilterButtonProps) {
   const [internalFilters, setInternalFilters] = useState<FilterOption[]>(defaultFilters);
+  const [open, setOpen] = useState(false);
   const filters = controlledFilters ?? internalFilters;
 
   const handleFilterChange = (filterId: string, checked: boolean) => {
@@ -51,8 +52,33 @@ export function FilterButton({
 
   const activeCount = filters.filter((f) => f.checked).length;
 
+  // Keyboard shortcut handler for "F" key
+  useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      // Check if key is 'f' or 'F'
+      if (event.key !== 'f' && event.key !== 'F') {
+        return;
+      }
+
+      // Ignore if event is from input, textarea, or contentEditable
+      const target = event.target as HTMLElement;
+      if (target.tagName === 'INPUT' || target.tagName === 'TEXTAREA' || target.isContentEditable) {
+        return;
+      }
+
+      // Open the dropdown
+      event.preventDefault();
+      setOpen(true);
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown);
+    };
+  }, []);
+
   return (
-    <DropdownMenu>
+    <DropdownMenu open={open} onOpenChange={setOpen}>
       <DropdownMenuTrigger asChild>
         <Button variant="secondary" size="sm" className={cn(className)}>
           <Icon

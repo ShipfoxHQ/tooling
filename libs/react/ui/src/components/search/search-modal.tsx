@@ -68,7 +68,7 @@ export function SearchInput({className, ...props}: SearchInputProps) {
         value={searchValue}
         onValueChange={setSearchValue}
         className={cn(
-          'flex-1 bg-transparent text-sm leading-20 outline-none',
+          'flex-1 bg-transparent text-base md:text-sm leading-20 outline-none',
           'placeholder:text-foreground-neutral-muted',
           'disabled:cursor-not-allowed disabled:text-foreground-neutral-disabled',
           className,

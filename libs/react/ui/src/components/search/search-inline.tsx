@@ -83,6 +83,7 @@ export function SearchInline({
         onKeyDown={handleKeyDown}
         className={cn(
           'flex-1 bg-transparent outline-none min-w-0',
+          'text-base md:text-sm',
           'text-foreground-neutral-base',
           'placeholder:text-foreground-neutral-muted',
           'disabled:cursor-not-allowed disabled:text-foreground-neutral-disabled',

@@ -62,9 +62,9 @@ export function KpiCardsGroup({cards, className}: KpiCardsGroupProps) {
       )}
     >
       <div className="flex gap-16 pl-12 md:pl-0 md:w-full">
-        {cards.map((card) => (
+        {cards.map((card, index) => (
           <KpiCard
-            key={card.label}
+            key={`${card.label}-${index}`}
             {...card}
             className={cn(
               // Mobile: Show ~2 cards per view with peek of next

@@ -141,7 +141,7 @@ export function PageToolbar({
         </div>
 
         {/* Time Period Selector - Responsive width */}
-        <Select defaultValue={timePeriod} value={timePeriod} onValueChange={onTimePeriodChange}>
+        <Select value={timePeriod} onValueChange={onTimePeriodChange}>
           <SelectTrigger className="w-full md:w-280">
             <div className="flex items-center gap-8 flex-1 min-w-0">
               <SelectValue placeholder="Select time range" />
