@@ -33,12 +33,11 @@
   "exclude": [
     "node_modules",
     "jest.config.ts",
-    ".*\\.spec.tsx?$",
-    ".*\\.test.tsx?$",
-    ".*\\.stories.tsx?$",
-    "./src/jest-setup.ts$",
-    "./**/jest-setup.ts$",
-    ".*.js$"
+    "^.*\\.spec\\.tsx?$",
+    "^.*\\.test\\.tsx?$",
+    "^.*\\.stories\\.tsx?$",
+    ".*/jest-setup\\.ts$",
+    "^.*\\.js$"
   ]
 }
 
