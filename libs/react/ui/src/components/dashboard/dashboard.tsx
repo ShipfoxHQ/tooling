@@ -1,19 +1,49 @@
+/**
+ * Dashboard Component
+ *
+ * Main dashboard with context provider and page routing.
+ */
+
+import {Tabs, TabsContent, TabsContents} from 'components/tabs';
 import {useMotionValueEvent, useScroll} from 'framer-motion';
 import {useCallback, useRef, useState} from 'react';
-import {AnalyticsContent} from './components/analytics-content';
 import {AnimatedLogo} from './components/animated-logo';
-import {JobsContent} from './components/jobs-content';
 import {TopMenu} from './components/top-menu';
 import {Topbar} from './components/topbar';
+import {DashboardProvider} from './context';
+import {AnalyticsPage} from './pages/analytics-page';
+import {JobsPage} from './pages/jobs-page';
 
 const LOGO_HEIGHT = 48;
 const TOPBAR_HEIGHT = 41;
 
-export function Dashboard() {
+export interface DashboardProps {
+  /**
+   * Default active tab
+   * @default 'analytics'
+   */
+  defaultActiveTab?: string;
+}
+
+/**
+ * Dashboard
+ *
+ * Main dashboard component with improved architecture:
+ * - Uses DashboardProvider for centralized state management
+ * - Generic reusable components (PageToolbar, TableWrapper)
+ * - Better separation of concerns
+ * - Cleaner, more maintainable code
+ *
+ * @example
+ * ```tsx
+ * <Dashboard defaultActiveTab="analytics" />
+ * ```
+ */
+export function Dashboard({defaultActiveTab = 'analytics'}: DashboardProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const topbarRef = useRef<HTMLDivElement>(null);
   const [scrollProgress, setScrollProgress] = useState(0);
-  const [activeTab, setActiveTab] = useState('analytics');
+  const [activeTab, setActiveTab] = useState(defaultActiveTab);
 
   const {scrollY} = useScroll({
     container: containerRef,
@@ -35,27 +65,38 @@ export function Dashboard() {
   const isTopbarHidden = scrollProgress >= 1;
 
   return (
-    <div className="flex flex-col w-full h-full">
-      <AnimatedLogo scrollProgress={scrollProgress} />
+    <DashboardProvider>
+      <div className="flex flex-col w-full h-full">
+        <AnimatedLogo scrollProgress={scrollProgress} />
 
-      <div ref={containerRef} className="flex flex-col w-full h-full overflow-auto">
-        <div ref={topbarRef}>
-          <Topbar hideLogo={isTopbarHidden} />
-        </div>
+        <div className="flex flex-1 w-full h-full overflow-hidden">
+          <div ref={containerRef} className="flex flex-col flex-1 w-full h-full overflow-auto">
+            <div ref={topbarRef}>
+              <Topbar hideLogo={isTopbarHidden} />
+            </div>
 
-        <div className="sticky top-0 z-40 border-b border-border-neutral-strong bg-background-neutral-base">
-          <div
-            style={{
-              paddingLeft: `${(1 - (1 - scrollProgress) ** 3) * (LOGO_HEIGHT - 8)}px`,
-            }}
-          >
-            <TopMenu activeTab={activeTab} onTabChange={handleTabChange} />
+            <Tabs value={activeTab} onValueChange={handleTabChange}>
+              <div className="sticky top-0 z-40 border-b border-border-neutral-strong bg-background-neutral-base">
+                <div
+                  style={{
+                    paddingLeft: `${(1 - (1 - scrollProgress) ** 3) * (LOGO_HEIGHT - 8)}px`,
+                  }}
+                >
+                  <TopMenu activeTab={activeTab} onTabChange={handleTabChange} />
+                </div>
+              </div>
+              <TabsContents>
+                <TabsContent value="analytics">
+                  <AnalyticsPage />
+                </TabsContent>
+                <TabsContent value="jobs">
+                  <JobsPage />
+                </TabsContent>
+              </TabsContents>
+            </Tabs>
           </div>
         </div>
-
-        {activeTab === 'analytics' && <AnalyticsContent />}
-        {activeTab === 'jobs' && <JobsContent />}
       </div>
-    </div>
+    </DashboardProvider>
   );
 }
