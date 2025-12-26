@@ -8,6 +8,13 @@
   "types": "dist/index.d.ts",
   "style": "dist/styles.css",
   "type": "module",
+  "files": [
+    "dist/**/*.js",
+    "dist/**/*.d.ts",
+    "dist/styles.css",
+    "README.md",
+    "LICENSE"
+  ],
   "scripts": {
     "build": "swc && pnpm run build:css",
     "build:css": "vite build --config vite.css.config.ts && rm -f dist/css-entry.js dist/css-entry.js.map",
