@@ -2,6 +2,7 @@ import * as DialogPrimitive from '@radix-ui/react-dialog';
 import {cva} from 'class-variance-authority';
 import {Button} from 'components/button';
 import {Icon} from 'components/icon';
+import {Kbd} from 'components/kbd';
 import {Text} from 'components/typography';
 import {motion, type Transition} from 'framer-motion';
 import {useMediaQuery} from 'hooks/useMediaQuery';
@@ -203,11 +204,7 @@ function ModalHeader({
           <div className="flex-1">{children}</div>
         )}
         <div className="flex items-center gap-8">
-          {isDesktop && showEscIndicator && (
-            <kbd className="flex items-center justify-center rounded-8 border border-border-neutral-base shadow-button-neutral bg-background-field-base text-xs text-foreground-neutral-subtle px-4">
-              esc
-            </kbd>
-          )}
+          {isDesktop && showEscIndicator && <Kbd>Esc</Kbd>}
           {showClose && (
             <ModalClose asChild>
               <Button
