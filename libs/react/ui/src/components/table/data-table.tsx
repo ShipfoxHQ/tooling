@@ -233,7 +233,7 @@ export function DataTable<TData, TValue>({
 
   return (
     <Card className={cn('p-0 gap-0', className)} {...props}>
-      <CardContent className="p-0">
+      <CardContent className="rounded-b-8 overflow-hidden p-0">
         <Table>
           {table.getRowModel().rows.length > 0 ? (
             <TableHeader>
@@ -277,7 +277,10 @@ export function DataTable<TData, TValue>({
               ))
             ) : (
               <TableRow className="hover:bg-transparent">
-                <TableCell colSpan={table.getAllColumns().length} className="h-240 text-center">
+                <TableCell
+                  colSpan={table.getAllColumns().length}
+                  className="h-240 text-center rounded-t-8"
+                >
                   {emptyState || <EmptyState />}
                 </TableCell>
               </TableRow>
