@@ -129,14 +129,15 @@ function SheetHeader({
   const isDesktop = useMediaQuery('(min-width: 768px)');
 
   return (
-    <div
-      data-slot="sheet-header"
-      className={cn('flex flex-col w-full shrink-0', className)}
-      {...props}
-    >
-      <div className="bg-background-neutral-base flex items-center justify-center gap-20 overflow-clip px-24 py-16 w-full">
-        <div className="flex-1">{children}</div>
-        <div className="flex items-center gap-8">
+    <div className="flex flex-col w-full shrink-0" {...props}>
+      <div
+        className={cn(
+          'border-b border-border-neutral-strong bg-background-neutral-base flex items-center justify-center gap-12 sm:gap-20 overflow-clip px-16 py-12 sm:px-24 sm:py-16 w-full',
+          className,
+        )}
+      >
+        <div className="flex-1 min-w-0">{children}</div>
+        <div className="flex items-center gap-8 shrink-0">
           {isDesktop && showEscIndicator && <Kbd>Esc</Kbd>}
           {showClose && (
             <SheetClose asChild>
@@ -162,7 +163,7 @@ function SheetFooter({className, ...props}: SheetFooterProps) {
     <div
       data-slot="sheet-footer"
       className={cn(
-        'flex flex-col-reverse sm:flex-row sm:justify-end sm:space-x-2 px-24 pb-16',
+        'flex flex-col-reverse gap-8 sm:flex-row sm:justify-end sm:space-x-2 px-16 py-12 sm:px-24 sm:py-16 border-t border-border-neutral-strong bg-background-neutral-base',
         className,
       )}
       {...props}
@@ -177,7 +178,7 @@ function SheetTitle({className, ...props}: SheetTitleProps) {
     <DialogPrimitive.Title
       data-slot="sheet-title"
       className={cn(
-        'font-medium text-lg leading-20 overflow-ellipsis overflow-hidden text-foreground-neutral-base whitespace-nowrap',
+        'font-medium text-base sm:text-lg leading-20 overflow-ellipsis overflow-hidden text-foreground-neutral-base sm:whitespace-nowrap',
         className,
       )}
       {...props}
@@ -204,7 +205,7 @@ function SheetBody({className, children, ...props}: SheetBodyProps) {
     <div
       data-slot="sheet-body"
       className={cn(
-        'bg-background-neutral-base flex flex-col items-start px-24 pb-24 pt-16 w-full overflow-y-auto overflow-x-clip scrollbar flex-1',
+        'bg-background-neutral-base flex flex-col items-start px-16 pb-16 pt-12 sm:px-24 sm:pb-24 sm:pt-16 w-full overflow-y-auto overflow-x-clip scrollbar flex-1',
         className,
       )}
       {...props}
