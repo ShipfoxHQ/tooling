@@ -1,5 +1,11 @@
 # @shipfox/react-ui
 
+## 0.16.0
+
+### Minor Changes
+
+- f0cb5c5: Add Sheet component, update Select component, minor updates
+
 ## 0.15.0
 
 ### Minor Changes
