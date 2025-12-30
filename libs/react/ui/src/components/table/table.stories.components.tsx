@@ -2,6 +2,7 @@
  * Shared components for Table stories
  */
 
+import {EmptyState} from 'components/empty-state';
 import {Icon} from 'components/icon';
 import {useSearchContext} from 'components/search/search-context';
 import {
@@ -21,23 +22,11 @@ import {searchJobsData} from './table.stories.data';
  */
 export function JobsEmptyState() {
   return (
-    <div className="flex flex-col items-center justify-center gap-12 py-48">
-      <div className="size-32 rounded-6 bg-transparent border border-border-neutral-strong flex items-center justify-center">
-        <Icon
-          name="shipfox"
-          className="size-16 text-foreground-neutral-subtle"
-          color="var(--foreground-neutral-subtle, #a1a1aa)"
-        />
-      </div>
-      <div className="text-center space-y-4">
-        <Text size="sm" className="text-foreground-neutral-base">
-          No jobs yet
-        </Text>
-        <Text size="xs" className="text-foreground-neutral-muted">
-          Import past runs or start a runner.
-        </Text>
-      </div>
-    </div>
+    <EmptyState
+      icon="shipfox"
+      title="No jobs yet"
+      description="Import past runs or start a runner."
+    />
   );
 }
 

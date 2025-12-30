@@ -13,9 +13,10 @@ import {
   getSortedRowModel,
   useReactTable,
 } from '@tanstack/react-table';
+import {Card, CardContent} from 'components/card';
 import {Checkbox} from 'components/checkbox';
-import {Icon} from 'components/icon';
-import {Text} from 'components/typography';
+import {EmptyState} from 'components/empty-state';
+import {Skeleton} from 'components/skeleton';
 import {type ComponentProps, useEffect, useMemo, useState} from 'react';
 import {cn} from 'utils/cn';
 import {Table, TableBody, TableCell, TableHead, TableHeader, TableRow} from './table';
@@ -98,6 +99,10 @@ interface DataTableProps<TData, TValue> extends Omit<ComponentProps<'div'>, 'chi
    * This is only used when {@link columnVisibility} is provided as a controlled prop.
    */
   onColumnVisibilityChange?: (visibility: VisibilityState) => void;
+  /**
+   * When `true`, displays a loading skeleton instead of the table.
+   */
+  isLoading?: boolean;
 }
 
 export function DataTable<TData, TValue>({
@@ -111,6 +116,7 @@ export function DataTable<TData, TValue>({
   emptyState,
   columnVisibility: controlledColumnVisibility,
   onColumnVisibilityChange,
+  isLoading,
   className,
   ...props
 }: DataTableProps<TData, TValue>) {
@@ -136,7 +142,6 @@ export function DataTable<TData, TValue>({
     setPaginationState((prev) => ({...prev, pageSize, pageIndex: 0}));
   }, [pageSize]);
 
-  // Add selection column if showSelectedCount is enabled
   const columnsWithSelection = useMemo(() => {
     if (!showSelectedCount) {
       return columns;
@@ -150,8 +155,8 @@ export function DataTable<TData, TValue>({
         return (
           <Checkbox
             checked={isAllSelected ? true : isSomeSelected ? 'indeterminate' : false}
-            onCheckedChange={(checked) => table.toggleAllPageRowsSelected(!!checked)}
-            onClick={(e) => e.stopPropagation()}
+            onCheckedChange={(checked: boolean) => table.toggleAllPageRowsSelected(!!checked)}
+            onClick={(e: React.MouseEvent) => e.stopPropagation()}
             aria-label="Select all"
           />
         );
@@ -159,8 +164,8 @@ export function DataTable<TData, TValue>({
       cell: ({row}) => (
         <Checkbox
           checked={row.getIsSelected()}
-          onCheckedChange={(checked) => row.toggleSelected(!!checked)}
-          onClick={(e) => e.stopPropagation()}
+          onCheckedChange={(checked: boolean) => row.toggleSelected(!!checked)}
+          onClick={(e: React.MouseEvent) => e.stopPropagation()}
           aria-label="Select row"
         />
       ),
@@ -193,86 +198,100 @@ export function DataTable<TData, TValue>({
     },
   });
 
-  return (
-    <div
-      className={cn('rounded-8 border border-border-neutral-base overflow-hidden', className)}
-      {...props}
-    >
-      <Table>
-        {table.getRowModel().rows.length > 0 ? (
-          <TableHeader>
-            {table.getHeaderGroups().map((headerGroup) => (
-              <TableRow key={headerGroup.id} className="hover:bg-transparent border-b">
-                {headerGroup.headers.map((header) => (
-                  <TableHead key={header.id}>
-                    {header.isPlaceholder
-                      ? null
-                      : flexRender(header.column.columnDef.header, header.getContext())}
+  const skeletonRowCount = pageSize > 5 ? 5 : pageSize;
+
+  if (isLoading) {
+    return (
+      <Card className={cn('p-0 gap-0', className)} {...props}>
+        <CardContent className="rounded-8 overflow-hidden p-0">
+          <Table>
+            <TableHeader>
+              <TableRow className="hover:bg-transparent border-b">
+                {columns.map((_, idx) => (
+                  <TableHead key={idx.toString()}>
+                    <Skeleton className="h-16 w-24" />
                   </TableHead>
                 ))}
               </TableRow>
-            ))}
-          </TableHeader>
-        ) : null}
-        <TableBody>
-          {table.getRowModel().rows?.length ? (
-            table.getRowModel().rows.map((row) => (
-              <TableRow
-                key={row.id}
-                onClick={() => onRowClick?.(row.original)}
-                data-selected={row.getIsSelected()}
-                className={onRowClick ? 'cursor-pointer' : ''}
-                tabIndex={onRowClick ? 0 : undefined}
-                role={onRowClick ? 'button' : undefined}
-                onKeyDown={(event) => {
-                  if (!onRowClick) return;
-                  if (event.key === 'Enter' || event.key === ' ') {
-                    event.preventDefault();
-                    onRowClick(row.original);
-                  }
-                }}
-              >
-                {row.getVisibleCells().map((cell) => (
-                  <TableCell key={cell.id}>
-                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                  </TableCell>
-                ))}
+            </TableHeader>
+            <TableBody>
+              {Array.from({length: skeletonRowCount}).map((_, rowIdx) => (
+                <TableRow key={rowIdx.toString()} className="hover:bg-transparent">
+                  {columns.map((_, colIdx) => (
+                    <TableCell key={colIdx.toString()}>
+                      <Skeleton className="h-16 w-full" />
+                    </TableCell>
+                  ))}
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </CardContent>
+      </Card>
+    );
+  }
+
+  return (
+    <Card className={cn('p-0 gap-0', className)} {...props}>
+      <CardContent className="p-0">
+        <Table>
+          {table.getRowModel().rows.length > 0 ? (
+            <TableHeader>
+              {table.getHeaderGroups().map((headerGroup) => (
+                <TableRow key={headerGroup.id} className="hover:bg-transparent border-b">
+                  {headerGroup.headers.map((header) => (
+                    <TableHead key={header.id}>
+                      {header.isPlaceholder
+                        ? null
+                        : flexRender(header.column.columnDef.header, header.getContext())}
+                    </TableHead>
+                  ))}
+                </TableRow>
+              ))}
+            </TableHeader>
+          ) : null}
+          <TableBody>
+            {table.getRowModel().rows?.length ? (
+              table.getRowModel().rows.map((row) => (
+                <TableRow
+                  key={row.id}
+                  onClick={() => onRowClick?.(row.original)}
+                  data-selected={row.getIsSelected()}
+                  className={onRowClick ? 'cursor-pointer' : ''}
+                  tabIndex={onRowClick ? 0 : undefined}
+                  role={onRowClick ? 'button' : undefined}
+                  onKeyDown={(event) => {
+                    if (!onRowClick) return;
+                    if (event.key === 'Enter' || event.key === ' ') {
+                      event.preventDefault();
+                      onRowClick(row.original);
+                    }
+                  }}
+                >
+                  {row.getVisibleCells().map((cell) => (
+                    <TableCell key={cell.id}>
+                      {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                    </TableCell>
+                  ))}
+                </TableRow>
+              ))
+            ) : (
+              <TableRow className="hover:bg-transparent">
+                <TableCell colSpan={table.getAllColumns().length} className="h-240 text-center">
+                  {emptyState || <EmptyState />}
+                </TableCell>
               </TableRow>
-            ))
-          ) : (
-            <TableRow className="hover:bg-transparent">
-              <TableCell colSpan={table.getAllColumns().length} className="h-240 text-center">
-                {emptyState || (
-                  <div className="flex flex-col items-center justify-center gap-12 py-48">
-                    <div className="size-32 rounded-6 bg-transparent border border-border-neutral-strong flex items-center justify-center">
-                      <Icon
-                        name="fileDamageLine"
-                        className="size-16 text-foreground-neutral-subtle"
-                        color="var(--foreground-neutral-subtle, #a1a1aa)"
-                      />
-                    </div>
-                    <div className="text-center space-y-4">
-                      <Text size="sm" className="text-foreground-neutral-base">
-                        No results
-                      </Text>
-                      <Text size="xs" className="text-foreground-neutral-muted">
-                        Looks like there are no results.
-                      </Text>
-                    </div>
-                  </div>
-                )}
-              </TableCell>
-            </TableRow>
+            )}
+          </TableBody>
+          {pagination && table.getRowModel().rows?.length > 0 && (
+            <TablePagination
+              table={table}
+              pageSizeOptions={pageSizeOptions}
+              showSelectedCount={showSelectedCount}
+            />
           )}
-        </TableBody>
-        {pagination && table.getRowModel().rows?.length > 0 && (
-          <TablePagination
-            table={table}
-            pageSizeOptions={pageSizeOptions}
-            showSelectedCount={showSelectedCount}
-          />
-        )}
-      </Table>
-    </div>
+        </Table>
+      </CardContent>
+    </Card>
   );
 }
