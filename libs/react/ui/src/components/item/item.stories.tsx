@@ -3,6 +3,7 @@ import {Button} from 'components/button/button';
 import {DatePicker} from 'components/date-picker';
 import {Icon} from 'components/icon/icon';
 import {Input} from 'components/input/input';
+import {Kbd} from 'components/kbd';
 import {Label} from 'components/label/label';
 import {useState} from 'react';
 import {
@@ -104,9 +105,7 @@ export const ImportPastJobsModal: Story = {
               Import past jobs from GitHub
             </ItemTitle>
             <div className="flex items-center gap-8">
-              <kbd className="flex items-center justify-center rounded-8 border border-border-neutral-base shadow-button-neutral bg-background-field-base text-xs text-foreground-neutral-subtle px-4">
-                esc
-              </kbd>
+              <Kbd>Esc</Kbd>
               <Button
                 variant="transparent"
                 size="xs"
