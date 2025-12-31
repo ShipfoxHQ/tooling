@@ -40,7 +40,7 @@ function TableRow({className, ...props}: ComponentProps<'tr'>) {
       data-slot="table-row"
       className={cn(
         'group/row border-b border-border-neutral-base transition-colors',
-        'last:border-b-0',
+        'last:border-b-0 last:rounded-b-8',
         'hover:bg-background-neutral-hover',
         'data-[selected=true]:bg-background-neutral-pressed data-[selected=true]:hover:bg-background-neutral-pressed',
         className,

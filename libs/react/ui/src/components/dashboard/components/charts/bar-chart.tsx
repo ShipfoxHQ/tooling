@@ -1,18 +1,24 @@
+import {Card, CardContent, CardHeader, CardTitle} from 'components/card';
+import {EmptyState} from 'components/empty-state';
+import {Text} from 'components/typography';
 import type {ComponentProps} from 'react';
 import {useState} from 'react';
 import {
   Bar,
   type BarProps,
   CartesianGrid,
+  type CartesianGridProps,
   BarChart as RechartsBarChart,
   ResponsiveContainer,
   Tooltip,
   XAxis,
+  type XAxisProps,
   YAxis,
+  type YAxisProps,
 } from 'recharts';
-import {cn} from 'utils/cn';
 import {ChartTooltipContent} from './chart-tooltip';
-import {type ChartColor, chartColors, chartColorsList} from './colors';
+import type {ChartColor} from './colors';
+import {getChartColor, getHoverOpacity, normalizeTooltipPayload} from './utils';
 
 export type RechartsBarChartProps = ComponentProps<typeof RechartsBarChart>;
 
@@ -20,6 +26,8 @@ export interface BarChartBar extends Omit<BarProps, 'dataKey'> {
   dataKey: string;
   name?: string;
   color?: ChartColor;
+  hide?: boolean;
+  stackId?: string;
 }
 
 export interface BarChartProps {
@@ -27,23 +35,12 @@ export interface BarChartProps {
   bars: BarChartBar[];
   syncId?: RechartsBarChartProps['syncId'];
   height?: number;
-  xAxis?: {
-    dataKey?: string;
-    tickFormatter?: (value: string) => string;
-    hide?: boolean;
-    interval?: number | 'preserveStart' | 'preserveEnd' | 'preserveStartEnd';
-  };
-  yAxis?: {
-    domain?: [number, number];
-    ticks?: number[];
-    hide?: boolean;
-  };
-  grid?: {
-    vertical?: boolean;
-    horizontal?: boolean;
-  };
+  xAxis?: Pick<XAxisProps, 'dataKey' | 'tickFormatter' | 'hide' | 'interval'>;
+  yAxis?: Pick<YAxisProps, 'domain' | 'ticks' | 'hide' | 'tickFormatter'>;
+  grid?: Pick<CartesianGridProps, 'vertical' | 'horizontal'>;
   tooltip?: {
     labelFormatter?: (label: string) => string;
+    formatter?: (value: number) => string;
   };
   className?: string;
   title?: string;
@@ -61,88 +58,125 @@ export function BarChart({
   tooltip,
   className,
   title,
-  barRadius = [2, 2, 0, 0],
+  barRadius = [0, 0, 0, 0],
   maxBarSize = 8,
 }: BarChartProps) {
   const [hoveredDataKey, setHoveredDataKey] = useState<string | undefined>(undefined);
 
+  const visibleBars = bars.filter((bar) => !bar.hide);
+  const hasData = data && data.length > 0 && visibleBars.length > 0;
+  const hasNonZeroData =
+    hasData &&
+    data.some((item) =>
+      visibleBars.some((bar) => {
+        const value = item[bar.dataKey];
+        return value !== undefined && value !== null && Number(value) !== 0;
+      }),
+    );
+  const isEmpty = !hasData || !hasNonZeroData;
+
   return (
-    <div
-      className={cn(
-        'p-12 rounded-8 bg-background-neutral-base border border-border-neutral-base',
-        className,
+    <Card className={className}>
+      {title && (
+        <CardHeader>
+          <CardTitle variant="h4">{title}</CardTitle>
+        </CardHeader>
       )}
-    >
-      {title && <p className="text-sm font-medium text-foreground-neutral-base mb-12">{title}</p>}
-      <div style={{height}}>
-        <ResponsiveContainer width="100%" height="100%">
-          <RechartsBarChart data={data} margin={{top: 8, right: 8, left: -20, bottom: 0}}>
-            {!xAxis?.hide && (
-              <XAxis
-                dataKey={xAxis?.dataKey ?? 'label'}
-                axisLine={false}
-                tickLine={false}
-                tick={{fill: 'var(--foreground-neutral-muted)', fontSize: 12}}
-                tickFormatter={xAxis?.tickFormatter}
-                interval={xAxis?.interval ?? 'preserveStartEnd'}
+      <CardContent>
+        <div style={{height}} className="relative">
+          <ResponsiveContainer width="100%" height="100%">
+            <RechartsBarChart
+              data={isEmpty ? [] : data}
+              margin={{top: 8, right: 8, left: -20, bottom: 0}}
+            >
+              {!xAxis?.hide && (
+                <XAxis
+                  dataKey={xAxis?.dataKey ?? 'label'}
+                  axisLine={false}
+                  tickLine={false}
+                  tick={{fill: 'var(--foreground-neutral-muted)', fontSize: 12}}
+                  tickFormatter={xAxis?.tickFormatter}
+                  interval={xAxis?.interval ?? 'preserveStartEnd'}
+                />
+              )}
+              {!yAxis?.hide && (
+                <YAxis
+                  axisLine={false}
+                  tickLine={false}
+                  tick={{fill: 'var(--foreground-neutral-muted)', fontSize: 12}}
+                  domain={yAxis?.domain}
+                  ticks={yAxis?.ticks}
+                  tickFormatter={yAxis?.tickFormatter}
+                />
+              )}
+              <CartesianGrid
+                strokeDasharray="3 3"
+                stroke="var(--border-neutral-base)"
+                vertical={grid?.vertical ?? false}
+                horizontal={grid?.horizontal ?? true}
               />
-            )}
-            {!yAxis?.hide && (
-              <YAxis
-                axisLine={false}
-                tickLine={false}
-                tick={{fill: 'var(--foreground-neutral-muted)', fontSize: 12}}
-                domain={yAxis?.domain}
-                ticks={yAxis?.ticks}
+              <Tooltip
+                cursor={{fill: 'var(--background-neutral-hover)'}}
+                content={(props) => {
+                  if (!props.active) return null;
+                  return (
+                    <ChartTooltipContent
+                      active={props.active}
+                      label={props.label}
+                      payload={normalizeTooltipPayload(props.payload, tooltip?.formatter)}
+                      hoveredDataKey={hoveredDataKey}
+                      labelFormatter={tooltip?.labelFormatter}
+                    />
+                  );
+                }}
               />
-            )}
-            <CartesianGrid
-              strokeDasharray="3 3"
-              stroke="var(--border-neutral-base)"
-              vertical={grid?.vertical ?? false}
-              horizontal={grid?.horizontal ?? true}
-            />
-            <Tooltip
-              cursor={{fill: 'var(--background-neutral-hover)'}}
-              content={(props) => {
-                if (!props.active) return null;
+              {visibleBars.map((bar, index) => {
+                const color = getChartColor(bar.color, index);
+                const fillOpacity = getHoverOpacity(hoveredDataKey, bar.dataKey);
+
                 return (
-                  <ChartTooltipContent
-                    active={props.active}
-                    label={props.label}
-                    payload={props.payload}
-                    hoveredDataKey={hoveredDataKey}
-                    labelFormatter={tooltip?.labelFormatter}
+                  <Bar
+                    key={bar.dataKey}
+                    dataKey={bar.dataKey}
+                    name={bar.name ?? bar.dataKey}
+                    fill={color}
+                    fillOpacity={fillOpacity}
+                    radius={barRadius}
+                    maxBarSize={maxBarSize}
+                    onMouseEnter={() => setHoveredDataKey(bar.dataKey)}
+                    onMouseLeave={() => setHoveredDataKey(undefined)}
+                    isAnimationActive={false}
+                    stackId={bar.stackId}
                   />
                 );
-              }}
+              })}
+            </RechartsBarChart>
+          </ResponsiveContainer>
+          {isEmpty && (
+            <EmptyState
+              icon="barChartBoxLine"
+              title="Nothing here yet."
+              variant="compact"
+              className="absolute inset-0 z-10"
             />
-            {bars.map((bar, index) => {
-              const defaultColor = bar.color
-                ? chartColors[bar.color]
-                : chartColorsList[index % chartColorsList.length];
-              const fillOpacity = hoveredDataKey ? (hoveredDataKey === bar.dataKey ? 1 : 0.25) : 1;
-
-              const {dataKey, name, ...restBar} = bar;
+          )}
+        </div>
+        {!isEmpty && visibleBars.length > 0 && (
+          <div className="flex items-center justify-center flex-wrap gap-16">
+            {visibleBars.map((bar, index) => {
+              const color = getChartColor(bar.color, index);
               return (
-                <Bar
-                  key={dataKey}
-                  dataKey={dataKey}
-                  name={name ?? dataKey}
-                  fill={defaultColor}
-                  fillOpacity={fillOpacity}
-                  radius={barRadius}
-                  maxBarSize={maxBarSize}
-                  onMouseEnter={() => setHoveredDataKey(dataKey)}
-                  onMouseLeave={() => setHoveredDataKey(undefined)}
-                  isAnimationActive={false}
-                  {...restBar}
-                />
+                <div key={bar.dataKey} className="flex items-center gap-6">
+                  <span className="size-8 rounded-full" style={{backgroundColor: color}} />
+                  <Text size="xs" className="text-foreground-neutral-subtle">
+                    {bar.name ?? bar.dataKey}
+                  </Text>
+                </div>
               );
             })}
-          </RechartsBarChart>
-        </ResponsiveContainer>
-      </div>
-    </div>
+          </div>
+        )}
+      </CardContent>
+    </Card>
   );
 }

@@ -4,7 +4,7 @@
  * Comprehensive export file for all dashboard-related components and utilities.
  */
 
-export type {BarChartProps, LineChartProps} from './components/charts';
+export type {BarChartProps, ChartColor, LineChartProps} from './components/charts';
 // Chart Components
 export {BarChart, LineChart} from './components/charts';
 // Shared Components
