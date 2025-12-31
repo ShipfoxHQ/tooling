@@ -137,6 +137,7 @@ export function TableWrapper<TData, TValue>({
         <DataTable
           columns={columns}
           data={data}
+          isLoading={isLoading}
           pagination={pagination}
           pageSize={pageSize}
           pageSizeOptions={pageSizeOptions}

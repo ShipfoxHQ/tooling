@@ -89,10 +89,6 @@ export function KpiCardsGroup({cards, className, ...props}: KpiCardsGroupProps) 
   );
 }
 
-/**
- * Generic selector configuration interface
- * Compatible with RunTableQueryParams-like structures
- */
 export interface SelectorConfig {
   display?: {
     label?: string;
@@ -102,9 +98,6 @@ export interface SelectorConfig {
   [key: string]: unknown;
 }
 
-/**
- * Configuration for KpiCardsGroupFromQuery
- */
 export interface KpiCardsGroupFromQueryConfig<TSelectorConfig extends SelectorConfig, TResult> {
   /**
    * Record of selector configurations
@@ -145,10 +138,6 @@ export interface KpiCardsGroupFromQueryProps<TSelectorConfig extends SelectorCon
   extends ComponentProps<'div'>,
     KpiCardsGroupFromQueryConfig<TSelectorConfig, TResult> {}
 
-/**
- * Generic KpiCardsGroup component that works with query-like structures
- * Similar to NewBigNumbersGroup but fully generic and reusable
- */
 export function KpiCardsGroupFromQuery<TSelectorConfig extends SelectorConfig, TResult>({
   selectors,
   result,
@@ -167,7 +156,6 @@ export function KpiCardsGroupFromQuery<TSelectorConfig extends SelectorConfig, T
       const rawValue = result ? extractValue(key, result) : undefined;
       const formattedValue = rawValue !== undefined ? formatValue(key, config, rawValue) : '-';
       return {
-        key,
         label: getLabel(key, config),
         value: formattedValue,
         variant: getVariant ? getVariant(key) : 'neutral',
