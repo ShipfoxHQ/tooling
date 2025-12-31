@@ -1,15 +1,8 @@
 export type {BarChartProps, ChartColor, LineChartProps} from './components/charts';
 export {BarChart, LineChart} from './components/charts';
 export {DashboardAlert} from './components/dashboard-alert';
-export type {
-  KpiCardProps,
-  KpiCardsGroupFromQueryConfig,
-  KpiCardsGroupFromQueryProps,
-  KpiCardsGroupProps,
-  KpiVariant,
-  SelectorConfig,
-} from './components/kpi-card';
-export {KpiCard, KpiCardsGroup, KpiCardsGroupFromQuery} from './components/kpi-card';
+export type {KpiCardProps, KpiCardsGroupProps, KpiVariant} from './components/kpi-card';
+export {KpiCard, KpiCardsGroup} from './components/kpi-card';
 export type {MobileSidebarProps} from './components/mobile-sidebar';
 export {MobileSidebar} from './components/mobile-sidebar';
 export type {SidebarNavItem, SidebarProps} from './components/sidebar';
