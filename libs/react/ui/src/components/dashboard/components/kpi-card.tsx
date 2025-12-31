@@ -71,19 +71,22 @@ export function KpiCardsGroup({cards, className, ...props}: KpiCardsGroupProps) 
       {...props}
     >
       <div className="flex gap-16 pl-0 w-full">
-        {cards.map((card, index) => (
-          <KpiCard
-            key={`${card.label}-${index}`}
-            {...card}
-            className={cn(
-              // Mobile: Show ~2 cards per view with peek of next
-              'shrink-0 w-[calc((100vw-56px)/2)] snap-start',
-              // Desktop: Flex grow
-              'md:flex-1 md:w-0',
-              card.className,
-            )}
-          />
-        ))}
+        {cards.map((card, index) => {
+          const {key: _key, ...cardProps} = card;
+          return (
+            <KpiCard
+              key={`${card.label}-${index}`}
+              {...cardProps}
+              className={cn(
+                // Mobile: Show ~2 cards per view with peek of next
+                'shrink-0 w-[calc((100vw-56px)/2)] snap-start',
+                // Desktop: Flex grow
+                'md:flex-1 md:w-0',
+                card.className,
+              )}
+            />
+          );
+        })}
       </div>
     </div>
   );
