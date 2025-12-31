@@ -3,7 +3,7 @@ import {cn} from 'utils/cn';
 
 function Table({className, ...props}: ComponentProps<'table'>) {
   return (
-    <div className="relative w-full overflow-auto scrollbar">
+    <div className="relative w-full overflow-auto scrollbar rounded-x-8 rounded-b-8">
       <table
         data-slot="table"
         className={cn('w-full caption-bottom text-sm', className)}
@@ -40,7 +40,7 @@ function TableRow({className, ...props}: ComponentProps<'tr'>) {
       data-slot="table-row"
       className={cn(
         'group/row border-b border-border-neutral-base transition-colors',
-        'last:rounded-b-8',
+        'last:rounded-b-8 last:border-b-0',
         'hover:bg-background-neutral-hover',
         'data-[selected=true]:bg-background-neutral-pressed data-[selected=true]:hover:bg-background-neutral-pressed',
         className,
@@ -56,7 +56,7 @@ function TableHead({className, ...props}: ComponentProps<'th'>) {
       data-slot="table-head"
       className={cn(
         'h-40 px-16 text-left align-middle text-xs font-medium leading-20 text-foreground-neutral-subtle',
-        'bg-background-subtle-base',
+        'bg-background-subtle-base border-b border-border-neutral-base',
         '[&:has([role=checkbox])]:pr-0 [&:has([role=checkbox])]:px-12 [&:has([role=checkbox])]:w-0 [&:has([role=checkbox])]:pt-6',
         className,
       )}

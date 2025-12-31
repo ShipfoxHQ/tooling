@@ -211,7 +211,7 @@ export function DataTable<TData, TValue>({
   if (isLoading) {
     return (
       <Card className={cn('p-0 gap-0', className)} {...props}>
-        <CardContent className="rounded-8 overflow-hidden p-0">
+        <CardContent className="overflow-hidden p-0">
           <Table>
             <TableHeader>
               <TableRow className="hover:bg-transparent border-b">
@@ -241,7 +241,7 @@ export function DataTable<TData, TValue>({
 
   return (
     <Card className={cn('p-0 gap-0', className)} {...props}>
-      <CardContent className="rounded-8 overflow-hidden p-0">
+      <CardContent className="overflow-hidden p-0">
         <Table>
           {table.getRowModel().rows.length > 0 ? (
             <TableHeader>

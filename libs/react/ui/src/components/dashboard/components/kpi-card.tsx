@@ -1,10 +1,12 @@
 import {Card} from 'components/card';
+import {CountUp} from 'components/count-up';
 import {Skeleton} from 'components/skeleton';
 import {Text} from 'components/typography';
 import type {ComponentProps} from 'react';
+import {useMemo} from 'react';
 import {cn} from 'utils/cn';
 
-export type KpiVariant = 'neutral' | 'success' | 'warning' | 'error' | 'info';
+export type KpiVariant = 'neutral' | 'success' | 'warning' | 'error' | 'info' | 'purple';
 
 export interface KpiCardProps extends Omit<ComponentProps<'div'>, 'title'> {
   label: string;
@@ -19,7 +21,48 @@ const variantDotStyles: Record<KpiVariant, string> = {
   warning: 'bg-orange-500',
   error: 'bg-red-500',
   info: 'bg-blue-500',
+  purple: 'bg-purple-500',
 };
+
+const NUMBER_PATTERN = /^(-?[\d.]+)(.*)$/;
+
+function parseValue(value: string | number): {
+  numericValue: number;
+  suffix: string;
+  prefix: string;
+  isNumeric: boolean;
+} {
+  if (typeof value === 'number') {
+    return {
+      numericValue: value,
+      suffix: '',
+      prefix: '',
+      isNumeric: true,
+    };
+  }
+
+  const cleaned = value.replace(/,/g, '');
+  const match = cleaned.match(NUMBER_PATTERN);
+
+  if (match) {
+    const numericPart = parseFloat(match[1]);
+    if (!Number.isNaN(numericPart)) {
+      return {
+        numericValue: numericPart,
+        suffix: match[2] || '',
+        prefix: '',
+        isNumeric: true,
+      };
+    }
+  }
+
+  return {
+    numericValue: 0,
+    suffix: '',
+    prefix: '',
+    isNumeric: false,
+  };
+}
 
 export function KpiCard({
   label,
@@ -29,6 +72,8 @@ export function KpiCard({
   className,
   ...props
 }: KpiCardProps) {
+  const parsedValue = useMemo(() => parseValue(value), [value]);
+
   return (
     <Card className={cn('flex flex-col gap-4 p-12 min-w-120 flex-1', className)} {...props}>
       <Text size="xs" className="text-foreground-neutral-subtle">
@@ -38,6 +83,12 @@ export function KpiCard({
         <span className={cn('shrink-0 size-8 rounded-2', variantDotStyles[variant])} />
         {isLoading ? (
           <Skeleton className="w-48 h-20 rounded-4" />
+        ) : parsedValue.isNumeric ? (
+          <Text size="sm" className="font-medium text-foreground-neutral-base">
+            {parsedValue.prefix}
+            <CountUp to={parsedValue.numericValue} from={0} duration={0.5} className="inline" />
+            {parsedValue.suffix}
+          </Text>
         ) : (
           <Text size="sm" className="font-medium text-foreground-neutral-base">
             {value}
@@ -159,11 +210,11 @@ export function KpiCardsGroupFromQuery<TSelectorConfig extends SelectorConfig, T
       const rawValue = result ? extractValue(key, result) : undefined;
       const formattedValue = rawValue !== undefined ? formatValue(key, config, rawValue) : '-';
       return {
+        ...cardProps,
         label: getLabel(key, config),
         value: formattedValue,
         variant: getVariant ? getVariant(key) : 'neutral',
         isLoading,
-        ...cardProps,
       } as KpiCardProps;
     });
 

@@ -42,7 +42,7 @@ function generateDurationData() {
 const durationData = generateDurationData();
 
 const kpiCards: KpiCardProps[] = [
-  {label: 'Total', value: '1211', variant: 'neutral'},
+  {label: 'Total', value: '1211', variant: 'info'},
   {label: 'Success', value: '1200', variant: 'success'},
   {label: 'Neutral', value: '11', variant: 'neutral'},
   {label: 'Failure rate', value: '0%', variant: 'success'},
