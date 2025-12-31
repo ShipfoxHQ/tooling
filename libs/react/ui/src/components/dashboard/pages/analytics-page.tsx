@@ -1,4 +1,5 @@
 import {Button} from 'components/button';
+import {CountUp} from 'components/count-up/count-up';
 import {Icon} from 'components/icon';
 import {SearchInline} from 'components/search/search-inline';
 import {jobColumns} from 'components/table/table.stories.columns';
@@ -41,11 +42,68 @@ function generateDurationData() {
 
 const durationData = generateDurationData();
 
+interface ParsedValue {
+  prefix: string;
+  numericValue: number;
+  suffix: string;
+  isNumeric: boolean;
+}
+
+const KPI_VALUE_REGEX = /^([^\d]*)([\d.,]+)([^\d]*)$/;
+
+function parseKpiValue(value: string | number): ParsedValue {
+  if (typeof value === 'number') {
+    return {
+      prefix: '',
+      numericValue: value,
+      suffix: '',
+      isNumeric: true,
+    };
+  }
+
+  const match = value.match(KPI_VALUE_REGEX);
+  if (match) {
+    const [, prefix, numericStr, suffix] = match;
+    const numericValue = parseFloat(numericStr.replace(/,/g, ''));
+    if (!Number.isNaN(numericValue)) {
+      return {
+        prefix,
+        numericValue,
+        suffix,
+        isNumeric: true,
+      };
+    }
+  }
+
+  return {
+    prefix: '',
+    numericValue: 0,
+    suffix: '',
+    isNumeric: false,
+  };
+}
+
+function renderKpiValue(value: string | number) {
+  const parsed = parseKpiValue(value);
+
+  if (parsed.isNumeric) {
+    return (
+      <>
+        {parsed.prefix}
+        <CountUp to={parsed.numericValue} from={0} duration={0.5} className="inline" />
+        {parsed.suffix}
+      </>
+    );
+  }
+
+  return value;
+}
+
 const kpiCards: KpiCardProps[] = [
-  {label: 'Total', value: '1211', variant: 'info'},
-  {label: 'Success', value: '1200', variant: 'success'},
-  {label: 'Neutral', value: '11', variant: 'neutral'},
-  {label: 'Failure rate', value: '0%', variant: 'success'},
+  {label: 'Total', value: renderKpiValue('1211'), variant: 'info'},
+  {label: 'Success', value: renderKpiValue('1200'), variant: 'success'},
+  {label: 'Neutral', value: renderKpiValue('11'), variant: 'neutral'},
+  {label: 'Failure rate', value: renderKpiValue('0%'), variant: 'success'},
 ];
 
 export function AnalyticsPage() {
