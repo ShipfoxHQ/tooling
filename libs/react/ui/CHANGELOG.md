@@ -1,5 +1,12 @@
 # @shipfox/react-ui
 
+## 0.18.0
+
+### Minor Changes
+
+- 4e6f0f3: Add KpiCardGroupFromQuery, enhance Table components
+- 4e6f0f3: Update KpiCard and Table components
+
 ## 0.17.0
 
 ### Minor Changes
