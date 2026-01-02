@@ -1,13 +1,16 @@
+import {Card} from 'components/card';
+import {Skeleton} from 'components/skeleton';
 import {Text} from 'components/typography';
+import type {ComponentProps, ReactNode} from 'react';
 import {cn} from 'utils/cn';
 
-export type KpiVariant = 'neutral' | 'success' | 'warning' | 'error' | 'info';
+export type KpiVariant = 'neutral' | 'success' | 'warning' | 'error' | 'info' | 'purple';
 
-export interface KpiCardProps {
+export interface KpiCardProps extends Omit<ComponentProps<'div'>, 'title'> {
   label: string;
-  value: string | number;
+  value: string | number | ReactNode;
   variant?: KpiVariant;
-  className?: string;
+  isLoading?: boolean;
 }
 
 const variantDotStyles: Record<KpiVariant, string> = {
@@ -16,73 +19,64 @@ const variantDotStyles: Record<KpiVariant, string> = {
   warning: 'bg-orange-500',
   error: 'bg-red-500',
   info: 'bg-blue-500',
+  purple: 'bg-purple-500',
 };
 
-export function KpiCard({label, value, variant = 'neutral', className}: KpiCardProps) {
+export function KpiCard({
+  label,
+  value,
+  variant = 'neutral',
+  isLoading,
+  className,
+  ...props
+}: KpiCardProps) {
   return (
-    <div
-      className={cn(
-        'flex flex-col gap-4 p-12 rounded-8',
-        'bg-background-neutral-base border border-border-neutral-base',
-        'min-w-120 flex-1',
-        className,
-      )}
-    >
-      <p className="text-xs text-foreground-neutral-subtle">{label}</p>
+    <Card className={cn('flex flex-col gap-4 p-12 min-w-120 flex-1', className)} {...props}>
+      <Text size="xs" className="text-foreground-neutral-subtle">
+        {label}
+      </Text>
       <div className="flex items-center gap-6">
-        <span className={cn('size-8 rounded-2 shrink-0', variantDotStyles[variant])} />
-        <Text size="sm" className="font-medium text-foreground-neutral-base">
-          {value}
-        </Text>
+        <span className={cn('shrink-0 size-8 rounded-2', variantDotStyles[variant])} />
+        {isLoading ? (
+          <Skeleton className="w-48 h-20 rounded-4" />
+        ) : (
+          <Text size="sm" className="font-medium text-foreground-neutral-base">
+            {value}
+          </Text>
+        )}
       </div>
-    </div>
+    </Card>
   );
 }
 
-export interface KpiCardsGroupProps {
+export interface KpiCardsGroupProps extends ComponentProps<'div'> {
   cards: KpiCardProps[];
-  className?: string;
 }
 
-export function KpiCardsGroup({cards, className}: KpiCardsGroupProps) {
+export function KpiCardsGroup({cards, className, ...props}: KpiCardsGroupProps) {
   return (
     <div
       className={cn(
-        // Base layout
-        'flex gap-12 md:gap-16',
-        // Mobile: Swipeable with scroll-snap
-        'overflow-x-auto scrollbar-none pb-4 md:pb-0',
-        // Scroll snap for smooth swiping
-        'snap-x snap-mandatory',
-        // Hide scrollbar but allow scrolling
-        '[&::-webkit-scrollbar]:hidden',
-        // Smooth scrolling
-        'scroll-smooth',
+        'flex gap-12 md:gap-16 overflow-x-auto pb-4 md:pb-0 snap-x snap-mandatory [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none] scroll-smooth',
         className,
       )}
+      {...props}
     >
-      <div className="flex gap-16 pl-12 md:pl-0 md:w-full">
-        {cards.map((card, index) => (
-          <KpiCard
-            key={`${card.label}-${index}`}
-            {...card}
-            className={cn(
-              // Mobile: Show ~2 cards per view with peek of next
-              'shrink-0 w-[calc((100vw-56px)/2)] md:w-auto',
-              'snap-start',
-              // Desktop: Flex grow
-              'md:flex-1',
-            )}
-          />
-        ))}
+      <div className="flex gap-16 pl-0 w-full">
+        {cards.map((card, index) => {
+          const {key: _key, ...cardProps} = card;
+          return (
+            <KpiCard
+              key={`${card.label}-${index}`}
+              {...cardProps}
+              className={cn(
+                'shrink-0 w-[calc((100vw-56px)/2)] snap-start md:flex-1 md:w-0',
+                card.className,
+              )}
+            />
+          );
+        })}
       </div>
     </div>
   );
 }
-
-export const defaultKpiCards: KpiCardProps[] = [
-  {label: 'Total', value: '1211', variant: 'neutral'},
-  {label: 'Success', value: '1200', variant: 'success'},
-  {label: 'Neutral', value: '11', variant: 'neutral'},
-  {label: 'Failure rate', value: '0%', variant: 'success'},
-];

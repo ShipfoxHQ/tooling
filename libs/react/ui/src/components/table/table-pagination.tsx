@@ -1,6 +1,7 @@
 import type {Table} from '@tanstack/react-table';
 import {Text} from 'components/typography';
 import type {ComponentProps} from 'react';
+import {useRef} from 'react';
 import {Button} from '../button';
 import {Icon} from '../icon';
 import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from '../select/select';
@@ -53,6 +54,19 @@ interface TablePaginationProps<TData> extends ComponentProps<'tfoot'> {
    * ```
    */
   showSelectedCount?: boolean;
+  /**
+   * Optional scoped container element for select dropdown portal.
+   *
+   * When provided, the select dropdown will be rendered inside this container
+   * instead of the document body. This is useful for scoped CSS styling.
+   *
+   * @example
+   * ```tsx
+   * const {scopedContainer} = useScopedContainer();
+   * <TablePagination table={table} scopedContainer={scopedContainer} />
+   * ```
+   */
+  scopedContainer?: HTMLElement | null;
 }
 
 export function TablePagination<TData>({
@@ -60,8 +74,10 @@ export function TablePagination<TData>({
   className,
   pageSizeOptions = [10, 20, 50, 100],
   showSelectedCount = false,
+  scopedContainer,
   ...props
 }: TablePaginationProps<TData>) {
+  const paginationRef = useRef<HTMLTableSectionElement>(null);
   const currentPage = table.getState().pagination.pageIndex + 1;
   const pageSize = table.getState().pagination.pageSize;
   const totalRows = table.getFilteredRowModel().rows.length;
@@ -69,8 +85,8 @@ export function TablePagination<TData>({
   const endRow = Math.min(currentPage * pageSize, totalRows);
 
   return (
-    <TableFooter className={className} {...props}>
-      <TableRow className="hover:bg-transparent">
+    <TableFooter ref={paginationRef} className={className} {...props}>
+      <TableRow className="hover:bg-transparent border-b-0">
         <TableCell
           colSpan={table.getAllColumns().length}
           className="group-hover/row:bg-transparent"
@@ -100,7 +116,7 @@ export function TablePagination<TData>({
                   <SelectTrigger className="h-28 w-80" size="small">
                     <SelectValue />
                   </SelectTrigger>
-                  <SelectContent>
+                  <SelectContent container={scopedContainer ?? undefined}>
                     {pageSizeOptions.map((size) => (
                       <SelectItem key={size} value={String(size)}>
                         {size}

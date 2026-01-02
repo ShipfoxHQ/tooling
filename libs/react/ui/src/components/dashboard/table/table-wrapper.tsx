@@ -5,11 +5,8 @@
  */
 
 import type {ColumnDef, VisibilityState} from '@tanstack/react-table';
-import {Button} from 'components/button';
-import {Icon} from 'components/icon';
-import {SearchInline} from 'components/search/search-inline';
+import {Card, CardAction, CardContent, CardHeader, CardTitle} from 'components/card';
 import {DataTable} from 'components/table/data-table';
-import {Header as TypographyHeader} from 'components/typography';
 import type {ComponentProps, ReactNode} from 'react';
 import {cn} from 'utils/cn';
 
@@ -26,23 +23,6 @@ export interface TableWrapperProps<TData, TValue> extends Omit<ComponentProps<'d
    * Data to display in the table
    */
   data: TData[];
-  /**
-   * Search query value
-   */
-  searchQuery?: string;
-  /**
-   * Search input change handler
-   */
-  onSearchChange?: (value: string) => void;
-  /**
-   * Search clear handler
-   */
-  onSearchClear?: () => void;
-  /**
-   * Search placeholder text
-   * @default 'Search...'
-   */
-  searchPlaceholder?: string;
   /**
    * Column visibility state
    */
@@ -80,14 +60,20 @@ export interface TableWrapperProps<TData, TValue> extends Omit<ComponentProps<'d
    */
   emptyState?: ReactNode;
   /**
-   * Additional header actions
+   * Header actions to display in the card header
    */
   headerActions?: ReactNode;
   /**
-   * Show default search and column action
-   * @default true
+   * Loading state - displays skeleton when true
    */
-  showDefaultActions?: boolean;
+  isLoading?: boolean;
+  /**
+   * Optional scoped container element for dropdown portals.
+   *
+   * When provided, dropdowns (like pagination select) will be rendered inside this container
+   * instead of the document body. This is useful for scoped CSS styling.
+   */
+  scopedContainer?: HTMLElement | null;
 }
 
 /**
@@ -102,8 +88,16 @@ export interface TableWrapperProps<TData, TValue> extends Omit<ComponentProps<'d
  *   title="Jobs breakdown"
  *   columns={jobColumns}
  *   data={jobsData}
- *   searchQuery={searchQuery}
- *   onSearchChange={setSearchQuery}
+ *   headerActions={
+ *     <>
+ *       <SearchInline
+ *         placeholder="Search..."
+ *         value={searchQuery}
+ *         onChange={(e) => setSearchQuery(e.target.value)}
+ *       />
+ *       <Button variant="secondary">Action</Button>
+ *     </>
+ *   }
  *   columnVisibility={columnVisibility}
  *   onColumnVisibilityChange={updateColumnVisibility}
  * />
@@ -113,10 +107,6 @@ export function TableWrapper<TData, TValue>({
   title,
   columns,
   data,
-  searchQuery = '',
-  onSearchChange,
-  onSearchClear,
-  searchPlaceholder = 'Search...',
   columnVisibility,
   onColumnVisibilityChange,
   pagination = true,
@@ -126,61 +116,40 @@ export function TableWrapper<TData, TValue>({
   onRowClick,
   emptyState,
   headerActions,
-  showDefaultActions = true,
+  isLoading,
+  scopedContainer,
   className,
   ...props
 }: TableWrapperProps<TData, TValue>) {
   return (
-    <div className={cn('rounded-t-8 overflow-hidden', className)} {...props}>
-      {/* Table Header */}
-      <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-12 md:gap-0 p-12 border-t border-x border-border-neutral-base rounded-t-8 bg-background-neutral-base">
-        {typeof title === 'string' ? (
-          <TypographyHeader variant="h3" className="text-foreground-neutral-base">
-            {title}
-          </TypographyHeader>
-        ) : (
-          title
-        )}
+    <Card className={cn('rounded-t-8 overflow-hidden p-0 gap-0 border-none', className)} {...props}>
+      <CardHeader className="flex flex-col md:flex-row md:items-center md:justify-between gap-12 md:gap-0 p-12 rounded-t-8 border-t border-x border-border-neutral-base">
+        {typeof title === 'string' ? <CardTitle variant="h3">{title}</CardTitle> : title}
 
-        {/* Actions */}
-        {(showDefaultActions || headerActions) && (
-          <div className="flex items-center gap-8 md:gap-16 w-full md:w-auto">
-            {showDefaultActions && (
-              <>
-                <SearchInline
-                  placeholder={searchPlaceholder}
-                  value={searchQuery}
-                  onChange={(e) => onSearchChange?.(e.target.value)}
-                  onClear={() => onSearchClear?.()}
-                  className="flex-1 md:w-240"
-                />
-                <Button variant="secondary" aria-label="Insert column left" className="shrink-0">
-                  <Icon
-                    name="insertColumnLeft"
-                    className="size-16 text-foreground-neutral-subtle"
-                  />
-                </Button>
-              </>
-            )}
+        {headerActions && (
+          <CardAction className="flex items-center gap-8 md:gap-16 w-full md:w-auto">
             {headerActions}
-          </div>
+          </CardAction>
         )}
-      </div>
+      </CardHeader>
 
-      {/* Data Table */}
-      <DataTable
-        columns={columns}
-        data={data}
-        pagination={pagination}
-        pageSize={pageSize}
-        pageSizeOptions={pageSizeOptions}
-        showSelectedCount={showSelectedCount}
-        onRowClick={onRowClick}
-        emptyState={emptyState}
-        columnVisibility={columnVisibility}
-        onColumnVisibilityChange={onColumnVisibilityChange}
-        className="rounded-t-none"
-      />
-    </div>
+      <CardContent className="p-0">
+        <DataTable
+          columns={columns}
+          data={data}
+          isLoading={isLoading}
+          pagination={pagination}
+          pageSize={pageSize}
+          pageSizeOptions={pageSizeOptions}
+          showSelectedCount={showSelectedCount}
+          onRowClick={onRowClick}
+          emptyState={emptyState}
+          columnVisibility={columnVisibility}
+          onColumnVisibilityChange={onColumnVisibilityChange}
+          scopedContainer={scopedContainer}
+          className="rounded-t-none"
+        />
+      </CardContent>
+    </Card>
   );
 }

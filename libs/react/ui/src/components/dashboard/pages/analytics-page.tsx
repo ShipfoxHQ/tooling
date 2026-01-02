@@ -1,9 +1,7 @@
-/**
- * Analytics Page Component
- *
- * Refactored analytics page using DashboardContext and generic components.
- */
-
+import {Button} from 'components/button';
+import {CountUp} from 'components/count-up/count-up';
+import {Icon} from 'components/icon';
+import {SearchInline} from 'components/search/search-inline';
 import {jobColumns} from 'components/table/table.stories.columns';
 import {jobsData} from 'components/table/table.stories.data';
 import {useMediaQuery} from 'hooks/useMediaQuery';
@@ -19,7 +17,6 @@ import {ExpressionFilterBar} from '../filters';
 import {TableWrapper} from '../table';
 import {PageToolbar, ToolbarActions} from '../toolbar';
 
-// Sample data for the performance chart
 const performanceData = [
   {label: '1', dataA: 150, dataB: 200, dataC: 280, dataD: 180},
   {label: '2', dataA: 250, dataB: 180, dataC: 320, dataD: 220},
@@ -29,7 +26,6 @@ const performanceData = [
   {label: '6', dataA: 180, dataB: 250, dataC: 220, dataD: 160},
 ];
 
-// Generate sample data for duration distribution
 function generateDurationData() {
   const count = 40;
   const data: {label: string; value: number}[] = [];
@@ -46,29 +42,70 @@ function generateDurationData() {
 
 const durationData = generateDurationData();
 
-/**
- * KPI Cards configuration
- */
+interface ParsedValue {
+  prefix: string;
+  numericValue: number;
+  suffix: string;
+  isNumeric: boolean;
+}
+
+const KPI_VALUE_REGEX = /^([^\d]*)([\d.,]+)([^\d]*)$/;
+
+function parseKpiValue(value: string | number): ParsedValue {
+  if (typeof value === 'number') {
+    return {
+      prefix: '',
+      numericValue: value,
+      suffix: '',
+      isNumeric: true,
+    };
+  }
+
+  const match = value.match(KPI_VALUE_REGEX);
+  if (match) {
+    const [, prefix, numericStr, suffix] = match;
+    const numericValue = parseFloat(numericStr.replace(/,/g, ''));
+    if (!Number.isNaN(numericValue)) {
+      return {
+        prefix,
+        numericValue,
+        suffix,
+        isNumeric: true,
+      };
+    }
+  }
+
+  return {
+    prefix: '',
+    numericValue: 0,
+    suffix: '',
+    isNumeric: false,
+  };
+}
+
+function renderKpiValue(value: string | number) {
+  const parsed = parseKpiValue(value);
+
+  if (parsed.isNumeric) {
+    return (
+      <>
+        {parsed.prefix}
+        <CountUp to={parsed.numericValue} from={0} duration={0.5} className="inline" />
+        {parsed.suffix}
+      </>
+    );
+  }
+
+  return value;
+}
+
 const kpiCards: KpiCardProps[] = [
-  {label: 'Total', value: '1211', variant: 'neutral'},
-  {label: 'Success', value: '1200', variant: 'success'},
-  {label: 'Neutral', value: '11', variant: 'neutral'},
-  {label: 'Failure rate', value: '0%', variant: 'success'},
+  {label: 'Total', value: renderKpiValue('1211'), variant: 'info'},
+  {label: 'Success', value: renderKpiValue('1200'), variant: 'success'},
+  {label: 'Neutral', value: renderKpiValue('11'), variant: 'neutral'},
+  {label: 'Failure rate', value: renderKpiValue('0%'), variant: 'success'},
 ];
 
-/**
- * Analytics Page
- *
- * Main analytics page with KPI cards, charts, and jobs table.
- * Uses DashboardContext for state management and generic reusable components.
- *
- * @example
- * ```tsx
- * <DashboardProvider>
- *   <AnalyticsPage />
- * </DashboardProvider>
- * ```
- */
 export function AnalyticsPage() {
   const {
     searchQuery,
@@ -84,16 +121,13 @@ export function AnalyticsPage() {
     setResourceType,
   } = useDashboardContext();
 
-  // Responsive breakpoints
   const isDesktop = useMediaQuery('(min-width: 1024px)');
 
-  // Get the active sidebar item label for the title
   const pageTitle = useMemo(() => {
     const activeItem = defaultSidebarItems.find((item) => item.id === activeSidebarItem);
-    return activeItem?.label || 'Reliability'; // Default to Reliability
+    return activeItem?.label || 'Reliability';
   }, [activeSidebarItem]);
 
-  // Filter data based on search query
   const filteredData = useMemo(
     () => jobsData.filter((job) => job.name.toLowerCase().includes(searchQuery.toLowerCase())),
     [searchQuery],
@@ -101,14 +135,12 @@ export function AnalyticsPage() {
 
   return (
     <div className="flex h-full flex-col">
-      {/* Page Toolbar with Mobile Menu */}
       <PageToolbar
         title={pageTitle}
         timePeriod={timePeriod}
         onTimePeriodChange={setTimePeriod}
         lastUpdated={lastUpdated}
       >
-        {/* Mobile Sidebar Trigger */}
         {!isDesktop && (
           <MobileSidebar
             items={defaultSidebarItems}
@@ -118,8 +150,7 @@ export function AnalyticsPage() {
         )}
       </PageToolbar>
 
-      <div className="flex flex-1 overflow-hidden bg-background-neutral-base">
-        {/* Desktop Sidebar */}
+      <div className="flex flex-1 overflow-hidden">
         {isDesktop && (
           <Sidebar
             items={defaultSidebarItems}
@@ -128,23 +159,16 @@ export function AnalyticsPage() {
           />
         )}
 
-        {/* Main Content */}
         <div className="flex-1 px-12 pb-12 pt-4 md:px-24 md:pb-24 space-y-12 md:space-y-16 lg:space-y-20 overflow-auto">
-          {/* Promotional Alert Banner */}
           <DashboardAlert />
 
-          {/* Expression Filter Bar */}
           <ExpressionFilterBar value={resourceType} onValueChange={setResourceType} />
 
-          {/* Toolbar Actions: Filter, Search, View */}
           <ToolbarActions />
 
-          {/* KPI Cards */}
           <KpiCardsGroup cards={kpiCards} />
 
-          {/* Charts Row - Responsive */}
           <div className="flex flex-col lg:flex-row gap-12 md:gap-16 lg:gap-20">
-            {/* Performance over time - Line Chart */}
             <LineChart
               data={performanceData}
               lines={[
@@ -161,7 +185,6 @@ export function AnalyticsPage() {
               }}
             />
 
-            {/* Duration distribution - Bar Chart */}
             <BarChart
               data={durationData}
               bars={[{dataKey: 'value', name: 'Duration', color: 'orange'}]}
@@ -171,14 +194,27 @@ export function AnalyticsPage() {
             />
           </div>
 
-          {/* Analytics Table */}
           <TableWrapper
             title="Analytics breakdown"
             columns={jobColumns}
             data={filteredData}
-            searchQuery={searchQuery}
-            onSearchChange={setSearchQuery}
-            onSearchClear={() => setSearchQuery('')}
+            headerActions={
+              <>
+                <SearchInline
+                  placeholder="Search..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  onClear={() => setSearchQuery('')}
+                  className="flex-1 md:w-240"
+                />
+                <Button variant="secondary" aria-label="Insert column left" className="shrink-0">
+                  <Icon
+                    name="insertColumnLeft"
+                    className="size-16 text-foreground-neutral-subtle"
+                  />
+                </Button>
+              </>
+            }
             columnVisibility={columnVisibility}
             onColumnVisibilityChange={updateColumnVisibility}
           />

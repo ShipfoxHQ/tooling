@@ -1,6 +1,7 @@
 import type {Column} from '@tanstack/react-table';
 import {Icon} from 'components/icon';
 import type {HTMLAttributes} from 'react';
+import {useRef} from 'react';
 import {cn} from 'utils/cn';
 import {Button} from '../button';
 import {
@@ -9,6 +10,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '../dropdown-menu';
+import {Text} from '../typography';
 
 /**
  * Props for the {@link TableColumnHeader} component.
@@ -49,6 +51,19 @@ export interface TableColumnHeaderProps<TData, TValue> extends HTMLAttributes<HT
    * ```
    */
   title: string;
+  /**
+   * Optional scoped container element for dropdown portal.
+   *
+   * When provided, the dropdown menu will be rendered inside this container
+   * instead of the document body. This is useful for scoped CSS styling.
+   *
+   * @example
+   * ```tsx
+   * const {scopedContainer} = useScopedContainer();
+   * <TableColumnHeader column={column} title="Name" scopedContainer={scopedContainer} />
+   * ```
+   */
+  scopedContainer?: HTMLElement | null;
 }
 
 /**
@@ -90,15 +105,22 @@ export function TableColumnHeader<TData, TValue>({
   column,
   title,
   className,
+  scopedContainer,
 }: TableColumnHeaderProps<TData, TValue>) {
+  const headerRef = useRef<HTMLDivElement>(null);
+
   if (!column.getCanSort()) {
-    return <div className={cn('text-xs font-medium', className)}>{title}</div>;
+    return (
+      <Text size="xs" className={cn('font-medium', className)}>
+        {title}
+      </Text>
+    );
   }
 
   const isSorted = column.getIsSorted();
 
   return (
-    <div className={cn('flex items-center space-x-2', className)}>
+    <div ref={headerRef} className={cn('flex items-center space-x-2', className)}>
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <Button
@@ -106,7 +128,9 @@ export function TableColumnHeader<TData, TValue>({
             size="xs"
             className="-ml-12 h-32 px-8 data-[state=open]:bg-background-components-hover gap-0"
           >
-            <span className="text-xs font-medium text-foreground-neutral-subtle">{title}</span>
+            <Text size="xs" className="font-medium text-foreground-neutral-subtle">
+              {title}
+            </Text>
             {isSorted === 'desc' ? (
               <Icon
                 name="arrowDownLongLine"
@@ -119,7 +143,7 @@ export function TableColumnHeader<TData, TValue>({
             )}
           </Button>
         </DropdownMenuTrigger>
-        <DropdownMenuContent align="start" size="sm">
+        <DropdownMenuContent align="start" size="sm" container={scopedContainer ?? undefined}>
           <DropdownMenuItem
             icon="arrowUpLongLine"
             onClick={() => column.toggleSorting(false)}

@@ -9,6 +9,7 @@ export * from './checkbox';
 export * from './code-block';
 export * from './command';
 export * from './confetti';
+export * from './count-up';
 export * from './dashboard';
 export * from './date-picker';
 export * from './date-time-range-picker';

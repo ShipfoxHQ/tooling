@@ -103,6 +103,13 @@ interface DataTableProps<TData, TValue> extends Omit<ComponentProps<'div'>, 'chi
    * When `true`, displays a loading skeleton instead of the table.
    */
   isLoading?: boolean;
+  /**
+   * Optional scoped container element for dropdown portals.
+   *
+   * When provided, dropdowns (like pagination select) will be rendered inside this container
+   * instead of the document body. This is useful for scoped CSS styling.
+   */
+  scopedContainer?: HTMLElement | null;
 }
 
 export function DataTable<TData, TValue>({
@@ -117,6 +124,7 @@ export function DataTable<TData, TValue>({
   columnVisibility: controlledColumnVisibility,
   onColumnVisibilityChange,
   isLoading,
+  scopedContainer,
   className,
   ...props
 }: DataTableProps<TData, TValue>) {
@@ -203,7 +211,7 @@ export function DataTable<TData, TValue>({
   if (isLoading) {
     return (
       <Card className={cn('p-0 gap-0', className)} {...props}>
-        <CardContent className="rounded-8 overflow-hidden p-0">
+        <CardContent className="overflow-hidden p-0">
           <Table>
             <TableHeader>
               <TableRow className="hover:bg-transparent border-b">
@@ -233,7 +241,7 @@ export function DataTable<TData, TValue>({
 
   return (
     <Card className={cn('p-0 gap-0', className)} {...props}>
-      <CardContent className="rounded-b-8 overflow-hidden p-0">
+      <CardContent className="overflow-hidden p-0">
         <Table>
           {table.getRowModel().rows.length > 0 ? (
             <TableHeader>
@@ -291,6 +299,7 @@ export function DataTable<TData, TValue>({
               table={table}
               pageSizeOptions={pageSizeOptions}
               showSelectedCount={showSelectedCount}
+              scopedContainer={scopedContainer}
             />
           )}
         </Table>
