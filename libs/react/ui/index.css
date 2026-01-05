@@ -298,41 +298,42 @@
 
   /* Shadow */
   --shadow-border-base:
-    0 -1px 0 0 var(--color-alpha-white-6), 0 0 0 1px var(--color-alpha-white-6), 0 0 0 1px
-    var(--color-neutral-800), 0 0 1px 1.5px var(--color-alpha-black-24), 0 2px 2px 0
-    var(--color-alpha-black-24);
+    0 -1px 0 0 var(--color-alpha-white-6), 0 0 0 1px var(--color-alpha-white-6),
+    0 0 0 1px var(--color-neutral-800), 0 0 1px 1.5px var(--color-alpha-black-24),
+    0 2px 2px 0 var(--color-alpha-black-24);
   --shadow-border-interactive-with-active: 0 0 0 1px #ff8b16, 0 0 0 4px rgba(255, 49, 0, 0.25);
   --shadow-border-error: 0 0 0 1px #ff1f5a, 0 0 0 3px rgba(246, 0, 67, 0.25);
   --shadow-button-inverted:
-    0 -1px 0 0 var(--color-alpha-white-12), 0 0 0 1px var(--color-alpha-white-10), 0 0 0 1px
-    var(--color-neutral-600), 0 0 1px 1.5px var(--color-alpha-black-24), 0 2px 2px 0
-    var(--color-alpha-black-24);
+    0 -1px 0 0 var(--color-alpha-white-12), 0 0 0 1px var(--color-alpha-white-10),
+    0 0 0 1px var(--color-neutral-600), 0 0 1px 1.5px var(--color-alpha-black-24),
+    0 2px 2px 0 var(--color-alpha-black-24);
   --shadow-button-inverted-focus:
-    0 -1px 0 0 var(--color-alpha-white-12), 0 0 0 1px var(--color-alpha-white-12), 0 0 0 1px
-    var(--color-neutral-600), 0 0 0 2px var(--color-alpha-white-88), 0 0 0 4px
-    var(--color-primary-500);
+    0 -1px 0 0 var(--color-alpha-white-12), 0 0 0 1px var(--color-alpha-white-12),
+    0 0 0 1px var(--color-neutral-600), 0 0 0 2px var(--color-alpha-white-88),
+    0 0 0 4px var(--color-primary-500);
   --shadow-button-neutral:
-    0 0 0 1px var(--color-alpha-black-8), 0 2px 4px 0 var(--color-alpha-black-8), 0 4px 8px 0
-    var(--color-alpha-black-8);
+    0 0 0 1px var(--color-alpha-black-8), 0 2px 4px 0 var(--color-alpha-black-8),
+    0 4px 8px 0 var(--color-alpha-black-8);
   --shadow-button-neutral-focus:
-    0 -1px 0 0 var(--color-alpha-white-6), 0 0 0 1px var(--color-alpha-white-6), 0 0 0 1px
-    var(--color-alpha-black-8), 0 0 0 2px var(--color-alpha-white-88), 0 0 0 4px
-    var(--color-primary-500);
+    0 -1px 0 0 var(--color-alpha-white-6), 0 0 0 1px var(--color-alpha-white-6),
+    0 0 0 1px var(--color-alpha-black-8), 0 0 0 2px var(--color-alpha-white-88),
+    0 0 0 4px var(--color-primary-500);
   --shadow-button-danger:
-    0 -1px 0 0 var(--color-alpha-white-16), 0 0 0 1px var(--color-alpha-white-12), 0 0 0 1px
-    var(--color-red-700), 0 0 1px 1.5px var(--color-alpha-black-24), 0 2px 2px 0
-    var(--color-alpha-black-24);
+    0 -1px 0 0 var(--color-alpha-white-16), 0 0 0 1px var(--color-alpha-white-12),
+    0 0 0 1px var(--color-red-700), 0 0 1px 1.5px var(--color-alpha-black-24),
+    0 2px 2px 0 var(--color-alpha-black-24);
   --shadow-button-danger-focus:
-    0 -1px 0 0 var(--color-alpha-white-16), 0 0 0 1px var(--color-alpha-white-12), 0 0 0 1px
-    var(--color-red-700), 0 0 0 2px var(--color-alpha-white-88), 0 0 0 4px var(--color-primary-500);
+    0 -1px 0 0 var(--color-alpha-white-16), 0 0 0 1px var(--color-alpha-white-12),
+    0 0 0 1px var(--color-red-700), 0 0 0 2px var(--color-alpha-white-88),
+    0 0 0 4px var(--color-primary-500);
   --shadow-button-success:
-    0 -1px 0 0 var(--color-alpha-white-16), 0 0 0 1px var(--color-alpha-white-12), 0 0 0 1px
-    var(--color-green-700), 0 0 1px 1.5px var(--color-alpha-black-24), 0 2px 2px 0
-    var(--color-alpha-black-24);
+    0 -1px 0 0 var(--color-alpha-white-16), 0 0 0 1px var(--color-alpha-white-12),
+    0 0 0 1px var(--color-green-700), 0 0 1px 1.5px var(--color-alpha-black-24),
+    0 2px 2px 0 var(--color-alpha-black-24);
   --shadow-button-success-focus:
-    0 -1px 0 0 var(--color-alpha-white-16), 0 0 0 1px var(--color-alpha-white-12), 0 0 0 1px
-    var(--color-green-700), 0 0 0 2px var(--color-alpha-white-88), 0 0 0 4px
-    var(--color-primary-500);
+    0 -1px 0 0 var(--color-alpha-white-16), 0 0 0 1px var(--color-alpha-white-12),
+    0 0 0 1px var(--color-green-700), 0 0 0 2px var(--color-alpha-white-88),
+    0 0 0 4px var(--color-primary-500);
 
   /* Checkbox */
   /* Checkbox - Unchecked States */
@@ -364,8 +365,8 @@
   --checkbox-indeterminate-focus-shadow:
     0px 0px 0px 1px var(--color-neutral-0), 0px 0px 0px 3px rgba(255, 75, 0, 0.6);
   --shadow-tooltip:
-    0 0 0 1px var(--color-alpha-black-8), 0 2px 4px 0 var(--color-alpha-black-8), 0 4px 8px 0
-    var(--color-alpha-black-8);
+    0 0 0 1px var(--color-alpha-black-8), 0 2px 4px 0 var(--color-alpha-black-8),
+    0 4px 8px 0 var(--color-alpha-black-8);
   --shadow-separator-inset:
     inset 0 1px 0 0 rgba(255, 255, 255, 0.15), inset 0 -1px 0 0 rgba(0, 0, 0, 0.06);
 }
@@ -504,38 +505,42 @@
 
   /* Shadow */
   --shadow-border-base:
-    0 -1px 0 0 var(--color-alpha-white-6), 0 0 0 1px var(--color-alpha-white-6), 0 0 0 1px
-    var(--color-neutral-800), 0 0 1px 1.5px var(--color-alpha-black-24), 0 2px 2px 0
-    var(--color-alpha-black-24);
+    0 -1px 0 0 var(--color-alpha-white-6), 0 0 0 1px var(--color-alpha-white-6),
+    0 0 0 1px var(--color-neutral-800), 0 0 1px 1.5px var(--color-alpha-black-24),
+    0 2px 2px 0 var(--color-alpha-black-24);
   --shadow-border-interactive-with-active: 0 0 0 1px #ff8b16, 0 0 0 4px rgba(255, 49, 0, 0.25);
   --shadow-border-error: 0 0 0 1px #ff1f5a, 0 0 0 3px rgba(246, 0, 67, 0.25);
   --shadow-button-inverted:
-    0 -1px 0 0 var(--color-alpha-white-12), 0 0 0 1px var(--color-alpha-white-10), 0 0 0 1px
-    var(--color-neutral-600), 0 0 1px 1.5px var(--color-alpha-black-24), 0 2px 2px 0
-    var(--color-alpha-black-24);
+    0 -1px 0 0 var(--color-alpha-white-12), 0 0 0 1px var(--color-alpha-white-10),
+    0 0 0 1px var(--color-neutral-600), 0 0 1px 1.5px var(--color-alpha-black-24),
+    0 2px 2px 0 var(--color-alpha-black-24);
   --shadow-button-inverted-focus:
-    0 -1px 0 0 var(--color-alpha-white-12), 0 0 0 1px var(--color-alpha-white-12), 0 0 0 1px
-    var(--color-neutral-600), 0 0 0 2px var(--color-neutral-950), 0 0 0 4px var(--color-primary-500);
+    0 -1px 0 0 var(--color-alpha-white-12), 0 0 0 1px var(--color-alpha-white-12),
+    0 0 0 1px var(--color-neutral-600), 0 0 0 2px var(--color-neutral-950),
+    0 0 0 4px var(--color-primary-500);
   --shadow-button-neutral:
-    0 -1px 0 0 var(--color-alpha-white-4), 0 2px 4px 0 var(--color-alpha-black-40), 0 0 0 1px
-    var(--color-alpha-white-10), 0 4px 8px 0 var(--color-alpha-black-40);
+    0 -1px 0 0 var(--color-alpha-white-4), 0 2px 4px 0 var(--color-alpha-black-40),
+    0 0 0 1px var(--color-alpha-white-10), 0 4px 8px 0 var(--color-alpha-black-40);
   --shadow-button-neutral-focus:
-    0 -1px 0 0 var(--color-alpha-white-6), 0 0 0 1px var(--color-alpha-white-6), 0 0 0 1px
-    var(--color-neutral-800), 0 0 0 2px var(--color-neutral-950), 0 0 0 4px var(--color-primary-500);
+    0 -1px 0 0 var(--color-alpha-white-6), 0 0 0 1px var(--color-alpha-white-6),
+    0 0 0 1px var(--color-neutral-800), 0 0 0 2px var(--color-neutral-950),
+    0 0 0 4px var(--color-primary-500);
   --shadow-button-danger:
-    0 -1px 0 0 var(--color-alpha-white-16), 0 0 0 1px var(--color-alpha-white-12), 0 0 0 1px
-    var(--color-red-700), 0 0 1px 1.5px var(--color-alpha-black-24), 0 2px 2px 0
-    var(--color-alpha-black-24);
+    0 -1px 0 0 var(--color-alpha-white-16), 0 0 0 1px var(--color-alpha-white-12),
+    0 0 0 1px var(--color-red-700), 0 0 1px 1.5px var(--color-alpha-black-24),
+    0 2px 2px 0 var(--color-alpha-black-24);
   --shadow-button-danger-focus:
-    0 -1px 0 0 var(--color-alpha-white-16), 0 0 0 1px var(--color-alpha-white-12), 0 0 0 1px
-    var(--color-red-700), 0 0 0 2px var(--color-neutral-950), 0 0 0 4px var(--color-primary-500);
+    0 -1px 0 0 var(--color-alpha-white-16), 0 0 0 1px var(--color-alpha-white-12),
+    0 0 0 1px var(--color-red-700), 0 0 0 2px var(--color-neutral-950),
+    0 0 0 4px var(--color-primary-500);
   --shadow-button-success:
-    0 -1px 0 0 var(--color-alpha-white-16), 0 0 0 1px var(--color-alpha-white-12), 0 0 0 1px
-    var(--color-green-700), 0 0 1px 1.5px var(--color-alpha-black-24), 0 2px 2px 0
-    var(--color-alpha-black-24);
+    0 -1px 0 0 var(--color-alpha-white-16), 0 0 0 1px var(--color-alpha-white-12),
+    0 0 0 1px var(--color-green-700), 0 0 1px 1.5px var(--color-alpha-black-24),
+    0 2px 2px 0 var(--color-alpha-black-24);
   --shadow-button-success-focus:
-    0 -1px 0 0 var(--color-alpha-white-16), 0 0 0 1px var(--color-alpha-white-12), 0 0 0 1px
-    var(--color-green-700), 0 0 0 2px var(--color-neutral-950), 0 0 0 4px var(--color-primary-500);
+    0 -1px 0 0 var(--color-alpha-white-16), 0 0 0 1px var(--color-alpha-white-12),
+    0 0 0 1px var(--color-green-700), 0 0 0 2px var(--color-neutral-950),
+    0 0 0 4px var(--color-primary-500);
 
   /* Checkbox */
   /* Checkbox - Unchecked States */
@@ -571,8 +576,8 @@
   --checkbox-indeterminate-focus-shadow:
     0px 0px 0px 1px var(--color-alpha-black-80), 0px 0px 0px 3px rgba(255, 75, 0, 0.6);
   --shadow-tooltip:
-    0 -1px 0 0 var(--color-alpha-white-4), 0 2px 4px 0 var(--color-alpha-black-40), 0 0 0 1px
-    var(--color-alpha-white-10), 0 4px 8px 0 var(--color-alpha-black-40);
+    0 -1px 0 0 var(--color-alpha-white-4), 0 2px 4px 0 var(--color-alpha-black-40),
+    0 0 0 1px var(--color-alpha-white-10), 0 4px 8px 0 var(--color-alpha-black-40);
   --shadow-separator-inset:
     inset 0 1px 0 0 rgba(255, 255, 255, 0.06), inset 0 -1px 0 0 rgba(0, 0, 0, 0.1);
 }
