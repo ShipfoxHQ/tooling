@@ -60,7 +60,6 @@
     "@swc/helpers": "^0.5.17"
   },
   "peerDependencies": {
-    "@tanstack/react-query": "^5.90.5",
     "@tanstack/react-table": "^8.19.3",
     "@tanstack/react-virtual": "^3.13.12",
     "date-fns": "^4.1.0",

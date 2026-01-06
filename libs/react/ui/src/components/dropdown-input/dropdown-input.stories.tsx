@@ -1,6 +1,5 @@
 import {argosScreenshot} from '@argos-ci/storybook/vitest';
 import type {Meta, StoryContext, StoryObj} from '@storybook/react';
-import {QueryClient, QueryClientProvider} from '@tanstack/react-query';
 import {screen, within} from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import {Button} from 'components/button';
@@ -18,13 +17,12 @@ import {
 } from 'components/modal';
 import {Text} from 'components/typography';
 import {addDays} from 'date-fns';
-import type React from 'react';
-import {useMemo, useState} from 'react';
+import {useEffect, useMemo, useState} from 'react';
 
 const DEFAULT_START_DATE = new Date();
 const IMPORT_JOBS_REGEX = /import past jobs from github/i;
 
-const mockRepositoryOwners: DropdownInputItem<string>[] = [
+const allRepositoryOwners: DropdownInputItem<string>[] = [
   {id: 'apache', label: 'apache', value: 'apache'},
   {id: 'apache-superset', label: 'apache-superset', value: 'apache-superset'},
   {id: 'apaleo', label: 'apaleo', value: 'apaleo'},
@@ -34,24 +32,12 @@ const mockRepositoryOwners: DropdownInputItem<string>[] = [
   {id: 'apache-kafka', label: 'apache-kafka', value: 'apache-kafka'},
 ];
 
-const mockRepositoryNames: DropdownInputItem<string>[] = [
+const allRepositoryNames: DropdownInputItem<string>[] = [
   {id: 'kafka', label: 'kafka', value: 'kafka'},
   {id: 'kafka-streams', label: 'kafka-streams', value: 'kafka-streams'},
   {id: 'kafka-connect', label: 'kafka-connect', value: 'kafka-connect'},
   {id: 'kafka-ui', label: 'kafka-ui', value: 'kafka-ui'},
 ];
-
-async function fetchRepositoryOwners(query: string): Promise<DropdownInputItem<string>[]> {
-  await new Promise((resolve) => setTimeout(resolve, 300));
-  const lowerQuery = query.toLowerCase();
-  return mockRepositoryOwners.filter((owner) => owner.label.toLowerCase().includes(lowerQuery));
-}
-
-async function fetchRepositoryNames(query: string): Promise<DropdownInputItem<string>[]> {
-  await new Promise((resolve) => setTimeout(resolve, 300));
-  const lowerQuery = query.toLowerCase();
-  return mockRepositoryNames.filter((name) => name.label.toLowerCase().includes(lowerQuery));
-}
 
 const meta = {
   title: 'Components/DropdownInput',
@@ -60,42 +46,13 @@ const meta = {
   parameters: {
     layout: 'centered',
   },
-  decorators: [
-    (Story: React.ComponentType) => {
-      const queryClient = useMemo(
-        () =>
-          new QueryClient({
-            defaultOptions: {
-              queries: {
-                retry: false,
-                refetchOnWindowFocus: false,
-              },
-            },
-          }),
-        [],
-      );
-      return (
-        <QueryClientProvider client={queryClient}>
-          <Story />
-        </QueryClientProvider>
-      );
-    },
-  ],
 } satisfies Meta<typeof DropdownInput>;
 
 export default meta;
 type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {
-  args: {
-    queryFn: fetchRepositoryOwners,
-    queryKey: 'github-repository-owners',
-    placeholder: 'Select a repository owner',
-    emptyPlaceholder: 'No results found',
-    minQueryLength: 1,
-    debounceMs: 300,
-    dropdownClassName: 'w-full',
-  },
+  args: {} as never,
   play: async (ctx: StoryContext) => {
     const {canvasElement, step} = ctx;
     const canvas = within(canvasElement);
@@ -114,19 +71,47 @@ export const Default: Story = {
     await argosScreenshot(ctx, 'Import Form Modal Open');
   },
   render: () => {
-    const [open, setOpen] = useState(false);
+    const [modalOpen, setModalOpen] = useState(false);
     const [dateRange, setDateRange] = useState<DateRange | undefined>({
       start: DEFAULT_START_DATE,
       end: addDays(DEFAULT_START_DATE, 6),
     });
+
     const [ownerValue, setOwnerValue] = useState('');
+    const [ownerOpen, setOwnerOpen] = useState(false);
+    const [ownerFocusedIndex, setOwnerFocusedIndex] = useState(-1);
     const [ownerSelected, setOwnerSelected] = useState<DropdownInputItem<string> | null>(null);
+    const ownerItems = useMemo(() => {
+      if (ownerValue.length < 1) return [];
+      const lowerQuery = ownerValue.toLowerCase();
+      return allRepositoryOwners.filter((owner) => owner.label.toLowerCase().includes(lowerQuery));
+    }, [ownerValue]);
+    const ownerShouldOpen = ownerValue.length >= 1 && ownerItems.length > 0 && !ownerSelected;
+
     const [nameValue, setNameValue] = useState('');
+    const [nameOpen, setNameOpen] = useState(false);
+    const [nameFocusedIndex, setNameFocusedIndex] = useState(-1);
     const [nameSelected, setNameSelected] = useState<DropdownInputItem<string> | null>(null);
+    const nameItems = useMemo(() => {
+      if (nameValue.length < 1) return [];
+      const lowerQuery = nameValue.toLowerCase();
+      return allRepositoryNames.filter((name) => name.label.toLowerCase().includes(lowerQuery));
+    }, [nameValue]);
+    const nameShouldOpen = nameValue.length >= 1 && nameItems.length > 0 && !nameSelected;
+
+    useEffect(() => {
+      setOwnerOpen(ownerShouldOpen);
+      if (ownerShouldOpen) setOwnerFocusedIndex(-1);
+    }, [ownerShouldOpen]);
+
+    useEffect(() => {
+      setNameOpen(nameShouldOpen);
+      if (nameShouldOpen) setNameFocusedIndex(-1);
+    }, [nameShouldOpen]);
 
     return (
       <div className="flex h-[calc(100vh/2)] w-[calc(100vw/2)] items-center justify-center rounded-16 bg-background-subtle-base shadow-tooltip">
-        <Modal open={open} onOpenChange={setOpen}>
+        <Modal open={modalOpen} onOpenChange={setModalOpen}>
           <ModalTrigger asChild>
             <Button>Import past jobs from GitHub</Button>
           </ModalTrigger>
@@ -140,8 +125,9 @@ export const Default: Story = {
               </Text>
               <div className="flex flex-col gap-20 w-full">
                 <div className="flex flex-col gap-8 w-full">
-                  <Label>Repository owner</Label>
+                  <Label htmlFor="repo-owner">Repository owner</Label>
                   <DropdownInput
+                    id="repo-owner"
                     value={ownerValue}
                     onValueChange={(newValue) => {
                       setOwnerValue(newValue);
@@ -149,20 +135,24 @@ export const Default: Story = {
                         setOwnerSelected(null);
                       }
                     }}
-                    onSelect={(item: DropdownInputItem<string>) => {
+                    onSelect={(item) => {
                       setOwnerSelected(item);
                     }}
                     selectedItem={ownerSelected}
-                    queryFn={fetchRepositoryOwners}
-                    queryKey="github-repository-owners"
+                    items={ownerItems}
+                    open={ownerOpen}
+                    onOpenChange={setOwnerOpen}
+                    focusedIndex={ownerFocusedIndex}
+                    onFocusedIndexChange={setOwnerFocusedIndex}
                     placeholder="apache"
                     emptyPlaceholder="No repository owners found"
                     minQueryLength={1}
                   />
                 </div>
                 <div className="flex flex-col gap-8 w-full">
-                  <Label>Repository name</Label>
+                  <Label htmlFor="repo-name">Repository name</Label>
                   <DropdownInput
+                    id="repo-name"
                     value={nameValue}
                     onValueChange={(newValue) => {
                       setNameValue(newValue);
@@ -170,12 +160,15 @@ export const Default: Story = {
                         setNameSelected(null);
                       }
                     }}
-                    onSelect={(item: DropdownInputItem<string>) => {
+                    onSelect={(item) => {
                       setNameSelected(item);
                     }}
                     selectedItem={nameSelected}
-                    queryFn={fetchRepositoryNames}
-                    queryKey="github-repository-names"
+                    items={nameItems}
+                    open={nameOpen}
+                    onOpenChange={setNameOpen}
+                    focusedIndex={nameFocusedIndex}
+                    onFocusedIndexChange={setNameFocusedIndex}
                     placeholder="kafka"
                     emptyPlaceholder="No repository names found"
                     minQueryLength={1}
@@ -196,10 +189,10 @@ export const Default: Story = {
               </div>
             </ModalBody>
             <ModalFooter>
-              <Button variant="transparent" onClick={() => setOpen(false)}>
+              <Button variant="transparent" onClick={() => setModalOpen(false)}>
                 Cancel
               </Button>
-              <Button variant="primary" onClick={() => setOpen(false)}>
+              <Button variant="primary" onClick={() => setModalOpen(false)}>
                 Import
               </Button>
             </ModalFooter>
