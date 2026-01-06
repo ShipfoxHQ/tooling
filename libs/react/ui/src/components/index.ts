@@ -14,6 +14,7 @@ export * from './dashboard';
 export * from './date-picker';
 export * from './date-time-range-picker';
 export * from './dot-grid';
+export * from './dropdown-input';
 export * from './dropdown-menu';
 export * from './dynamic-item';
 export * from './empty-state';

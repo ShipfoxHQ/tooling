@@ -169,7 +169,14 @@ export const DatePicker = forwardRef<HTMLInputElement, DatePickerProps>(
         </div>
 
         <PopoverContent className="w-auto p-0" align="start">
-          <Calendar mode="single" selected={date} onSelect={handleSelect} />
+          <Calendar
+            mode="single"
+            selected={date}
+            onSelect={handleSelect}
+            formatters={{
+              formatWeekdayName: (date) => format(date, 'EEEEE'),
+            }}
+          />
         </PopoverContent>
       </Popover>
     );

@@ -60,12 +60,13 @@
     "@swc/helpers": "^0.5.17"
   },
   "peerDependencies": {
+    "@tanstack/react-query": "^5.90.5",
     "@tanstack/react-table": "^8.19.3",
     "@tanstack/react-virtual": "^3.13.12",
     "date-fns": "^4.1.0",
     "react": "^19.1.1",
     "react-dom": "^19.1.1",
-    "react-hook-form": "^7.52.1"
+    "react-hook-form": "^7.63.0"
   },
   "devDependencies": {
     "@argos-ci/cli": "^4.0.0",

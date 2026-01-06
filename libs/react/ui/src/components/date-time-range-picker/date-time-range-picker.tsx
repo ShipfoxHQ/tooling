@@ -2,9 +2,9 @@ import {cva, type VariantProps} from 'class-variance-authority';
 import {Calendar} from 'components/calendar';
 import {Icon} from 'components/icon';
 import {Popover, PopoverContent, PopoverTrigger} from 'components/popover';
-import {format} from 'date-fns';
+import {addDays, differenceInDays, format} from 'date-fns';
 import type {ComponentProps, ReactNode} from 'react';
-import {forwardRef, useState} from 'react';
+import {forwardRef, useMemo, useState} from 'react';
 import type {DateRange as DayPickerDateRange} from 'react-day-picker';
 import {cn} from 'utils/cn';
 
@@ -51,6 +51,7 @@ export type DateTimeRangePickerProps = Omit<ComponentProps<'input'>, 'size' | 't
     onClear?: () => void;
     numberOfMonths?: number;
     closeOnSelect?: boolean;
+    maxRangeDays?: number;
   };
 
 export const DateTimeRangePicker = forwardRef<HTMLInputElement, DateTimeRangePickerProps>(
@@ -70,39 +71,65 @@ export const DateTimeRangePicker = forwardRef<HTMLInputElement, DateTimeRangePic
       disabled,
       numberOfMonths = 2,
       closeOnSelect = false,
+      maxRangeDays,
       ...props
     },
     ref,
   ) => {
     const [open, setOpen] = useState(false);
+
     const isDisabled = disabled || state === 'disabled';
-    const hasRange = dateRange?.start && dateRange?.end;
+    const startDate = dateRange?.start;
+    const endDate = dateRange?.end;
+    const hasRange = Boolean(startDate && endDate);
+
+    // Format display value
     const displayValue =
-      hasRange && dateRange.start && dateRange.end
-        ? `${format(dateRange.start, dateFormat)} - ${format(dateRange.end, dateFormat)}`
+      hasRange && startDate && endDate
+        ? `${format(startDate, dateFormat)} - ${format(endDate, dateFormat)}`
         : '';
 
-    // Convert our DateRange to react-day-picker's DateRange format
+    // Convert to react-day-picker format
     const dayPickerRange: DayPickerDateRange | undefined =
-      dateRange?.start || dateRange?.end
-        ? {
-            from: dateRange?.start,
-            to: dateRange?.end,
-          }
-        : undefined;
+      startDate || endDate ? {from: startDate, to: endDate} : undefined;
+
+    // Get default month for calendar (prioritize selected start date, then today)
+    const defaultMonth = startDate ?? new Date();
+
+    // Disable dates beyond maxRangeDays (only if maxRangeDays is provided)
+    const disabledDates = useMemo(() => {
+      if (!startDate || maxRangeDays === undefined) return undefined;
+
+      return (date: Date) => {
+        const daysFromStart = differenceInDays(date, startDate);
+        return daysFromStart > maxRangeDays;
+      };
+    }, [startDate, maxRangeDays]);
 
     const handleSelect = (selectedRange: DayPickerDateRange | undefined) => {
-      if (selectedRange) {
-        onDateRangeSelect?.({
-          start: selectedRange.from,
-          end: selectedRange.to,
-        });
-        // Only close if both dates are selected and closeOnSelect is true
-        if (closeOnSelect && selectedRange.from && selectedRange.to) {
-          setOpen(false);
-        }
-      } else {
+      if (!selectedRange) {
         onDateRangeSelect?.(undefined);
+        return;
+      }
+
+      const {from, to} = selectedRange;
+      let finalEndDate = to;
+
+      // Cap end date to maxRangeDays if both dates are selected and maxRangeDays is provided
+      if (from && to && maxRangeDays !== undefined) {
+        const daysFromStart = differenceInDays(to, from);
+        if (daysFromStart > maxRangeDays) {
+          finalEndDate = addDays(from, maxRangeDays);
+        }
+      }
+
+      onDateRangeSelect?.({
+        start: from,
+        end: finalEndDate,
+      });
+
+      if (closeOnSelect && from && finalEndDate) {
+        setOpen(false);
       }
     };
 
@@ -172,13 +199,16 @@ export const DateTimeRangePicker = forwardRef<HTMLInputElement, DateTimeRangePic
             type="button"
             onClick={handleClear}
             className={cn(
-              'flex items-center justify-center shrink-0 transition-colors hover:text-foreground-neutral-base',
+              'flex items-center justify-center shrink-0 transition-colors hover:text-foreground-neutral-base cursor-pointer',
               size === 'small' ? 'size-28' : 'size-32',
               hasRange && onClear && !isDisabled ? 'visible' : 'invisible',
             )}
             aria-label="Clear date range"
           >
-            <Icon name="closeLine" className="size-16 text-foreground-neutral-muted" />
+            <Icon
+              name="closeLine"
+              className="size-16 text-foreground-neutral-muted hover:text-foreground-neutral-subtle transition-colors"
+            />
           </button>
 
           {/* Custom Right Icon */}
@@ -197,10 +227,14 @@ export const DateTimeRangePicker = forwardRef<HTMLInputElement, DateTimeRangePic
         <PopoverContent className="w-auto p-0" align="start">
           <Calendar
             mode="range"
-            defaultMonth={dayPickerRange?.from}
+            defaultMonth={defaultMonth}
             selected={dayPickerRange}
             onSelect={handleSelect}
             numberOfMonths={numberOfMonths}
+            disabled={disabledDates}
+            formatters={{
+              formatWeekdayName: (date) => format(date, 'EEEEE'),
+            }}
           />
         </PopoverContent>
       </Popover>
