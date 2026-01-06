@@ -92,6 +92,12 @@ export function DropdownInput<T = unknown>({
   );
 
   useEffect(() => {
+    return () => {
+      debouncedSetQuery.cancel?.();
+    };
+  }, [debouncedSetQuery]);
+
+  useEffect(() => {
     if (value.length >= minQueryLength) {
       debouncedSetQuery(value);
     } else {
@@ -254,7 +260,7 @@ export function DropdownInput<T = unknown>({
           {hasResults ? (
             <div className="flex flex-col gap-4">
               <div className="px-8 py-6 text-xs leading-20 text-foreground-neutral-muted">
-                Select a repository
+                {inputProps?.placeholder || 'Select a repository'}
               </div>
               {items.map((item: DropdownInputItem<T>, index) => {
                 const isSelected = selectedItem?.id === item.id;
