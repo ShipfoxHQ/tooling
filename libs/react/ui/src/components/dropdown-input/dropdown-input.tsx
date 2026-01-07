@@ -79,8 +79,11 @@ export function DropdownInput<T = unknown>({
     (e: React.ChangeEvent<HTMLInputElement>) => {
       onValueChange(e.target.value);
       onFocusedIndexChange(-1);
+      if (!open && !isDisabled) {
+        onOpenChange(true);
+      }
     },
-    [onValueChange, onFocusedIndexChange],
+    [onValueChange, onFocusedIndexChange, open, isDisabled, onOpenChange],
   );
 
   const handleInputKeyDown = useCallback(
@@ -102,7 +105,6 @@ export function DropdownInput<T = unknown>({
       } else if (e.key === 'Escape') {
         e.preventDefault();
         onOpenChange(false);
-        inputRef.current?.blur();
       }
     },
     [shouldShowDropdown, items, focusedIndex, onFocusedIndexChange, handleSelect, onOpenChange],
@@ -155,6 +157,15 @@ export function DropdownInput<T = unknown>({
             onChange={handleInputChange}
             onKeyDown={handleInputKeyDown}
             onBlur={handleInputBlur}
+            onFocus={() => {
+              if (blurTimeoutRef.current) {
+                clearTimeout(blurTimeoutRef.current);
+                blurTimeoutRef.current = null;
+              }
+              if (!open && !isDisabled && value.length > 0) {
+                onOpenChange(true);
+              }
+            }}
             className={className}
             {...inputProps}
           />
