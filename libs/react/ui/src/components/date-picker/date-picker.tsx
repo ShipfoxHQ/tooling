@@ -2,9 +2,9 @@ import {cva, type VariantProps} from 'class-variance-authority';
 import {Calendar} from 'components/calendar';
 import {Icon} from 'components/icon';
 import {Popover, PopoverContent, PopoverTrigger} from 'components/popover';
-import {format} from 'date-fns';
+import {addDays, format, subDays} from 'date-fns';
 import type {ComponentProps, ReactNode} from 'react';
-import {forwardRef, useState} from 'react';
+import {forwardRef, useMemo, useState} from 'react';
 import {cn} from 'utils/cn';
 
 export const datePickerVariants = cva(
@@ -44,6 +44,7 @@ export type DatePickerProps = Omit<ComponentProps<'input'>, 'size' | 'type'> &
     rightIcon?: ReactNode;
     onClear?: () => void;
     closeOnSelect?: boolean;
+    maxDisabledOffsetDays?: number;
   };
 
 export const DatePicker = forwardRef<HTMLInputElement, DatePickerProps>(
@@ -62,6 +63,7 @@ export const DatePicker = forwardRef<HTMLInputElement, DatePickerProps>(
       onClear,
       disabled,
       closeOnSelect = false,
+      maxDisabledOffsetDays,
       ...props
     },
     ref,
@@ -69,6 +71,18 @@ export const DatePicker = forwardRef<HTMLInputElement, DatePickerProps>(
     const [open, setOpen] = useState(false);
     const isDisabled = disabled || state === 'disabled';
     const displayValue = date ? format(date, dateFormat) : '';
+
+    // Disable dates beyond maxDisabledDays before and after today
+    const disabledDates = useMemo(() => {
+      if (!maxDisabledOffsetDays) return undefined;
+      const today = new Date();
+      const minDate = subDays(today, maxDisabledOffsetDays);
+      const maxDate = addDays(today, maxDisabledOffsetDays);
+
+      return (date: Date) => {
+        return date < minDate || date > maxDate;
+      };
+    }, [maxDisabledOffsetDays]);
 
     const handleSelect = (selectedDate: Date | undefined) => {
       onDateSelect?.(selectedDate);
@@ -173,6 +187,7 @@ export const DatePicker = forwardRef<HTMLInputElement, DatePickerProps>(
             mode="single"
             selected={date}
             onSelect={handleSelect}
+            disabled={disabledDates}
             formatters={{
               formatWeekdayName: (date) => format(date, 'EEEEE'),
             }}
