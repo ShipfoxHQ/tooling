@@ -39,10 +39,12 @@ export function KpiCard({
         <span className={cn('shrink-0 size-8 rounded-2', variantDotStyles[variant])} />
         {isLoading ? (
           <Skeleton className="w-48 h-20 rounded-4" />
-        ) : (
+        ) : typeof value === 'string' || typeof value === 'number' ? (
           <Text size="sm" className="font-medium text-foreground-neutral-base">
             {value}
           </Text>
+        ) : (
+          <div className="text-sm font-medium text-foreground-neutral-base">{value}</div>
         )}
       </div>
     </Card>

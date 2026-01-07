@@ -1,4 +1,5 @@
 import type {Meta, StoryObj} from '@storybook/react';
+import {Icon} from 'components/icon';
 import {Code, Header} from 'components/typography';
 import {Input} from './input';
 
@@ -50,7 +51,7 @@ const variants = ['base', 'component'] as const;
 const sizes = ['base', 'small'] as const;
 
 export const States: Story = {
-  render: (args) => (
+  render: (args: Story['args']) => (
     <div className="flex flex-col gap-32">
       {variants.map((variant) =>
         sizes.map((size) => (
@@ -123,7 +124,7 @@ States.parameters = {
 };
 
 export const Types: Story = {
-  render: (args) => (
+  render: (args: Story['args']) => (
     <div className="flex flex-col gap-32">
       {typeOptions.map((t) => (
         <div key={t} className="flex flex-col gap-8">
@@ -133,6 +134,44 @@ export const Types: Story = {
           <Input {...args} type={t} />
         </div>
       ))}
+    </div>
+  ),
+};
+
+export const WithIcons: Story = {
+  render: (args: Story['args']) => (
+    <div className="flex flex-col gap-24 w-full max-w-400">
+      <div className="flex flex-col gap-8">
+        <Code variant="label" className="text-foreground-neutral-subtle">
+          Left Icon
+        </Code>
+        <Input
+          {...args}
+          placeholder="Search..."
+          iconLeft={<Icon name="searchLine" className="size-16 text-foreground-neutral-muted" />}
+        />
+      </div>
+      <div className="flex flex-col gap-8">
+        <Code variant="label" className="text-foreground-neutral-subtle">
+          Right Icon
+        </Code>
+        <Input
+          {...args}
+          placeholder="Enter email"
+          iconRight={<Icon name="mailLine" className="size-16 text-foreground-neutral-muted" />}
+        />
+      </div>
+      <div className="flex flex-col gap-8">
+        <Code variant="label" className="text-foreground-neutral-subtle">
+          Both Icons
+        </Code>
+        <Input
+          {...args}
+          placeholder="Search users..."
+          iconLeft={<Icon name="searchLine" className="size-16 text-foreground-neutral-muted" />}
+          iconRight={<Icon name="userLine" className="size-16 text-foreground-neutral-muted" />}
+        />
+      </div>
     </div>
   ),
 };

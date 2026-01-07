@@ -68,6 +68,24 @@ export const DatePickerStory: Story = {
   },
 };
 
+export const DatePickerWithThresholdStory: Story = {
+  play: (ctx) => openCalendarAndScreenshot(ctx, 'DatePicker With Threshold Calendar Open'),
+  render: () => {
+    const [date, setDate] = useState<Date | undefined>(new Date());
+    return (
+      <div className="relative flex h-600 w-500 items-center justify-center rounded-16 bg-background-subtle-base shadow-tooltip overflow-visible">
+        <DatePicker
+          date={date}
+          onDateSelect={setDate}
+          onClear={() => setDate(undefined)}
+          placeholder="DD/MM/YYYY"
+          maxDisabledOffsetDays={30}
+        />
+      </div>
+    );
+  },
+};
+
 export const DateRangePickerStory: Story = {
   play: (ctx) => openCalendarAndScreenshot(ctx, 'DateRangePicker Calendar Open'),
   render: () => {
