@@ -25,7 +25,6 @@ export type DropdownInputProps<T = unknown> = InputBaseProps & {
   onFocusedIndexChange: (index: number) => void;
   selectedItem?: DropdownInputItem<T> | null;
   dropdownClassName?: string;
-  contactSupportHref?: string;
 };
 
 export function DropdownInput<T = unknown>({
@@ -41,7 +40,6 @@ export function DropdownInput<T = unknown>({
   selectedItem,
   dropdownClassName,
   className,
-  contactSupportHref = '#',
   ...inputProps
 }: DropdownInputProps<T>) {
   const inputRef = useRef<HTMLInputElement>(null);
