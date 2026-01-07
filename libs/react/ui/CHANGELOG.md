@@ -1,5 +1,11 @@
 # @shipfox/react-ui
 
+## 0.19.0
+
+### Minor Changes
+
+- 3c4e65e: Add DropdownInput components and update other components
+
 ## 0.18.0
 
 ### Minor Changes
