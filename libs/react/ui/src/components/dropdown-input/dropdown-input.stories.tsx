@@ -33,13 +33,13 @@ export const Default: Story = {
     const [selectedItem, setSelectedItem] = useState<DropdownInputItem<string> | null>(null);
 
     const items = useMemo(() => {
-      if (value.length < 5) return [];
+      if (value.length < 1) return sampleItems;
       const lowerQuery = value.toLowerCase();
       return sampleItems.filter((item) => item.label.toLowerCase().includes(lowerQuery));
     }, [value]);
 
     return (
-      <div className="w-320">
+      <div className="w-500">
         <Label htmlFor="dropdown-input">Search repositories</Label>
         <DropdownInput
           id="dropdown-input"
@@ -60,7 +60,6 @@ export const Default: Story = {
           focusedIndex={focusedIndex}
           onFocusedIndexChange={setFocusedIndex}
           placeholder="Type to search..."
-          emptyPlaceholder="No results found"
         />
       </div>
     );
@@ -75,7 +74,7 @@ export const EmptyState: Story = {
     const [focusedIndex, setFocusedIndex] = useState(-1);
 
     return (
-      <div className="w-320">
+      <div className="w-500">
         <Label htmlFor="dropdown-empty">No results</Label>
         <DropdownInput
           id="dropdown-empty"
@@ -102,7 +101,7 @@ export const LoadingState: Story = {
     const [focusedIndex, setFocusedIndex] = useState(-1);
 
     return (
-      <div className="w-320">
+      <div className="w-500">
         <Label htmlFor="dropdown-loading">Loading</Label>
         <DropdownInput
           id="dropdown-loading"
@@ -131,7 +130,7 @@ export const SelectedState: Story = {
     const selectedItem = sampleItems[0];
 
     return (
-      <div className="w-320">
+      <div className="w-500">
         <Label htmlFor="dropdown-selected">Selected item</Label>
         <DropdownInput
           id="dropdown-selected"
@@ -144,7 +143,6 @@ export const SelectedState: Story = {
           focusedIndex={focusedIndex}
           onFocusedIndexChange={setFocusedIndex}
           placeholder="Type to search..."
-          emptyPlaceholder="No results found"
         />
       </div>
     );

@@ -1,4 +1,5 @@
 import type {VariantProps} from 'class-variance-authority';
+import {Button, ButtonLink} from 'components/button';
 import {Icon} from 'components/icon';
 import {Input, type inputVariants} from 'components/input';
 import {Popover, PopoverContent, PopoverTrigger} from 'components/popover';
@@ -28,7 +29,6 @@ export type DropdownInputProps<T = unknown> = Omit<
   items: DropdownInputItem<T>[];
   isLoading?: boolean;
   isFetching?: boolean;
-  minQueryLength?: number;
   emptyPlaceholder?: string;
   open: boolean;
   onOpenChange: (open: boolean) => void;
@@ -36,6 +36,7 @@ export type DropdownInputProps<T = unknown> = Omit<
   onFocusedIndexChange: (index: number) => void;
   selectedItem?: DropdownInputItem<T> | null;
   dropdownClassName?: string;
+  contactSupportHref?: string;
 };
 
 export function DropdownInput<T = unknown>({
@@ -45,8 +46,7 @@ export function DropdownInput<T = unknown>({
   items = [],
   isLoading = false,
   isFetching = false,
-  minQueryLength = 5,
-  emptyPlaceholder = 'No results found',
+  emptyPlaceholder,
   open,
   onOpenChange,
   focusedIndex,
@@ -54,6 +54,7 @@ export function DropdownInput<T = unknown>({
   selectedItem,
   dropdownClassName,
   className,
+  contactSupportHref = '#',
   ...inputProps
 }: DropdownInputProps<T>) {
   const inputRef = useRef<HTMLInputElement>(null);
@@ -61,11 +62,10 @@ export function DropdownInput<T = unknown>({
   const popoverContentRef = useRef<HTMLDivElement>(null);
   const itemRefs = useRef<(HTMLButtonElement | null)[]>([]);
 
-  const hasStableQuery = value.length >= minQueryLength;
-  const isSearching =
-    isLoading || isFetching || (!hasStableQuery && value.length && items.length === 0);
   const hasResults = items.length > 0;
-  const shouldShowDropdown = open && hasStableQuery && !isSearching;
+  const isSearching = isLoading || isFetching;
+  const hasQuery = value.trim().length > 0;
+  const shouldShowDropdown = open && !isSearching && (hasResults || hasQuery);
 
   const handleSelect = useCallback(
     (item: DropdownInputItem<T>) => {
@@ -225,8 +225,42 @@ export function DropdownInput<T = unknown>({
               })}
             </div>
           ) : (
-            <div className="px-8 py-6 text-xs leading-20 text-foreground-neutral-muted">
-              {emptyPlaceholder}
+            <div className="p-4 text-xs leading-20 text-foreground-neutral-muted">
+              {emptyPlaceholder ? (
+                emptyPlaceholder
+              ) : (
+                <div className="flex flex-col items-start justify-center">
+                  {hasQuery && (
+                    <Button
+                      type="button"
+                      variant="transparent"
+                      className="!px-4 w-full justify-start"
+                      onClick={() => {
+                        onValueChange(value);
+                        onOpenChange(false);
+                        inputRef.current?.blur();
+                      }}
+                    >
+                      <Icon name="addLine" className="size-16 text-foreground-neutral-subtle" />
+                      <span className="truncate">{value}</span>
+                    </Button>
+                  )}
+                  <p className="px-8 whitespace-pre-wrap">
+                    Repository list is limited to 100. Enter the full repository path or{' '}
+                    <ButtonLink
+                      variant="base"
+                      underline
+                      href={contactSupportHref}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="!font-regular"
+                    >
+                      contact support
+                    </ButtonLink>
+                    .
+                  </p>
+                </div>
+              )}
             </div>
           )}
         </div>
