@@ -1,8 +1,9 @@
 import type {Meta, StoryObj} from '@storybook/react';
+import {Button, ButtonLink} from 'components/button';
 import {DropdownInput, type DropdownInputItem} from 'components/dropdown-input';
 import {Icon} from 'components/icon';
 import {Label} from 'components/label';
-import {useMemo, useState} from 'react';
+import {type RefObject, useMemo, useRef, useState} from 'react';
 
 const sampleItems: DropdownInputItem<string>[] = [
   {id: 'apache', label: 'apache', value: 'apache'},
@@ -25,6 +26,54 @@ const meta = {
 export default meta;
 type Story = StoryObj<typeof meta>;
 
+interface CustomEmptyStateContentProps {
+  value: string;
+  onValueChange: (value: string) => void;
+  onOpenChange: (open: boolean) => void;
+  contactSupportHref: string;
+  inputRef: RefObject<HTMLInputElement>;
+}
+
+function CustomEmptyStateContent({
+  value,
+  onValueChange,
+  onOpenChange,
+  contactSupportHref,
+  inputRef,
+}: CustomEmptyStateContentProps) {
+  return (
+    <div className="flex flex-col items-start justify-center">
+      <Button
+        type="button"
+        variant="transparent"
+        className="!px-4 w-full justify-start"
+        onClick={() => {
+          onValueChange(value);
+          onOpenChange(false);
+          inputRef.current?.blur();
+        }}
+      >
+        <Icon name="addLine" className="size-16 text-foreground-neutral-subtle" />
+        <span className="truncate">{value}</span>
+      </Button>
+      <p className="px-8 whitespace-pre-wrap">
+        Repository list is limited to 100. Enter the full repository path or{' '}
+        <ButtonLink
+          variant="base"
+          underline
+          href={contactSupportHref}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="!font-regular"
+        >
+          contact support
+        </ButtonLink>
+        .
+      </p>
+    </div>
+  );
+}
+
 export const Default: Story = {
   args: {} as never,
   render: () => {
@@ -32,6 +81,7 @@ export const Default: Story = {
     const [open, setOpen] = useState(false);
     const [focusedIndex, setFocusedIndex] = useState(-1);
     const [selectedItem, setSelectedItem] = useState<DropdownInputItem<string> | null>(null);
+    const inputRef = useRef<HTMLInputElement>(null);
 
     const items = useMemo(() => {
       if (value.length < 1) return sampleItems;
@@ -61,6 +111,15 @@ export const Default: Story = {
           focusedIndex={focusedIndex}
           onFocusedIndexChange={setFocusedIndex}
           placeholder="Type to search..."
+          emptyPlaceholder={
+            <CustomEmptyStateContent
+              value={value}
+              onValueChange={setValue}
+              onOpenChange={setOpen}
+              contactSupportHref="https://support.example.com"
+              inputRef={inputRef as RefObject<HTMLInputElement>}
+            />
+          }
         />
       </div>
     );
@@ -115,6 +174,7 @@ export const LoadingState: Story = {
           focusedIndex={focusedIndex}
           onFocusedIndexChange={setFocusedIndex}
           placeholder="Type to search..."
+          emptyPlaceholder="Fetching..."
         />
       </div>
     );

@@ -1,9 +1,8 @@
-import {Button, ButtonLink} from 'components/button';
-import {Icon} from 'components/icon';
+import {Button} from 'components/button';
 import {Input} from 'components/input';
 import {Popover, PopoverContent, PopoverTrigger} from 'components/popover';
 import type {ComponentProps} from 'react';
-import {useCallback, useEffect, useRef} from 'react';
+import {type ReactNode, useCallback, useEffect, useRef} from 'react';
 import {cn} from 'utils/cn';
 
 export type DropdownInputItem<T = unknown> = {
@@ -19,7 +18,7 @@ export type DropdownInputProps<T = unknown> = InputBaseProps & {
   onValueChange: (value: string) => void;
   onSelect?: (item: DropdownInputItem<T>) => void;
   items: DropdownInputItem<T>[];
-  emptyPlaceholder?: string;
+  emptyPlaceholder?: string | ReactNode;
   open: boolean;
   onOpenChange: (open: boolean) => void;
   focusedIndex: number;
@@ -162,7 +161,7 @@ export function DropdownInput<T = unknown>({
                 clearTimeout(blurTimeoutRef.current);
                 blurTimeoutRef.current = null;
               }
-              if (!open && !isDisabled && value.length > 0) {
+              if (!open && !isDisabled && value.length > 0 && hasResults) {
                 onOpenChange(true);
               }
             }}
@@ -222,39 +221,7 @@ export function DropdownInput<T = unknown>({
             </div>
           ) : (
             <div className="p-4 text-xs leading-20 text-foreground-neutral-muted">
-              {emptyPlaceholder ? (
-                emptyPlaceholder
-              ) : (
-                <div className="flex flex-col items-start justify-center">
-                  <Button
-                    type="button"
-                    variant="transparent"
-                    className="!px-4 w-full justify-start"
-                    onClick={() => {
-                      onValueChange(value);
-                      onOpenChange(false);
-                      inputRef.current?.blur();
-                    }}
-                  >
-                    <Icon name="addLine" className="size-16 text-foreground-neutral-subtle" />
-                    <span className="truncate">{value}</span>
-                  </Button>
-                  <p className="px-8 whitespace-pre-wrap">
-                    Repository list is limited to 100. Enter the full repository path or{' '}
-                    <ButtonLink
-                      variant="base"
-                      underline
-                      href={contactSupportHref}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="!font-regular"
-                    >
-                      contact support
-                    </ButtonLink>
-                    .
-                  </p>
-                </div>
-              )}
+              {emptyPlaceholder ? emptyPlaceholder : null}
             </div>
           )}
         </div>
