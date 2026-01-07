@@ -1,7 +1,7 @@
 import type {Meta, StoryObj} from '@storybook/react';
 import {DropdownInput, type DropdownInputItem} from 'components/dropdown-input';
 import {Label} from 'components/label';
-import {useEffect, useMemo, useState} from 'react';
+import {useMemo, useState} from 'react';
 
 const sampleItems: DropdownInputItem<string>[] = [
   {id: 'apache', label: 'apache', value: 'apache'},
@@ -33,17 +33,10 @@ export const Default: Story = {
     const [selectedItem, setSelectedItem] = useState<DropdownInputItem<string> | null>(null);
 
     const items = useMemo(() => {
-      if (value.length < 1) return [];
+      if (value.length < 5) return [];
       const lowerQuery = value.toLowerCase();
       return sampleItems.filter((item) => item.label.toLowerCase().includes(lowerQuery));
     }, [value]);
-
-    const shouldOpen = value.length >= 1 && items.length > 0 && !selectedItem;
-
-    useEffect(() => {
-      setOpen(shouldOpen);
-      if (shouldOpen) setFocusedIndex(-1);
-    }, [shouldOpen]);
 
     return (
       <div className="w-320">
@@ -68,34 +61,6 @@ export const Default: Story = {
           onFocusedIndexChange={setFocusedIndex}
           placeholder="Type to search..."
           emptyPlaceholder="No results found"
-          minQueryLength={1}
-        />
-      </div>
-    );
-  },
-};
-
-export const WithItems: Story = {
-  args: {} as never,
-  render: () => {
-    const [value, setValue] = useState('');
-    const [open, setOpen] = useState(true);
-    const [focusedIndex, setFocusedIndex] = useState(-1);
-
-    return (
-      <div className="w-320">
-        <Label htmlFor="dropdown-with-items">Select an item</Label>
-        <DropdownInput
-          id="dropdown-with-items"
-          value={value}
-          onValueChange={setValue}
-          items={sampleItems}
-          open={open}
-          onOpenChange={setOpen}
-          focusedIndex={focusedIndex}
-          onFocusedIndexChange={setFocusedIndex}
-          placeholder="Type to search..."
-          emptyPlaceholder="No results found"
         />
       </div>
     );
@@ -105,7 +70,7 @@ export const WithItems: Story = {
 export const EmptyState: Story = {
   args: {} as never,
   render: () => {
-    const [value, setValue] = useState('xyz');
+    const [value, setValue] = useState('abcxyz');
     const [open, setOpen] = useState(true);
     const [focusedIndex, setFocusedIndex] = useState(-1);
 

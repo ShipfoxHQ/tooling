@@ -45,7 +45,7 @@ export function DropdownInput<T = unknown>({
   items = [],
   isLoading = false,
   isFetching = false,
-  minQueryLength = 1,
+  minQueryLength = 5,
   emptyPlaceholder = 'No results found',
   open,
   onOpenChange,
@@ -62,7 +62,8 @@ export function DropdownInput<T = unknown>({
   const itemRefs = useRef<(HTMLButtonElement | null)[]>([]);
 
   const hasStableQuery = value.length >= minQueryLength;
-  const isSearching = isLoading || isFetching;
+  const isSearching =
+    isLoading || isFetching || (!hasStableQuery && value.length && items.length === 0);
   const hasResults = items.length > 0;
   const shouldShowDropdown = open && hasStableQuery && !isSearching;
 
@@ -88,11 +89,11 @@ export function DropdownInput<T = unknown>({
     if (selectedItem && selectedItem.label === value && value.length > 0) {
       return <Icon name="check" className="size-16 text-tag-success-icon" />;
     }
-    if (isSearching && hasStableQuery) {
+    if (isSearching) {
       return <Icon name="spinner" className="size-16 text-foreground-neutral-base" />;
     }
     return undefined;
-  }, [selectedItem, isSearching, value, hasStableQuery]);
+  }, [selectedItem, isSearching, value]);
 
   const handleInputKeyDown = useCallback(
     (e: React.KeyboardEvent<HTMLInputElement>) => {
