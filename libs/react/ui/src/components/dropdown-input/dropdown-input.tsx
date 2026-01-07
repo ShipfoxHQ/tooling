@@ -1,10 +1,9 @@
-import type {VariantProps} from 'class-variance-authority';
 import {Button, ButtonLink} from 'components/button';
 import {Icon} from 'components/icon';
-import {Input, type inputVariants} from 'components/input';
+import {Input} from 'components/input';
 import {Popover, PopoverContent, PopoverTrigger} from 'components/popover';
 import type {ComponentProps} from 'react';
-import {useCallback, useEffect, useMemo, useRef} from 'react';
+import {useCallback, useEffect, useRef} from 'react';
 import {cn} from 'utils/cn';
 
 export type DropdownInputItem<T = unknown> = {
@@ -13,22 +12,13 @@ export type DropdownInputItem<T = unknown> = {
   value: T;
 };
 
-type BaseInputProps = Omit<ComponentProps<'input'>, 'size' | 'onSelect'> &
-  VariantProps<typeof inputVariants> & {
-    iconLeft?: React.ReactNode;
-    iconRight?: React.ReactNode;
-  };
+type InputBaseProps = Omit<ComponentProps<typeof Input>, 'value' | 'onChange' | 'onSelect'>;
 
-export type DropdownInputProps<T = unknown> = Omit<
-  BaseInputProps,
-  'value' | 'onChange' | 'iconRight'
-> & {
+export type DropdownInputProps<T = unknown> = InputBaseProps & {
   value: string;
   onValueChange: (value: string) => void;
   onSelect?: (item: DropdownInputItem<T>) => void;
   items: DropdownInputItem<T>[];
-  isLoading?: boolean;
-  isFetching?: boolean;
   emptyPlaceholder?: string;
   open: boolean;
   onOpenChange: (open: boolean) => void;
@@ -44,8 +34,6 @@ export function DropdownInput<T = unknown>({
   onValueChange,
   onSelect,
   items = [],
-  isLoading = false,
-  isFetching = false,
   emptyPlaceholder,
   open,
   onOpenChange,
@@ -62,10 +50,20 @@ export function DropdownInput<T = unknown>({
   const popoverContentRef = useRef<HTMLDivElement>(null);
   const itemRefs = useRef<(HTMLButtonElement | null)[]>([]);
 
+  const isDisabled = Boolean(inputProps.disabled);
   const hasResults = items.length > 0;
-  const isSearching = isLoading || isFetching;
-  const hasQuery = value.trim().length > 0;
-  const shouldShowDropdown = open && !isSearching && (hasResults || hasQuery);
+  const shouldShowDropdown = open && !isDisabled;
+
+  const handleOpenChange = useCallback(
+    (nextOpen: boolean) => {
+      if (isDisabled) {
+        if (!nextOpen) onOpenChange(false);
+        return;
+      }
+      onOpenChange(nextOpen);
+    },
+    [isDisabled, onOpenChange],
+  );
 
   const handleSelect = useCallback(
     (item: DropdownInputItem<T>) => {
@@ -84,16 +82,6 @@ export function DropdownInput<T = unknown>({
     },
     [onValueChange, onFocusedIndexChange],
   );
-
-  const rightIcon = useMemo(() => {
-    if (selectedItem && selectedItem.label === value && value.length > 0) {
-      return <Icon name="check" className="size-16 text-tag-success-icon" />;
-    }
-    if (isSearching) {
-      return <Icon name="spinner" className="size-16 text-foreground-neutral-base" />;
-    }
-    return undefined;
-  }, [selectedItem, isSearching, value]);
 
   const handleInputKeyDown = useCallback(
     (e: React.KeyboardEvent<HTMLInputElement>) => {
@@ -158,7 +146,7 @@ export function DropdownInput<T = unknown>({
   );
 
   return (
-    <Popover open={shouldShowDropdown} onOpenChange={onOpenChange}>
+    <Popover open={shouldShowDropdown} onOpenChange={handleOpenChange}>
       <PopoverTrigger asChild>
         <div className="w-full">
           <Input
@@ -167,7 +155,6 @@ export function DropdownInput<T = unknown>({
             onChange={handleInputChange}
             onKeyDown={handleInputKeyDown}
             onBlur={handleInputBlur}
-            iconRight={rightIcon}
             className={className}
             {...inputProps}
           />
@@ -192,8 +179,8 @@ export function DropdownInput<T = unknown>({
           onTouchMove={(e) => e.stopPropagation()}
         >
           {hasResults ? (
-            <div className="flex flex-col gap-4">
-              <div className="px-8 py-6 text-xs leading-20 text-foreground-neutral-muted">
+            <div className="flex flex-col gap-4 p-4">
+              <div className="p-4 text-xs leading-20 text-foreground-neutral-muted">
                 Select a repository
               </div>
               {items.map((item: DropdownInputItem<T>, index) => {
@@ -201,26 +188,24 @@ export function DropdownInput<T = unknown>({
                 const isFocused = focusedIndex === index;
 
                 return (
-                  <button
+                  <Button
                     key={item.id}
+                    type="button"
+                    variant="transparent"
                     ref={(el) => {
                       itemRefs.current[index] = el;
                     }}
-                    type="button"
                     onClick={() => handleSelect(item)}
                     onMouseDown={(e) => e.preventDefault()}
                     onMouseEnter={() => onFocusedIndexChange(index)}
                     className={cn(
-                      'flex items-center gap-8 rounded-4 px-8 py-6 text-left text-sm leading-20',
-                      'text-foreground-neutral-subtle outline-none transition-colors',
-                      'hover:bg-background-components-hover hover:text-foreground-neutral-base',
-                      'focus:bg-background-components-hover focus:text-foreground-neutral-base',
+                      '!px-8 w-full text-left text-foreground-neutral-subtle',
                       (isSelected || isFocused) &&
                         'bg-background-components-hover text-foreground-neutral-base',
                     )}
                   >
                     <span className="flex-1 truncate">{item.label}</span>
-                  </button>
+                  </Button>
                 );
               })}
             </div>
@@ -230,21 +215,19 @@ export function DropdownInput<T = unknown>({
                 emptyPlaceholder
               ) : (
                 <div className="flex flex-col items-start justify-center">
-                  {hasQuery && (
-                    <Button
-                      type="button"
-                      variant="transparent"
-                      className="!px-4 w-full justify-start"
-                      onClick={() => {
-                        onValueChange(value);
-                        onOpenChange(false);
-                        inputRef.current?.blur();
-                      }}
-                    >
-                      <Icon name="addLine" className="size-16 text-foreground-neutral-subtle" />
-                      <span className="truncate">{value}</span>
-                    </Button>
-                  )}
+                  <Button
+                    type="button"
+                    variant="transparent"
+                    className="!px-4 w-full justify-start"
+                    onClick={() => {
+                      onValueChange(value);
+                      onOpenChange(false);
+                      inputRef.current?.blur();
+                    }}
+                  >
+                    <Icon name="addLine" className="size-16 text-foreground-neutral-subtle" />
+                    <span className="truncate">{value}</span>
+                  </Button>
                   <p className="px-8 whitespace-pre-wrap">
                     Repository list is limited to 100. Enter the full repository path or{' '}
                     <ButtonLink

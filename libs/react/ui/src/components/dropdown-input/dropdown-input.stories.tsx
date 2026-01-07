@@ -1,5 +1,6 @@
 import type {Meta, StoryObj} from '@storybook/react';
 import {DropdownInput, type DropdownInputItem} from 'components/dropdown-input';
+import {Icon} from 'components/icon';
 import {Label} from 'components/label';
 import {useMemo, useState} from 'react';
 
@@ -39,7 +40,7 @@ export const Default: Story = {
     }, [value]);
 
     return (
-      <div className="w-500">
+      <div className="w-[80vw] md:w-500">
         <Label htmlFor="dropdown-input">Search repositories</Label>
         <DropdownInput
           id="dropdown-input"
@@ -74,7 +75,7 @@ export const EmptyState: Story = {
     const [focusedIndex, setFocusedIndex] = useState(-1);
 
     return (
-      <div className="w-500">
+      <div className="w-[80vw] md:w-500">
         <Label htmlFor="dropdown-empty">No results</Label>
         <DropdownInput
           id="dropdown-empty"
@@ -101,48 +102,47 @@ export const LoadingState: Story = {
     const [focusedIndex, setFocusedIndex] = useState(-1);
 
     return (
-      <div className="w-500">
+      <div className="w-[80vw] md:w-500">
         <Label htmlFor="dropdown-loading">Loading</Label>
         <DropdownInput
           id="dropdown-loading"
           value={value}
           onValueChange={setValue}
-          items={sampleItems}
-          isLoading={true}
+          items={[]}
+          iconRight={<Icon name="spinner" className="size-16 text-foreground-neutral-base" />}
           open={open}
           onOpenChange={setOpen}
           focusedIndex={focusedIndex}
           onFocusedIndexChange={setFocusedIndex}
           placeholder="Type to search..."
-          emptyPlaceholder="No results found"
         />
       </div>
     );
   },
 };
 
-export const SelectedState: Story = {
+export const DisabledState: Story = {
   args: {} as never,
   render: () => {
     const [value, setValue] = useState('apache');
     const [open, setOpen] = useState(false);
     const [focusedIndex, setFocusedIndex] = useState(-1);
-    const selectedItem = sampleItems[0];
 
     return (
-      <div className="w-500">
-        <Label htmlFor="dropdown-selected">Selected item</Label>
+      <div className="w-[80vw] md:w-500">
+        <Label htmlFor="dropdown-disabled">Disabled</Label>
         <DropdownInput
-          id="dropdown-selected"
+          id="dropdown-disabled"
           value={value}
           onValueChange={setValue}
-          selectedItem={selectedItem}
           items={sampleItems}
+          disabled
           open={open}
           onOpenChange={setOpen}
           focusedIndex={focusedIndex}
           onFocusedIndexChange={setFocusedIndex}
-          placeholder="Type to search..."
+          placeholder="Disabled input"
+          emptyPlaceholder="No results found"
         />
       </div>
     );
