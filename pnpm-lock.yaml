@@ -242,7 +242,7 @@ importers:
         version: link:../../common/config
       ioredis:
         specifier: ^5.6.1
-        version: 5.9.0
+        version: 5.9.1
     devDependencies:
       '@shipfox/biome':
         specifier: workspace:*
@@ -4122,8 +4122,8 @@ packages:
     resolution: {integrity: sha512-5Hh7Y1wQbvY5ooGgPbDaL5iYLAPzMTUrjMulskHLH6wnv/A+1q5rgEaiuqEjB+oxGXIVZs1FF+R/KPN3ZSQYYg==}
     engines: {node: '>=12'}
 
-  ioredis@5.9.0:
-    resolution: {integrity: sha512-T3VieIilNumOJCXI9SDgo4NnF6sZkd6XcmPi6qWtw4xqbt8nNz/ZVNiIH1L9puMTSHZh1mUWA4xKa2nWPF4NwQ==}
+  ioredis@5.9.1:
+    resolution: {integrity: sha512-BXNqFQ66oOsR82g9ajFFsR8ZKrjVvYCLyeML9IvSMAsP56XH2VXBdZjmI11p65nXXJxTEt1hie3J2QeFJVgrtQ==}
     engines: {node: '>=12.22.0'}
 
   is-binary-path@2.1.0:
@@ -9460,7 +9460,7 @@ snapshots:
 
   internmap@2.0.3: {}
 
-  ioredis@5.9.0:
+  ioredis@5.9.1:
     dependencies:
       '@ioredis/commands': 1.5.0
       cluster-key-slot: 1.1.2
