@@ -10,6 +10,15 @@ const sampleItems: ComboboxOption[] = [
   {value: 'apollo', label: 'apollo'},
   {value: 'apple', label: 'apple'},
   {value: 'apache-kafka', label: 'apache-kafka'},
+  {value: 'apex', label: 'apex'},
+  {value: 'appsmith', label: 'appsmith'},
+  {value: 'applitools', label: 'applitools'},
+  {value: 'approzium', label: 'approzium'},
+  {value: 'apify', label: 'apify'},
+  {value: 'apicurio', label: 'apicurio'},
+  {value: 'apitable', label: 'apitable'},
+  {value: 'apollographql', label: 'apollographql'},
+  {value: 'aptos', label: 'aptos'},
 ];
 
 const meta = {
