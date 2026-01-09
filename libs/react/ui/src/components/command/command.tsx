@@ -36,10 +36,11 @@ const commandTriggerVariants = cva(
 type CommandTriggerProps = ComponentProps<'button'> &
   VariantProps<typeof commandTriggerVariants> & {
     placeholder?: string;
+    isLoading?: boolean;
   };
 
 const CommandTrigger = forwardRef<HTMLButtonElement, CommandTriggerProps>(
-  ({className, variant, size, placeholder, children, ...props}, ref) => {
+  ({className, variant, size, placeholder, children, isLoading, ...props}, ref) => {
     const hasValue = Boolean(children);
 
     return (
@@ -56,7 +57,14 @@ const CommandTrigger = forwardRef<HTMLButtonElement, CommandTriggerProps>(
         {...props}
       >
         <span className="flex-1 text-left truncate">{hasValue ? children : placeholder}</span>
-        <Icon name="arrowDownSLine" className="size-16 text-foreground-neutral-muted shrink-0" />
+        {isLoading ? (
+          <Icon name="spinner" className="size-16 text-foreground-neutral-base shrink-0" />
+        ) : (
+          <Icon
+            name="expandUpDownLine"
+            className="size-16 text-foreground-neutral-muted shrink-0"
+          />
+        )}
       </button>
     );
   },
@@ -178,13 +186,19 @@ function CommandList({className, ...props}: ComponentProps<typeof CommandPrimiti
   );
 }
 
-function CommandEmpty({className, ...props}: ComponentProps<typeof CommandPrimitive.Empty>) {
+function CommandEmpty({
+  className,
+  children,
+  ...props
+}: ComponentProps<typeof CommandPrimitive.Empty>) {
   return (
     <CommandPrimitive.Empty
       data-slot="command-empty"
       className={cn('py-24 text-center text-sm text-foreground-neutral-muted', className)}
       {...props}
-    />
+    >
+      {children}
+    </CommandPrimitive.Empty>
   );
 }
 
