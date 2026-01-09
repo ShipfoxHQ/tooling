@@ -1,5 +1,11 @@
 # @shipfox/react-ui
 
+## 0.20.0
+
+### Minor Changes
+
+- 870ff5d: Add Combobox and ScrollArea
+
 ## 0.19.0
 
 ### Minor Changes
