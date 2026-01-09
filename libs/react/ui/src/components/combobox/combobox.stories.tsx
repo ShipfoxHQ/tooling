@@ -1,6 +1,6 @@
 import type {Meta, StoryObj} from '@storybook/react';
 import {Label} from 'components/label';
-import {useMemo, useState} from 'react';
+import {useState} from 'react';
 import {Combobox, type ComboboxOption} from './combobox';
 
 const sampleItems: ComboboxOption[] = [
@@ -28,18 +28,13 @@ export const Default: Story = {
   args: {} as never,
   render: () => {
     const [value, setValue] = useState('');
-    const items = useMemo(() => {
-      if (value.length < 1) return sampleItems;
-      const lowerQuery = value.toLowerCase();
-      return sampleItems.filter((item) => item.label.toLowerCase().includes(lowerQuery));
-    }, [value]);
 
     return (
       <div className="w-[80vw] md:w-500">
         <Label htmlFor="combobox-default">Search repositories</Label>
         <Combobox
           id="combobox-default"
-          options={items}
+          options={sampleItems}
           value={value}
           onValueChange={setValue}
           placeholder="Type to search..."
