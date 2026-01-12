@@ -1,5 +1,11 @@
 # @shipfox/react-ui
 
+## 0.21.0
+
+### Minor Changes
+
+- 785e0d3: Enhance Dashboard Alert component
+
 ## 0.20.0
 
 ### Minor Changes
