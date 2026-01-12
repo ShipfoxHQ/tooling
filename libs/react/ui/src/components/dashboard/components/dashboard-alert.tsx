@@ -44,16 +44,18 @@ export function DashboardAlert({
       {...props}
     >
       <AlertContent>
-        <AlertTitle>{title}</AlertTitle>
-        <AlertDescription>{description}</AlertDescription>
-        <AlertActions>
-          {primaryAction && (
-            <AlertAction onClick={primaryAction.onClick}>{primaryAction.label}</AlertAction>
-          )}
-          {secondaryAction && (
-            <AlertAction onClick={secondaryAction.onClick}>{secondaryAction.label}</AlertAction>
-          )}
-        </AlertActions>
+        {title && <AlertTitle>{title}</AlertTitle>}
+        {description && <AlertDescription>{description}</AlertDescription>}
+        {(primaryAction || secondaryAction) && (
+          <AlertActions>
+            {primaryAction && (
+              <AlertAction onClick={primaryAction.onClick}>{primaryAction.label}</AlertAction>
+            )}
+            {secondaryAction && (
+              <AlertAction onClick={secondaryAction.onClick}>{secondaryAction.label}</AlertAction>
+            )}
+          </AlertActions>
+        )}
       </AlertContent>
       <AlertClose />
     </Alert>
