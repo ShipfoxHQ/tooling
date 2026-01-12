@@ -15,7 +15,7 @@ export interface DashboardAlertProps extends AlertProps {
   description?: string;
   onDismiss?: () => void;
   className?: string;
-  variant?: 'info' | 'warning';
+  variant?: AlertProps['variant'];
   primaryAction?: {
     label: string | ReactNode;
     onClick: () => void;

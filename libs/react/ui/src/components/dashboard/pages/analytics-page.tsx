@@ -160,7 +160,12 @@ export function AnalyticsPage() {
         )}
 
         <div className="flex-1 px-12 pb-12 pt-4 md:px-24 md:pb-24 space-y-12 md:space-y-16 lg:space-y-20 overflow-auto">
-          <DashboardAlert />
+          <DashboardAlert
+            title="Ship faster. At half the cost."
+            description="Track every workflow in one place, with full visibility into performance and reliability."
+            primaryAction={{label: 'Learn more', onClick: () => undefined}}
+            secondaryAction={{label: 'Dismiss', onClick: () => undefined}}
+          />
 
           <ExpressionFilterBar value={resourceType} onValueChange={setResourceType} />
 
