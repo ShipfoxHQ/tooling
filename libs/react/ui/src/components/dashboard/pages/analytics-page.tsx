@@ -2,10 +2,11 @@ import {Button} from 'components/button';
 import {CountUp} from 'components/count-up/count-up';
 import {Icon} from 'components/icon';
 import {SearchInline} from 'components/search/search-inline';
+import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from 'components/select';
 import {jobColumns} from 'components/table/table.stories.columns';
 import {jobsData} from 'components/table/table.stories.data';
 import {useMediaQuery} from 'hooks/useMediaQuery';
-import {useMemo} from 'react';
+import {useMemo, useState} from 'react';
 import {BarChart} from '../components/charts/bar-chart';
 import {LineChart} from '../components/charts/line-chart';
 import {DashboardAlert} from '../components/dashboard-alert';
@@ -122,6 +123,7 @@ export function AnalyticsPage() {
   } = useDashboardContext();
 
   const isDesktop = useMediaQuery('(min-width: 1024px)');
+  const [performanceTimeRange, setPerformanceTimeRange] = useState('2h');
 
   const pageTitle = useMemo(() => {
     const activeItem = defaultSidebarItems.find((item) => item.id === activeSidebarItem);
@@ -188,6 +190,20 @@ export function AnalyticsPage() {
               tooltip={{
                 labelFormatter: () => `Jul 22, 2025`,
               }}
+              action={
+                <Select value={performanceTimeRange} onValueChange={setPerformanceTimeRange}>
+                  <SelectTrigger className="w-60">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="1h">1h</SelectItem>
+                    <SelectItem value="2h">2h</SelectItem>
+                    <SelectItem value="6h">6h</SelectItem>
+                    <SelectItem value="12h">12h</SelectItem>
+                    <SelectItem value="24h">24h</SelectItem>
+                  </SelectContent>
+                </Select>
+              }
             />
 
             <BarChart
