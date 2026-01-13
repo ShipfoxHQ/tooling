@@ -192,7 +192,7 @@ export function AnalyticsPage() {
               }}
               action={
                 <Select value={performanceTimeRange} onValueChange={setPerformanceTimeRange}>
-                  <SelectTrigger className="w-60">
+                  <SelectTrigger aria-label="Time range" className="w-60">
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
