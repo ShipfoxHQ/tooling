@@ -26,8 +26,7 @@ import {
 import {formatDateTimeRange} from 'utils/format/date';
 
 const RECENT_THRESHOLD_MS = 60000;
-export const INTERVAL_MATCH_TOLERANCE_MS = 60000;
-export const CALENDAR_CLOSE_DELAY_MS = 200;
+const INTERVAL_MATCH_TOLERANCE_MS = 60000;
 const DEFAULT_TOLERANCE = 0.05;
 const MS_PER_SECOND = 1000;
 const SECONDS_PER_MINUTE = 60;
