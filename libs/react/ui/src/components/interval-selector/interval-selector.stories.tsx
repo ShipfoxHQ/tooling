@@ -29,6 +29,7 @@ function ControlledIntervalSelector() {
       }}
       value={value}
       onValueChange={setValue}
+      className="w-[75vw] md:w-350"
     />
   );
 }
@@ -38,5 +39,9 @@ export const Default: Story = {
     interval: intervalToNowFromDuration({hours: 1}),
     onIntervalChange: () => undefined,
   },
-  render: () => <ControlledIntervalSelector />,
+  render: () => (
+    <div className="w-screen h-screen">
+      <ControlledIntervalSelector />
+    </div>
+  ),
 };

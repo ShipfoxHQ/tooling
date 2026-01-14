@@ -1,12 +1,11 @@
-import {Select, SelectTrigger, SelectValue} from 'components/select';
+import {Icon} from 'components/icon';
+import {Input} from 'components/input';
+import {Popover, PopoverContent, PopoverTrigger} from 'components/popover';
 import type {NormalizedInterval} from 'date-fns';
-import {useState} from 'react';
-import type {DateRange as DayPickerDateRange} from 'react-day-picker';
 import {cn} from 'utils/cn';
-import {intervalToNowFromDuration} from 'utils/date';
-import {formatDateTimeRange} from 'utils/format/date';
-import {findOption} from './interval-selector.utils';
-import {IntervalSelectorContent} from './interval-selector-content';
+import {IntervalSelectorCalendar} from './interval-selector-calendar';
+import {IntervalSelectorSuggestions} from './interval-selector-suggestions';
+import {useIntervalSelector} from './use-interval-selector';
 
 export interface IntervalSelectorProps {
   interval: NormalizedInterval;
@@ -15,7 +14,7 @@ export interface IntervalSelectorProps {
   onValueChange?: (value: string) => void;
   container?: HTMLElement | null;
   className?: string;
-  triggerClassName?: string;
+  inputClassName?: string;
 }
 
 export function IntervalSelector({
@@ -25,55 +24,105 @@ export function IntervalSelector({
   onValueChange,
   container,
   className,
-  triggerClassName,
+  inputClassName,
 }: IntervalSelectorProps) {
-  const [selectOpen, setSelectOpen] = useState(false);
-  const [calendarOpen, setCalendarOpen] = useState(false);
-
-  const intervalDisplay = formatDateTimeRange(interval);
-
-  const handleOptionSelect = (selectedValue: string) => {
-    onValueChange?.(selectedValue);
-    const option = findOption(selectedValue);
-
-    if (option?.duration) {
-      const newInterval = intervalToNowFromDuration(option.duration);
-      onIntervalChange(newInterval);
-      setSelectOpen(false);
-    }
-  };
-
-  const handleCalendarSelect = (range: DayPickerDateRange | undefined) => {
-    if (range?.from && range?.to) {
-      onIntervalChange({start: range.from, end: range.to});
-      onValueChange?.('custom');
-    }
-  };
+  const {
+    isFocused,
+    popoverOpen,
+    calendarOpen,
+    displayValue,
+    highlightedIndex,
+    inputRef,
+    handleFocus,
+    handleBlur,
+    handleInputChange,
+    handleKeyDown,
+    handleOptionSelect,
+    handleCalendarSelect,
+    handleOpenCalendar,
+    handleCloseCalendar,
+    setPopoverOpen,
+    setIsFocused,
+  } = useIntervalSelector({
+    interval,
+    onIntervalChange,
+    value,
+    onValueChange,
+  });
 
   return (
-    <div className={cn('relative', className)}>
-      <Select
-        value={value}
-        onValueChange={handleOptionSelect}
-        open={selectOpen}
-        onOpenChange={(open) => {
-          if (!open && calendarOpen) return;
-          setSelectOpen(open);
+    <Popover
+      open={popoverOpen}
+      onOpenChange={(open) => {
+        if (!open && !isFocused && !calendarOpen) {
+          setPopoverOpen(false);
+        } else if (open) {
+          setPopoverOpen(true);
+        }
+      }}
+    >
+      <PopoverTrigger asChild>
+        <div className={cn('relative', className)}>
+          <Input
+            ref={inputRef}
+            value={displayValue}
+            onChange={isFocused ? handleInputChange : undefined}
+            onFocus={handleFocus}
+            onBlur={handleBlur}
+            onKeyDown={handleKeyDown}
+            readOnly={!isFocused}
+            iconLeft={
+              <Icon name="calendar2Line" className="size-16 text-foreground-neutral-muted" />
+            }
+            className={cn('w-full', inputClassName)}
+          />
+        </div>
+      </PopoverTrigger>
+      <PopoverContent
+        align="start"
+        sideOffset={8}
+        className="w-[var(--radix-popover-trigger-width)] md:w-auto p-0"
+        onOpenAutoFocus={(e) => e.preventDefault()}
+        onInteractOutside={(e) => {
+          if (e.target === inputRef.current || inputRef.current?.contains(e.target as Node)) {
+            e.preventDefault();
+            return;
+          }
+          if (calendarOpen) {
+            handleCloseCalendar();
+            e.preventDefault();
+            return;
+          }
+          if (isFocused) {
+            e.preventDefault();
+            return;
+          }
+          setPopoverOpen(false);
+          setIsFocused(false);
         }}
+        onEscapeKeyDown={(e) => {
+          if (calendarOpen) {
+            handleCloseCalendar();
+            e.preventDefault();
+          } else {
+            setPopoverOpen(false);
+            setIsFocused(false);
+            inputRef.current?.blur();
+          }
+        }}
+        container={container}
       >
-        <SelectTrigger className={cn('w-full', triggerClassName)}>
-          <SelectValue>{intervalDisplay}</SelectValue>
-        </SelectTrigger>
-
-        <IntervalSelectorContent
-          interval={interval}
-          onCalendarSelect={handleCalendarSelect}
-          calendarOpen={calendarOpen}
-          setCalendarOpen={setCalendarOpen}
-          setSelectOpen={setSelectOpen}
-          container={container}
-        />
-      </Select>
-    </div>
+        {calendarOpen ? (
+          <IntervalSelectorCalendar interval={interval} onSelect={handleCalendarSelect} />
+        ) : popoverOpen ? (
+          <IntervalSelectorSuggestions
+            interval={interval}
+            onSelect={handleOptionSelect}
+            onOpenCalendar={handleOpenCalendar}
+            highlightedIndex={highlightedIndex}
+          />
+        ) : null}
+      </PopoverContent>
+    </Popover>
   );
 }
