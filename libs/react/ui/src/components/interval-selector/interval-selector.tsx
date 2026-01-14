@@ -70,6 +70,7 @@ export function IntervalSelector({
           onCalendarSelect={handleCalendarSelect}
           calendarOpen={calendarOpen}
           setCalendarOpen={setCalendarOpen}
+          setSelectOpen={setSelectOpen}
           container={container}
         />
       </Select>

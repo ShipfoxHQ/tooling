@@ -14,6 +14,7 @@ interface IntervalSelectorContentProps {
   onCalendarSelect: (range: DayPickerDateRange | undefined) => void;
   calendarOpen: boolean;
   setCalendarOpen: (open: boolean) => void;
+  setSelectOpen: (open: boolean) => void;
   container?: HTMLElement | null;
 }
 
@@ -22,11 +23,17 @@ export function IntervalSelectorContent({
   onCalendarSelect,
   calendarOpen,
   setCalendarOpen,
+  setSelectOpen,
   container,
 }: IntervalSelectorContentProps) {
   const handleCalendarClick = (e: MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     setCalendarOpen(true);
+  };
+
+  const handleCloseCalendar = () => {
+    setCalendarOpen(false);
+    setSelectOpen(false);
   };
 
   if (calendarOpen) {
@@ -38,7 +45,11 @@ export function IntervalSelectorContent({
         className="max-h-full"
         onPointerDownOutside={(event) => {
           event.preventDefault();
-          setCalendarOpen(false);
+          handleCloseCalendar();
+        }}
+        onEscapeKeyDown={(event) => {
+          event.preventDefault();
+          handleCloseCalendar();
         }}
       >
         <Calendar
