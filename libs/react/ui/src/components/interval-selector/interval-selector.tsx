@@ -39,9 +39,8 @@ export function IntervalSelector({
     if (option?.duration) {
       const newInterval = intervalToNowFromDuration(option.duration);
       onIntervalChange(newInterval);
+      setSelectOpen(false);
     }
-
-    setSelectOpen(false);
   };
 
   const handleCalendarSelect = (range: DayPickerDateRange | undefined) => {

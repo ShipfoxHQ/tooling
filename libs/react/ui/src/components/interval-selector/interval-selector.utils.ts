@@ -1,6 +1,8 @@
 import type {Duration, NormalizedInterval} from 'date-fns';
 import {intervalToNowFromDuration} from 'utils/date';
 
+const RECENT_THRESHOLD_MS = 60000;
+
 export type IntervalOptionType = 'past' | 'custom';
 
 export interface IntervalOption {
@@ -30,7 +32,7 @@ export function findOptionValueForInterval(
   tolerance = 0.05,
 ): string | undefined {
   const now = new Date();
-  const isRecent = Math.abs(interval.end.getTime() - now.getTime()) < 60000;
+  const isRecent = Math.abs(interval.end.getTime() - now.getTime()) < RECENT_THRESHOLD_MS;
 
   if (!isRecent) {
     return undefined;

@@ -29,12 +29,6 @@ export function IntervalSelectorContent({
     setCalendarOpen(true);
   };
 
-  const handleCalendarSelect = (range: DayPickerDateRange | undefined) => {
-    if (range?.from && range?.to) {
-      onCalendarSelect(range);
-    }
-  };
-
   if (calendarOpen) {
     return (
       <SelectContent
@@ -50,14 +44,12 @@ export function IntervalSelectorContent({
         <Calendar
           mode="range"
           selected={
-            interval
-              ? ({
-                  from: interval.start,
-                  to: interval.end,
-                } as DayPickerDateRange)
-              : undefined
+            {
+              from: interval.start,
+              to: interval.end,
+            } as DayPickerDateRange
           }
-          onSelect={handleCalendarSelect}
+          onSelect={onCalendarSelect}
           numberOfMonths={1}
           formatters={{
             formatWeekdayName: (date) => format(date, 'EEEEE'),
