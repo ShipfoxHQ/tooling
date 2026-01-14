@@ -1,7 +1,7 @@
-import {Card, CardContent, CardHeader, CardTitle} from 'components/card';
+import {Card, CardAction, CardContent, CardHeader, CardTitle} from 'components/card';
 import {EmptyState} from 'components/empty-state';
 import {Text} from 'components/typography';
-import type {ComponentProps} from 'react';
+import type {ComponentProps, ReactNode} from 'react';
 import {useState} from 'react';
 import {
   CartesianGrid,
@@ -44,6 +44,7 @@ export interface LineChartProps {
   };
   className?: string;
   title?: string;
+  action?: ReactNode;
 }
 
 export function LineChart({
@@ -56,6 +57,7 @@ export function LineChart({
   tooltip,
   className,
   title,
+  action,
 }: LineChartProps) {
   const [hoveredDataKey, setHoveredDataKey] = useState<string | undefined>(undefined);
 
@@ -73,9 +75,10 @@ export function LineChart({
 
   return (
     <Card className={className}>
-      {title && (
-        <CardHeader>
-          <CardTitle variant="h4">{title}</CardTitle>
+      {(title || action) && (
+        <CardHeader className="flex flex-row items-center justify-between">
+          {title && <CardTitle variant="h4">{title}</CardTitle>}
+          {action && <CardAction>{action}</CardAction>}
         </CardHeader>
       )}
       <CardContent>
