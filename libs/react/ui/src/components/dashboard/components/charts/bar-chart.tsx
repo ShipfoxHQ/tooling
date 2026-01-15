@@ -1,7 +1,7 @@
-import {Card, CardContent, CardHeader, CardTitle} from 'components/card';
+import {Card, CardAction, CardContent, CardHeader, CardTitle} from 'components/card';
 import {EmptyState} from 'components/empty-state';
 import {Text} from 'components/typography';
-import type {ComponentProps} from 'react';
+import type {ComponentProps, ReactNode} from 'react';
 import {useState} from 'react';
 import {
   Bar,
@@ -44,6 +44,7 @@ export interface BarChartProps {
   };
   className?: string;
   title?: string;
+  action?: ReactNode;
   barRadius?: [number, number, number, number];
   maxBarSize?: number;
 }
@@ -58,6 +59,7 @@ export function BarChart({
   tooltip,
   className,
   title,
+  action,
   barRadius = [0, 0, 0, 0],
   maxBarSize = 8,
 }: BarChartProps) {
@@ -77,9 +79,10 @@ export function BarChart({
 
   return (
     <Card className={className}>
-      {title && (
-        <CardHeader>
-          <CardTitle variant="h4">{title}</CardTitle>
+      {(title || action) && (
+        <CardHeader className="flex flex-row items-center justify-between">
+          {title && <CardTitle variant="h4">{title}</CardTitle>}
+          {action && <CardAction>{action}</CardAction>}
         </CardHeader>
       )}
       <CardContent>
