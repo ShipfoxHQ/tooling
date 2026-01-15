@@ -446,6 +446,5 @@ export function useIntervalSelector({
     handleCloseCalendar,
     setPopoverOpen,
     setIsFocused,
-    setCalendarOpen,
   };
 }

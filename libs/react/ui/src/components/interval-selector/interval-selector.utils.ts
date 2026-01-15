@@ -351,12 +351,6 @@ export function formatIntervalDisplay(interval: NormalizedInterval, isFocused: b
     return humanizeDurationToNow(calendarDuration);
   }
 
-  const isFullDay = isStartOfDay(interval.start) && isEndOfDay(interval.end);
-
-  if (isFullDay) {
-    return formatDateTimeRange(interval);
-  }
-
   return formatDateTimeRange(interval);
 }
 
