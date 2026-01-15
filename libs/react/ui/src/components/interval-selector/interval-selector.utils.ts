@@ -3,6 +3,8 @@ import {
   differenceInDays,
   differenceInHours,
   differenceInMilliseconds,
+  differenceInMonths,
+  differenceInYears,
   endOfDay,
   endOfMonth,
   endOfWeek,
@@ -364,6 +366,12 @@ export interface ParsedShortcut {
   label: string;
 }
 
+export interface CalendarShortcutResult {
+  shortcut: string | undefined;
+  label: string;
+  value: string | undefined;
+}
+
 function normalizeDurationToAppropriateUnit(duration: Duration): Duration {
   const normalized: Duration = {...duration};
 
@@ -536,4 +544,50 @@ export function parseRelativeTimeShortcut(input: string): ParsedShortcut | undef
   }
 
   return undefined;
+}
+
+export function detectShortcutFromCalendarInterval(
+  interval: NormalizedInterval,
+): CalendarShortcutResult | undefined {
+  if (isRelativeToNow(interval)) {
+    return undefined;
+  }
+
+  const matchingOption = findOptionByInterval(interval);
+  if (matchingOption?.shortcut) {
+    return {
+      shortcut: matchingOption.shortcut,
+      label: formatDateTimeRange(interval),
+      value: matchingOption.value,
+    };
+  }
+
+  const days = Math.abs(differenceInDays(interval.end, interval.start));
+  const months = Math.abs(differenceInMonths(interval.end, interval.start));
+  const years = Math.abs(differenceInYears(interval.end, interval.start));
+
+  let shortcut: string | undefined;
+
+  if (years > 0) {
+    if (years > 1) {
+      return {shortcut: undefined, label: formatDateTimeRange(interval), value: undefined};
+    }
+    shortcut = '1y';
+  } else if (months > 0) {
+    shortcut = `${months}mo`;
+  } else if (days > 0) {
+    if (days > 30) {
+      shortcut = '1mo';
+    } else {
+      shortcut = `${days}d`;
+    }
+  } else {
+    return {shortcut: undefined, label: formatDateTimeRange(interval), value: undefined};
+  }
+
+  return {
+    shortcut,
+    label: formatDateTimeRange(interval),
+    value: undefined,
+  };
 }
