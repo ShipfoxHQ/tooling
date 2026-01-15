@@ -89,7 +89,7 @@ const FULL_NAME_PATTERN = Object.values(UNIT_NAMES)
   .join('|');
 
 const DURATION_SHORTCUT_REGEX = new RegExp(`^(\\d+)\\s*(${SHORTCUT_PATTERN})$`, 'i');
-const DURATION_FULL_REGEX = new RegExp(`^(\\d+)\\s+(${FULL_NAME_PATTERN})\\s*$`, 'i');
+const DURATION_FULL_REGEX = new RegExp(`^(\\d+)\\s*(${FULL_NAME_PATTERN})\\s*$`, 'i');
 
 export function generateDurationShortcut(duration: Duration): string {
   const keys = Object.keys(duration) as (keyof Duration)[];

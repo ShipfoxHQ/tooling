@@ -392,17 +392,6 @@ function normalizeDurationToAppropriateUnit(duration: Duration): Duration {
     delete normalized.days;
   }
 
-  if (normalized.days && normalized.days >= 7 && !normalized.months) {
-    const weeks = Math.floor(normalized.days / 7);
-    const remainingDays = normalized.days % 7;
-    normalized.weeks = (normalized.weeks || 0) + weeks;
-    if (remainingDays > 0) {
-      normalized.days = remainingDays;
-    } else {
-      delete normalized.days;
-    }
-  }
-
   if (normalized.months && normalized.months >= 12) {
     const years = Math.floor(normalized.months / 12);
     const remainingMonths = normalized.months % 12;
