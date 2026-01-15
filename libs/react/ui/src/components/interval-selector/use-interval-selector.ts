@@ -1,5 +1,5 @@
 import type {NormalizedInterval} from 'date-fns';
-import {differenceInDays} from 'date-fns';
+import {differenceInDays, differenceInHours, differenceInMinutes} from 'date-fns';
 import {useCallback, useEffect, useRef, useState} from 'react';
 import type {DateRange as DayPickerDateRange} from 'react-day-picker';
 import {intervalToNowFromDuration, parseTextInterval} from 'utils/date';
@@ -46,6 +46,35 @@ export function useIntervalSelector({
     }
     const parsedShortcut = parseRelativeTimeShortcut(value);
     return parsedShortcut?.shortcut;
+  }, []);
+
+  const detectShortcutFromInterval = useCallback((interval: NormalizedInterval) => {
+    const matchingOption = findOptionByInterval(interval);
+    if (matchingOption?.shortcut) {
+      return {
+        shortcut: matchingOption.shortcut,
+        label: matchingOption.label,
+        value: matchingOption.value,
+      };
+    }
+
+    const days = Math.abs(differenceInDays(interval.end, interval.start));
+    const hours = Math.abs(differenceInHours(interval.end, interval.start));
+    const minutes = Math.abs(differenceInMinutes(interval.end, interval.start));
+
+    const durationString =
+      days > 0 ? `${days}d` : hours > 0 ? `${hours}h` : minutes > 0 ? `${minutes}m` : '-';
+    const parsedShortcut = parseRelativeTimeShortcut(durationString);
+
+    if (parsedShortcut) {
+      return {
+        shortcut: parsedShortcut.shortcut,
+        label: parsedShortcut.label,
+        value: undefined,
+      };
+    }
+
+    return {shortcut: undefined, label: undefined, value: undefined};
   }, []);
 
   const clearSelectionState = useCallback(() => {
@@ -148,9 +177,15 @@ export function useIntervalSelector({
     if (parsedShortcut) {
       setDetectedShortcut(parsedShortcut.shortcut);
     } else {
-      setDetectedShortcut(undefined);
-      if (newValue.trim()) {
-        setConfirmedShortcut(undefined);
+      const parsedInterval = parseTextInterval(newValue);
+      if (parsedInterval) {
+        const {shortcut} = detectShortcutFromInterval(parsedInterval);
+        setDetectedShortcut(shortcut);
+      } else {
+        setDetectedShortcut(undefined);
+        if (newValue.trim()) {
+          setConfirmedShortcut(undefined);
+        }
       }
     }
 
@@ -229,11 +264,25 @@ export function useIntervalSelector({
 
     const parsedInterval = parseTextInterval(trimmedValue);
     if (parsedInterval) {
+      const {shortcut, label, value} = detectShortcutFromInterval(parsedInterval);
+      if (shortcut) {
+        setConfirmedShortcut(shortcut);
+        if (label) {
+          setSelectedLabel(label);
+        }
+        if (value) {
+          selectedValueRef.current = value;
+        }
+      } else {
+        setSelectedLabel(undefined);
+        setConfirmedShortcut(undefined);
+      }
+
       onIntervalChange(parsedInterval);
       onValueChange?.(trimmedValue);
-      setSelectedLabel(undefined);
-      selectedValueRef.current = undefined;
-      setConfirmedShortcut(undefined);
+      if (!value) {
+        selectedValueRef.current = undefined;
+      }
       setDetectedShortcut(undefined);
       closeInputAndPopover();
       return;
@@ -273,22 +322,17 @@ export function useIntervalSelector({
 
     isSelectingRef.current = true;
 
-    const matchingOption = findOptionByInterval(calendarInterval);
-    if (matchingOption?.shortcut) {
-      setConfirmedShortcut(matchingOption.shortcut);
-      setSelectedLabel(matchingOption.label);
-      selectedValueRef.current = matchingOption.value;
-    } else {
-      const days = Math.abs(differenceInDays(calendarInterval.end, calendarInterval.start));
-      const durationString = days > 0 ? `${days}d` : '-';
-      const parsedShortcut = parseRelativeTimeShortcut(durationString);
-
-      if (parsedShortcut) {
-        setConfirmedShortcut(parsedShortcut.shortcut);
-        setSelectedLabel(parsedShortcut.label);
-      } else {
-        clearSelectionState();
+    const {shortcut, label, value} = detectShortcutFromInterval(calendarInterval);
+    if (shortcut) {
+      setConfirmedShortcut(shortcut);
+      if (label) {
+        setSelectedLabel(label);
       }
+      if (value) {
+        selectedValueRef.current = value;
+      }
+    } else {
+      clearSelectionState();
     }
 
     onIntervalChange(calendarInterval);
