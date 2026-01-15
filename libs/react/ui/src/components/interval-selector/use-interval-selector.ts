@@ -35,9 +35,12 @@ export function useIntervalSelector({
   const [highlightedIndex, setHighlightedIndex] = useState<number>(-1);
   const [detectedShortcut, setDetectedShortcut] = useState<string | undefined>(undefined);
   const [confirmedShortcut, setConfirmedShortcut] = useState<string | undefined>(undefined);
+  const [isInvalid, setIsInvalid] = useState(false);
+  const [shouldShake, setShouldShake] = useState(false);
   const selectedValueRef = useRef<string | undefined>(undefined);
   const isSelectingRef = useRef(false);
   const inputRef = useRef<HTMLInputElement>(null);
+  const shakeTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const getShortcutFromValue = useCallback((value: string): string | undefined => {
     const option = findOption(value);
@@ -152,6 +155,7 @@ export function useIntervalSelector({
     setPopoverOpen(true);
     setInputValue(formatIntervalDisplay(interval, true));
     setHighlightedIndex(-1);
+    setIsInvalid(false);
     requestAnimationFrame(() => {
       inputRef.current?.select();
     });
@@ -176,15 +180,20 @@ export function useIntervalSelector({
     const parsedShortcut = parseRelativeTimeShortcut(newValue);
     if (parsedShortcut) {
       setDetectedShortcut(parsedShortcut.shortcut);
+      setIsInvalid(false);
     } else {
       const parsedInterval = parseTextInterval(newValue);
       if (parsedInterval) {
         const {shortcut} = detectShortcutFromInterval(parsedInterval);
         setDetectedShortcut(shortcut);
+        setIsInvalid(false);
       } else {
         setDetectedShortcut(undefined);
         if (newValue.trim()) {
           setConfirmedShortcut(undefined);
+          setIsInvalid(true);
+        } else {
+          setIsInvalid(false);
         }
       }
     }
@@ -258,6 +267,7 @@ export function useIntervalSelector({
       selectedValueRef.current = undefined;
       setConfirmedShortcut(parsedShortcut.shortcut);
       setDetectedShortcut(undefined);
+      setIsInvalid(false);
       closeInputAndPopover();
       return;
     }
@@ -284,10 +294,20 @@ export function useIntervalSelector({
         selectedValueRef.current = undefined;
       }
       setDetectedShortcut(undefined);
+      setIsInvalid(false);
       closeInputAndPopover();
       return;
     }
-    setInputValue(formatIntervalDisplay(interval, true));
+
+    setIsInvalid(true);
+    setShouldShake(true);
+    if (shakeTimeoutRef.current) {
+      clearTimeout(shakeTimeoutRef.current);
+    }
+    shakeTimeoutRef.current = setTimeout(() => {
+      setShouldShake(false);
+      shakeTimeoutRef.current = null;
+    }, 500);
     setDetectedShortcut(undefined);
   };
 
@@ -355,6 +375,9 @@ export function useIntervalSelector({
   useEffect(() => {
     return () => {
       isSelectingRef.current = false;
+      if (shakeTimeoutRef.current) {
+        clearTimeout(shakeTimeoutRef.current);
+      }
     };
   }, []);
 
@@ -366,6 +389,8 @@ export function useIntervalSelector({
     displayValue,
     highlightedIndex,
     displayShortcut,
+    isInvalid,
+    shouldShake,
     inputRef,
     handleFocus,
     handleBlur,

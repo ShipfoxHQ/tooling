@@ -33,6 +33,8 @@ export function IntervalSelector({
     displayValue,
     highlightedIndex,
     displayShortcut,
+    isInvalid,
+    shouldShake,
     inputRef,
     handleFocus,
     handleBlur,
@@ -63,7 +65,7 @@ export function IntervalSelector({
       }}
     >
       <PopoverTrigger asChild>
-        <div className={cn('relative', className)}>
+        <div className={cn('relative', className, shouldShake && 'animate-shake')}>
           <Input
             ref={inputRef}
             value={displayValue}
@@ -72,6 +74,7 @@ export function IntervalSelector({
             onBlur={handleBlur}
             onKeyDown={handleKeyDown}
             readOnly={!isFocused}
+            aria-invalid={isInvalid && isFocused}
             iconLeft={<Kbd className="h-16 shrink-0 min-w-36">{displayShortcut}</Kbd>}
             className={cn('w-full pl-50', inputClassName)}
           />
