@@ -1,6 +1,6 @@
 import type {NormalizedInterval} from 'date-fns';
 import {differenceInDays} from 'date-fns';
-import {useEffect, useRef, useState} from 'react';
+import {useCallback, useEffect, useRef, useState} from 'react';
 import type {DateRange as DayPickerDateRange} from 'react-day-picker';
 import {intervalToNowFromDuration, parseTextInterval} from 'utils/date';
 import {
@@ -11,6 +11,7 @@ import {
   getCalendarInterval,
   getLabelForValue,
   PAST_INTERVALS,
+  parseRelativeTimeShortcut,
 } from './interval-selector.utils';
 
 interface UseIntervalSelectorProps {
@@ -32,9 +33,26 @@ export function useIntervalSelector({
   const [inputValue, setInputValue] = useState('');
   const [selectedLabel, setSelectedLabel] = useState<string | undefined>(undefined);
   const [highlightedIndex, setHighlightedIndex] = useState<number>(-1);
+  const [detectedShortcut, setDetectedShortcut] = useState<string | undefined>(undefined);
+  const [confirmedShortcut, setConfirmedShortcut] = useState<string | undefined>(undefined);
   const selectedValueRef = useRef<string | undefined>(undefined);
   const isSelectingRef = useRef(false);
   const inputRef = useRef<HTMLInputElement>(null);
+
+  const getShortcutFromValue = useCallback((value: string): string | undefined => {
+    const option = findOption(value);
+    if (option?.shortcut) {
+      return option.shortcut;
+    }
+    const parsedShortcut = parseRelativeTimeShortcut(value);
+    return parsedShortcut?.shortcut;
+  }, []);
+
+  const clearSelectionState = useCallback(() => {
+    setSelectedLabel(undefined);
+    selectedValueRef.current = undefined;
+    setConfirmedShortcut(undefined);
+  }, []);
 
   const getAllNavigableItems = () => {
     return [
@@ -66,12 +84,14 @@ export function useIntervalSelector({
     if (!isFocused && !isSelectingRef.current) {
       const explicitValue = formatIntervalDisplay(interval, true);
       setInputValue(explicitValue);
+      setDetectedShortcut(undefined);
 
       if (value) {
         const label = getLabelForValue(value);
         if (label) {
           setSelectedLabel(label);
           selectedValueRef.current = value;
+          setConfirmedShortcut(getShortcutFromValue(value));
           return;
         }
       }
@@ -80,28 +100,32 @@ export function useIntervalSelector({
         const option = findOption(selectedValueRef.current);
         if (option) {
           setSelectedLabel(option.label);
+          setConfirmedShortcut(getShortcutFromValue(option.value));
           return;
         }
-        selectedValueRef.current = undefined;
-        setSelectedLabel(undefined);
+        clearSelectionState();
       }
 
       const matchingOption = findOptionByInterval(interval);
       if (matchingOption) {
         setSelectedLabel(matchingOption.label);
         selectedValueRef.current = matchingOption.value;
+        setConfirmedShortcut(getShortcutFromValue(matchingOption.value));
       } else {
         setSelectedLabel(undefined);
         selectedValueRef.current = undefined;
       }
     }
-  }, [interval, isFocused, value]);
+  }, [interval, isFocused, value, getShortcutFromValue, clearSelectionState]);
 
   const handleFocus = () => {
     setIsFocused(true);
     setPopoverOpen(true);
     setInputValue(formatIntervalDisplay(interval, true));
     setHighlightedIndex(-1);
+    requestAnimationFrame(() => {
+      inputRef.current?.select();
+    });
   };
 
   const handleBlur = (e: React.FocusEvent<HTMLInputElement>) => {
@@ -110,6 +134,7 @@ export function useIntervalSelector({
       return;
     }
     setIsFocused(false);
+    setDetectedShortcut(undefined);
     if (!calendarOpen) {
       setPopoverOpen(false);
     }
@@ -118,6 +143,17 @@ export function useIntervalSelector({
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newValue = e.target.value;
     setInputValue(newValue);
+
+    const parsedShortcut = parseRelativeTimeShortcut(newValue);
+    if (parsedShortcut) {
+      setDetectedShortcut(parsedShortcut.shortcut);
+    } else {
+      setDetectedShortcut(undefined);
+      if (newValue.trim()) {
+        setConfirmedShortcut(undefined);
+      }
+    }
+
     if (selectedLabel || selectedValueRef.current) {
       setSelectedLabel(undefined);
       selectedValueRef.current = undefined;
@@ -177,22 +213,41 @@ export function useIntervalSelector({
 
   const handleConfirmInput = () => {
     const trimmedValue = inputValue.trim();
+
+    const parsedShortcut = parseRelativeTimeShortcut(trimmedValue);
+    if (parsedShortcut) {
+      const newInterval = intervalToNowFromDuration(parsedShortcut.duration);
+      onIntervalChange(newInterval);
+      onValueChange?.(trimmedValue);
+      setSelectedLabel(parsedShortcut.label);
+      selectedValueRef.current = undefined;
+      setConfirmedShortcut(parsedShortcut.shortcut);
+      setDetectedShortcut(undefined);
+      closeInputAndPopover();
+      return;
+    }
+
     const parsedInterval = parseTextInterval(trimmedValue);
     if (parsedInterval) {
       onIntervalChange(parsedInterval);
       onValueChange?.(trimmedValue);
       setSelectedLabel(undefined);
       selectedValueRef.current = undefined;
+      setConfirmedShortcut(undefined);
+      setDetectedShortcut(undefined);
       closeInputAndPopover();
       return;
     }
     setInputValue(formatIntervalDisplay(interval, true));
+    setDetectedShortcut(undefined);
   };
 
   const handleOptionSelect = (optionValue: string, label: string) => {
     selectedValueRef.current = optionValue;
     setSelectedLabel(label);
     isSelectingRef.current = true;
+    setDetectedShortcut(undefined);
+    setConfirmedShortcut(getShortcutFromValue(optionValue));
     onValueChange?.(optionValue);
 
     const option = findOption(optionValue);
@@ -209,29 +264,37 @@ export function useIntervalSelector({
     closeInputAndPopover();
   };
 
-  useEffect(() => {
-    return () => {
-      isSelectingRef.current = false;
-    };
-  }, []);
-
   const handleCalendarSelect = (range: DayPickerDateRange | undefined) => {
-    if (range?.from && range?.to) {
-      const daysDiff = differenceInDays(range.to, range.from);
-      if (daysDiff !== 0) {
-        onIntervalChange({start: range.from, end: range.to});
-        setSelectedLabel(undefined);
-        selectedValueRef.current = undefined;
-        closeAll();
+    if (!range?.from) return;
+
+    const calendarInterval = range.to
+      ? {start: range.from, end: range.to}
+      : {start: range.from, end: range.from};
+
+    isSelectingRef.current = true;
+
+    const matchingOption = findOptionByInterval(calendarInterval);
+    if (matchingOption?.shortcut) {
+      setConfirmedShortcut(matchingOption.shortcut);
+      setSelectedLabel(matchingOption.label);
+      selectedValueRef.current = matchingOption.value;
+    } else {
+      const days = Math.abs(differenceInDays(calendarInterval.end, calendarInterval.start));
+      const durationString = days > 0 ? `${days}d` : '-';
+      const parsedShortcut = parseRelativeTimeShortcut(durationString);
+
+      if (parsedShortcut) {
+        setConfirmedShortcut(parsedShortcut.shortcut);
+        setSelectedLabel(parsedShortcut.label);
       } else {
-        onIntervalChange({start: range.from, end: range.to});
-        setSelectedLabel(undefined);
-        selectedValueRef.current = undefined;
+        clearSelectionState();
       }
-    } else if (range?.from) {
-      onIntervalChange({start: range.from, end: range.from});
-      setSelectedLabel(undefined);
-      selectedValueRef.current = undefined;
+    }
+
+    onIntervalChange(calendarInterval);
+
+    if (range.to && differenceInDays(range.to, range.from) !== 0) {
+      closeAll();
     }
   };
 
@@ -243,6 +306,14 @@ export function useIntervalSelector({
     closeAll();
   };
 
+  const displayShortcut = detectedShortcut ?? confirmedShortcut ?? '-';
+
+  useEffect(() => {
+    return () => {
+      isSelectingRef.current = false;
+    };
+  }, []);
+
   return {
     isFocused,
     popoverOpen,
@@ -250,6 +321,7 @@ export function useIntervalSelector({
     inputValue,
     displayValue,
     highlightedIndex,
+    displayShortcut,
     inputRef,
     handleFocus,
     handleBlur,

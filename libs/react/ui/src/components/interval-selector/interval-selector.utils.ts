@@ -22,6 +22,7 @@ import {
   intervalToNowFromDuration,
   isEndOfDay,
   isStartOfDay,
+  parseTextDurationShortcut,
 } from 'utils/date';
 import {formatDateTimeRange} from 'utils/format/date';
 
@@ -355,4 +356,184 @@ export function formatIntervalDisplay(interval: NormalizedInterval, isFocused: b
   }
 
   return formatDateTimeRange(interval);
+}
+
+export interface ParsedShortcut {
+  shortcut: string;
+  duration: Duration;
+  label: string;
+}
+
+function normalizeDurationToAppropriateUnit(duration: Duration): Duration {
+  const normalized: Duration = {...duration};
+
+  if (normalized.minutes && normalized.minutes >= 60) {
+    const hours = Math.floor(normalized.minutes / 60);
+    const remainingMinutes = normalized.minutes % 60;
+    normalized.hours = (normalized.hours || 0) + hours;
+    if (remainingMinutes > 0) {
+      normalized.minutes = remainingMinutes;
+    } else {
+      delete normalized.minutes;
+    }
+  }
+
+  if (normalized.hours && normalized.hours >= 24) {
+    const days = Math.round(normalized.hours / 24);
+    normalized.days = (normalized.days || 0) + days;
+    delete normalized.hours;
+  }
+
+  if (normalized.days && normalized.days >= 30) {
+    const months = Math.round(normalized.days / 30);
+    normalized.months = (normalized.months || 0) + months;
+    delete normalized.days;
+  }
+
+  if (normalized.days && normalized.days >= 7 && !normalized.months) {
+    const weeks = Math.floor(normalized.days / 7);
+    const remainingDays = normalized.days % 7;
+    normalized.weeks = (normalized.weeks || 0) + weeks;
+    if (remainingDays > 0) {
+      normalized.days = remainingDays;
+    } else {
+      delete normalized.days;
+    }
+  }
+
+  if (normalized.months && normalized.months >= 12) {
+    const years = Math.floor(normalized.months / 12);
+    const remainingMonths = normalized.months % 12;
+    normalized.years = (normalized.years || 0) + years;
+    if (remainingMonths > 0) {
+      normalized.months = remainingMonths;
+    } else {
+      delete normalized.months;
+    }
+  }
+
+  const units = ['years', 'months', 'weeks', 'days', 'hours', 'minutes'] as const;
+  for (const unit of units) {
+    if (normalized[unit]) {
+      return {[unit]: normalized[unit]};
+    }
+  }
+
+  return normalized;
+}
+
+export function parseRelativeTimeShortcut(input: string): ParsedShortcut | undefined {
+  const trimmed = input.trim();
+  if (!trimmed) return undefined;
+
+  let duration = parseTextDurationShortcut(trimmed);
+  if (!duration) return undefined;
+
+  if (duration.days !== undefined) {
+    const days = duration.days;
+    if (days > 730) return undefined;
+    if (days > 547) {
+      return {
+        shortcut: '2y',
+        duration: {years: 2},
+        label: 'Past 2 Years',
+      };
+    }
+  }
+
+  duration = normalizeDurationToAppropriateUnit(duration);
+
+  if (duration.years !== undefined) {
+    if (duration.years !== 1) return undefined;
+    return {
+      shortcut: '1y',
+      duration: {years: 1},
+      label: 'Past 1 Year',
+    };
+  }
+
+  if (duration.months !== undefined) {
+    const months = duration.months;
+    if (months > 17) {
+      return {
+        shortcut: '2y',
+        duration: {years: 2},
+        label: 'Past 2 Years',
+      };
+    }
+    return {
+      shortcut: `${months}mo`,
+      duration: {months},
+      label: `Past ${months} ${months === 1 ? 'Month' : 'Months'}`,
+    };
+  }
+
+  if (duration.weeks !== undefined) {
+    const weeks = duration.weeks;
+    if (weeks > 104) return undefined;
+    if (weeks > 78) {
+      return {
+        shortcut: '2y',
+        duration: {years: 2},
+        label: 'Past 2 Years',
+      };
+    }
+    if (weeks >= 52) {
+      return {
+        shortcut: '1y',
+        duration: {years: 1},
+        label: 'Past 1 Year',
+      };
+    }
+    if (weeks > 17) {
+      const months = Math.round(weeks / 4.33);
+      return {
+        shortcut: `${months}mo`,
+        duration: {months},
+        label: `Past ${months} ${months === 1 ? 'Month' : 'Months'}`,
+      };
+    }
+    return {
+      shortcut: `${weeks}w`,
+      duration: {weeks},
+      label: `Past ${weeks} ${weeks === 1 ? 'Week' : 'Weeks'}`,
+    };
+  }
+
+  if (duration.days !== undefined) {
+    const days = duration.days;
+    if (days >= 30 && days <= 31) {
+      return {
+        shortcut: '1mo',
+        duration: {months: 1},
+        label: 'Past 1 Month',
+      };
+    }
+    if (days > 31) return undefined;
+    return {
+      shortcut: `${days}d`,
+      duration: {days},
+      label: `Past ${days} ${days === 1 ? 'Day' : 'Days'}`,
+    };
+  }
+
+  if (duration.hours !== undefined) {
+    const hours = duration.hours;
+    return {
+      shortcut: `${hours}h`,
+      duration: {hours},
+      label: `Past ${hours} ${hours === 1 ? 'Hour' : 'Hours'}`,
+    };
+  }
+
+  if (duration.minutes !== undefined) {
+    const minutes = duration.minutes;
+    return {
+      shortcut: `${minutes}m`,
+      duration: {minutes},
+      label: `Past ${minutes} ${minutes === 1 ? 'Minute' : 'Minutes'}`,
+    };
+  }
+
+  return undefined;
 }

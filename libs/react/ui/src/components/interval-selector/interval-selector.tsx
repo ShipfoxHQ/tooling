@@ -1,5 +1,5 @@
-import {Icon} from 'components/icon';
 import {Input} from 'components/input';
+import {Kbd} from 'components/kbd';
 import {Popover, PopoverContent, PopoverTrigger} from 'components/popover';
 import type {NormalizedInterval} from 'date-fns';
 import {cn} from 'utils/cn';
@@ -32,6 +32,7 @@ export function IntervalSelector({
     calendarOpen,
     displayValue,
     highlightedIndex,
+    displayShortcut,
     inputRef,
     handleFocus,
     handleBlur,
@@ -71,17 +72,15 @@ export function IntervalSelector({
             onBlur={handleBlur}
             onKeyDown={handleKeyDown}
             readOnly={!isFocused}
-            iconLeft={
-              <Icon name="calendar2Line" className="size-16 text-foreground-neutral-muted" />
-            }
-            className={cn('w-full', inputClassName)}
+            iconLeft={<Kbd className="h-16 shrink-0 min-w-36">{displayShortcut}</Kbd>}
+            className={cn('w-full pl-50', inputClassName)}
           />
         </div>
       </PopoverTrigger>
       <PopoverContent
         align="start"
         sideOffset={8}
-        className="w-[var(--radix-popover-trigger-width)] md:w-auto p-0"
+        className="w-(--radix-popover-trigger-width) md:w-auto p-0"
         onOpenAutoFocus={(e) => e.preventDefault()}
         onInteractOutside={(e) => {
           if (e.target === inputRef.current || inputRef.current?.contains(e.target as Node)) {
