@@ -43,9 +43,8 @@ export function IntervalSelector({
     handleOptionSelect,
     handleCalendarSelect,
     handleOpenCalendar,
-    handleCloseCalendar,
     setPopoverOpen,
-    setIsFocused,
+    closeAll,
   } = useIntervalSelector({
     interval,
     onIntervalChange,
@@ -57,10 +56,10 @@ export function IntervalSelector({
     <Popover
       open={popoverOpen}
       onOpenChange={(open) => {
-        if (!open && !isFocused && !calendarOpen) {
-          setPopoverOpen(false);
-        } else if (open) {
+        if (open) {
           setPopoverOpen(true);
+        } else if (!isFocused && !calendarOpen) {
+          setPopoverOpen(false);
         }
       }}
     >
@@ -86,31 +85,12 @@ export function IntervalSelector({
         className="w-(--radix-popover-trigger-width) md:w-auto p-0"
         onOpenAutoFocus={(e) => e.preventDefault()}
         onInteractOutside={(e) => {
-          if (e.target === inputRef.current || inputRef.current?.contains(e.target as Node)) {
-            e.preventDefault();
-            return;
-          }
-          if (calendarOpen) {
-            handleCloseCalendar();
-            e.preventDefault();
-            return;
-          }
-          if (isFocused) {
-            e.preventDefault();
-            return;
-          }
-          setPopoverOpen(false);
-          setIsFocused(false);
+          e.preventDefault();
+          closeAll();
         }}
         onEscapeKeyDown={(e) => {
-          if (calendarOpen) {
-            handleCloseCalendar();
-            e.preventDefault();
-          } else {
-            setPopoverOpen(false);
-            setIsFocused(false);
-            inputRef.current?.blur();
-          }
+          e.preventDefault();
+          closeAll();
         }}
         container={container}
       >

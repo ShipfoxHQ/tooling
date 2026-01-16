@@ -103,12 +103,10 @@ export function useIntervalSelector({
         setSelectedLabel(label ?? undefined);
         selectedValueRef.current = value ?? undefined;
       } else {
-        setSelectedLabel(undefined);
-        setConfirmedShortcut(undefined);
-        selectedValueRef.current = undefined;
+        clearSelectionState();
       }
     },
-    [detectShortcutFromInterval],
+    [detectShortcutFromInterval, clearSelectionState],
   );
 
   const detectShortcutFromInput = useCallback(
@@ -212,18 +210,16 @@ export function useIntervalSelector({
     ? inputValue
     : (selectedLabel ?? formatIntervalDisplay(interval, false));
 
-  const closeAll = () => {
-    setPopoverOpen(false);
-    setIsFocused(false);
-    setCalendarOpen(false);
-    setHighlightedIndex(-1);
-    inputRef.current?.blur();
-  };
-
   const closeInputAndPopover = () => {
     setIsFocused(false);
     setPopoverOpen(false);
     inputRef.current?.blur();
+  };
+
+  const closeAll = () => {
+    closeInputAndPopover();
+    setCalendarOpen(false);
+    setHighlightedIndex(-1);
   };
 
   useEffect(() => {
@@ -288,6 +284,7 @@ export function useIntervalSelector({
         setConfirmedShortcut(undefined);
         setIsInvalid(true);
       } else {
+        setConfirmedShortcut(undefined);
         setIsInvalid(false);
       }
     }
@@ -333,7 +330,6 @@ export function useIntervalSelector({
     } else if (e.key === 'Escape') {
       e.preventDefault();
       closeAll();
-      setHighlightedIndex(-1);
     }
   };
 
@@ -410,10 +406,6 @@ export function useIntervalSelector({
     setCalendarOpen(true);
   };
 
-  const handleCloseCalendar = () => {
-    closeAll();
-  };
-
   const displayShortcut = detectedShortcut ?? confirmedShortcut ?? '-';
 
   useEffect(() => {
@@ -443,8 +435,8 @@ export function useIntervalSelector({
     handleOptionSelect,
     handleCalendarSelect,
     handleOpenCalendar,
-    handleCloseCalendar,
     setPopoverOpen,
     setIsFocused,
+    closeAll,
   };
 }
