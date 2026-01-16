@@ -1,4 +1,5 @@
 import type {Meta, StoryObj} from '@storybook/react';
+import type {NormalizedInterval} from 'date-fns';
 import {useState} from 'react';
 import {intervalToNowFromDuration} from 'utils/date';
 import {IntervalSelector} from './interval-selector';
@@ -16,19 +17,23 @@ const meta = {
 export default meta;
 type Story = StoryObj<typeof meta>;
 
+const DEFAULT_INTERVAL = intervalToNowFromDuration({days: 7});
+
 function ControlledIntervalSelector() {
-  const [interval, setInterval] = useState(() => intervalToNowFromDuration({hours: 1}));
-  const [value, setValue] = useState(() => findOptionValueForInterval(interval) || '1h');
+  const [interval, setInterval] = useState<NormalizedInterval>(DEFAULT_INTERVAL);
+  const [intervalValue, setIntervalValue] = useState<string | undefined>(() =>
+    findOptionValueForInterval(DEFAULT_INTERVAL),
+  );
 
   return (
     <IntervalSelector
       interval={interval}
       onIntervalChange={(newInterval) => {
         setInterval(newInterval);
-        setValue(findOptionValueForInterval(newInterval) || 'custom');
+        setIntervalValue(findOptionValueForInterval(newInterval));
       }}
-      value={value}
-      onValueChange={setValue}
+      value={intervalValue}
+      onValueChange={setIntervalValue}
       className="w-[75vw] md:w-350"
     />
   );
@@ -36,7 +41,7 @@ function ControlledIntervalSelector() {
 
 export const Default: Story = {
   args: {
-    interval: intervalToNowFromDuration({hours: 1}),
+    interval: DEFAULT_INTERVAL,
     onIntervalChange: () => undefined,
   },
   render: () => (
