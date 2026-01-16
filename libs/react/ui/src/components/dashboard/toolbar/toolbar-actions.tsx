@@ -65,11 +65,12 @@ export function ToolbarActions({
   children,
   ...props
 }: ToolbarActionsProps) {
-  const {setSearchQuery, filters, setFilters, columns, setColumns} = useDashboardContext();
+  const {setSearchQuery, resourceType, setResourceType, columns, setColumns} =
+    useDashboardContext();
 
   return (
     <div className={cn('flex items-start md:items-center gap-8 md:gap-12', className)} {...props}>
-      {showFilter && <FilterButton filters={filters} onFiltersChange={setFilters} />}
+      {showFilter && <FilterButton value={resourceType} onValueChange={setResourceType} />}
       {showSearch && <ToolbarSearch placeholder={searchPlaceholder} onSelect={setSearchQuery} />}
       {showView && <ViewDropdown columns={columns} onColumnsChange={setColumns} />}
       {children}

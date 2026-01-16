@@ -18,14 +18,13 @@ export type {
 export {
   DashboardProvider,
   DEFAULT_COLUMN_ID_TO_ACCESSOR_KEY,
+  RESOURCE_TYPE_OPTIONS,
   updateViewColumnsFromVisibility,
   useDashboardContext,
   viewColumnsToVisibilityState,
 } from './context';
 export type {DashboardProps} from './dashboard';
 export {Dashboard} from './dashboard';
-export type {ExpressionFilterBarProps, ResourceTypeOption} from './filters';
-export {ExpressionFilterBar} from './filters';
 export {AnalyticsPage, JobsPage} from './pages';
 export type {TableWrapperProps} from './table';
 export {TableWrapper} from './table';
