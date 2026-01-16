@@ -14,7 +14,6 @@ import {type KpiCardProps, KpiCardsGroup} from '../components/kpi-card';
 import {MobileSidebar} from '../components/mobile-sidebar';
 import {defaultSidebarItems, Sidebar} from '../components/sidebar';
 import {useDashboardContext} from '../context';
-import {ExpressionFilterBar} from '../filters';
 import {TableWrapper} from '../table';
 import {PageToolbar, ToolbarActions} from '../toolbar';
 
@@ -118,8 +117,6 @@ export function AnalyticsPage() {
     updateColumnVisibility,
     activeSidebarItem,
     setActiveSidebarItem,
-    resourceType,
-    setResourceType,
   } = useDashboardContext();
 
   const isDesktop = useMediaQuery('(min-width: 1024px)');
@@ -168,8 +165,6 @@ export function AnalyticsPage() {
             primaryAction={{label: 'Learn more', onClick: () => undefined}}
             secondaryAction={{label: 'Dismiss', onClick: () => undefined}}
           />
-
-          <ExpressionFilterBar value={resourceType} onValueChange={setResourceType} />
 
           <ToolbarActions />
 

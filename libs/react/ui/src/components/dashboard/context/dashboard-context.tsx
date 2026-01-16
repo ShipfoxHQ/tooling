@@ -7,7 +7,14 @@
 
 import type {VisibilityState} from '@tanstack/react-table';
 import {createContext, type ReactNode, useCallback, useContext, useMemo, useState} from 'react';
-import type {DashboardState, FilterOption, ResourceType, TimePeriod, ViewColumn} from './types';
+import type {
+  DashboardState,
+  FilterOption,
+  ResourceType,
+  ResourceTypeOption,
+  TimePeriod,
+  ViewColumn,
+} from './types';
 import {updateViewColumnsFromVisibility, viewColumnsToVisibilityState} from './utils';
 
 const DashboardContext = createContext<DashboardState | undefined>(undefined);
@@ -38,6 +45,32 @@ const DEFAULT_FILTERS: FilterOption[] = [
   {id: 'running', label: 'Running', checked: false},
 ];
 
+export const RESOURCE_TYPES: Array<ResourceType> = [
+  'ci.pipeline',
+  'ci.job',
+  'ci.step',
+  'test.run',
+  'test.suite',
+  'test.case',
+] as const;
+
+export const RESOURCE_TYPE_LABELS: Record<ResourceType, string> = {
+  'ci.pipeline': 'CI Pipeline',
+  'ci.job': 'CI Job',
+  'ci.step': 'CI Step',
+  'test.run': 'Test Run',
+  'test.suite': 'Test Suite',
+  'test.case': 'Test Case',
+};
+
+export const RESOURCE_TYPE_OPTIONS: ResourceTypeOption[] = [
+  ...RESOURCE_TYPES.map((type) => ({
+    id: type,
+    label: RESOURCE_TYPE_LABELS[type],
+    disabled: type.startsWith('test.'),
+  })),
+];
+
 export interface DashboardProviderProps {
   children: ReactNode;
   /**
@@ -62,7 +95,7 @@ export interface DashboardProviderProps {
   initialActiveSidebarItem?: string;
   /**
    * Initial resource type
-   * @default 'ci-pipeline'
+   * @default 'ci.pipeline'
    */
   initialResourceType?: ResourceType;
   /**
@@ -90,7 +123,7 @@ export function DashboardProvider({
   initialFilters = DEFAULT_FILTERS,
   initialTimePeriod = '2days',
   initialActiveSidebarItem = 'reliability',
-  initialResourceType = 'ci-pipeline',
+  initialResourceType = 'ci.pipeline',
   columnMapping,
 }: DashboardProviderProps) {
   // State management
