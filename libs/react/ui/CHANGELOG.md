@@ -1,5 +1,11 @@
 # @shipfox/react-ui
 
+## 0.22.0
+
+### Minor Changes
+
+- 19d8507: Update action props to LineChart and BarChart
+
 ## 0.21.0
 
 ### Minor Changes
