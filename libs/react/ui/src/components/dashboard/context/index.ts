@@ -10,7 +10,14 @@ export {
   RESOURCE_TYPES,
   useDashboardContext,
 } from './dashboard-context';
-export type {DashboardState, FilterOption, ResourceType, TimePeriod, ViewColumn} from './types';
+export type {
+  DashboardState,
+  FilterOption,
+  ResourceType,
+  ResourceTypeOption,
+  TimePeriod,
+  ViewColumn,
+} from './types';
 export {
   DEFAULT_COLUMN_ID_TO_ACCESSOR_KEY,
   updateViewColumnsFromVisibility,

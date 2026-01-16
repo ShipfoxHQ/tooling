@@ -27,9 +27,6 @@ export interface FilterOption {
  */
 export type TimePeriod = '1hour' | '1day' | '2days' | '7days' | '30days';
 
-/**
- * Resource type option
- */
 export type ResourceType =
   | 'ci.pipeline'
   | 'ci.job'

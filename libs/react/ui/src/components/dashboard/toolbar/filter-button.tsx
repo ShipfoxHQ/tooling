@@ -22,8 +22,11 @@ export interface FilterButtonProps extends HTMLAttributes<HTMLButtonElement> {
 export function FilterButton({value, onValueChange, className, ...props}: FilterButtonProps) {
   const [open, setOpen] = useState(false);
   const filterOptions = RESOURCE_TYPE_OPTIONS.filter((opt) => !opt.disabled);
-  const selectedLabel = RESOURCE_TYPE_LABELS[value] ?? value;
-  const selectedIndex = filterOptions.findIndex((opt) => opt.id === value);
+  const normalizedValue = (
+    filterOptions.some((opt) => opt.id === value) ? value : (filterOptions[0]?.id ?? value)
+  ) as ResourceType;
+  const selectedLabel = RESOURCE_TYPE_LABELS[normalizedValue] ?? normalizedValue;
+  const selectedIndex = filterOptions.findIndex((opt) => opt.id === normalizedValue);
 
   const handleFilterChange = (filterId: ResourceType) => {
     onValueChange(filterId);
