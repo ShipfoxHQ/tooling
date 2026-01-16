@@ -23,6 +23,7 @@ export * from './form';
 export * from './icon';
 export * from './inline-tips';
 export * from './input';
+export * from './interval-selector';
 export * from './item';
 export * from './kbd';
 export * from './label';

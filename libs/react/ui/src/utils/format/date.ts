@@ -57,7 +57,14 @@ export function formatDateTimeRange(
     minute: areFullDays ? undefined : defaultOptions.minute,
     ...options,
   });
-  return formatter.formatRange(start, end);
+
+  if (areFullDays) {
+    return formatter.formatRange(start, end);
+  }
+
+  const startFormatted = formatter.format(start);
+  const endFormatted = formatter.format(end);
+  return `${startFormatted} – ${endFormatted}`;
 }
 
 export function formatTimeSeriesTick(

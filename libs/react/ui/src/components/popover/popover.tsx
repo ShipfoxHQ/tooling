@@ -22,10 +22,11 @@ function PopoverContent({
   className,
   align = 'center',
   sideOffset = 4,
+  container,
   ...props
-}: ComponentProps<typeof PopoverPrimitive.Content>) {
+}: ComponentProps<typeof PopoverPrimitive.Content> & {container?: HTMLElement | null}) {
   return (
-    <PopoverPortal>
+    <PopoverPortal container={container}>
       <PopoverPrimitive.Content
         align={align}
         sideOffset={sideOffset}
