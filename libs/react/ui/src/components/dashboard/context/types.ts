@@ -27,10 +27,22 @@ export interface FilterOption {
  */
 export type TimePeriod = '1hour' | '1day' | '2days' | '7days' | '30days';
 
+export type ResourceType =
+  | 'ci.pipeline'
+  | 'ci.job'
+  | 'ci.step'
+  | 'test.run'
+  | 'test.suite'
+  | 'test.case';
+
 /**
  * Resource type option
  */
-export type ResourceType = 'ci-pipeline' | 'ci-jobs' | 'ci-steps' | 'runners' | 'suite' | 'cases';
+export interface ResourceTypeOption {
+  id: ResourceType;
+  label: string;
+  disabled?: boolean;
+}
 
 /**
  * Dashboard context state
