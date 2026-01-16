@@ -2,12 +2,15 @@
  * Dashboard Context Provider
  *
  * Provides centralized state management for dashboard components including
- * search, filters, column visibility, time period, and sidebar navigation.
+ * search, filters, column visibility, time interval, and sidebar navigation.
  */
 
 import type {VisibilityState} from '@tanstack/react-table';
+import {findOptionValueForInterval} from 'components/interval-selector';
+import type {NormalizedInterval} from 'date-fns';
 import {createContext, type ReactNode, useCallback, useContext, useMemo, useState} from 'react';
-import type {DashboardState, FilterOption, ResourceType, TimePeriod, ViewColumn} from './types';
+import {intervalToNowFromDuration} from 'utils/date';
+import type {DashboardState, FilterOption, ResourceType, ViewColumn} from './types';
 import {updateViewColumnsFromVisibility, viewColumnsToVisibilityState} from './utils';
 
 const DashboardContext = createContext<DashboardState | undefined>(undefined);
@@ -38,6 +41,8 @@ const DEFAULT_FILTERS: FilterOption[] = [
   {id: 'running', label: 'Running', checked: false},
 ];
 
+const DEFAULT_INTERVAL = intervalToNowFromDuration({days: 7});
+
 export interface DashboardProviderProps {
   children: ReactNode;
   /**
@@ -51,10 +56,10 @@ export interface DashboardProviderProps {
    */
   initialFilters?: FilterOption[];
   /**
-   * Initial time period
-   * @default '2days'
+   * Initial time interval
+   * @default intervalToNowFromDuration({days: 7})
    */
-  initialTimePeriod?: TimePeriod;
+  initialInterval?: NormalizedInterval;
   /**
    * Initial active sidebar item
    * @default 'reliability'
@@ -79,7 +84,7 @@ export interface DashboardProviderProps {
  *
  * @example
  * ```tsx
- * <DashboardProvider initialTimePeriod="7days">
+ * <DashboardProvider initialInterval={intervalToNowFromDuration({days: 7})}>
  *   <AnalyticsContent />
  * </DashboardProvider>
  * ```
@@ -88,19 +93,28 @@ export function DashboardProvider({
   children,
   initialColumns = DEFAULT_COLUMNS,
   initialFilters = DEFAULT_FILTERS,
-  initialTimePeriod = '2days',
+  initialInterval = DEFAULT_INTERVAL,
   initialActiveSidebarItem = 'reliability',
   initialResourceType = 'ci-pipeline',
   columnMapping,
 }: DashboardProviderProps) {
   // State management
   const [searchQuery, setSearchQuery] = useState('');
-  const [timePeriod, setTimePeriod] = useState<TimePeriod>(initialTimePeriod);
+  const [interval, setInterval] = useState<NormalizedInterval>(initialInterval);
+  const [intervalValue, setIntervalValue] = useState<string | undefined>(() =>
+    findOptionValueForInterval(initialInterval),
+  );
   const [lastUpdated, setLastUpdated] = useState('13s ago');
   const [columns, setColumns] = useState<ViewColumn[]>(initialColumns);
   const [filters, setFilters] = useState<FilterOption[]>(initialFilters);
   const [activeSidebarItem, setActiveSidebarItem] = useState(initialActiveSidebarItem);
   const [resourceType, setResourceType] = useState<ResourceType>(initialResourceType);
+
+  const handleIntervalChange = useCallback((newInterval: NormalizedInterval) => {
+    setInterval(newInterval);
+    const value = findOptionValueForInterval(newInterval);
+    setIntervalValue(value);
+  }, []);
 
   // Compute column visibility state
   const columnVisibility = useMemo(
@@ -121,8 +135,10 @@ export function DashboardProvider({
     () => ({
       searchQuery,
       setSearchQuery,
-      timePeriod,
-      setTimePeriod,
+      interval,
+      setInterval: handleIntervalChange,
+      intervalValue,
+      setIntervalValue,
       lastUpdated,
       setLastUpdated,
       columns,
@@ -138,7 +154,9 @@ export function DashboardProvider({
     }),
     [
       searchQuery,
-      timePeriod,
+      interval,
+      handleIntervalChange,
+      intervalValue,
       lastUpdated,
       columns,
       columnVisibility,

@@ -3,6 +3,7 @@
  */
 
 import type {VisibilityState} from '@tanstack/react-table';
+import type {NormalizedInterval} from 'date-fns';
 
 /**
  * View column configuration for table visibility control
@@ -23,11 +24,6 @@ export interface FilterOption {
 }
 
 /**
- * Time period option
- */
-export type TimePeriod = '1hour' | '1day' | '2days' | '7days' | '30days';
-
-/**
  * Resource type option
  */
 export type ResourceType = 'ci-pipeline' | 'ci-jobs' | 'ci-steps' | 'runners' | 'suite' | 'cases';
@@ -40,9 +36,11 @@ export interface DashboardState {
   searchQuery: string;
   setSearchQuery: (query: string) => void;
 
-  // Time period
-  timePeriod: TimePeriod;
-  setTimePeriod: (period: TimePeriod) => void;
+  // Time interval
+  interval: NormalizedInterval;
+  setInterval: (interval: NormalizedInterval) => void;
+  intervalValue: string | undefined;
+  setIntervalValue: (value: string | undefined) => void;
 
   // Last updated timestamp
   lastUpdated: string;
