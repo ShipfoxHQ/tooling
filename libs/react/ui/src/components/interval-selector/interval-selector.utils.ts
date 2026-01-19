@@ -96,7 +96,8 @@ function calculateCalendarShortcut(value: string): string {
     case 'week-to-date': {
       const weekStart = startOfWeek(now, WEEK_OPTIONS);
       const days = differenceInDays(now, weekStart);
-      return generateDurationShortcut({days}) || '0d';
+      const hours = differenceInHours(now, weekStart);
+      return days > 0 ? generateDurationShortcut({days}) : generateDurationShortcut({hours});
     }
     case 'month-to-date': {
       const monthStart = startOfMonth(now);

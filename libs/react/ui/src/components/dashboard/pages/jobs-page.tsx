@@ -9,15 +9,8 @@ import {TableWrapper} from '../table';
 import {PageToolbar} from '../toolbar';
 
 export function JobsPage() {
-  const {
-    searchQuery,
-    setSearchQuery,
-    timePeriod,
-    setTimePeriod,
-    lastUpdated,
-    columnVisibility,
-    updateColumnVisibility,
-  } = useDashboardContext();
+  const {searchQuery, setSearchQuery, columnVisibility, updateColumnVisibility} =
+    useDashboardContext();
 
   const filteredData = useMemo(
     () => jobsData.filter((job) => job.name.toLowerCase().includes(searchQuery.toLowerCase())),
@@ -26,12 +19,7 @@ export function JobsPage() {
 
   return (
     <div className="flex h-full flex-col">
-      <PageToolbar
-        title="Jobs"
-        timePeriod={timePeriod}
-        onTimePeriodChange={setTimePeriod}
-        lastUpdated={lastUpdated}
-      />
+      <PageToolbar title="Jobs" onRefresh={() => undefined} />
 
       <div className="flex-1 px-12 pb-12 pt-4 md:px-24 md:pb-24 overflow-auto">
         <TableWrapper

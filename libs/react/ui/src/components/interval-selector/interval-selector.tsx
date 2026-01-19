@@ -11,7 +11,7 @@ export interface IntervalSelectorProps {
   interval: NormalizedInterval;
   onIntervalChange: (interval: NormalizedInterval) => void;
   value?: string;
-  onValueChange?: (value: string) => void;
+  onValueChange?: (value: string | undefined) => void;
   container?: HTMLElement | null;
   className?: string;
   inputClassName?: string;
@@ -38,6 +38,8 @@ export function IntervalSelector({
     inputRef,
     handleFocus,
     handleBlur,
+    handleMouseDown,
+    handleMouseUp,
     handleInputChange,
     handleKeyDown,
     handleOptionSelect,
@@ -71,6 +73,8 @@ export function IntervalSelector({
             onChange={isFocused ? handleInputChange : undefined}
             onFocus={handleFocus}
             onBlur={handleBlur}
+            onMouseDown={handleMouseDown}
+            onMouseUp={handleMouseUp}
             onKeyDown={handleKeyDown}
             readOnly={!isFocused}
             aria-invalid={isInvalid && isFocused}
@@ -86,6 +90,12 @@ export function IntervalSelector({
         onOpenAutoFocus={(e) => e.preventDefault()}
         onInteractOutside={(e) => {
           e.preventDefault();
+          const target = e.target as HTMLElement;
+          if (
+            inputRef.current &&
+            (inputRef.current.contains(target) || target.closest('[data-radix-popover-trigger]'))
+          )
+            return;
           closeAll();
         }}
         onEscapeKeyDown={(e) => {

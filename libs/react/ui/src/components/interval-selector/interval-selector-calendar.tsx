@@ -16,13 +16,20 @@ export function IntervalSelectorCalendar({interval, onSelect}: IntervalSelectorC
   });
 
   const handleSelect = useCallback(
-    (range: DateRange | undefined) => {
-      setSelectedRange(range);
-      if (range?.from && range?.to) {
-        onSelect({from: range.from, to: range.to});
-      } else {
-        onSelect(undefined);
-      }
+    (nextRange: DateRange | undefined, selectedDay: Date | undefined) => {
+      setSelectedRange((range) => {
+        if (range?.from && range?.to && selectedDay) {
+          const newRange = {from: selectedDay, to: undefined};
+          onSelect(newRange);
+          return newRange;
+        }
+        if (nextRange?.from && nextRange?.to) {
+          onSelect({from: nextRange.from, to: nextRange.to});
+        } else {
+          onSelect(nextRange);
+        }
+        return nextRange;
+      });
     },
     [onSelect],
   );

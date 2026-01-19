@@ -3,6 +3,7 @@ import {differenceInDays, differenceInHours, differenceInMinutes} from 'date-fns
 import {useCallback, useEffect, useRef, useState} from 'react';
 import type {DateRange as DayPickerDateRange} from 'react-day-picker';
 import {intervalToNowFromDuration, parseTextInterval} from 'utils/date';
+import type {IntervalSelectorProps} from './interval-selector';
 import {
   CALENDAR_INTERVALS,
   detectShortcutFromCalendarInterval,
@@ -15,12 +16,11 @@ import {
   parseRelativeTimeShortcut,
 } from './interval-selector.utils';
 
-interface UseIntervalSelectorProps {
-  interval: NormalizedInterval;
-  onIntervalChange: (interval: NormalizedInterval) => void;
-  value?: string;
-  onValueChange?: (value: string) => void;
-}
+interface UseIntervalSelectorProps
+  extends Pick<
+    IntervalSelectorProps,
+    'interval' | 'onIntervalChange' | 'value' | 'onValueChange'
+  > {}
 
 export function useIntervalSelector({
   interval,
@@ -42,6 +42,7 @@ export function useIntervalSelector({
   const isSelectingRef = useRef(false);
   const inputRef = useRef<HTMLInputElement>(null);
   const shakeTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const isMouseDownOnInputRef = useRef(false);
 
   const getShortcutFromValue = useCallback((value: string): string | undefined => {
     const option = findOption(value);
@@ -177,11 +178,10 @@ export function useIntervalSelector({
         selectedValueRef.current = matchingOption.value;
         setConfirmedShortcut(getShortcutFromValue(matchingOption.value));
       } else {
-        setSelectedLabel(undefined);
-        selectedValueRef.current = undefined;
+        applyIntervalDetection(int);
       }
     },
-    [getShortcutFromValue],
+    [getShortcutFromValue, applyIntervalDetection],
   );
 
   const createIntervalFromOption = useCallback(
@@ -208,7 +208,9 @@ export function useIntervalSelector({
 
   const displayValue = isFocused
     ? inputValue
-    : (selectedLabel ?? formatIntervalDisplay(interval, false));
+    : value && findOption(value)
+      ? (selectedLabel ?? getLabelForValue(value) ?? formatIntervalDisplay(interval, false))
+      : (selectedLabel ?? formatIntervalDisplay(interval, false));
 
   const closeInputAndPopover = () => {
     setIsFocused(false);
@@ -258,9 +260,25 @@ export function useIntervalSelector({
     });
   };
 
+  const handleMouseDown = () => {
+    isMouseDownOnInputRef.current = true;
+  };
+
+  const handleMouseUp = () => {
+    setTimeout(() => {
+      isMouseDownOnInputRef.current = false;
+    });
+  };
+
   const handleBlur = (e: React.FocusEvent<HTMLInputElement>) => {
     const relatedTarget = e.relatedTarget as HTMLElement;
     if (relatedTarget?.closest('[role="dialog"]')) {
+      return;
+    }
+    if (isMouseDownOnInputRef.current) {
+      requestAnimationFrame(() => {
+        inputRef.current?.focus();
+      });
       return;
     }
     setIsFocused(false);
@@ -352,12 +370,14 @@ export function useIntervalSelector({
 
     const parsedInterval = parseTextInterval(trimmedValue);
     if (parsedInterval) {
+      const calendarResult = detectShortcutFromCalendarInterval(parsedInterval);
+      if (calendarResult?.value) {
+        onValueChange?.(calendarResult.value);
+      } else {
+        onValueChange?.(undefined);
+      }
       applyIntervalDetection(parsedInterval);
       onIntervalChange(parsedInterval);
-      onValueChange?.(trimmedValue);
-      if (!value) {
-        selectedValueRef.current = undefined;
-      }
       setDetectedShortcut(undefined);
       setIsInvalid(false);
       closeInputAndPopover();
@@ -397,7 +417,7 @@ export function useIntervalSelector({
 
     onIntervalChange(calendarInterval);
 
-    if (range.to && differenceInDays(range.to, range.from) !== 0) {
+    if (range.to) {
       closeAll();
     }
   };
@@ -414,6 +434,7 @@ export function useIntervalSelector({
       if (shakeTimeoutRef.current) {
         clearTimeout(shakeTimeoutRef.current);
       }
+      isMouseDownOnInputRef.current = false;
     };
   }, []);
 
@@ -430,6 +451,8 @@ export function useIntervalSelector({
     inputRef,
     handleFocus,
     handleBlur,
+    handleMouseDown,
+    handleMouseUp,
     handleInputChange,
     handleKeyDown,
     handleOptionSelect,
