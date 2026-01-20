@@ -125,32 +125,25 @@ export function parseTextDurationShortcut(text: string): Duration | undefined {
   return undefined;
 }
 
-const dateSplitterRefex = /[-\u2013]/;
-const yearRegex = /\d{4}/;
+const DATE_SPLITTER_REGEX = /[-\u2013]/;
+const YEAR_REGEX = /\d{4}/;
 
 function hasYearInText(text: string): boolean {
-  return yearRegex.test(text);
+  return YEAR_REGEX.test(text);
 }
 
-export function parseTextInterval(text: string): NormalizedInterval | undefined {
-  const durationShortcut = parseTextDurationShortcut(text);
-  if (durationShortcut) return intervalToNowFromDuration(durationShortcut);
-  const textDates = text.split(dateSplitterRefex).map((token) => token.trim());
-  if (textDates.length !== 2) return;
+function parseDateString(dateText: string): Date | null {
+  const date = new Date(dateText);
+  return Number.isNaN(date.getTime()) ? null : date;
+}
 
-  const startText = textDates[0];
-  const endText = textDates[1];
-  const startHasYear = hasYearInText(startText);
-  const endHasYear = hasYearInText(endText);
-
-  const start = new Date(startText);
-  const end = new Date(endText);
-
-  if (Number.isNaN(start.getTime()) || Number.isNaN(end.getTime())) return;
-
-  const now = new Date();
-  const currentYear = now.getFullYear();
-
+function assignYearsToDates(
+  start: Date,
+  end: Date,
+  startHasYear: boolean,
+  endHasYear: boolean,
+  currentYear: number,
+): void {
   if (!startHasYear && !endHasYear) {
     start.setFullYear(currentYear);
     end.setFullYear(currentYear);
@@ -159,18 +152,53 @@ export function parseTextInterval(text: string): NormalizedInterval | undefined 
   } else if (!endHasYear) {
     end.setFullYear(currentYear);
   }
+}
 
+function fixInvalidInterval(
+  start: Date,
+  end: Date,
+  startHasYear: boolean,
+  endHasYear: boolean,
+): boolean {
   if (end < start) {
-    if (end.getFullYear() < currentYear) {
-      end.setFullYear(currentYear);
+    if (startHasYear && endHasYear) {
+      return false;
     }
-
     const endYear = end.getFullYear();
     start.setFullYear(endYear - 1);
   }
+  return true;
+}
 
-  if (end < start) {
-    return {start: end, end: start};
+export function parseTextInterval(text: string): NormalizedInterval | undefined {
+  const durationShortcut = parseTextDurationShortcut(text);
+  if (durationShortcut) {
+    return intervalToNowFromDuration(durationShortcut);
+  }
+
+  const textDates = text.split(DATE_SPLITTER_REGEX).map((token) => token.trim());
+  if (textDates.length !== 2) {
+    return undefined;
+  }
+
+  const [startText, endText] = textDates;
+  const startHasYear = hasYearInText(startText);
+  const endHasYear = hasYearInText(endText);
+
+  const start = parseDateString(startText);
+  const end = parseDateString(endText);
+
+  if (!start || !end) {
+    return undefined;
+  }
+
+  const now = new Date();
+  const currentYear = now.getFullYear();
+  assignYearsToDates(start, end, startHasYear, endHasYear, currentYear);
+
+  const isValid = fixInvalidInterval(start, end, startHasYear, endHasYear);
+  if (!isValid) {
+    return undefined;
   }
 
   return {start, end};

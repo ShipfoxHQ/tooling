@@ -127,118 +127,126 @@ describe('date utils', () => {
       expect(parseTextInterval('invalid - invalid')).toBeUndefined();
     });
 
-    it('should handle duration shortcuts', () => {
+    it('should parse duration shortcuts correctly', () => {
       const result = parseTextInterval('5m');
-      expect(result).toBeDefined();
-      if (!result) return;
-      expect(result.end.getTime()).toBeLessThanOrEqual(now.getTime());
-      expect(result.start.getTime()).toBeLessThan(result.end.getTime());
+      const expectedStart = sub(now, {minutes: 5});
+      expect(result).toEqual({
+        start: expectedStart,
+        end: now,
+      });
     });
 
-    it('should assign years correctly when dates lack years', () => {
-      const result1 = parseTextInterval('Jan 1 - Jan 15');
-      expect(result1).toBeDefined();
-      if (result1) {
-        expect(result1.start.getFullYear()).toBe(2026);
-        expect(result1.end.getFullYear()).toBe(2026);
-        expect(result1.end.getTime()).toBeGreaterThanOrEqual(result1.start.getTime());
-      }
+    describe('year assignment when dates lack years', () => {
+      const currentYear = now.getFullYear();
 
-      const result2 = parseTextInterval('Jan 1 - Jan 15 2025');
-      expect(result2).toBeDefined();
-      if (result2) {
-        expect(result2.start.getFullYear()).toBe(2025);
-        expect(result2.end.getFullYear()).toBe(2025);
-      }
-
-      const result3 = parseTextInterval('Jan 1 2025 - Jan 15');
-      expect(result3).toBeDefined();
-      if (result3) {
-        expect(result3.end.getFullYear()).toBe(2026);
-      }
-    });
-
-    it('should fix invalid intervals where end < start', () => {
-      const result1 = parseTextInterval('Dec 25 - Jan 5');
-      expect(result1).toBeDefined();
-      if (result1) {
-        expect(result1.end.getFullYear()).toBe(2026);
-        expect(result1.start.getFullYear()).toBe(2025);
-        expect(result1.end.getTime()).toBeGreaterThan(result1.start.getTime());
-      }
-
-      const result2 = parseTextInterval('Jan 7 2027 - Jan 6 2024');
-      expect(result2).toBeDefined();
-      if (result2) {
-        expect(result2.end.getFullYear()).toBe(2026);
-        expect(result2.start.getFullYear()).toBe(2025);
-        expect(result2.end.getTime()).toBeGreaterThan(result2.start.getTime());
-      }
-
-      const result3 = parseTextInterval('Jan 7 2027 - Jan 6 2025');
-      expect(result3).toBeDefined();
-      if (result3) {
-        expect(result3.end.getFullYear()).toBe(2026);
-        expect(result3.start.getFullYear()).toBe(2025);
-        expect(result3.end.getTime()).toBeGreaterThan(result3.start.getTime());
-      }
-
-      const result4 = parseTextInterval('Jan 15 2026 - Jan 1 2026');
-      expect(result4).toBeDefined();
-      if (result4) {
-        expect(result4.end.getFullYear()).toBe(2026);
-        expect(result4.start.getFullYear()).toBe(2025);
-        expect(result4.end.getTime()).toBeGreaterThan(result4.start.getTime());
-      }
-    });
-
-    it('should handle valid intervals correctly', () => {
-      const result1 = parseTextInterval('Jan 1 2026 - Jan 15 2026');
-      expect(result1).toBeDefined();
-      if (result1) {
-        expect(result1.end.getTime()).toBeGreaterThanOrEqual(result1.start.getTime());
-      }
-
-      const result2 = parseTextInterval('Jan 1 2025 - Jan 15 2026');
-      expect(result2).toBeDefined();
-      if (result2) {
-        expect(result2.end.getTime()).toBeGreaterThan(result2.start.getTime());
-      }
-    });
-
-    it('should handle edge cases', () => {
-      const result1 = parseTextInterval('Jan 1 2026 – Jan 15 2026');
-      expect(result1).toBeDefined();
-      if (result1) {
-        expect(result1.end.getTime()).toBeGreaterThanOrEqual(result1.start.getTime());
-      }
-
-      const result2 = parseTextInterval('Jan 1 2026 12:00 AM - Jan 15 2026 11:59 PM');
-      expect(result2).toBeDefined();
-      if (result2) {
-        expect(result2.end.getTime()).toBeGreaterThanOrEqual(result2.start.getTime());
-      }
-
-      const result3 = parseTextInterval('  Jan 1 2026  -  Jan 15 2026  ');
-      expect(result3).toBeDefined();
-      if (result3) {
-        expect(result3.end.getTime()).toBeGreaterThanOrEqual(result3.start.getTime());
-      }
-    });
-
-    it('should always ensure end >= start for various invalid combinations', () => {
-      const testCases = [
-        'Jan 7 2027 - Jan 6 2025',
-        'Dec 31 2026 - Jan 1 2026',
-        'Jan 20 2026 - Jan 19 2026',
-        'Jan 1 2027 - Dec 31 2024',
-      ];
-
-      testCases.forEach((testCase) => {
-        const result = parseTextInterval(testCase);
+      it('should assign current year to both dates when neither has a year', () => {
+        const result = parseTextInterval('Jan 1 - Jan 15');
         expect(result).toBeDefined();
-        if (!result) return;
-        expect(result.end.getTime()).toBeGreaterThanOrEqual(result.start.getTime());
+        expect(result?.start.getFullYear()).toBe(currentYear);
+        expect(result?.end.getFullYear()).toBe(currentYear);
+        expect(result?.end.getTime()).toBeGreaterThanOrEqual(result?.start.getTime() ?? 0);
+      });
+
+      it('should assign end year to start when only start lacks year', () => {
+        const result = parseTextInterval('Jan 1 - Jan 15 2025');
+        expect(result).toBeDefined();
+        expect(result?.start.getFullYear()).toBe(2025);
+        expect(result?.end.getFullYear()).toBe(2025);
+      });
+
+      it('should assign current year to end when only end lacks year', () => {
+        const result = parseTextInterval('Jan 1 2025 - Jan 15');
+        expect(result).toBeDefined();
+        expect(result?.start.getFullYear()).toBe(2025);
+        expect(result?.end.getFullYear()).toBe(currentYear);
+      });
+
+      it('should preserve years when both dates have years specified', () => {
+        const result = parseTextInterval('Jan 1 2025 - Jan 15 2026');
+        expect(result).toBeDefined();
+        expect(result?.start.getFullYear()).toBe(2025);
+        expect(result?.end.getFullYear()).toBe(2026);
+        expect(result?.end.getTime()).toBeGreaterThan(result?.start.getTime() ?? 0);
+      });
+    });
+
+    describe('auto-fixing invalid intervals where end < start', () => {
+      it('should move start to previous year when both dates lack years and end < start', () => {
+        const result = parseTextInterval('Dec 25 - Jan 5');
+        const currentYear = now.getFullYear();
+        expect(result).toBeDefined();
+        expect(result?.start.getFullYear()).toBe(currentYear - 1);
+        expect(result?.end.getFullYear()).toBe(currentYear);
+        expect(result?.end.getTime()).toBeGreaterThan(result?.start.getTime() ?? 0);
+      });
+
+      it('should handle time components when auto-fixing invalid intervals without years', () => {
+        const result = parseTextInterval('Jan 21 12:05 PM - Jan 20 12:05 PM');
+        const currentYear = now.getFullYear();
+        expect(result).toBeDefined();
+        expect(result?.start.getFullYear()).toBe(currentYear - 1);
+        expect(result?.end.getFullYear()).toBe(currentYear);
+        expect(result?.end.getTime()).toBeGreaterThan(result?.start.getTime() ?? 0);
+      });
+
+      it('should handle year boundary crossing when dates lack years (Dec 31 to Jan 1)', () => {
+        const result = parseTextInterval('Dec 31 - Jan 1');
+        const currentYear = now.getFullYear();
+        expect(result).toBeDefined();
+        expect(result?.start.getFullYear()).toBe(currentYear - 1);
+        expect(result?.end.getFullYear()).toBe(currentYear);
+        expect(result?.end.getTime()).toBeGreaterThan(result?.start.getTime() ?? 0);
+      });
+    });
+
+    describe('invalid intervals with explicit years where end < start', () => {
+      it('should return undefined when start year is greater than end year', () => {
+        const result = parseTextInterval('Jan 7 2027 - Jan 6 2024');
+        expect(result).toBeUndefined();
+      });
+
+      it('should return undefined when dates are in same year but end < start', () => {
+        const result = parseTextInterval('Jan 7 2026 - Jan 6 2026');
+        expect(result).toBeUndefined();
+      });
+
+      it('should return undefined for year boundary crossing with explicit years (Dec 31 to Jan 1)', () => {
+        const result = parseTextInterval('Dec 31 2026 - Jan 1 2026');
+        expect(result).toBeUndefined();
+      });
+    });
+
+    describe('valid intervals', () => {
+      it('should handle valid intervals within the same year', () => {
+        const result = parseTextInterval('Jan 1 2026 - Jan 15 2026');
+        expect(result).toBeDefined();
+        expect(result?.end.getTime()).toBeGreaterThanOrEqual(result?.start.getTime() ?? 0);
+      });
+
+      it('should handle valid intervals spanning multiple years', () => {
+        const result = parseTextInterval('Jan 20 2025 - Jan 15 2026');
+        expect(result).toBeDefined();
+        expect(result?.end.getTime()).toBeGreaterThan(result?.start.getTime() ?? 0);
+      });
+    });
+
+    describe('date format variations', () => {
+      it('should handle en dash separator (U+2013)', () => {
+        const result = parseTextInterval('Jan 1 2026 – Jan 15 2026');
+        expect(result).toBeDefined();
+        expect(result?.end.getTime()).toBeGreaterThanOrEqual(result?.start.getTime() ?? 0);
+      });
+
+      it('should handle dates with time components', () => {
+        const result = parseTextInterval('Jan 1 2026 12:00 AM - Jan 15 2026 11:59 PM');
+        expect(result).toBeDefined();
+        expect(result?.end.getTime()).toBeGreaterThanOrEqual(result?.start.getTime() ?? 0);
+      });
+
+      it('should handle extra whitespace around dates', () => {
+        const result = parseTextInterval('  Jan 1 2026  -  Jan 15 2026  ');
+        expect(result).toBeDefined();
+        expect(result?.end.getTime()).toBeGreaterThanOrEqual(result?.start.getTime() ?? 0);
       });
     });
   });
