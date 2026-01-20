@@ -3,11 +3,11 @@ import {Kbd} from 'components/kbd';
 import {Popover, PopoverContent, PopoverTrigger} from 'components/popover';
 import type {Duration, NormalizedInterval} from 'date-fns';
 import {cn} from 'utils/cn';
+import {useIntervalSelector} from './hooks/use-interval-selector';
 import type {IntervalOption} from './interval-selector.utils';
 import {getCalendarIntervals, PAST_INTERVALS} from './interval-selector.utils';
 import {IntervalSelectorCalendar} from './interval-selector-calendar';
 import {IntervalSelectorSuggestions} from './interval-selector-suggestions';
-import {useIntervalSelector} from './use-interval-selector';
 
 export type IntervalSelection =
   | {
