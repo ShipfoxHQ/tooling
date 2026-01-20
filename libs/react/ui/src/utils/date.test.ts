@@ -127,15 +127,6 @@ describe('date utils', () => {
       expect(parseTextInterval('invalid - invalid')).toBeUndefined();
     });
 
-    it('should parse duration shortcuts correctly', () => {
-      const result = parseTextInterval('5m');
-      const expectedStart = sub(now, {minutes: 5});
-      expect(result).toEqual({
-        start: expectedStart,
-        end: now,
-      });
-    });
-
     describe('year assignment when dates lack years', () => {
       const currentYear = now.getFullYear();
 

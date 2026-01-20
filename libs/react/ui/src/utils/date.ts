@@ -171,11 +171,6 @@ function fixInvalidInterval(
 }
 
 export function parseTextInterval(text: string): NormalizedInterval | undefined {
-  const durationShortcut = parseTextDurationShortcut(text);
-  if (durationShortcut) {
-    return intervalToNowFromDuration(durationShortcut);
-  }
-
   const textDates = text.split(DATE_SPLITTER_REGEX).map((token) => token.trim());
   if (textDates.length !== 2) {
     return undefined;

@@ -2,9 +2,10 @@ import {Calendar} from 'components/calendar';
 import {endOfDay, format} from 'date-fns';
 import {useCallback, useState} from 'react';
 import type {DateRange} from 'react-day-picker';
+import type {IntervalSelection} from './types';
 
 interface IntervalSelectorCalendarProps {
-  onSelect: (range: DateRange | undefined) => void;
+  onSelect: (selection: IntervalSelection) => void;
 }
 
 export function IntervalSelectorCalendar({onSelect}: IntervalSelectorCalendarProps) {
@@ -13,8 +14,11 @@ export function IntervalSelectorCalendar({onSelect}: IntervalSelectorCalendarPro
   const handleSelect = useCallback(
     (_: DateRange | undefined, selectedDay: Date | undefined) => {
       if (!selectedDay) return setSelectedRange(undefined);
-      if (!selectedRange) return setSelectedRange({from: selectedDay, to: undefined});
-      onSelect({from: selectedRange.from, to: endOfDay(selectedDay)});
+      if (!selectedRange?.from) return setSelectedRange({from: selectedDay, to: undefined});
+      onSelect({
+        type: 'interval',
+        interval: {start: selectedRange.from, end: endOfDay(selectedDay)},
+      });
       return setSelectedRange(undefined);
     },
     [onSelect, selectedRange],

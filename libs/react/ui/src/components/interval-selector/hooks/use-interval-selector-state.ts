@@ -7,8 +7,6 @@ export function useIntervalSelectorState() {
   const [inputValue, setInputValue] = useState('');
   const [selectedLabel, setSelectedLabel] = useState<string | undefined>(undefined);
   const [highlightedIndex, setHighlightedIndex] = useState<number>(-1);
-  const [detectedShortcut, setDetectedShortcut] = useState<string | undefined>(undefined);
-  const [confirmedShortcut, setConfirmedShortcut] = useState<string | undefined>(undefined);
   const [isInvalid, setIsInvalid] = useState(false);
   const [shouldShake, setShouldShake] = useState(false);
 
@@ -31,10 +29,6 @@ export function useIntervalSelectorState() {
     setSelectedLabel,
     highlightedIndex,
     setHighlightedIndex,
-    detectedShortcut,
-    setDetectedShortcut,
-    confirmedShortcut,
-    setConfirmedShortcut,
     isInvalid,
     setIsInvalid,
     shouldShake,

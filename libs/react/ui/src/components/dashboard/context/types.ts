@@ -51,8 +51,6 @@ export interface DashboardState {
   // Time interval selection
   selection: IntervalSelection;
   setSelection: (selection: IntervalSelection) => void;
-  intervalValue: string | undefined;
-  setIntervalValue: (value: string | undefined) => void;
 
   // Last updated timestamp
   lastUpdated: string;

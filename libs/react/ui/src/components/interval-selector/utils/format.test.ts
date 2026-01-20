@@ -1,57 +1,99 @@
 import {afterEach, beforeEach, describe, expect, it, vi} from '@shipfox/vitest/vi';
-import {subHours, subMinutes} from 'date-fns';
-import {formatIntervalDisplay} from './format';
+import {formatSelection, formatSelectionForInput, formatShortcut} from './format';
+
+process.env.TZ = 'UTC';
 
 describe('interval-selector-format', () => {
+  const now = new Date('2026-01-19T17:45:00Z');
+
   beforeEach(() => {
-    vi.useFakeTimers();
-    vi.setSystemTime(new Date('2026-01-20T12:00:00Z'));
+    vi.useFakeTimers({now});
   });
 
   afterEach(() => {
     vi.useRealTimers();
   });
 
-  describe('formatIntervalDisplay', () => {
-    it('should format relative interval when not focused', () => {
+  describe('formatSelection', () => {
+    it('should show the selected interval in human readable format by default', () => {
       const interval = {
-        start: subMinutes(new Date(), 5),
-        end: new Date(),
+        start: new Date('2026-01-19T00:00:00Z'),
+        end: new Date('2026-01-19T01:00:00Z'),
       };
-      const result = formatIntervalDisplay(interval, false);
-      expect(result).toBeTruthy();
-      expect(typeof result).toBe('string');
+      const result = formatSelection({
+        selection: {type: 'interval', interval},
+        isFocused: false,
+        inputValue: '',
+      });
+      expect(result).toBe('Jan 19, 12:00 AM \u2013 Jan 19, 1:00 AM');
     });
 
-    it('should format with time when focused', () => {
-      const interval = {
-        start: subHours(new Date(), 1),
-        end: new Date(),
-      };
-      const result = formatIntervalDisplay(interval, true);
-      expect(result).toBeTruthy();
-      expect(typeof result).toBe('string');
-      expect(result.length).toBeGreaterThan(0);
+    it('should show the selected duration in human readable format by default', () => {
+      const duration = {hours: 1};
+      const result = formatSelection({
+        selection: {type: 'relative', duration},
+        isFocused: false,
+        inputValue: '',
+      });
+      expect(result).toBe('Past 1 hour');
     });
 
-    it('should format absolute interval differently', () => {
+    it('should show the input value when focused', () => {
       const interval = {
-        start: new Date('2026-01-20T10:00:00Z'),
-        end: new Date('2026-01-20T11:00:00Z'),
+        start: new Date('2026-01-19T00:00:00Z'),
+        end: new Date('2026-01-19T01:00:00Z'),
       };
-      const result = formatIntervalDisplay(interval, false);
-      expect(result).toBeTruthy();
-      expect(typeof result).toBe('string');
+      const result = formatSelection({
+        selection: {type: 'interval', interval},
+        isFocused: true,
+        inputValue: 'Hello world',
+      });
+      expect(result).toBe('Hello world');
+    });
+  });
+
+  describe('formatSelectionForInput', () => {
+    it('should format the selected interval as a full date range', () => {
+      const interval = {
+        start: new Date('2026-01-19T00:00:00Z'),
+        end: new Date('2026-01-19T01:00:00Z'),
+      };
+      const result = formatSelectionForInput({type: 'interval', interval});
+      expect(result).toBe('Jan 19, 2026, 12:00 AM\u2009\u2013\u2009Jan 19, 2026, 1:00 AM');
     });
 
-    it('should handle calendar intervals', () => {
-      const interval = {
-        start: new Date('2026-01-20T00:00:00Z'),
-        end: new Date('2026-01-20T23:59:59Z'),
-      };
-      const result = formatIntervalDisplay(interval, false);
-      expect(result).toBeTruthy();
-      expect(typeof result).toBe('string');
+    it('should format the selected duration as a full date range relative to now', () => {
+      const duration = {hours: 1};
+      const result = formatSelectionForInput({type: 'relative', duration});
+      expect(result).toBe('Jan 19, 2026, 4:45 PM\u2009\u2013\u2009Jan 19, 2026, 5:45 PM');
+    });
+  });
+
+  describe('formatShortcut', () => {
+    it('should format the selected duration for shortcut', () => {
+      const duration = {hours: 1};
+      const result = formatShortcut({selection: {type: 'relative', duration}, inputValue: ''});
+      expect(result).toBe('1h');
+    });
+
+    it('should format the selected duration for shortcut when the input value is a duration shortcut', () => {
+      const duration = {hours: 1};
+      const result = formatShortcut({selection: {type: 'relative', duration}, inputValue: '5d'});
+      expect(result).toBe('5d');
+    });
+
+    it('should return "-" when the input value is not a duration shortcut', () => {
+      const result = formatShortcut({
+        selection: {
+          type: 'interval',
+          interval: {
+            start: new Date('2026-01-19T00:00:00Z'),
+            end: new Date('2026-01-19T01:00:00Z'),
+          },
+        },
+        inputValue: 'Hello world',
+      });
+      expect(result).toBe('-');
     });
   });
 });

@@ -1,57 +1,40 @@
 import {Input} from 'components/input';
 import {Kbd} from 'components/kbd';
 import {Popover, PopoverContent, PopoverTrigger} from 'components/popover';
-import type {Duration, NormalizedInterval} from 'date-fns';
 import {cn} from 'utils/cn';
 import {useIntervalSelector} from './hooks/use-interval-selector';
-import type {IntervalOption} from './interval-selector.utils';
-import {
-  calendarIntervals as defaultCalendarIntervals,
-  PAST_INTERVALS,
-} from './interval-selector.utils';
 import {IntervalSelectorCalendar} from './interval-selector-calendar';
 import {IntervalSelectorSuggestions} from './interval-selector-suggestions';
-
-export type IntervalSelection =
-  | {
-      type: 'relative';
-      duration: Duration;
-    }
-  | {
-      type: 'interval';
-      interval: NormalizedInterval;
-    };
+import type {IntervalSelection, IntervalSuggestion, RelativeSuggestion} from './types';
+import {defaultIntervalSuggestions, defaultRelativeSuggestions} from './utils';
 
 export interface IntervalSelectorProps {
   selection: IntervalSelection;
   onSelectionChange: (selection: IntervalSelection) => void;
-  value?: string;
-  onValueChange?: (value: string | undefined) => void;
   container?: HTMLElement | null;
   className?: string;
   inputClassName?: string;
-  pastIntervals?: IntervalOption[];
-  calendarIntervals?: IntervalOption[];
+  relativeSuggestions?: RelativeSuggestion[];
+  intervalSuggestions?: IntervalSuggestion[];
 }
 
 export function IntervalSelector({
   selection,
   onSelectionChange,
-  value,
-  onValueChange,
   container,
   className,
   inputClassName,
-  pastIntervals = PAST_INTERVALS,
-  calendarIntervals = defaultCalendarIntervals,
+  relativeSuggestions = defaultRelativeSuggestions,
+  intervalSuggestions = defaultIntervalSuggestions,
 }: IntervalSelectorProps) {
   const {
+    onSelect,
     isFocused,
     popoverOpen,
     calendarOpen,
     displayValue,
+    shortcutValue,
     highlightedIndex,
-    displayShortcut,
     isInvalid,
     shouldShake,
     inputRef,
@@ -61,18 +44,14 @@ export function IntervalSelector({
     handleMouseUp,
     handleInputChange,
     handleKeyDown,
-    handleOptionSelect,
-    handleCalendarSelect,
     handleOpenCalendar,
     setPopoverOpen,
     closeAll,
   } = useIntervalSelector({
     selection,
     onSelectionChange,
-    value,
-    onValueChange,
-    pastIntervals,
-    calendarIntervals,
+    relativeSuggestions,
+    intervalSuggestions,
   });
 
   return (
@@ -99,7 +78,7 @@ export function IntervalSelector({
             onKeyDown={handleKeyDown}
             readOnly={!isFocused}
             aria-invalid={isInvalid && isFocused}
-            iconLeft={<Kbd className="h-16 shrink-0 min-w-36">{displayShortcut}</Kbd>}
+            iconLeft={<Kbd className="h-16 shrink-0 min-w-36">{shortcutValue}</Kbd>}
             className={cn('w-full pl-50', inputClassName)}
           />
         </div>
@@ -126,12 +105,12 @@ export function IntervalSelector({
         container={container}
       >
         {calendarOpen ? (
-          <IntervalSelectorCalendar onSelect={handleCalendarSelect} />
+          <IntervalSelectorCalendar onSelect={onSelect} />
         ) : popoverOpen ? (
           <IntervalSelectorSuggestions
-            pastIntervals={pastIntervals}
-            calendarIntervals={calendarIntervals}
-            onSelect={handleOptionSelect}
+            relativeSuggestions={relativeSuggestions}
+            intervalSuggestions={intervalSuggestions}
+            onSelect={onSelect}
             onOpenCalendar={handleOpenCalendar}
             highlightedIndex={highlightedIndex}
           />

@@ -1,27 +1,31 @@
 import {afterEach, beforeEach, describe, expect, it, vi} from '@shipfox/vitest/vi';
 import {act, renderHook} from '@testing-library/react';
-import type {IntervalOption} from '../interval-selector.utils';
+import {endOfDay, startOfDay} from 'date-fns';
+import type {IntervalSuggestion, RelativeSuggestion} from '../types';
 import {useIntervalSelectorNavigation} from './use-interval-selector-navigation';
 
 describe('useIntervalSelectorNavigation', () => {
-  const mockPastIntervals: IntervalOption[] = [
-    {value: '5m', label: 'Past 5 Minutes', shortcut: '5m', type: 'past', duration: {minutes: 5}},
-    {value: '1h', label: 'Past 1 Hour', shortcut: '1h', type: 'past', duration: {hours: 1}},
+  const mockPastIntervals: RelativeSuggestion[] = [
+    {type: 'relative', duration: {minutes: 5}},
+    {type: 'relative', duration: {hours: 1}},
   ];
-
-  const mockCalendarIntervals: IntervalOption[] = [
-    {value: 'today', label: 'Today', shortcut: '0h', type: 'calendar'},
+  const mockCalendarIntervals: IntervalSuggestion[] = [
+    {
+      type: 'interval',
+      label: 'Today',
+      interval: {start: startOfDay(new Date()), end: endOfDay(new Date())},
+    },
   ];
 
   const mockProps = {
-    pastIntervals: mockPastIntervals,
-    calendarIntervals: mockCalendarIntervals,
+    relativeSuggestions: mockPastIntervals,
+    intervalSuggestions: mockCalendarIntervals,
     highlightedIndex: -1,
     setHighlightedIndex: vi.fn(),
     popoverOpen: true,
     calendarOpen: false,
     handleOpenCalendar: vi.fn(),
-    handleOptionSelect: vi.fn(),
+    onSelect: vi.fn(),
   };
 
   beforeEach(() => {
@@ -36,16 +40,15 @@ describe('useIntervalSelectorNavigation', () => {
     it('should return all navigable items including calendar option', () => {
       const {result} = renderHook(() => useIntervalSelectorNavigation(mockProps));
 
-      const items = result.current.getAllNavigableItems();
+      const items = result.current.allNavigableItems;
 
       expect(items).toHaveLength(4);
       expect(items[0]).toEqual(mockPastIntervals[0]);
       expect(items[1]).toEqual(mockPastIntervals[1]);
       expect(items[2]).toEqual(mockCalendarIntervals[0]);
       expect(items[3]).toEqual({
-        value: '__calendar__',
+        type: 'calendar',
         label: 'Select from calendar',
-        type: 'custom',
       });
     });
   });
@@ -168,7 +171,7 @@ describe('useIntervalSelectorNavigation', () => {
         );
       });
 
-      expect(mockProps.handleOptionSelect).toHaveBeenCalledWith('5m', 'Past 5 Minutes');
+      expect(mockProps.onSelect).toHaveBeenCalledWith({type: 'relative', duration: {minutes: 5}});
     });
 
     it('should open calendar when calendar option is selected', () => {

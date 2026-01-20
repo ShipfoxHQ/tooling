@@ -1,25 +1,40 @@
-import type {NormalizedInterval} from 'date-fns';
-import {humanizeDurationToNow} from 'utils/date';
-import {formatDateTimeRange} from 'utils/format/date';
-import {getDurationFromCalendarInterval} from './calendar';
-import {getDurationFromInterval, isRelativeToNow} from './intervals';
+import {
+  generateDurationShortcut,
+  humanizeDurationToNow,
+  intervalToNowFromDuration,
+  parseTextDurationShortcut,
+} from 'utils/date';
+import {formatDateTime, formatDateTimeRange} from 'utils/format/date';
+import type {IntervalSelection} from '../types';
 
-export function formatIntervalDisplay(interval: NormalizedInterval, isFocused: boolean): string {
-  const isAbsolute = !isRelativeToNow(interval);
+export function formatSelectionForInput(selection: IntervalSelection): string {
+  const interval =
+    selection.type === 'relative'
+      ? intervalToNowFromDuration(selection.duration)
+      : selection.interval;
+  return `${formatDateTime(interval.start)}\u2009\u2013\u2009${formatDateTime(interval.end)}`;
+}
 
-  if (isFocused) {
-    return formatDateTimeRange(interval, {forceShowTime: isAbsolute});
-  }
+interface FormatSelectionParams {
+  selection: IntervalSelection;
+  inputValue: string;
+  isFocused: boolean;
+}
 
-  const duration = getDurationFromInterval(interval);
-  if (duration) {
-    return humanizeDurationToNow(duration);
-  }
+export function formatSelection({selection, isFocused, inputValue}: FormatSelectionParams): string {
+  if (isFocused) return inputValue;
+  if (selection.type === 'relative') return humanizeDurationToNow(selection.duration);
+  return formatDateTimeRange(selection.interval);
+}
 
-  const calendarDuration = getDurationFromCalendarInterval(interval);
-  if (calendarDuration) {
-    return humanizeDurationToNow(calendarDuration);
-  }
+interface FormatShortcutParams {
+  selection: IntervalSelection;
+  inputValue: string;
+}
 
-  return formatDateTimeRange(interval, {forceShowTime: isAbsolute});
+export function formatShortcut({selection, inputValue}: FormatShortcutParams): string {
+  const inputShortcut = parseTextDurationShortcut(inputValue);
+  if (inputShortcut) return generateDurationShortcut(inputShortcut);
+  if (selection.type === 'relative') return generateDurationShortcut(selection.duration);
+  return '-';
 }

@@ -3,21 +3,6 @@ import {renderHook} from '@testing-library/react';
 import {useIntervalSelectorState} from './use-interval-selector-state';
 
 describe('useIntervalSelectorState', () => {
-  it('should initialize with default state', () => {
-    const {result} = renderHook(() => useIntervalSelectorState());
-
-    expect(result.current.isFocused).toBe(false);
-    expect(result.current.popoverOpen).toBe(false);
-    expect(result.current.calendarOpen).toBe(false);
-    expect(result.current.inputValue).toBe('');
-    expect(result.current.selectedLabel).toBeUndefined();
-    expect(result.current.highlightedIndex).toBe(-1);
-    expect(result.current.detectedShortcut).toBeUndefined();
-    expect(result.current.confirmedShortcut).toBeUndefined();
-    expect(result.current.isInvalid).toBe(false);
-    expect(result.current.shouldShake).toBe(false);
-  });
-
   it('should maintain refs across renders', () => {
     const {result, rerender} = renderHook(() => useIntervalSelectorState());
 

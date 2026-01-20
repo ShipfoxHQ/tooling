@@ -1,15 +1,13 @@
 import {afterEach, beforeEach, describe, expect, it, vi} from '@shipfox/vitest/vi';
 import {act, renderHook} from '@testing-library/react';
-import type {IntervalOption} from '../interval-selector.utils';
+import type {RelativeSuggestion} from '../types';
 import {useIntervalSelectorInput} from './use-interval-selector-input';
 
 describe('useIntervalSelectorInput', () => {
-  const mockPastIntervals: IntervalOption[] = [
-    {value: '5m', label: 'Past 5 Minutes', shortcut: '5m', type: 'past', duration: {minutes: 5}},
-  ];
+  const mockPastIntervals: RelativeSuggestion[] = [{type: 'relative', duration: {minutes: 5}}];
 
   const mockProps = {
-    pastIntervals: mockPastIntervals,
+    relativeSuggestions: mockPastIntervals,
     inputValue: '',
     setInputValue: vi.fn(),
     setDetectedShortcut: vi.fn(),
@@ -18,12 +16,8 @@ describe('useIntervalSelectorInput', () => {
     setSelectedLabel: vi.fn(),
     setHighlightedIndex: vi.fn(),
     selectedValueRef: {current: undefined as string | undefined},
-    detectShortcutFromInput: vi.fn(),
-    applyIntervalDetection: vi.fn(),
-    emitSelection: vi.fn(),
-    onValueChange: vi.fn(),
     triggerShakeAnimation: vi.fn(),
-    closeInputAndPopover: vi.fn(),
+    onSelect: vi.fn(),
   };
 
   beforeEach(() => {
@@ -40,8 +34,6 @@ describe('useIntervalSelectorInput', () => {
     it('should update input value and detect shortcut', () => {
       const {result} = renderHook(() => useIntervalSelectorInput(mockProps));
 
-      mockProps.detectShortcutFromInput.mockReturnValue('5m');
-
       act(() => {
         result.current.handleInputChange({
           target: {value: '5m'},
@@ -49,15 +41,11 @@ describe('useIntervalSelectorInput', () => {
       });
 
       expect(mockProps.setInputValue).toHaveBeenCalledWith('5m');
-      expect(mockProps.detectShortcutFromInput).toHaveBeenCalledWith('5m');
-      expect(mockProps.setDetectedShortcut).toHaveBeenCalledWith('5m');
       expect(mockProps.setIsInvalid).toHaveBeenCalledWith(false);
     });
 
     it('should set invalid state for non-empty input without shortcut', () => {
       const {result} = renderHook(() => useIntervalSelectorInput(mockProps));
-
-      mockProps.detectShortcutFromInput.mockReturnValue(undefined);
 
       act(() => {
         result.current.handleInputChange({
@@ -65,8 +53,6 @@ describe('useIntervalSelectorInput', () => {
         } as React.ChangeEvent<HTMLInputElement>);
       });
 
-      expect(mockProps.setDetectedShortcut).toHaveBeenCalledWith(undefined);
-      expect(mockProps.setConfirmedShortcut).toHaveBeenCalledWith(undefined);
       expect(mockProps.setIsInvalid).toHaveBeenCalledWith(true);
     });
 
@@ -113,12 +99,10 @@ describe('useIntervalSelectorInput', () => {
         result.current.handleConfirmInput();
       });
 
-      expect(mockProps.emitSelection).toHaveBeenCalledWith({
+      expect(mockProps.onSelect).toHaveBeenCalledWith({
         type: 'relative',
         duration: {minutes: 5},
       });
-      expect(mockProps.onValueChange).toHaveBeenCalledWith('5m');
-      expect(mockProps.closeInputAndPopover).toHaveBeenCalled();
     });
 
     it('should handle parsed interval input', () => {
@@ -133,9 +117,7 @@ describe('useIntervalSelectorInput', () => {
         result.current.handleConfirmInput();
       });
 
-      expect(mockProps.emitSelection).toHaveBeenCalled();
-      expect(mockProps.applyIntervalDetection).toHaveBeenCalled();
-      expect(mockProps.closeInputAndPopover).toHaveBeenCalled();
+      expect(mockProps.onSelect).toHaveBeenCalled();
     });
 
     it('should trigger shake animation for invalid input', () => {
@@ -151,7 +133,6 @@ describe('useIntervalSelectorInput', () => {
       });
 
       expect(mockProps.triggerShakeAnimation).toHaveBeenCalled();
-      expect(mockProps.setDetectedShortcut).toHaveBeenCalledWith(undefined);
     });
   });
 });

@@ -1,26 +1,26 @@
-import {useCallback, useEffect, useRef} from 'react';
-import type {IntervalOption} from '../interval-selector.utils';
+import {useCallback, useEffect, useMemo, useRef} from 'react';
+import type {IntervalSelection, IntervalSuggestion, RelativeSuggestion} from '../types';
 
 interface UseIntervalSelectorNavigationProps {
-  pastIntervals: IntervalOption[];
-  calendarIntervals: IntervalOption[];
+  relativeSuggestions: RelativeSuggestion[];
+  intervalSuggestions: IntervalSuggestion[];
   highlightedIndex: number;
   setHighlightedIndex: (index: number) => void;
   popoverOpen: boolean;
   calendarOpen: boolean;
   handleOpenCalendar: () => void;
-  handleOptionSelect: (value: string, label: string) => void;
+  onSelect: (selection: IntervalSelection) => void;
 }
 
 export function useIntervalSelectorNavigation({
-  pastIntervals,
-  calendarIntervals,
+  relativeSuggestions,
+  intervalSuggestions,
   highlightedIndex,
   setHighlightedIndex,
   popoverOpen,
   calendarOpen,
   handleOpenCalendar,
-  handleOptionSelect,
+  onSelect,
 }: UseIntervalSelectorNavigationProps) {
   const highlightedIndexRef = useRef(highlightedIndex);
 
@@ -28,13 +28,14 @@ export function useIntervalSelectorNavigation({
     highlightedIndexRef.current = highlightedIndex;
   }, [highlightedIndex]);
 
-  const getAllNavigableItems = useCallback(() => {
-    return [
-      ...pastIntervals,
-      ...calendarIntervals,
-      {value: '__calendar__', label: 'Select from calendar', type: 'custom' as const},
-    ];
-  }, [pastIntervals, calendarIntervals]);
+  const allNavigableItems = useMemo(
+    () => [
+      ...relativeSuggestions,
+      ...intervalSuggestions,
+      {type: 'calendar' as const, label: 'Select from calendar'},
+    ],
+    [relativeSuggestions, intervalSuggestions],
+  );
 
   const handleKeyDown = useCallback(
     (
@@ -43,7 +44,7 @@ export function useIntervalSelectorNavigation({
       closeAll: () => void,
     ) => {
       if (popoverOpen && !calendarOpen) {
-        const items = getAllNavigableItems();
+        const items = allNavigableItems;
 
         if (e.key === 'ArrowDown') {
           e.preventDefault();
@@ -66,10 +67,10 @@ export function useIntervalSelectorNavigation({
           if (currentIndex >= 0 && currentIndex < items.length) {
             e.preventDefault();
             const item = items[currentIndex];
-            if (item.value === '__calendar__') {
+            if (item.type === 'calendar') {
               handleOpenCalendar();
             } else {
-              handleOptionSelect(item.value, item.label);
+              onSelect(item);
             }
             return;
           }
@@ -87,15 +88,15 @@ export function useIntervalSelectorNavigation({
     [
       popoverOpen,
       calendarOpen,
-      getAllNavigableItems,
+      allNavigableItems,
       setHighlightedIndex,
       handleOpenCalendar,
-      handleOptionSelect,
+      onSelect,
     ],
   );
 
   return {
-    getAllNavigableItems,
+    allNavigableItems,
     handleKeyDown,
   };
 }
