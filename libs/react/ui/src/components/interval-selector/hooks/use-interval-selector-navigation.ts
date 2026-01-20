@@ -71,8 +71,8 @@ export function useIntervalSelectorNavigation({
             } else {
               handleOptionSelect(item.value, item.label);
             }
+            return;
           }
-          return;
         }
       }
 

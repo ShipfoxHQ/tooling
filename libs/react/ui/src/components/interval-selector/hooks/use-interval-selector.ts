@@ -209,24 +209,15 @@ export function useIntervalSelector({
 
   const handleCalendarSelect = useCallback(
     (range: DayPickerDateRange | undefined) => {
-      if (!range?.from) return;
-
-      const calendarInterval = range.to
-        ? {start: range.from, end: range.to}
-        : {start: range.from, end: range.from};
-
+      if (!range?.from || !range.to) return;
+      const calendarInterval = {start: range.from, end: range.to};
       state.isSelectingRef.current = true;
-
       selectionLogic.applyIntervalDetection(calendarInterval);
-
       emitSelection({
         type: 'interval',
         interval: calendarInterval,
       });
-
-      if (range.to) {
-        closeAll();
-      }
+      closeAll();
     },
     [state, selectionLogic, emitSelection, closeAll],
   );
@@ -237,11 +228,10 @@ export function useIntervalSelector({
       state.setInputValue(explicitValue);
       state.setDetectedShortcut(undefined);
 
-      if (value && selectionLogic.updateSelectionFromValue(value)) {
-        return;
-      }
-
-      if (selectionLogic.updateSelectionFromRef()) {
+      if (
+        (value && selectionLogic.updateSelectionFromValue(value)) ||
+        selectionLogic.updateSelectionFromRef()
+      ) {
         return;
       }
 

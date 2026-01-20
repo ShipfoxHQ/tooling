@@ -124,7 +124,7 @@ export function IntervalSelector({
         container={container}
       >
         {calendarOpen ? (
-          <IntervalSelectorCalendar selection={selection} onSelect={handleCalendarSelect} />
+          <IntervalSelectorCalendar onSelect={handleCalendarSelect} />
         ) : popoverOpen ? (
           <IntervalSelectorSuggestions
             pastIntervals={pastIntervals}
