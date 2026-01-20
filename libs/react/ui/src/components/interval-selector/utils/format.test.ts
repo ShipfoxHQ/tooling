@@ -1,6 +1,6 @@
 import {afterEach, beforeEach, describe, expect, it, vi} from '@shipfox/vitest/vi';
 import {subHours, subMinutes} from 'date-fns';
-import {formatIntervalDisplay} from '../format';
+import {formatIntervalDisplay} from './format';
 
 describe('interval-selector-format', () => {
   beforeEach(() => {

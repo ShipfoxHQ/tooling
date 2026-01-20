@@ -1,20 +1,12 @@
-import {afterEach, beforeEach, describe, expect, it, vi} from '@shipfox/vitest/vi';
+import {describe, expect, it} from '@shipfox/vitest/vi';
 import {act, renderHook} from '@testing-library/react';
-import type {IntervalOption} from '../../interval-selector.utils';
-import {useIntervalSelectorState} from '../use-interval-selector-state';
+import type {IntervalOption} from '../interval-selector.utils';
+import {useIntervalSelectorState} from './use-interval-selector-state';
 
 describe('useIntervalSelectorState', () => {
   const mockCalendarIntervals: IntervalOption[] = [
     {value: 'today', label: 'Today', shortcut: '0h', type: 'calendar'},
   ];
-
-  beforeEach(() => {
-    vi.clearAllMocks();
-  });
-
-  afterEach(() => {
-    vi.restoreAllMocks();
-  });
 
   it('should initialize with default state', () => {
     const {result} = renderHook(() =>

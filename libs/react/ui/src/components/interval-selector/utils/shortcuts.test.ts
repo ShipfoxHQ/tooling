@@ -1,7 +1,7 @@
 import {afterEach, beforeEach, describe, expect, it, vi} from '@shipfox/vitest/vi';
 import {subDays, subHours, subMonths, subYears} from 'date-fns';
-import {isRelativeToNow} from '../intervals';
-import {detectShortcutFromCalendarInterval, parseRelativeTimeShortcut} from '../shortcuts';
+import {isRelativeToNow} from './intervals';
+import {detectShortcutFromCalendarInterval, parseRelativeTimeShortcut} from './shortcuts';
 
 describe('interval-selector-shortcuts', () => {
   beforeEach(() => {

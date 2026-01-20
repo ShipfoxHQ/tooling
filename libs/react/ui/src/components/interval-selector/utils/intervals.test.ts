@@ -5,7 +5,7 @@ import {
   intervalsMatch,
   isRelativeToNow,
   isWithinTolerance,
-} from '../intervals';
+} from './intervals';
 
 describe('interval-selector-intervals', () => {
   describe('isWithinTolerance', () => {

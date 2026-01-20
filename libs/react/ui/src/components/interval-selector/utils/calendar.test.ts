@@ -4,7 +4,7 @@ import {
   getCalendarInterval,
   getCalendarIntervals,
   getDurationFromCalendarInterval,
-} from '../calendar';
+} from './calendar';
 
 describe('interval-selector-calendar', () => {
   beforeEach(() => {

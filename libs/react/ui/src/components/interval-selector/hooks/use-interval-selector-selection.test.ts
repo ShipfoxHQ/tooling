@@ -1,8 +1,8 @@
 import {afterEach, beforeEach, describe, expect, it, vi} from '@shipfox/vitest/vi';
 import {renderHook} from '@testing-library/react';
 import {subHours, subMinutes} from 'date-fns';
-import type {IntervalOption} from '../../interval-selector.utils';
-import {useIntervalSelectorSelection} from '../use-interval-selector-selection';
+import type {IntervalOption} from '../interval-selector.utils';
+import {useIntervalSelectorSelection} from './use-interval-selector-selection';
 
 describe('useIntervalSelectorSelection', () => {
   const mockPastIntervals: IntervalOption[] = [

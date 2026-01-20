@@ -1,13 +1,13 @@
 import {afterEach, beforeEach, describe, expect, it, vi} from '@shipfox/vitest/vi';
 import {subMinutes} from 'date-fns';
 import {intervalToNowFromDuration} from 'utils/date';
-import {getCalendarIntervals} from '../calendar';
+import {getCalendarIntervals} from './calendar';
 import {
   findOption,
   findOptionByInterval,
   findOptionValueForInterval,
   getLabelForValue,
-} from '../options';
+} from './options';
 
 describe('interval-selector-options', () => {
   beforeEach(() => {
