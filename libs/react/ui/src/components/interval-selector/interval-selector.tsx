@@ -42,9 +42,6 @@ export function IntervalSelector({
   pastIntervals = PAST_INTERVALS,
   calendarIntervals = getCalendarIntervals,
 }: IntervalSelectorProps) {
-  const resolvedCalendarIntervals =
-    typeof calendarIntervals === 'function' ? calendarIntervals() : calendarIntervals;
-
   const {
     isFocused,
     popoverOpen,
@@ -66,13 +63,14 @@ export function IntervalSelector({
     handleOpenCalendar,
     setPopoverOpen,
     closeAll,
+    resolvedCalendarIntervals,
   } = useIntervalSelector({
     selection,
     onSelectionChange,
     value,
     onValueChange,
     pastIntervals,
-    calendarIntervals: resolvedCalendarIntervals,
+    calendarIntervals,
   });
 
   return (

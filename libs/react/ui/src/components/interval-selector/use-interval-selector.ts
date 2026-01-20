@@ -1,6 +1,6 @@
 import type {NormalizedInterval} from 'date-fns';
 import {differenceInDays, differenceInHours, differenceInMinutes} from 'date-fns';
-import {useCallback, useEffect, useRef, useState} from 'react';
+import {useCallback, useEffect, useMemo, useRef, useState} from 'react';
 import type {DateRange as DayPickerDateRange} from 'react-day-picker';
 import {intervalToNowFromDuration, parseTextInterval} from 'utils/date';
 import type {IntervalSelection, IntervalSelectorProps} from './interval-selector';
@@ -21,7 +21,7 @@ interface UseIntervalSelectorProps
     'selection' | 'onSelectionChange' | 'value' | 'onValueChange'
   > {
   pastIntervals: IntervalOption[];
-  calendarIntervals: IntervalOption[];
+  calendarIntervals: IntervalOption[] | (() => IntervalOption[]);
 }
 
 export function useIntervalSelector({
@@ -39,6 +39,12 @@ export function useIntervalSelector({
   const [isFocused, setIsFocused] = useState(false);
   const [popoverOpen, setPopoverOpen] = useState(false);
   const [calendarOpen, setCalendarOpen] = useState(false);
+
+  const resolvedCalendarIntervals = useMemo(() => {
+    void popoverOpen;
+    return typeof calendarIntervals === 'function' ? calendarIntervals() : calendarIntervals;
+  }, [popoverOpen, calendarIntervals]);
+
   const [inputValue, setInputValue] = useState('');
   const [selectedLabel, setSelectedLabel] = useState<string | undefined>(undefined);
   const [highlightedIndex, setHighlightedIndex] = useState<number>(-1);
@@ -54,19 +60,23 @@ export function useIntervalSelector({
 
   const getShortcutFromValue = useCallback(
     (value: string): string | undefined => {
-      const option = findOption(value, pastIntervals, calendarIntervals);
+      const option = findOption(value, pastIntervals, resolvedCalendarIntervals);
       if (option?.shortcut) {
         return option.shortcut;
       }
       const parsedShortcut = parseRelativeTimeShortcut(value);
       return parsedShortcut?.shortcut;
     },
-    [pastIntervals, calendarIntervals],
+    [pastIntervals, resolvedCalendarIntervals],
   );
 
   const detectShortcutFromInterval = useCallback(
     (interval: NormalizedInterval) => {
-      const matchingOption = findOptionByInterval(interval, pastIntervals, calendarIntervals);
+      const matchingOption = findOptionByInterval(
+        interval,
+        pastIntervals,
+        resolvedCalendarIntervals,
+      );
       if (matchingOption?.shortcut) {
         return {
           shortcut: matchingOption.shortcut,
@@ -93,7 +103,7 @@ export function useIntervalSelector({
 
       return {shortcut: undefined, label: undefined, value: undefined};
     },
-    [pastIntervals, calendarIntervals],
+    [pastIntervals, resolvedCalendarIntervals],
   );
 
   const clearSelectionState = useCallback(() => {
@@ -160,7 +170,7 @@ export function useIntervalSelector({
 
   const updateSelectionFromValue = useCallback(
     (val: string) => {
-      const label = getLabelForValue(val, pastIntervals, calendarIntervals);
+      const label = getLabelForValue(val, pastIntervals, resolvedCalendarIntervals);
       if (label) {
         setSelectedLabel(label);
         selectedValueRef.current = val;
@@ -169,12 +179,12 @@ export function useIntervalSelector({
       }
       return false;
     },
-    [getShortcutFromValue, pastIntervals, calendarIntervals],
+    [getShortcutFromValue, pastIntervals, resolvedCalendarIntervals],
   );
 
   const updateSelectionFromRef = useCallback(() => {
     if (!selectedValueRef.current) return false;
-    const option = findOption(selectedValueRef.current, pastIntervals, calendarIntervals);
+    const option = findOption(selectedValueRef.current, pastIntervals, resolvedCalendarIntervals);
     if (option) {
       setSelectedLabel(option.label);
       setConfirmedShortcut(getShortcutFromValue(option.value));
@@ -182,11 +192,11 @@ export function useIntervalSelector({
     }
     clearSelectionState();
     return false;
-  }, [getShortcutFromValue, clearSelectionState, pastIntervals, calendarIntervals]);
+  }, [getShortcutFromValue, clearSelectionState, pastIntervals, resolvedCalendarIntervals]);
 
   const updateSelectionFromInterval = useCallback(
     (int: NormalizedInterval) => {
-      const matchingOption = findOptionByInterval(int, pastIntervals, calendarIntervals);
+      const matchingOption = findOptionByInterval(int, pastIntervals, resolvedCalendarIntervals);
       if (matchingOption) {
         setSelectedLabel(matchingOption.label);
         selectedValueRef.current = matchingOption.value;
@@ -195,7 +205,7 @@ export function useIntervalSelector({
         applyIntervalDetection(int);
       }
     },
-    [getShortcutFromValue, applyIntervalDetection, pastIntervals, calendarIntervals],
+    [getShortcutFromValue, applyIntervalDetection, pastIntervals, resolvedCalendarIntervals],
   );
 
   const emitSelection = useCallback(
@@ -208,16 +218,16 @@ export function useIntervalSelector({
   const getAllNavigableItems = () => {
     return [
       ...pastIntervals,
-      ...calendarIntervals,
+      ...resolvedCalendarIntervals,
       {value: '__calendar__', label: 'Select from calendar', type: 'custom' as const},
     ];
   };
 
   const displayValue = isFocused
     ? inputValue
-    : value && findOption(value, pastIntervals, calendarIntervals)
+    : value && findOption(value, pastIntervals, resolvedCalendarIntervals)
       ? (selectedLabel ??
-        getLabelForValue(value, pastIntervals, calendarIntervals) ??
+        getLabelForValue(value, pastIntervals, resolvedCalendarIntervals) ??
         formatIntervalDisplay(currentInterval, false))
       : (selectedLabel ?? formatIntervalDisplay(currentInterval, false));
 
@@ -410,7 +420,7 @@ export function useIntervalSelector({
     setConfirmedShortcut(getShortcutFromValue(optionValue));
     onValueChange?.(optionValue);
 
-    const option = findOption(optionValue, pastIntervals, calendarIntervals);
+    const option = findOption(optionValue, pastIntervals, resolvedCalendarIntervals);
     if (option) {
       if (option.type === 'calendar') {
         const calendarInterval = getCalendarInterval(optionValue);
@@ -491,5 +501,6 @@ export function useIntervalSelector({
     setPopoverOpen,
     setIsFocused,
     closeAll,
+    resolvedCalendarIntervals,
   };
 }
