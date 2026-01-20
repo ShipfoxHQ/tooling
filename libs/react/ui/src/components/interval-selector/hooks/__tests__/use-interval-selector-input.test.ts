@@ -87,6 +87,20 @@ describe('useIntervalSelectorInput', () => {
       expect(mockProps.selectedValueRef.current).toBeUndefined();
       expect(mockProps.setHighlightedIndex).toHaveBeenCalledWith(-1);
     });
+
+    it('should clear selectedLabel even when selectedValueRef.current is undefined', () => {
+      mockProps.selectedValueRef.current = undefined;
+      const {result} = renderHook(() => useIntervalSelectorInput(mockProps));
+
+      act(() => {
+        result.current.handleInputChange({
+          target: {value: 'new'},
+        } as React.ChangeEvent<HTMLInputElement>);
+      });
+
+      expect(mockProps.setSelectedLabel).toHaveBeenCalledWith(undefined);
+      expect(mockProps.setHighlightedIndex).toHaveBeenCalledWith(-1);
+    });
   });
 
   describe('handleConfirmInput', () => {

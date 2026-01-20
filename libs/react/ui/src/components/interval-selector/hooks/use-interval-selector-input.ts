@@ -63,9 +63,9 @@ export function useIntervalSelectorInput({
       }
 
       if (selectedValueRef.current) {
-        setSelectedLabel(undefined);
         selectedValueRef.current = undefined;
       }
+      setSelectedLabel(undefined);
       setHighlightedIndex(-1);
     },
     [

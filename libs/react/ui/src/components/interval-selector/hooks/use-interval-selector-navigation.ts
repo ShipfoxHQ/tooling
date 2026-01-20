@@ -1,4 +1,4 @@
-import {useCallback} from 'react';
+import {useCallback, useEffect, useRef} from 'react';
 import type {IntervalOption} from '../interval-selector.utils';
 
 interface UseIntervalSelectorNavigationProps {
@@ -22,6 +22,12 @@ export function useIntervalSelectorNavigation({
   handleOpenCalendar,
   handleOptionSelect,
 }: UseIntervalSelectorNavigationProps) {
+  const highlightedIndexRef = useRef(highlightedIndex);
+
+  useEffect(() => {
+    highlightedIndexRef.current = highlightedIndex;
+  }, [highlightedIndex]);
+
   const getAllNavigableItems = useCallback(() => {
     return [
       ...pastIntervals,
@@ -41,23 +47,30 @@ export function useIntervalSelectorNavigation({
 
         if (e.key === 'ArrowDown') {
           e.preventDefault();
-          setHighlightedIndex(highlightedIndex < items.length - 1 ? highlightedIndex + 1 : 0);
+          const currentIndex = highlightedIndexRef.current;
+          const nextIndex = currentIndex < items.length - 1 ? currentIndex + 1 : 0;
+          setHighlightedIndex(nextIndex);
           return;
         }
 
         if (e.key === 'ArrowUp') {
           e.preventDefault();
-          setHighlightedIndex(highlightedIndex > 0 ? highlightedIndex - 1 : items.length - 1);
+          const currentIndex = highlightedIndexRef.current;
+          const nextIndex = currentIndex > 0 ? currentIndex - 1 : items.length - 1;
+          setHighlightedIndex(nextIndex);
           return;
         }
 
-        if (e.key === 'Enter' && highlightedIndex >= 0 && highlightedIndex < items.length) {
-          e.preventDefault();
-          const item = items[highlightedIndex];
-          if (item.value === '__calendar__') {
-            handleOpenCalendar();
-          } else {
-            handleOptionSelect(item.value, item.label);
+        if (e.key === 'Enter') {
+          const currentIndex = highlightedIndexRef.current;
+          if (currentIndex >= 0 && currentIndex < items.length) {
+            e.preventDefault();
+            const item = items[currentIndex];
+            if (item.value === '__calendar__') {
+              handleOpenCalendar();
+            } else {
+              handleOptionSelect(item.value, item.label);
+            }
           }
           return;
         }
@@ -75,7 +88,6 @@ export function useIntervalSelectorNavigation({
       popoverOpen,
       calendarOpen,
       getAllNavigableItems,
-      highlightedIndex,
       setHighlightedIndex,
       handleOpenCalendar,
       handleOptionSelect,
