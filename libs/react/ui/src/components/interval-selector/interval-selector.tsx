@@ -1,31 +1,50 @@
 import {Input} from 'components/input';
 import {Kbd} from 'components/kbd';
 import {Popover, PopoverContent, PopoverTrigger} from 'components/popover';
-import type {NormalizedInterval} from 'date-fns';
+import type {Duration, NormalizedInterval} from 'date-fns';
 import {cn} from 'utils/cn';
+import type {IntervalOption} from './interval-selector.utils';
+import {getCalendarIntervals, PAST_INTERVALS} from './interval-selector.utils';
 import {IntervalSelectorCalendar} from './interval-selector-calendar';
 import {IntervalSelectorSuggestions} from './interval-selector-suggestions';
 import {useIntervalSelector} from './use-interval-selector';
 
+export type IntervalSelection =
+  | {
+      type: 'relative';
+      duration: Duration;
+    }
+  | {
+      type: 'interval';
+      interval: NormalizedInterval;
+    };
+
 export interface IntervalSelectorProps {
-  interval: NormalizedInterval;
-  onIntervalChange: (interval: NormalizedInterval) => void;
+  selection: IntervalSelection;
+  onSelectionChange: (selection: IntervalSelection) => void;
   value?: string;
   onValueChange?: (value: string | undefined) => void;
   container?: HTMLElement | null;
   className?: string;
   inputClassName?: string;
+  pastIntervals?: IntervalOption[];
+  calendarIntervals?: IntervalOption[] | (() => IntervalOption[]);
 }
 
 export function IntervalSelector({
-  interval,
-  onIntervalChange,
+  selection,
+  onSelectionChange,
   value,
   onValueChange,
   container,
   className,
   inputClassName,
+  pastIntervals = PAST_INTERVALS,
+  calendarIntervals = getCalendarIntervals,
 }: IntervalSelectorProps) {
+  const resolvedCalendarIntervals =
+    typeof calendarIntervals === 'function' ? calendarIntervals() : calendarIntervals;
+
   const {
     isFocused,
     popoverOpen,
@@ -48,10 +67,12 @@ export function IntervalSelector({
     setPopoverOpen,
     closeAll,
   } = useIntervalSelector({
-    interval,
-    onIntervalChange,
+    selection,
+    onSelectionChange,
     value,
     onValueChange,
+    pastIntervals,
+    calendarIntervals: resolvedCalendarIntervals,
   });
 
   return (
@@ -105,10 +126,11 @@ export function IntervalSelector({
         container={container}
       >
         {calendarOpen ? (
-          <IntervalSelectorCalendar interval={interval} onSelect={handleCalendarSelect} />
+          <IntervalSelectorCalendar selection={selection} onSelect={handleCalendarSelect} />
         ) : popoverOpen ? (
           <IntervalSelectorSuggestions
-            interval={interval}
+            pastIntervals={pastIntervals}
+            calendarIntervals={resolvedCalendarIntervals}
             onSelect={handleOptionSelect}
             onOpenCalendar={handleOpenCalendar}
             highlightedIndex={highlightedIndex}

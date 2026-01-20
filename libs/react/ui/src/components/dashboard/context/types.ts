@@ -3,7 +3,7 @@
  */
 
 import type {VisibilityState} from '@tanstack/react-table';
-import type {NormalizedInterval} from 'date-fns';
+import type {IntervalSelection} from 'components/interval-selector';
 
 /**
  * View column configuration for table visibility control
@@ -48,9 +48,9 @@ export interface DashboardState {
   searchQuery: string;
   setSearchQuery: (query: string) => void;
 
-  // Time interval
-  interval: NormalizedInterval;
-  setInterval: (interval: NormalizedInterval) => void;
+  // Time interval selection
+  selection: IntervalSelection;
+  setSelection: (selection: IntervalSelection) => void;
   intervalValue: string | undefined;
   setIntervalValue: (value: string | undefined) => void;
 

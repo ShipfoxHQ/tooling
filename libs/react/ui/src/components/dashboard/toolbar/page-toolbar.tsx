@@ -82,7 +82,7 @@ export function PageToolbar({
   className,
   ...props
 }: PageToolbarProps) {
-  const {interval, setInterval, intervalValue, setIntervalValue, lastUpdated} =
+  const {selection, setSelection, intervalValue, setIntervalValue, lastUpdated} =
     useDashboardContext();
   return (
     <div
@@ -130,8 +130,8 @@ export function PageToolbar({
 
         {/* Time Interval Selector - Responsive width */}
         <IntervalSelector
-          interval={interval}
-          onIntervalChange={setInterval}
+          selection={selection}
+          onSelectionChange={setSelection}
           value={intervalValue}
           onValueChange={setIntervalValue}
           container={intervalSelectorContainer}

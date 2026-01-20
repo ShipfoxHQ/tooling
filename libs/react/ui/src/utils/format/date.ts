@@ -3,6 +3,7 @@ import {isEndOfDay, isStartOfDay} from 'utils/date';
 
 interface DateTimeFormatOptions extends Intl.DateTimeFormatOptions {
   locale?: string;
+  forceShowTime?: boolean;
 }
 
 const defaultOptions: DateTimeFormatOptions = {
@@ -50,15 +51,17 @@ export function formatDateTimeRange(
   options?: DateTimeFormatOptions,
 ): string {
   const {start, end} = interval;
+  const {forceShowTime, ...formatOptions} = options || {};
   const areFullDays = isStartOfDay(start) && isEndOfDay(end);
+  const shouldShowTime = forceShowTime || !areFullDays;
   const formatter = getDateTimeFormatter({
     year: areCurrentYear(interval) ? undefined : defaultOptions.year,
-    hour: areFullDays ? undefined : defaultOptions.hour,
-    minute: areFullDays ? undefined : defaultOptions.minute,
-    ...options,
+    hour: shouldShowTime ? defaultOptions.hour : undefined,
+    minute: shouldShowTime ? defaultOptions.minute : undefined,
+    ...formatOptions,
   });
 
-  if (areFullDays) {
+  if (areFullDays && !forceShowTime) {
     return formatter.formatRange(start, end);
   }
 

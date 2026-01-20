@@ -152,20 +152,29 @@ export function getCalendarIntervals(): IntervalOption[] {
   });
 }
 
-export const CALENDAR_INTERVALS: IntervalOption[] = getCalendarIntervals();
-
-export function findOption(value: string): IntervalOption | undefined {
-  return [...PAST_INTERVALS, ...getCalendarIntervals()].find((opt) => opt.value === value);
+export function findOption(
+  value: string,
+  pastIntervals: IntervalOption[] = PAST_INTERVALS,
+  calendarIntervals: IntervalOption[] = getCalendarIntervals(),
+): IntervalOption | undefined {
+  return [...pastIntervals, ...calendarIntervals].find((opt) => opt.value === value);
 }
 
-export function getLabelForValue(val: string | undefined): string | undefined {
+export function getLabelForValue(
+  val: string | undefined,
+  pastIntervals: IntervalOption[] = PAST_INTERVALS,
+  calendarIntervals: IntervalOption[] = getCalendarIntervals(),
+): string | undefined {
   if (!val) return undefined;
-  const option = findOption(val);
+  const option = findOption(val, pastIntervals, calendarIntervals);
   return option?.label;
 }
 
-export function findOptionByInterval(interval: NormalizedInterval): IntervalOption | undefined {
-  const calendarIntervals = getCalendarIntervals();
+export function findOptionByInterval(
+  interval: NormalizedInterval,
+  pastIntervals: IntervalOption[] = PAST_INTERVALS,
+  calendarIntervals: IntervalOption[] = getCalendarIntervals(),
+): IntervalOption | undefined {
   for (const opt of calendarIntervals) {
     const calendarInterval = getCalendarInterval(opt.value);
     if (calendarInterval && intervalsMatch(interval, calendarInterval)) {
@@ -173,7 +182,7 @@ export function findOptionByInterval(interval: NormalizedInterval): IntervalOpti
     }
   }
 
-  for (const opt of PAST_INTERVALS) {
+  for (const opt of pastIntervals) {
     if (opt.duration) {
       const expectedInterval = intervalToNowFromDuration(opt.duration);
       if (intervalsMatch(interval, expectedInterval)) {
@@ -338,8 +347,10 @@ export function getDurationFromCalendarInterval(
 }
 
 export function formatIntervalDisplay(interval: NormalizedInterval, isFocused: boolean): string {
+  const isAbsolute = !isRelativeToNow(interval);
+
   if (isFocused) {
-    return formatDateTimeRange(interval);
+    return formatDateTimeRange(interval, {forceShowTime: isAbsolute});
   }
 
   const duration = getDurationFromInterval(interval);
@@ -352,7 +363,7 @@ export function formatIntervalDisplay(interval: NormalizedInterval, isFocused: b
     return humanizeDurationToNow(calendarDuration);
   }
 
-  return formatDateTimeRange(interval);
+  return formatDateTimeRange(interval, {forceShowTime: isAbsolute});
 }
 
 export interface ParsedShortcut {
@@ -537,11 +548,13 @@ export function detectShortcutFromCalendarInterval(
     return undefined;
   }
 
+  const formatOptions = {forceShowTime: true};
+
   const matchingOption = findOptionByInterval(interval);
   if (matchingOption?.shortcut) {
     return {
       shortcut: matchingOption.shortcut,
-      label: formatDateTimeRange(interval),
+      label: formatDateTimeRange(interval, formatOptions),
       value: matchingOption.value,
     };
   }
@@ -554,7 +567,11 @@ export function detectShortcutFromCalendarInterval(
 
   if (years > 0) {
     if (years > 1) {
-      return {shortcut: undefined, label: formatDateTimeRange(interval), value: undefined};
+      return {
+        shortcut: undefined,
+        label: formatDateTimeRange(interval, formatOptions),
+        value: undefined,
+      };
     }
     shortcut = '1y';
   } else if (months > 0) {
@@ -566,12 +583,16 @@ export function detectShortcutFromCalendarInterval(
       shortcut = `${days}d`;
     }
   } else {
-    return {shortcut: undefined, label: formatDateTimeRange(interval), value: undefined};
+    return {
+      shortcut: undefined,
+      label: formatDateTimeRange(interval, formatOptions),
+      value: undefined,
+    };
   }
 
   return {
     shortcut,
-    label: formatDateTimeRange(interval),
+    label: formatDateTimeRange(interval, formatOptions),
     value: undefined,
   };
 }

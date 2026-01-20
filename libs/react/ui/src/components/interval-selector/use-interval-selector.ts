@@ -3,31 +3,39 @@ import {differenceInDays, differenceInHours, differenceInMinutes} from 'date-fns
 import {useCallback, useEffect, useRef, useState} from 'react';
 import type {DateRange as DayPickerDateRange} from 'react-day-picker';
 import {intervalToNowFromDuration, parseTextInterval} from 'utils/date';
-import type {IntervalSelectorProps} from './interval-selector';
+import type {IntervalSelection, IntervalSelectorProps} from './interval-selector';
 import {
-  CALENDAR_INTERVALS,
   detectShortcutFromCalendarInterval,
   findOption,
   findOptionByInterval,
   formatIntervalDisplay,
   getCalendarInterval,
   getLabelForValue,
-  PAST_INTERVALS,
+  type IntervalOption,
   parseRelativeTimeShortcut,
 } from './interval-selector.utils';
 
 interface UseIntervalSelectorProps
   extends Pick<
     IntervalSelectorProps,
-    'interval' | 'onIntervalChange' | 'value' | 'onValueChange'
-  > {}
+    'selection' | 'onSelectionChange' | 'value' | 'onValueChange'
+  > {
+  pastIntervals: IntervalOption[];
+  calendarIntervals: IntervalOption[];
+}
 
 export function useIntervalSelector({
-  interval,
-  onIntervalChange,
+  selection,
+  onSelectionChange,
   value,
   onValueChange,
+  pastIntervals,
+  calendarIntervals,
 }: UseIntervalSelectorProps) {
+  const currentInterval: NormalizedInterval =
+    selection.type === 'interval'
+      ? selection.interval
+      : intervalToNowFromDuration(selection.duration);
   const [isFocused, setIsFocused] = useState(false);
   const [popoverOpen, setPopoverOpen] = useState(false);
   const [calendarOpen, setCalendarOpen] = useState(false);
@@ -44,43 +52,49 @@ export function useIntervalSelector({
   const shakeTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const isMouseDownOnInputRef = useRef(false);
 
-  const getShortcutFromValue = useCallback((value: string): string | undefined => {
-    const option = findOption(value);
-    if (option?.shortcut) {
-      return option.shortcut;
-    }
-    const parsedShortcut = parseRelativeTimeShortcut(value);
-    return parsedShortcut?.shortcut;
-  }, []);
+  const getShortcutFromValue = useCallback(
+    (value: string): string | undefined => {
+      const option = findOption(value, pastIntervals, calendarIntervals);
+      if (option?.shortcut) {
+        return option.shortcut;
+      }
+      const parsedShortcut = parseRelativeTimeShortcut(value);
+      return parsedShortcut?.shortcut;
+    },
+    [pastIntervals, calendarIntervals],
+  );
 
-  const detectShortcutFromInterval = useCallback((interval: NormalizedInterval) => {
-    const matchingOption = findOptionByInterval(interval);
-    if (matchingOption?.shortcut) {
-      return {
-        shortcut: matchingOption.shortcut,
-        label: matchingOption.label,
-        value: matchingOption.value,
-      };
-    }
+  const detectShortcutFromInterval = useCallback(
+    (interval: NormalizedInterval) => {
+      const matchingOption = findOptionByInterval(interval, pastIntervals, calendarIntervals);
+      if (matchingOption?.shortcut) {
+        return {
+          shortcut: matchingOption.shortcut,
+          label: matchingOption.label,
+          value: matchingOption.value,
+        };
+      }
 
-    const days = Math.abs(differenceInDays(interval.end, interval.start));
-    const hours = Math.abs(differenceInHours(interval.end, interval.start));
-    const minutes = Math.abs(differenceInMinutes(interval.end, interval.start));
+      const days = Math.abs(differenceInDays(interval.end, interval.start));
+      const hours = Math.abs(differenceInHours(interval.end, interval.start));
+      const minutes = Math.abs(differenceInMinutes(interval.end, interval.start));
 
-    const durationString =
-      days > 0 ? `${days}d` : hours > 0 ? `${hours}h` : minutes > 0 ? `${minutes}m` : '-';
-    const parsedShortcut = parseRelativeTimeShortcut(durationString);
+      const durationString =
+        days > 0 ? `${days}d` : hours > 0 ? `${hours}h` : minutes > 0 ? `${minutes}m` : '-';
+      const parsedShortcut = parseRelativeTimeShortcut(durationString);
 
-    if (parsedShortcut) {
-      return {
-        shortcut: parsedShortcut.shortcut,
-        label: parsedShortcut.label,
-        value: undefined,
-      };
-    }
+      if (parsedShortcut) {
+        return {
+          shortcut: parsedShortcut.shortcut,
+          label: parsedShortcut.label,
+          value: undefined,
+        };
+      }
 
-    return {shortcut: undefined, label: undefined, value: undefined};
-  }, []);
+      return {shortcut: undefined, label: undefined, value: undefined};
+    },
+    [pastIntervals, calendarIntervals],
+  );
 
   const clearSelectionState = useCallback(() => {
     setSelectedLabel(undefined);
@@ -146,7 +160,7 @@ export function useIntervalSelector({
 
   const updateSelectionFromValue = useCallback(
     (val: string) => {
-      const label = getLabelForValue(val);
+      const label = getLabelForValue(val, pastIntervals, calendarIntervals);
       if (label) {
         setSelectedLabel(label);
         selectedValueRef.current = val;
@@ -155,12 +169,12 @@ export function useIntervalSelector({
       }
       return false;
     },
-    [getShortcutFromValue],
+    [getShortcutFromValue, pastIntervals, calendarIntervals],
   );
 
   const updateSelectionFromRef = useCallback(() => {
     if (!selectedValueRef.current) return false;
-    const option = findOption(selectedValueRef.current);
+    const option = findOption(selectedValueRef.current, pastIntervals, calendarIntervals);
     if (option) {
       setSelectedLabel(option.label);
       setConfirmedShortcut(getShortcutFromValue(option.value));
@@ -168,11 +182,11 @@ export function useIntervalSelector({
     }
     clearSelectionState();
     return false;
-  }, [getShortcutFromValue, clearSelectionState]);
+  }, [getShortcutFromValue, clearSelectionState, pastIntervals, calendarIntervals]);
 
   const updateSelectionFromInterval = useCallback(
     (int: NormalizedInterval) => {
-      const matchingOption = findOptionByInterval(int);
+      const matchingOption = findOptionByInterval(int, pastIntervals, calendarIntervals);
       if (matchingOption) {
         setSelectedLabel(matchingOption.label);
         selectedValueRef.current = matchingOption.value;
@@ -181,36 +195,31 @@ export function useIntervalSelector({
         applyIntervalDetection(int);
       }
     },
-    [getShortcutFromValue, applyIntervalDetection],
+    [getShortcutFromValue, applyIntervalDetection, pastIntervals, calendarIntervals],
   );
 
-  const createIntervalFromOption = useCallback(
-    (optionValue: string): NormalizedInterval | undefined => {
-      const option = findOption(optionValue);
-      if (option?.duration) {
-        return intervalToNowFromDuration(option.duration);
-      }
-      if (option?.type === 'calendar') {
-        return getCalendarInterval(optionValue);
-      }
-      return undefined;
+  const emitSelection = useCallback(
+    (newSelection: IntervalSelection) => {
+      onSelectionChange(newSelection);
     },
-    [],
+    [onSelectionChange],
   );
 
   const getAllNavigableItems = () => {
     return [
-      ...PAST_INTERVALS,
-      ...CALENDAR_INTERVALS,
+      ...pastIntervals,
+      ...calendarIntervals,
       {value: '__calendar__', label: 'Select from calendar', type: 'custom' as const},
     ];
   };
 
   const displayValue = isFocused
     ? inputValue
-    : value && findOption(value)
-      ? (selectedLabel ?? getLabelForValue(value) ?? formatIntervalDisplay(interval, false))
-      : (selectedLabel ?? formatIntervalDisplay(interval, false));
+    : value && findOption(value, pastIntervals, calendarIntervals)
+      ? (selectedLabel ??
+        getLabelForValue(value, pastIntervals, calendarIntervals) ??
+        formatIntervalDisplay(currentInterval, false))
+      : (selectedLabel ?? formatIntervalDisplay(currentInterval, false));
 
   const closeInputAndPopover = () => {
     setIsFocused(false);
@@ -226,7 +235,7 @@ export function useIntervalSelector({
 
   useEffect(() => {
     if (!isFocused && !isSelectingRef.current) {
-      const explicitValue = formatIntervalDisplay(interval, true);
+      const explicitValue = formatIntervalDisplay(currentInterval, true);
       setInputValue(explicitValue);
       setDetectedShortcut(undefined);
 
@@ -238,10 +247,10 @@ export function useIntervalSelector({
         return;
       }
 
-      updateSelectionFromInterval(interval);
+      updateSelectionFromInterval(currentInterval);
     }
   }, [
-    interval,
+    currentInterval,
     isFocused,
     value,
     updateSelectionFromValue,
@@ -252,7 +261,7 @@ export function useIntervalSelector({
   const handleFocus = () => {
     setIsFocused(true);
     setPopoverOpen(true);
-    setInputValue(formatIntervalDisplay(interval, true));
+    setInputValue(formatIntervalDisplay(currentInterval, true));
     setHighlightedIndex(-1);
     setIsInvalid(false);
     requestAnimationFrame(() => {
@@ -356,8 +365,10 @@ export function useIntervalSelector({
 
     const parsedShortcut = parseRelativeTimeShortcut(trimmedValue);
     if (parsedShortcut) {
-      const newInterval = intervalToNowFromDuration(parsedShortcut.duration);
-      onIntervalChange(newInterval);
+      emitSelection({
+        type: 'relative',
+        duration: parsedShortcut.duration,
+      });
       onValueChange?.(trimmedValue);
       setSelectedLabel(parsedShortcut.label);
       selectedValueRef.current = undefined;
@@ -377,7 +388,10 @@ export function useIntervalSelector({
         onValueChange?.(undefined);
       }
       applyIntervalDetection(parsedInterval);
-      onIntervalChange(parsedInterval);
+      emitSelection({
+        type: 'interval',
+        interval: parsedInterval,
+      });
       setDetectedShortcut(undefined);
       setIsInvalid(false);
       closeInputAndPopover();
@@ -396,9 +410,22 @@ export function useIntervalSelector({
     setConfirmedShortcut(getShortcutFromValue(optionValue));
     onValueChange?.(optionValue);
 
-    const newInterval = createIntervalFromOption(optionValue);
-    if (newInterval) {
-      onIntervalChange(newInterval);
+    const option = findOption(optionValue, pastIntervals, calendarIntervals);
+    if (option) {
+      if (option.type === 'calendar') {
+        const calendarInterval = getCalendarInterval(optionValue);
+        if (calendarInterval) {
+          emitSelection({
+            type: 'interval',
+            interval: calendarInterval,
+          });
+        }
+      } else if (option.duration) {
+        emitSelection({
+          type: 'relative',
+          duration: option.duration,
+        });
+      }
     }
 
     closeInputAndPopover();
@@ -415,7 +442,10 @@ export function useIntervalSelector({
 
     applyIntervalDetection(calendarInterval);
 
-    onIntervalChange(calendarInterval);
+    emitSelection({
+      type: 'interval',
+      interval: calendarInterval,
+    });
 
     if (range.to) {
       closeAll();

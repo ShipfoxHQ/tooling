@@ -1,15 +1,21 @@
 import {Calendar} from 'components/calendar';
-import type {NormalizedInterval} from 'date-fns';
 import {format} from 'date-fns';
 import {useCallback, useState} from 'react';
 import type {DateRange} from 'react-day-picker';
+import {intervalToNowFromDuration} from 'utils/date';
+import type {IntervalSelection} from './interval-selector';
 
 interface IntervalSelectorCalendarProps {
-  interval: NormalizedInterval;
+  selection: IntervalSelection;
   onSelect: (range: DateRange | undefined) => void;
 }
 
-export function IntervalSelectorCalendar({interval, onSelect}: IntervalSelectorCalendarProps) {
+export function IntervalSelectorCalendar({selection, onSelect}: IntervalSelectorCalendarProps) {
+  const interval =
+    selection.type === 'interval'
+      ? selection.interval
+      : intervalToNowFromDuration(selection.duration);
+
   const [selectedRange, setSelectedRange] = useState<DateRange | undefined>({
     from: interval.start,
     to: interval.end,

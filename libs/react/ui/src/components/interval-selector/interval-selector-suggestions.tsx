@@ -2,27 +2,28 @@ import {Button} from 'components/button';
 import {Icon} from 'components/icon';
 import {Kbd} from 'components/kbd';
 import {Label} from 'components/label';
-import type {NormalizedInterval} from 'date-fns';
 import {useEffect, useRef} from 'react';
 import {cn} from 'utils/cn';
-import {CALENDAR_INTERVALS, PAST_INTERVALS} from './interval-selector.utils';
+import type {IntervalOption} from './interval-selector.utils';
 
 interface IntervalSelectorSuggestionsProps {
-  interval: NormalizedInterval;
+  pastIntervals: IntervalOption[];
+  calendarIntervals: IntervalOption[];
   onSelect: (value: string, label: string) => void;
   onOpenCalendar: () => void;
   highlightedIndex: number;
 }
 
 export function IntervalSelectorSuggestions({
-  interval: _interval,
+  pastIntervals,
+  calendarIntervals,
   onSelect,
   onOpenCalendar,
   highlightedIndex,
 }: IntervalSelectorSuggestionsProps) {
   const pastIntervalsStartIndex = 0;
-  const calendarIntervalsStartIndex = PAST_INTERVALS.length;
-  const calendarButtonIndex = calendarIntervalsStartIndex + CALENDAR_INTERVALS.length;
+  const calendarIntervalsStartIndex = pastIntervals.length;
+  const calendarButtonIndex = calendarIntervalsStartIndex + calendarIntervals.length;
 
   const itemRefs = useRef<(HTMLButtonElement | null)[]>([]);
 
@@ -38,7 +39,7 @@ export function IntervalSelectorSuggestions({
   return (
     <div className="flex flex-col gap-8">
       <div className="flex flex-col gap-4 p-4">
-        {PAST_INTERVALS.map((option, index) => {
+        {pastIntervals.map((option, index) => {
           const itemIndex = pastIntervalsStartIndex + index;
           const isHighlighted = highlightedIndex === itemIndex;
           return (
@@ -67,7 +68,7 @@ export function IntervalSelectorSuggestions({
           Calendar Time
         </Label>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          {CALENDAR_INTERVALS.map((option, index) => {
+          {calendarIntervals.map((option, index) => {
             const itemIndex = calendarIntervalsStartIndex + index;
             const isHighlighted = highlightedIndex === itemIndex;
             return (

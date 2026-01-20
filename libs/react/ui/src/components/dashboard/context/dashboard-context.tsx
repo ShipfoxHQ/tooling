@@ -6,8 +6,7 @@
  */
 
 import type {VisibilityState} from '@tanstack/react-table';
-import {findOptionValueForInterval} from 'components/interval-selector';
-import type {NormalizedInterval} from 'date-fns';
+import {findOptionValueForInterval, type IntervalSelection} from 'components/interval-selector';
 import {createContext, type ReactNode, useCallback, useContext, useMemo, useState} from 'react';
 import {intervalToNowFromDuration} from 'utils/date';
 import type {
@@ -74,9 +73,12 @@ export const RESOURCE_TYPE_OPTIONS: ResourceTypeOption[] = [
 ];
 
 /**
- * Default interval
+ * Default selection (relative: last 7 days)
  */
-const DEFAULT_INTERVAL = intervalToNowFromDuration({days: 7});
+const DEFAULT_SELECTION: IntervalSelection = {
+  type: 'relative',
+  duration: {days: 7},
+};
 
 export interface DashboardProviderProps {
   children: ReactNode;
@@ -91,10 +93,10 @@ export interface DashboardProviderProps {
    */
   initialFilters?: FilterOption[];
   /**
-   * Initial time interval
-   * @default intervalToNowFromDuration({days: 7})
+   * Initial time interval selection
+   * @default { type: 'relative', duration: {days: 7} }
    */
-  initialInterval?: NormalizedInterval;
+  initialSelection?: IntervalSelection;
   /**
    * Initial active sidebar item
    * @default 'reliability'
@@ -128,26 +130,34 @@ export function DashboardProvider({
   children,
   initialColumns = DEFAULT_COLUMNS,
   initialFilters = DEFAULT_FILTERS,
-  initialInterval = DEFAULT_INTERVAL,
+  initialSelection = DEFAULT_SELECTION,
   initialActiveSidebarItem = 'reliability',
   initialResourceType = 'ci.pipeline',
   columnMapping,
 }: DashboardProviderProps) {
   // State management
   const [searchQuery, setSearchQuery] = useState('');
-  const [interval, setInterval] = useState<NormalizedInterval>(initialInterval);
-  const [intervalValue, setIntervalValue] = useState<string | undefined>(() =>
-    findOptionValueForInterval(initialInterval),
-  );
+  const [selection, setSelection] = useState<IntervalSelection>(initialSelection);
+  const [intervalValue, setIntervalValue] = useState<string | undefined>(() => {
+    const interval =
+      initialSelection.type === 'interval'
+        ? initialSelection.interval
+        : intervalToNowFromDuration(initialSelection.duration);
+    return findOptionValueForInterval(interval);
+  });
   const [lastUpdated, setLastUpdated] = useState('13s ago');
   const [columns, setColumns] = useState<ViewColumn[]>(initialColumns);
   const [filters, setFilters] = useState<FilterOption[]>(initialFilters);
   const [activeSidebarItem, setActiveSidebarItem] = useState(initialActiveSidebarItem);
   const [resourceType, setResourceType] = useState<ResourceType>(initialResourceType);
 
-  const handleIntervalChange = useCallback((newInterval: NormalizedInterval) => {
-    setInterval(newInterval);
-    const value = findOptionValueForInterval(newInterval);
+  const handleSelectionChange = useCallback((newSelection: IntervalSelection) => {
+    setSelection(newSelection);
+    const interval =
+      newSelection.type === 'interval'
+        ? newSelection.interval
+        : intervalToNowFromDuration(newSelection.duration);
+    const value = findOptionValueForInterval(interval);
     setIntervalValue(value);
   }, []);
 
@@ -170,8 +180,8 @@ export function DashboardProvider({
     () => ({
       searchQuery,
       setSearchQuery,
-      interval,
-      setInterval: handleIntervalChange,
+      selection,
+      setSelection: handleSelectionChange,
       intervalValue,
       setIntervalValue,
       lastUpdated,
@@ -189,8 +199,8 @@ export function DashboardProvider({
     }),
     [
       searchQuery,
-      interval,
-      handleIntervalChange,
+      selection,
+      handleSelectionChange,
       intervalValue,
       lastUpdated,
       columns,
