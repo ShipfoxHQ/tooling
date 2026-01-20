@@ -70,7 +70,11 @@ export function useIntervalSelector({
     inputValue: state.inputValue,
   });
 
-  const shortcutValue = formatShortcut({selection, inputValue: state.inputValue});
+  const shortcutValue = formatShortcut({
+    selection,
+    inputValue: state.inputValue,
+    isFocused: state.isFocused,
+  });
 
   const handleFocus = useCallback(() => {
     state.setIsFocused(true);

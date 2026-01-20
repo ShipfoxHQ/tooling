@@ -72,13 +72,31 @@ describe('interval-selector-format', () => {
   describe('formatShortcut', () => {
     it('should format the selected duration for shortcut', () => {
       const duration = {hours: 1};
-      const result = formatShortcut({selection: {type: 'relative', duration}, inputValue: ''});
+      const result = formatShortcut({
+        selection: {type: 'relative', duration},
+        inputValue: '',
+        isFocused: false,
+      });
       expect(result).toBe('1h');
     });
 
-    it('should format the selected duration for shortcut when the input value is a duration shortcut', () => {
+    it('should format the selected duration for shortcut when the input is not focused and the value is a duration shortcut', () => {
       const duration = {hours: 1};
-      const result = formatShortcut({selection: {type: 'relative', duration}, inputValue: '5d'});
+      const result = formatShortcut({
+        selection: {type: 'relative', duration},
+        inputValue: '5d',
+        isFocused: false,
+      });
+      expect(result).toBe('1h');
+    });
+
+    it('should format the selected duration for shortcut when the input is focused', () => {
+      const duration = {hours: 1};
+      const result = formatShortcut({
+        selection: {type: 'relative', duration},
+        inputValue: '5d',
+        isFocused: true,
+      });
       expect(result).toBe('5d');
     });
 
@@ -92,6 +110,7 @@ describe('interval-selector-format', () => {
           },
         },
         inputValue: 'Hello world',
+        isFocused: false,
       });
       expect(result).toBe('-');
     });

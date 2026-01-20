@@ -30,11 +30,12 @@ export function formatSelection({selection, isFocused, inputValue}: FormatSelect
 interface FormatShortcutParams {
   selection: IntervalSelection;
   inputValue: string;
+  isFocused: boolean;
 }
 
-export function formatShortcut({selection, inputValue}: FormatShortcutParams): string {
+export function formatShortcut({selection, inputValue, isFocused}: FormatShortcutParams): string {
   const inputShortcut = parseTextDurationShortcut(inputValue);
-  if (inputShortcut) return generateDurationShortcut(inputShortcut);
+  if (isFocused && inputShortcut) return generateDurationShortcut(inputShortcut);
   if (selection.type === 'relative') return generateDurationShortcut(selection.duration);
   return '-';
 }
