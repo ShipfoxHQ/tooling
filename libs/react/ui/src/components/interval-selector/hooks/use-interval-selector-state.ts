@@ -1,11 +1,6 @@
-import {useMemo, useRef, useState} from 'react';
-import type {IntervalOption} from '../interval-selector.utils';
+import {useRef, useState} from 'react';
 
-interface UseIntervalSelectorStateProps {
-  calendarIntervals: IntervalOption[] | (() => IntervalOption[]);
-}
-
-export function useIntervalSelectorState({calendarIntervals}: UseIntervalSelectorStateProps) {
+export function useIntervalSelectorState() {
   const [isFocused, setIsFocused] = useState(false);
   const [popoverOpen, setPopoverOpen] = useState(false);
   const [calendarOpen, setCalendarOpen] = useState(false);
@@ -22,11 +17,6 @@ export function useIntervalSelectorState({calendarIntervals}: UseIntervalSelecto
   const inputRef = useRef<HTMLInputElement>(null);
   const shakeTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const isMouseDownOnInputRef = useRef(false);
-
-  const resolvedCalendarIntervals = useMemo(() => {
-    void popoverOpen;
-    return typeof calendarIntervals === 'function' ? calendarIntervals() : calendarIntervals;
-  }, [popoverOpen, calendarIntervals]);
 
   return {
     isFocused,
@@ -54,6 +44,5 @@ export function useIntervalSelectorState({calendarIntervals}: UseIntervalSelecto
     inputRef,
     shakeTimeoutRef,
     isMouseDownOnInputRef,
-    resolvedCalendarIntervals,
   };
 }

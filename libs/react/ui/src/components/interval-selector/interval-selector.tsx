@@ -5,7 +5,10 @@ import type {Duration, NormalizedInterval} from 'date-fns';
 import {cn} from 'utils/cn';
 import {useIntervalSelector} from './hooks/use-interval-selector';
 import type {IntervalOption} from './interval-selector.utils';
-import {getCalendarIntervals, PAST_INTERVALS} from './interval-selector.utils';
+import {
+  calendarIntervals as defaultCalendarIntervals,
+  PAST_INTERVALS,
+} from './interval-selector.utils';
 import {IntervalSelectorCalendar} from './interval-selector-calendar';
 import {IntervalSelectorSuggestions} from './interval-selector-suggestions';
 
@@ -28,7 +31,7 @@ export interface IntervalSelectorProps {
   className?: string;
   inputClassName?: string;
   pastIntervals?: IntervalOption[];
-  calendarIntervals?: IntervalOption[] | (() => IntervalOption[]);
+  calendarIntervals?: IntervalOption[];
 }
 
 export function IntervalSelector({
@@ -40,7 +43,7 @@ export function IntervalSelector({
   className,
   inputClassName,
   pastIntervals = PAST_INTERVALS,
-  calendarIntervals = getCalendarIntervals,
+  calendarIntervals = defaultCalendarIntervals,
 }: IntervalSelectorProps) {
   const {
     isFocused,
@@ -63,7 +66,6 @@ export function IntervalSelector({
     handleOpenCalendar,
     setPopoverOpen,
     closeAll,
-    resolvedCalendarIntervals,
   } = useIntervalSelector({
     selection,
     onSelectionChange,
@@ -128,7 +130,7 @@ export function IntervalSelector({
         ) : popoverOpen ? (
           <IntervalSelectorSuggestions
             pastIntervals={pastIntervals}
-            calendarIntervals={resolvedCalendarIntervals}
+            calendarIntervals={calendarIntervals}
             onSelect={handleOptionSelect}
             onOpenCalendar={handleOpenCalendar}
             highlightedIndex={highlightedIndex}

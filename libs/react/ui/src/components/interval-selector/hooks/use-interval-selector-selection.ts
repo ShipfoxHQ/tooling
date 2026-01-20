@@ -10,7 +10,7 @@ import {
 
 interface UseIntervalSelectorSelectionProps {
   pastIntervals: IntervalOption[];
-  resolvedCalendarIntervals: IntervalOption[];
+  calendarIntervals: IntervalOption[];
   getShortcutFromValue: (value: string) => string | undefined;
   detectShortcutFromInterval: (interval: NormalizedInterval) => {
     shortcut?: string;
@@ -24,7 +24,7 @@ interface UseIntervalSelectorSelectionProps {
 
 export function useIntervalSelectorSelection({
   pastIntervals,
-  resolvedCalendarIntervals,
+  calendarIntervals,
   getShortcutFromValue,
   detectShortcutFromInterval,
   setSelectedLabel,
@@ -67,7 +67,7 @@ export function useIntervalSelectorSelection({
 
   const updateSelectionFromValue = useCallback(
     (val: string) => {
-      const label = getLabelForValue(val, pastIntervals, resolvedCalendarIntervals);
+      const label = getLabelForValue(val, pastIntervals, calendarIntervals);
       if (label) {
         setSelectedLabel(label);
         selectedValueRef.current = val;
@@ -79,7 +79,7 @@ export function useIntervalSelectorSelection({
     [
       getShortcutFromValue,
       pastIntervals,
-      resolvedCalendarIntervals,
+      calendarIntervals,
       setSelectedLabel,
       setConfirmedShortcut,
       selectedValueRef,
@@ -88,7 +88,7 @@ export function useIntervalSelectorSelection({
 
   const updateSelectionFromRef = useCallback(() => {
     if (!selectedValueRef.current) return false;
-    const option = findOption(selectedValueRef.current, pastIntervals, resolvedCalendarIntervals);
+    const option = findOption(selectedValueRef.current, pastIntervals, calendarIntervals);
     if (option) {
       setSelectedLabel(option.label);
       setConfirmedShortcut(getShortcutFromValue(option.value));
@@ -100,7 +100,7 @@ export function useIntervalSelectorSelection({
     getShortcutFromValue,
     clearSelectionState,
     pastIntervals,
-    resolvedCalendarIntervals,
+    calendarIntervals,
     setSelectedLabel,
     setConfirmedShortcut,
     selectedValueRef,
@@ -108,7 +108,7 @@ export function useIntervalSelectorSelection({
 
   const updateSelectionFromInterval = useCallback(
     (int: NormalizedInterval) => {
-      const matchingOption = findOptionByInterval(int, pastIntervals, resolvedCalendarIntervals);
+      const matchingOption = findOptionByInterval(int, pastIntervals, calendarIntervals);
       if (matchingOption) {
         setSelectedLabel(matchingOption.label);
         selectedValueRef.current = matchingOption.value;
@@ -121,7 +121,7 @@ export function useIntervalSelectorSelection({
       getShortcutFromValue,
       applyIntervalDetection,
       pastIntervals,
-      resolvedCalendarIntervals,
+      calendarIntervals,
       setSelectedLabel,
       setConfirmedShortcut,
       selectedValueRef,

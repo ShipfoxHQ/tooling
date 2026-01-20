@@ -22,7 +22,7 @@ export interface UseIntervalSelectorProps
     'selection' | 'onSelectionChange' | 'value' | 'onValueChange'
   > {
   pastIntervals: IntervalOption[];
-  calendarIntervals: IntervalOption[] | (() => IntervalOption[]);
+  calendarIntervals: IntervalOption[];
 }
 
 export function useIntervalSelector({
@@ -38,18 +38,16 @@ export function useIntervalSelector({
       ? selection.interval
       : intervalToNowFromDuration(selection.duration);
 
-  const state = useIntervalSelectorState({
-    calendarIntervals,
-  });
+  const state = useIntervalSelectorState();
 
   const shortcut = useIntervalSelectorShortcut({
     pastIntervals,
-    resolvedCalendarIntervals: state.resolvedCalendarIntervals,
+    calendarIntervals,
   });
 
   const selectionLogic = useIntervalSelectorSelection({
     pastIntervals,
-    resolvedCalendarIntervals: state.resolvedCalendarIntervals,
+    calendarIntervals,
     getShortcutFromValue: shortcut.getShortcutFromValue,
     detectShortcutFromInterval: shortcut.detectShortcutFromInterval,
     setSelectedLabel: state.setSelectedLabel,
@@ -90,7 +88,6 @@ export function useIntervalSelector({
 
   const inputHandlers = useIntervalSelectorInput({
     pastIntervals,
-    resolvedCalendarIntervals: state.resolvedCalendarIntervals,
     inputValue: state.inputValue,
     setInputValue: state.setInputValue,
     setDetectedShortcut: state.setDetectedShortcut,
@@ -116,7 +113,7 @@ export function useIntervalSelector({
       state.setConfirmedShortcut(shortcut.getShortcutFromValue(optionValue));
       onValueChange?.(optionValue);
 
-      const option = findOption(optionValue, pastIntervals, state.resolvedCalendarIntervals);
+      const option = findOption(optionValue, pastIntervals, calendarIntervals);
       if (option) {
         if (option.type === 'calendar') {
           const calendarInterval = getCalendarInterval(optionValue);
@@ -136,12 +133,20 @@ export function useIntervalSelector({
 
       closeInputAndPopover();
     },
-    [state, shortcut, pastIntervals, onValueChange, emitSelection, closeInputAndPopover],
+    [
+      state,
+      shortcut,
+      pastIntervals,
+      onValueChange,
+      emitSelection,
+      closeInputAndPopover,
+      calendarIntervals,
+    ],
   );
 
   const navigation = useIntervalSelectorNavigation({
     pastIntervals,
-    resolvedCalendarIntervals: state.resolvedCalendarIntervals,
+    calendarIntervals,
     highlightedIndex: state.highlightedIndex,
     setHighlightedIndex: state.setHighlightedIndex,
     popoverOpen: state.popoverOpen,
@@ -152,9 +157,9 @@ export function useIntervalSelector({
 
   const displayValue = state.isFocused
     ? state.inputValue
-    : value && findOption(value, pastIntervals, state.resolvedCalendarIntervals)
+    : value && findOption(value, pastIntervals, calendarIntervals)
       ? (state.selectedLabel ??
-        getLabelForValue(value, pastIntervals, state.resolvedCalendarIntervals) ??
+        getLabelForValue(value, pastIntervals, calendarIntervals) ??
         formatIntervalDisplay(currentInterval, false))
       : (state.selectedLabel ?? formatIntervalDisplay(currentInterval, false));
 
@@ -284,6 +289,6 @@ export function useIntervalSelector({
     setPopoverOpen: state.setPopoverOpen,
     setIsFocused: state.setIsFocused,
     closeAll,
-    resolvedCalendarIntervals: state.resolvedCalendarIntervals,
+    calendarIntervals,
   };
 }

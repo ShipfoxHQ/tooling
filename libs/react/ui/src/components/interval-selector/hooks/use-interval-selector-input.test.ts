@@ -8,11 +8,8 @@ describe('useIntervalSelectorInput', () => {
     {value: '5m', label: 'Past 5 Minutes', shortcut: '5m', type: 'past', duration: {minutes: 5}},
   ];
 
-  const mockCalendarIntervals: IntervalOption[] = [];
-
   const mockProps = {
     pastIntervals: mockPastIntervals,
-    resolvedCalendarIntervals: mockCalendarIntervals,
     inputValue: '',
     setInputValue: vi.fn(),
     setDetectedShortcut: vi.fn(),

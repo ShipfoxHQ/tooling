@@ -12,32 +12,28 @@ import {
 
 interface UseIntervalSelectorShortcutProps {
   pastIntervals: IntervalOption[];
-  resolvedCalendarIntervals: IntervalOption[];
+  calendarIntervals: IntervalOption[];
 }
 
 export function useIntervalSelectorShortcut({
   pastIntervals,
-  resolvedCalendarIntervals,
+  calendarIntervals,
 }: UseIntervalSelectorShortcutProps) {
   const getShortcutFromValue = useCallback(
     (value: string): string | undefined => {
-      const option = findOption(value, pastIntervals, resolvedCalendarIntervals);
+      const option = findOption(value, pastIntervals, calendarIntervals);
       if (option?.shortcut) {
         return option.shortcut;
       }
       const parsedShortcut = parseRelativeTimeShortcut(value);
       return parsedShortcut?.shortcut;
     },
-    [pastIntervals, resolvedCalendarIntervals],
+    [pastIntervals, calendarIntervals],
   );
 
   const detectShortcutFromInterval = useCallback(
     (interval: NormalizedInterval) => {
-      const matchingOption = findOptionByInterval(
-        interval,
-        pastIntervals,
-        resolvedCalendarIntervals,
-      );
+      const matchingOption = findOptionByInterval(interval, pastIntervals, calendarIntervals);
       if (matchingOption?.shortcut) {
         return {
           shortcut: matchingOption.shortcut,
@@ -64,7 +60,7 @@ export function useIntervalSelectorShortcut({
 
       return {shortcut: undefined, label: undefined, value: undefined};
     },
-    [pastIntervals, resolvedCalendarIntervals],
+    [pastIntervals, calendarIntervals],
   );
 
   const detectShortcutFromInput = useCallback(

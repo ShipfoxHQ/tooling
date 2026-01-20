@@ -9,7 +9,6 @@ import {
 
 interface UseIntervalSelectorInputProps {
   pastIntervals: IntervalOption[];
-  resolvedCalendarIntervals: IntervalOption[];
   inputValue: string;
   setInputValue: (value: string) => void;
   setDetectedShortcut: (shortcut: string | undefined) => void;

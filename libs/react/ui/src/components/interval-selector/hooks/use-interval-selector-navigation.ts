@@ -3,7 +3,7 @@ import type {IntervalOption} from '../interval-selector.utils';
 
 interface UseIntervalSelectorNavigationProps {
   pastIntervals: IntervalOption[];
-  resolvedCalendarIntervals: IntervalOption[];
+  calendarIntervals: IntervalOption[];
   highlightedIndex: number;
   setHighlightedIndex: (index: number) => void;
   popoverOpen: boolean;
@@ -14,7 +14,7 @@ interface UseIntervalSelectorNavigationProps {
 
 export function useIntervalSelectorNavigation({
   pastIntervals,
-  resolvedCalendarIntervals,
+  calendarIntervals,
   highlightedIndex,
   setHighlightedIndex,
   popoverOpen,
@@ -31,10 +31,10 @@ export function useIntervalSelectorNavigation({
   const getAllNavigableItems = useCallback(() => {
     return [
       ...pastIntervals,
-      ...resolvedCalendarIntervals,
+      ...calendarIntervals,
       {value: '__calendar__', label: 'Select from calendar', type: 'custom' as const},
     ];
-  }, [pastIntervals, resolvedCalendarIntervals]);
+  }, [pastIntervals, calendarIntervals]);
 
   const handleKeyDown = useCallback(
     (

@@ -64,43 +64,41 @@ function calculateCalendarShortcut(value: string): string {
   }
 }
 
-export function getCalendarIntervals(): IntervalOption[] {
-  const baseIntervals: Omit<IntervalOption, 'shortcut'>[] = [
-    {value: 'today', label: 'Today', type: 'calendar'},
-    {value: 'yesterday', label: 'Yesterday', type: 'calendar', duration: {days: 1}},
-    {value: 'week-to-date', label: 'Week to Date', type: 'calendar'},
-    {
-      value: 'previous-week',
-      label: 'Previous Week',
-      type: 'calendar',
-      duration: {weeks: 1},
-    },
-    {value: 'month-to-date', label: 'Month to Date', type: 'calendar'},
-    {
-      value: 'previous-month',
-      label: 'Previous Month',
-      type: 'calendar',
-      duration: {months: 1},
-    },
-    {value: 'year-to-date', label: 'Year to Date', type: 'calendar'},
-    {
-      value: 'previous-year',
-      label: 'Previous Year',
-      type: 'calendar',
-      duration: {years: 1},
-    },
-  ];
+const baseIntervals: Omit<IntervalOption, 'shortcut'>[] = [
+  {value: 'today', label: 'Today', type: 'calendar'},
+  {value: 'yesterday', label: 'Yesterday', type: 'calendar', duration: {days: 1}},
+  {value: 'week-to-date', label: 'Week to Date', type: 'calendar'},
+  {
+    value: 'previous-week',
+    label: 'Previous Week',
+    type: 'calendar',
+    duration: {weeks: 1},
+  },
+  {value: 'month-to-date', label: 'Month to Date', type: 'calendar'},
+  {
+    value: 'previous-month',
+    label: 'Previous Month',
+    type: 'calendar',
+    duration: {months: 1},
+  },
+  {value: 'year-to-date', label: 'Year to Date', type: 'calendar'},
+  {
+    value: 'previous-year',
+    label: 'Previous Year',
+    type: 'calendar',
+    duration: {years: 1},
+  },
+];
 
-  return baseIntervals.map((interval) => {
-    const dynamicShortcut = calculateCalendarShortcut(interval.value);
-    return {
-      ...interval,
-      shortcut:
-        dynamicShortcut ||
-        (interval.duration ? generateDurationShortcut(interval.duration) || '' : ''),
-    };
-  });
-}
+export const calendarIntervals = baseIntervals.map((interval) => {
+  const dynamicShortcut = calculateCalendarShortcut(interval.value);
+  return {
+    ...interval,
+    shortcut:
+      dynamicShortcut ||
+      (interval.duration ? generateDurationShortcut(interval.duration) || '' : ''),
+  };
+});
 
 export function getCalendarInterval(value: string): NormalizedInterval | undefined {
   const now = new Date();
@@ -145,7 +143,7 @@ export function getDurationFromCalendarInterval(
 ): Duration | undefined {
   const intervalDurationMs = differenceInMilliseconds(interval.end, interval.start);
 
-  for (const option of getCalendarIntervals()) {
+  for (const option of calendarIntervals) {
     if (!option.duration) continue;
 
     let expectedDurationMs: number | undefined;

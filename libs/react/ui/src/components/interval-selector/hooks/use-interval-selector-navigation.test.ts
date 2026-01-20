@@ -15,7 +15,7 @@ describe('useIntervalSelectorNavigation', () => {
 
   const mockProps = {
     pastIntervals: mockPastIntervals,
-    resolvedCalendarIntervals: mockCalendarIntervals,
+    calendarIntervals: mockCalendarIntervals,
     highlightedIndex: -1,
     setHighlightedIndex: vi.fn(),
     popoverOpen: true,

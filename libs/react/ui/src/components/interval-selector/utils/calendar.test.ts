@@ -1,10 +1,6 @@
 import {afterEach, beforeEach, describe, expect, it, vi} from '@shipfox/vitest/vi';
 import {endOfDay, startOfDay, startOfMonth, startOfWeek, startOfYear} from 'date-fns';
-import {
-  getCalendarInterval,
-  getCalendarIntervals,
-  getDurationFromCalendarInterval,
-} from './calendar';
+import {calendarIntervals, getCalendarInterval, getDurationFromCalendarInterval} from './calendar';
 
 describe('interval-selector-calendar', () => {
   beforeEach(() => {
@@ -61,13 +57,13 @@ describe('interval-selector-calendar', () => {
 
   describe('getCalendarIntervals', () => {
     it('should return all calendar intervals', () => {
-      const intervals = getCalendarIntervals();
+      const intervals = calendarIntervals;
       expect(intervals.length).toBeGreaterThan(0);
       expect(intervals.every((i) => i.type === 'calendar')).toBe(true);
     });
 
     it('should include all expected interval types', () => {
-      const intervals = getCalendarIntervals();
+      const intervals = calendarIntervals;
       const values = intervals.map((i) => i.value);
       expect(values).toContain('today');
       expect(values).toContain('yesterday');
@@ -77,7 +73,7 @@ describe('interval-selector-calendar', () => {
     });
 
     it('should have shortcuts for all intervals', () => {
-      const intervals = getCalendarIntervals();
+      const intervals = calendarIntervals;
       expect(intervals.every((i) => i.shortcut.length > 0)).toBe(true);
     });
   });

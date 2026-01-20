@@ -49,7 +49,7 @@ describe('useIntervalSelectorSelection', () => {
     const {result} = renderHook(() =>
       useIntervalSelectorSelection({
         pastIntervals: mockPastIntervals,
-        resolvedCalendarIntervals: mockCalendarIntervals,
+        calendarIntervals: mockCalendarIntervals,
         getShortcutFromValue: mockGetShortcutFromValue,
         detectShortcutFromInterval: mockDetectShortcutFromInterval,
         setSelectedLabel,
@@ -73,7 +73,7 @@ describe('useIntervalSelectorSelection', () => {
     const {result} = renderHook(() =>
       useIntervalSelectorSelection({
         pastIntervals: mockPastIntervals,
-        resolvedCalendarIntervals: mockCalendarIntervals,
+        calendarIntervals: mockCalendarIntervals,
         getShortcutFromValue: mockGetShortcutFromValue,
         detectShortcutFromInterval: mockDetectShortcutFromInterval,
         setSelectedLabel,
@@ -98,7 +98,7 @@ describe('useIntervalSelectorSelection', () => {
     const {result} = renderHook(() =>
       useIntervalSelectorSelection({
         pastIntervals: mockPastIntervals,
-        resolvedCalendarIntervals: mockCalendarIntervals,
+        calendarIntervals: mockCalendarIntervals,
         getShortcutFromValue: mockGetShortcutFromValue,
         detectShortcutFromInterval: mockDetectShortcutFromInterval,
         setSelectedLabel,
@@ -121,7 +121,7 @@ describe('useIntervalSelectorSelection', () => {
     const {result} = renderHook(() =>
       useIntervalSelectorSelection({
         pastIntervals: mockPastIntervals,
-        resolvedCalendarIntervals: mockCalendarIntervals,
+        calendarIntervals: mockCalendarIntervals,
         getShortcutFromValue: mockGetShortcutFromValue,
         detectShortcutFromInterval: mockDetectShortcutFromInterval,
         setSelectedLabel,
@@ -145,7 +145,7 @@ describe('useIntervalSelectorSelection', () => {
     const {result} = renderHook(() =>
       useIntervalSelectorSelection({
         pastIntervals: mockPastIntervals,
-        resolvedCalendarIntervals: mockCalendarIntervals,
+        calendarIntervals: mockCalendarIntervals,
         getShortcutFromValue: mockGetShortcutFromValue,
         detectShortcutFromInterval: mockDetectShortcutFromInterval,
         setSelectedLabel,
@@ -176,7 +176,7 @@ describe('useIntervalSelectorSelection', () => {
     const {result} = renderHook(() =>
       useIntervalSelectorSelection({
         pastIntervals: mockPastIntervals,
-        resolvedCalendarIntervals: mockCalendarIntervals,
+        calendarIntervals: mockCalendarIntervals,
         getShortcutFromValue: mockGetShortcutFromValue,
         detectShortcutFromInterval: mockDetectShortcutFromInterval,
         setSelectedLabel,
@@ -207,7 +207,7 @@ describe('useIntervalSelectorSelection', () => {
     const {result} = renderHook(() =>
       useIntervalSelectorSelection({
         pastIntervals: mockPastIntervals,
-        resolvedCalendarIntervals: mockCalendarIntervals,
+        calendarIntervals: mockCalendarIntervals,
         getShortcutFromValue: mockGetShortcutFromValue,
         detectShortcutFromInterval: mockDetectShortcutFromInterval,
         setSelectedLabel,

@@ -1,6 +1,6 @@
 import type {NormalizedInterval} from 'date-fns';
 import {intervalToNowFromDuration} from 'utils/date';
-import {getCalendarInterval, getCalendarIntervals} from './calendar';
+import {calendarIntervals as defaultCalendarIntervals, getCalendarInterval} from './calendar';
 import {
   DEFAULT_TOLERANCE,
   type IntervalOption,
@@ -12,7 +12,7 @@ import {intervalsMatch} from './intervals';
 export function findOption(
   value: string,
   pastIntervals: IntervalOption[] = PAST_INTERVALS,
-  calendarIntervals: IntervalOption[] = getCalendarIntervals(),
+  calendarIntervals: IntervalOption[] = defaultCalendarIntervals,
 ): IntervalOption | undefined {
   return [...pastIntervals, ...calendarIntervals].find((opt) => opt.value === value);
 }
@@ -20,7 +20,7 @@ export function findOption(
 export function getLabelForValue(
   val: string | undefined,
   pastIntervals: IntervalOption[] = PAST_INTERVALS,
-  calendarIntervals: IntervalOption[] = getCalendarIntervals(),
+  calendarIntervals: IntervalOption[] = defaultCalendarIntervals,
 ): string | undefined {
   if (!val) return undefined;
   const option = findOption(val, pastIntervals, calendarIntervals);
@@ -30,7 +30,7 @@ export function getLabelForValue(
 export function findOptionByInterval(
   interval: NormalizedInterval,
   pastIntervals: IntervalOption[] = PAST_INTERVALS,
-  calendarIntervals: IntervalOption[] = getCalendarIntervals(),
+  calendarIntervals: IntervalOption[] = defaultCalendarIntervals,
 ): IntervalOption | undefined {
   for (const opt of calendarIntervals) {
     const calendarInterval = getCalendarInterval(opt.value);

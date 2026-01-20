@@ -28,7 +28,7 @@ describe('useIntervalSelectorShortcut', () => {
       const {result} = renderHook(() =>
         useIntervalSelectorShortcut({
           pastIntervals: mockPastIntervals,
-          resolvedCalendarIntervals: mockCalendarIntervals,
+          calendarIntervals: mockCalendarIntervals,
         }),
       );
 
@@ -40,7 +40,7 @@ describe('useIntervalSelectorShortcut', () => {
       const {result} = renderHook(() =>
         useIntervalSelectorShortcut({
           pastIntervals: mockPastIntervals,
-          resolvedCalendarIntervals: mockCalendarIntervals,
+          calendarIntervals: mockCalendarIntervals,
         }),
       );
 
@@ -52,7 +52,7 @@ describe('useIntervalSelectorShortcut', () => {
       const {result} = renderHook(() =>
         useIntervalSelectorShortcut({
           pastIntervals: mockPastIntervals,
-          resolvedCalendarIntervals: mockCalendarIntervals,
+          calendarIntervals: mockCalendarIntervals,
         }),
       );
 
@@ -65,7 +65,7 @@ describe('useIntervalSelectorShortcut', () => {
       const {result} = renderHook(() =>
         useIntervalSelectorShortcut({
           pastIntervals: mockPastIntervals,
-          resolvedCalendarIntervals: mockCalendarIntervals,
+          calendarIntervals: mockCalendarIntervals,
         }),
       );
 
@@ -85,7 +85,7 @@ describe('useIntervalSelectorShortcut', () => {
       const {result} = renderHook(() =>
         useIntervalSelectorShortcut({
           pastIntervals: mockPastIntervals,
-          resolvedCalendarIntervals: mockCalendarIntervals,
+          calendarIntervals: mockCalendarIntervals,
         }),
       );
 
@@ -104,7 +104,7 @@ describe('useIntervalSelectorShortcut', () => {
       const {result} = renderHook(() =>
         useIntervalSelectorShortcut({
           pastIntervals: mockPastIntervals,
-          resolvedCalendarIntervals: mockCalendarIntervals,
+          calendarIntervals: mockCalendarIntervals,
         }),
       );
 
@@ -124,7 +124,7 @@ describe('useIntervalSelectorShortcut', () => {
       const {result} = renderHook(() =>
         useIntervalSelectorShortcut({
           pastIntervals: mockPastIntervals,
-          resolvedCalendarIntervals: mockCalendarIntervals,
+          calendarIntervals: mockCalendarIntervals,
         }),
       );
 
@@ -136,7 +136,7 @@ describe('useIntervalSelectorShortcut', () => {
       const {result} = renderHook(() =>
         useIntervalSelectorShortcut({
           pastIntervals: mockPastIntervals,
-          resolvedCalendarIntervals: mockCalendarIntervals,
+          calendarIntervals: mockCalendarIntervals,
         }),
       );
 
@@ -148,7 +148,7 @@ describe('useIntervalSelectorShortcut', () => {
       const {result} = renderHook(() =>
         useIntervalSelectorShortcut({
           pastIntervals: mockPastIntervals,
-          resolvedCalendarIntervals: mockCalendarIntervals,
+          calendarIntervals: mockCalendarIntervals,
         }),
       );
 

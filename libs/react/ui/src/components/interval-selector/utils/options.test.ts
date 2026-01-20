@@ -1,7 +1,7 @@
 import {afterEach, beforeEach, describe, expect, it, vi} from '@shipfox/vitest/vi';
 import {subMinutes} from 'date-fns';
 import {intervalToNowFromDuration} from 'utils/date';
-import {getCalendarIntervals} from './calendar';
+import {calendarIntervals} from './calendar';
 import {
   findOption,
   findOptionByInterval,
@@ -75,7 +75,7 @@ describe('interval-selector-options', () => {
     });
 
     it('should find calendar interval option by matching interval', () => {
-      const today = getCalendarIntervals().find((i) => i.value === 'today');
+      const today = calendarIntervals.find((i) => i.value === 'today');
       expect(today).toBeDefined();
     });
 

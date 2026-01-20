@@ -2,7 +2,7 @@ import type {Meta, StoryObj} from '@storybook/react';
 import {useState} from 'react';
 import {type IntervalSelection, IntervalSelector} from './interval-selector';
 import type {IntervalOption} from './interval-selector.utils';
-import {getCalendarIntervals} from './interval-selector.utils';
+import {calendarIntervals as defaultCalendarIntervals} from './interval-selector.utils';
 
 const meta = {
   title: 'Components/IntervalSelector',
@@ -138,18 +138,15 @@ function CustomIntervalsSelector() {
     {value: '1mo', duration: {months: 1}, label: 'Last Month', shortcut: '1mo', type: 'past'},
   ];
 
-  const customCalendarIntervals = (): IntervalOption[] => {
-    const defaults = getCalendarIntervals();
-    return defaults.map((opt) => {
-      if (opt.value === 'today') {
-        return {...opt, label: 'Today (So Far)'};
-      }
-      if (opt.value === 'yesterday') {
-        return {...opt, label: 'Full Yesterday'};
-      }
-      return opt;
-    });
-  };
+  const calendarIntervals = defaultCalendarIntervals.map((opt) => {
+    if (opt.value === 'today') {
+      return {...opt, label: 'Today (So Far)'};
+    }
+    if (opt.value === 'yesterday') {
+      return {...opt, label: 'Full Yesterday'};
+    }
+    return opt;
+  });
 
   return (
     <div className="space-y-8">
@@ -163,7 +160,7 @@ function CustomIntervalsSelector() {
         value={value}
         onValueChange={setValue}
         pastIntervals={customPastIntervals}
-        calendarIntervals={customCalendarIntervals}
+        calendarIntervals={calendarIntervals}
         className="w-[75vw] md:w-350"
       />
       <div className="text-xs text-foreground-neutral-muted font-mono">
