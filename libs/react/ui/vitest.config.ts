@@ -28,6 +28,7 @@ export default defineConfig(
           ],
           test: {
             name: 'storybook',
+            include: ['src/**/*.stories.@(js|jsx|ts|tsx|mdx)'],
             browser: {
               enabled: true,
               headless: true,
@@ -35,6 +36,16 @@ export default defineConfig(
               instances: [{browser: 'chromium'}],
             },
             setupFiles: ['.storybook/vitest.setup.ts'],
+          },
+        },
+        {
+          extends: true,
+          test: {
+            name: 'unit',
+            include: ['src/**/*.test.ts', 'src/**/*.test.tsx'],
+            exclude: ['**/*.stories.*', '**/node_modules/**', '**/dist/**'],
+            environment: 'jsdom',
+            setupFiles: ['./test/setup.ts'],
           },
         },
       ],

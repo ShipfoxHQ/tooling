@@ -92,11 +92,13 @@ const DURATION_SHORTCUT_REGEX = new RegExp(`^(\\d+)\\s*(${SHORTCUT_PATTERN})$`, 
 const DURATION_FULL_REGEX = new RegExp(`^(\\d+)\\s*(${FULL_NAME_PATTERN})\\s*$`, 'i');
 
 export function generateDurationShortcut(duration: Duration): string {
-  const keys = Object.keys(duration) as (keyof Duration)[];
-  if (keys.length !== 1) return '';
-  const key = keys[0];
-  const value = duration[key];
-  return `${value}${DURATION_SHORTCUTS[key]}`;
+  for (const [key, shortcut] of Object.entries(DURATION_SHORTCUTS)) {
+    const value = duration[key as keyof Duration];
+    if (value) {
+      return `${value}${shortcut}`;
+    }
+  }
+  return '';
 }
 
 export function parseTextDurationShortcut(text: string): Duration | undefined {
@@ -171,11 +173,6 @@ function fixInvalidInterval(
 }
 
 export function parseTextInterval(text: string): NormalizedInterval | undefined {
-  const durationShortcut = parseTextDurationShortcut(text);
-  if (durationShortcut) {
-    return intervalToNowFromDuration(durationShortcut);
-  }
-
   const textDates = text.split(DATE_SPLITTER_REGEX).map((token) => token.trim());
   if (textDates.length !== 2) {
     return undefined;

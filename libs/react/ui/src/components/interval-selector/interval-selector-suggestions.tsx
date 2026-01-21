@@ -4,26 +4,27 @@ import {Kbd} from 'components/kbd';
 import {Label} from 'components/label';
 import {useEffect, useRef} from 'react';
 import {cn} from 'utils/cn';
-import type {IntervalOption} from './interval-selector.utils';
+import {generateDurationShortcut, humanizeDurationToNow} from 'utils/date';
+import type {IntervalSelection, IntervalSuggestion, RelativeSuggestion} from './types';
 
 interface IntervalSelectorSuggestionsProps {
-  pastIntervals: IntervalOption[];
-  calendarIntervals: IntervalOption[];
-  onSelect: (value: string, label: string) => void;
+  relativeSuggestions: RelativeSuggestion[];
+  intervalSuggestions: IntervalSuggestion[];
+  onSelect: (selection: IntervalSelection) => void;
   onOpenCalendar: () => void;
   highlightedIndex: number;
 }
 
 export function IntervalSelectorSuggestions({
-  pastIntervals,
-  calendarIntervals,
+  relativeSuggestions,
+  intervalSuggestions,
   onSelect,
   onOpenCalendar,
   highlightedIndex,
 }: IntervalSelectorSuggestionsProps) {
   const pastIntervalsStartIndex = 0;
-  const calendarIntervalsStartIndex = pastIntervals.length;
-  const calendarButtonIndex = calendarIntervalsStartIndex + calendarIntervals.length;
+  const calendarIntervalsStartIndex = relativeSuggestions.length;
+  const calendarButtonIndex = calendarIntervalsStartIndex + intervalSuggestions.length;
 
   const itemRefs = useRef<(HTMLButtonElement | null)[]>([]);
 
@@ -39,25 +40,27 @@ export function IntervalSelectorSuggestions({
   return (
     <div className="flex flex-col gap-8">
       <div className="flex flex-col gap-4 p-4">
-        {pastIntervals.map((option, index) => {
+        {relativeSuggestions.map((option, index) => {
           const itemIndex = pastIntervalsStartIndex + index;
           const isHighlighted = highlightedIndex === itemIndex;
+          const shortcut = generateDurationShortcut(option.duration);
+          const label = humanizeDurationToNow(option.duration);
           return (
             <Button
-              key={option.value}
+              key={shortcut}
               ref={(el) => {
                 itemRefs.current[itemIndex] = el;
               }}
               type="button"
               variant="transparent"
-              onClick={() => onSelect(option.value, option.label)}
+              onClick={() => onSelect(option)}
               className={cn(
                 'w-full text-foreground-neutral-subtle justify-start',
                 isHighlighted && 'bg-background-button-transparent-hover',
               )}
             >
-              <Kbd className="h-16 shrink-0 min-w-36">{option.shortcut}</Kbd>
-              <span>{option.label}</span>
+              <Kbd className="h-16 shrink-0 min-w-36">{shortcut}</Kbd>
+              <span>{label}</span>
             </Button>
           );
         })}
@@ -68,24 +71,23 @@ export function IntervalSelectorSuggestions({
           Calendar Time
         </Label>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          {calendarIntervals.map((option, index) => {
+          {intervalSuggestions.map((option, index) => {
             const itemIndex = calendarIntervalsStartIndex + index;
             const isHighlighted = highlightedIndex === itemIndex;
             return (
               <Button
-                key={option.value}
+                key={option.label}
                 ref={(el) => {
                   itemRefs.current[itemIndex] = el;
                 }}
                 type="button"
                 variant="transparent"
-                onClick={() => onSelect(option.value, option.label)}
+                onClick={() => onSelect(option)}
                 className={cn(
                   'w-full text-foreground-neutral-subtle justify-start',
                   isHighlighted && 'bg-background-button-transparent-hover',
                 )}
               >
-                <Kbd className="h-16 shrink-0 min-w-36">{option.shortcut}</Kbd>
                 <span>{option.label}</span>
               </Button>
             );

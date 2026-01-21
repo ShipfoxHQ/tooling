@@ -1,43 +1,27 @@
 import {Calendar} from 'components/calendar';
-import {format} from 'date-fns';
+import {endOfDay, format} from 'date-fns';
 import {useCallback, useState} from 'react';
 import type {DateRange} from 'react-day-picker';
-import {intervalToNowFromDuration} from 'utils/date';
-import type {IntervalSelection} from './interval-selector';
+import type {IntervalSelection} from './types';
 
 interface IntervalSelectorCalendarProps {
-  selection: IntervalSelection;
-  onSelect: (range: DateRange | undefined) => void;
+  onSelect: (selection: IntervalSelection) => void;
 }
 
-export function IntervalSelectorCalendar({selection, onSelect}: IntervalSelectorCalendarProps) {
-  const interval =
-    selection.type === 'interval'
-      ? selection.interval
-      : intervalToNowFromDuration(selection.duration);
-
-  const [selectedRange, setSelectedRange] = useState<DateRange | undefined>({
-    from: interval.start,
-    to: interval.end,
-  });
+export function IntervalSelectorCalendar({onSelect}: IntervalSelectorCalendarProps) {
+  const [selectedRange, setSelectedRange] = useState<DateRange | undefined>(undefined);
 
   const handleSelect = useCallback(
-    (nextRange: DateRange | undefined, selectedDay: Date | undefined) => {
-      setSelectedRange((range) => {
-        if (range?.from && range?.to && selectedDay) {
-          const newRange = {from: selectedDay, to: undefined};
-          onSelect(newRange);
-          return newRange;
-        }
-        if (nextRange?.from && nextRange?.to) {
-          onSelect({from: nextRange.from, to: nextRange.to});
-        } else {
-          onSelect(nextRange);
-        }
-        return nextRange;
+    (_: DateRange | undefined, selectedDay: Date | undefined) => {
+      if (!selectedDay) return setSelectedRange(undefined);
+      if (!selectedRange?.from) return setSelectedRange({from: selectedDay, to: undefined});
+      onSelect({
+        type: 'interval',
+        interval: {start: selectedRange.from, end: endOfDay(selectedDay)},
       });
+      return setSelectedRange(undefined);
     },
-    [onSelect],
+    [onSelect, selectedRange],
   );
 
   return (

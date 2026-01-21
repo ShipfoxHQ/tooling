@@ -6,9 +6,8 @@
  */
 
 import type {VisibilityState} from '@tanstack/react-table';
-import {findOptionValueForInterval, type IntervalSelection} from 'components/interval-selector';
+import type {IntervalSelection} from 'components/interval-selector';
 import {createContext, type ReactNode, useCallback, useContext, useMemo, useState} from 'react';
-import {intervalToNowFromDuration} from 'utils/date';
 import type {
   DashboardState,
   FilterOption,
@@ -138,13 +137,6 @@ export function DashboardProvider({
   // State management
   const [searchQuery, setSearchQuery] = useState('');
   const [selection, setSelection] = useState<IntervalSelection>(initialSelection);
-  const [intervalValue, setIntervalValue] = useState<string | undefined>(() => {
-    const interval =
-      initialSelection.type === 'interval'
-        ? initialSelection.interval
-        : intervalToNowFromDuration(initialSelection.duration);
-    return findOptionValueForInterval(interval);
-  });
   const [lastUpdated, setLastUpdated] = useState('13s ago');
   const [columns, setColumns] = useState<ViewColumn[]>(initialColumns);
   const [filters, setFilters] = useState<FilterOption[]>(initialFilters);
@@ -153,12 +145,6 @@ export function DashboardProvider({
 
   const handleSelectionChange = useCallback((newSelection: IntervalSelection) => {
     setSelection(newSelection);
-    const interval =
-      newSelection.type === 'interval'
-        ? newSelection.interval
-        : intervalToNowFromDuration(newSelection.duration);
-    const value = findOptionValueForInterval(interval);
-    setIntervalValue(value);
   }, []);
 
   // Compute column visibility state
@@ -182,8 +168,6 @@ export function DashboardProvider({
       setSearchQuery,
       selection,
       setSelection: handleSelectionChange,
-      intervalValue,
-      setIntervalValue,
       lastUpdated,
       setLastUpdated,
       columns,
@@ -201,7 +185,6 @@ export function DashboardProvider({
       searchQuery,
       selection,
       handleSelectionChange,
-      intervalValue,
       lastUpdated,
       columns,
       columnVisibility,

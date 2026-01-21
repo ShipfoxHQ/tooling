@@ -82,8 +82,7 @@ export function PageToolbar({
   className,
   ...props
 }: PageToolbarProps) {
-  const {selection, setSelection, intervalValue, setIntervalValue, lastUpdated} =
-    useDashboardContext();
+  const {selection, setSelection, lastUpdated} = useDashboardContext();
   return (
     <div
       className={cn(
@@ -132,8 +131,6 @@ export function PageToolbar({
         <IntervalSelector
           selection={selection}
           onSelectionChange={setSelection}
-          value={intervalValue}
-          onValueChange={setIntervalValue}
           container={intervalSelectorContainer}
           className="w-[75vw] md:w-350"
         />

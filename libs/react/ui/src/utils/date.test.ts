@@ -118,6 +118,57 @@ describe('date utils', () => {
       const result = generateDurationShortcut({years: 100});
       expect(result).toEqual('100y');
     });
+
+    it('should return the highest duration unit (years)', () => {
+      const result = generateDurationShortcut({
+        years: 1,
+        months: 1,
+        weeks: 1,
+        days: 1,
+        hours: 1,
+        minutes: 1,
+        seconds: 1,
+      });
+      expect(result).toEqual('1y');
+    });
+
+    it('should return the highest duration unit (months)', () => {
+      const result = generateDurationShortcut({
+        months: 1,
+        weeks: 1,
+        days: 1,
+        hours: 1,
+        minutes: 1,
+        seconds: 1,
+      });
+      expect(result).toEqual('1mo');
+    });
+
+    it('should return the highest duration unit (weeks)', () => {
+      const result = generateDurationShortcut({
+        weeks: 1,
+        days: 1,
+        hours: 1,
+        minutes: 1,
+        seconds: 1,
+      });
+      expect(result).toEqual('1w');
+    });
+
+    it('should return the highest duration unit (days)', () => {
+      const result = generateDurationShortcut({days: 1, hours: 1, minutes: 1, seconds: 1});
+      expect(result).toEqual('1d');
+    });
+
+    it('should return the highest duration unit (hours)', () => {
+      const result = generateDurationShortcut({hours: 1, minutes: 1, seconds: 1});
+      expect(result).toEqual('1h');
+    });
+
+    it('should return the highest duration unit (minutes)', () => {
+      const result = generateDurationShortcut({minutes: 1, seconds: 1});
+      expect(result).toEqual('1m');
+    });
   });
 
   describe('parseTextInterval', () => {
@@ -125,15 +176,6 @@ describe('date utils', () => {
       expect(parseTextInterval('invalid')).toBeUndefined();
       expect(parseTextInterval('Jan 1')).toBeUndefined();
       expect(parseTextInterval('invalid - invalid')).toBeUndefined();
-    });
-
-    it('should parse duration shortcuts correctly', () => {
-      const result = parseTextInterval('5m');
-      const expectedStart = sub(now, {minutes: 5});
-      expect(result).toEqual({
-        start: expectedStart,
-        end: now,
-      });
     });
 
     describe('year assignment when dates lack years', () => {
