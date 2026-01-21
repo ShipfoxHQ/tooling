@@ -15,9 +15,14 @@ export function IntervalSelectorCalendar({onSelect}: IntervalSelectorCalendarPro
     (_: DateRange | undefined, selectedDay: Date | undefined) => {
       if (!selectedDay) return setSelectedRange(undefined);
       if (!selectedRange?.from) return setSelectedRange({from: selectedDay, to: undefined});
+
+      const start = selectedDay < selectedRange.from ? selectedDay : selectedRange.from;
+      const end =
+        selectedDay < selectedRange.from ? endOfDay(selectedRange.from) : endOfDay(selectedDay);
+
       onSelect({
         type: 'interval',
-        interval: {start: selectedRange.from, end: endOfDay(selectedDay)},
+        interval: {start, end},
       });
       return setSelectedRange(undefined);
     },
