@@ -37,6 +37,9 @@ export function IntervalSelectorCalendar({onSelect}: IntervalSelectorCalendarPro
         after: new Date(),
       }}
       classNames={{
+        root: 'relative w-full flex justify-center items-center',
+        months: 'w-full',
+        month_grid: 'flex flex-col justify-center items-center',
         nav: 'flex items-center gap-4 absolute top-16 left-0 w-full z-10',
       }}
     />

@@ -70,7 +70,7 @@ export function IntervalSelectorSuggestions({
         <Label className="px-8 py-4 text-xs leading-20 text-foreground-neutral-subtle select-none">
           Calendar Time
         </Label>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 [&>*:only-child]:md:col-span-2">
           {intervalSuggestions.map((option, index) => {
             const itemIndex = calendarIntervalsStartIndex + index;
             const isHighlighted = highlightedIndex === itemIndex;
