@@ -8,32 +8,17 @@
 import {Button} from 'components/button';
 import {ButtonGroup, ButtonGroupSeparator} from 'components/button-group';
 import {Icon} from 'components/icon';
-import {Kbd} from 'components/kbd';
-import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from 'components/select';
+import {IntervalSelector} from 'components/interval-selector';
 import {Header, Text} from 'components/typography';
 import type {ComponentProps, ReactNode} from 'react';
 import {cn} from 'utils/cn';
-import type {TimePeriod} from '../context';
+import {useDashboardContext} from '../context';
 
 export interface PageToolbarProps extends Omit<ComponentProps<'div'>, 'title' | 'children'> {
   /**
    * The title to display in the toolbar header
    */
   title: ReactNode;
-  /**
-   * Last updated timestamp text
-   * @default '13s ago'
-   */
-  lastUpdated?: string;
-  /**
-   * Current time period value
-   * @default '2days'
-   */
-  timePeriod?: TimePeriod;
-  /**
-   * Callback when time period changes
-   */
-  onTimePeriodChange?: (value: TimePeriod) => void;
   /**
    * Callback when refresh button is clicked
    */
@@ -63,29 +48,29 @@ export interface PageToolbarProps extends Omit<ComponentProps<'div'>, 'title' | 
    * Children to render (e.g., mobile menu button)
    */
   children?: ReactNode;
+  /**
+   * Custom container for the interval selector popover
+   */
+  intervalSelectorContainer?: HTMLElement | null;
 }
 
 /**
  * Generic Page Toolbar
  *
  * A flexible toolbar component that can be used across different dashboard pages.
- * Supports title customization, time period selection, refresh indicator, and playback controls.
+ * Supports title customization, time interval selection, refresh indicator, and playback controls.
+ * Uses DashboardContext for interval state management.
  *
  * @example
  * ```tsx
  * <PageToolbar
  *   title="Analytics"
- *   timePeriod="2days"
- *   onTimePeriodChange={setTimePeriod}
  *   onRefresh={handleRefresh}
  * />
  * ```
  */
 export function PageToolbar({
   title,
-  lastUpdated = '13s ago',
-  timePeriod = '2days',
-  onTimePeriodChange,
   onRefresh,
   showPlaybackControls = true,
   onRewind,
@@ -93,9 +78,11 @@ export function PageToolbar({
   onSpeed,
   actions,
   children,
+  intervalSelectorContainer,
   className,
   ...props
 }: PageToolbarProps) {
+  const {selection, setSelection, lastUpdated} = useDashboardContext();
   return (
     <div
       className={cn(
@@ -140,46 +127,13 @@ export function PageToolbar({
           </Button>
         </div>
 
-        {/* Time Period Selector - Responsive width */}
-        <Select value={timePeriod} onValueChange={onTimePeriodChange}>
-          <SelectTrigger className="w-full md:w-280">
-            <div className="flex items-center gap-8 flex-1 min-w-0">
-              <SelectValue placeholder="Select time range" />
-            </div>
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="1hour">
-              <div className="flex items-center gap-8">
-                <Kbd className="h-16">1h</Kbd>
-                <span>Past 1 Hour</span>
-              </div>
-            </SelectItem>
-            <SelectItem value="1day">
-              <div className="flex items-center gap-8">
-                <Kbd className="h-16">1d</Kbd>
-                <span>Past 1 Day</span>
-              </div>
-            </SelectItem>
-            <SelectItem value="2days">
-              <div className="flex items-center gap-8">
-                <Kbd className="h-16">2d</Kbd>
-                <span>Past 2 Days</span>
-              </div>
-            </SelectItem>
-            <SelectItem value="7days">
-              <div className="flex items-center gap-8">
-                <Kbd className="h-16">7d</Kbd>
-                <span>Past 7 Days</span>
-              </div>
-            </SelectItem>
-            <SelectItem value="30days">
-              <div className="flex items-center gap-8">
-                <Kbd className="h-16">30d</Kbd>
-                <span>Past 30 Days</span>
-              </div>
-            </SelectItem>
-          </SelectContent>
-        </Select>
+        {/* Time Interval Selector - Responsive width */}
+        <IntervalSelector
+          selection={selection}
+          onSelectionChange={setSelection}
+          container={intervalSelectorContainer}
+          className="w-[75vw] md:w-350"
+        />
 
         {/* Playback Controls - Hidden on mobile */}
         {showPlaybackControls && (

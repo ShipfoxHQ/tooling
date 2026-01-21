@@ -110,9 +110,6 @@ export function AnalyticsPage() {
   const {
     searchQuery,
     setSearchQuery,
-    timePeriod,
-    setTimePeriod,
-    lastUpdated,
     columnVisibility,
     updateColumnVisibility,
     activeSidebarItem,
@@ -134,12 +131,7 @@ export function AnalyticsPage() {
 
   return (
     <div className="flex h-full flex-col">
-      <PageToolbar
-        title={pageTitle}
-        timePeriod={timePeriod}
-        onTimePeriodChange={setTimePeriod}
-        lastUpdated={lastUpdated}
-      >
+      <PageToolbar title={pageTitle} onRefresh={() => undefined}>
         {!isDesktop && (
           <MobileSidebar
             items={defaultSidebarItems}

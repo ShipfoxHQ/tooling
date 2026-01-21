@@ -12,7 +12,6 @@ export type {
   DashboardState,
   FilterOption,
   ResourceType,
-  TimePeriod,
   ViewColumn,
 } from './context';
 export {
