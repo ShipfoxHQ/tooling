@@ -163,9 +163,7 @@ function fixInvalidInterval(
   endHasYear: boolean,
 ): boolean {
   if (end < start) {
-    if (startHasYear && endHasYear) {
-      return false;
-    }
+    if (startHasYear || endHasYear) return false;
     const endYear = end.getFullYear();
     start.setFullYear(endYear - 1);
   }

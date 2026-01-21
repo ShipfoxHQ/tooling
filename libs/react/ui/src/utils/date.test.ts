@@ -256,6 +256,11 @@ describe('date utils', () => {
         const result = parseTextInterval('Dec 31 2026 - Jan 1 2026');
         expect(result).toBeUndefined();
       });
+
+      it('should return undefined when start has explicit year and interval is invalid (Dec 1 2026 - Jan 1)', () => {
+        const result = parseTextInterval('Dec 1 2026 - Jan 1');
+        expect(result).toBeUndefined();
+      });
     });
 
     describe('valid intervals', () => {
