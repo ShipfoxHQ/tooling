@@ -1,8 +1,10 @@
+import {intervalToDuration} from 'date-fns';
 import {
   generateDurationShortcut,
   humanizeDurationToNow,
   intervalToNowFromDuration,
   parseTextDurationShortcut,
+  parseTextInterval,
 } from 'utils/date';
 import {formatDateTime, formatDateTimeRange} from 'utils/format/date';
 import type {IntervalSelection} from '../types';
@@ -35,7 +37,11 @@ interface FormatShortcutParams {
 
 export function formatShortcut({selection, inputValue, isFocused}: FormatShortcutParams): string {
   const inputShortcut = parseTextDurationShortcut(inputValue);
+  const inputInterval = parseTextInterval(inputValue);
   if (isFocused && inputShortcut) return generateDurationShortcut(inputShortcut);
+  if (isFocused && inputInterval)
+    return generateDurationShortcut(intervalToDuration(inputInterval));
+  if (isFocused) return '-';
   if (selection.type === 'relative') return generateDurationShortcut(selection.duration);
-  return '-';
+  return generateDurationShortcut(intervalToDuration(selection.interval));
 }

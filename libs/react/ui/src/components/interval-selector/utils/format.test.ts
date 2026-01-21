@@ -70,10 +70,36 @@ describe('interval-selector-format', () => {
   });
 
   describe('formatShortcut', () => {
-    it('should format the selected duration for shortcut', () => {
+    it('should format the selected duration as shortcut', () => {
       const duration = {hours: 1};
       const result = formatShortcut({
         selection: {type: 'relative', duration},
+        inputValue: '',
+        isFocused: false,
+      });
+      expect(result).toBe('1h');
+    });
+
+    it('should format the selected interval as shortcut', () => {
+      const interval = {
+        start: new Date('2026-01-19T00:00:00Z'),
+        end: new Date('2026-01-19T01:00:00Z'),
+      };
+      const result = formatShortcut({
+        selection: {type: 'interval', interval},
+        inputValue: '',
+        isFocused: false,
+      });
+      expect(result).toBe('1h');
+    });
+
+    it('should format the selected interval as the closest duration shortcut', () => {
+      const interval = {
+        start: new Date('2026-01-19T00:00:00Z'),
+        end: new Date('2026-01-19T01:10:00Z'),
+      };
+      const result = formatShortcut({
+        selection: {type: 'interval', interval},
         inputValue: '',
         isFocused: false,
       });
@@ -90,7 +116,7 @@ describe('interval-selector-format', () => {
       expect(result).toBe('1h');
     });
 
-    it('should format the selected duration for shortcut when the input is focused', () => {
+    it('should format the selected duration for shortcut when the input is focused and a duration', () => {
       const duration = {hours: 1};
       const result = formatShortcut({
         selection: {type: 'relative', duration},
@@ -100,17 +126,22 @@ describe('interval-selector-format', () => {
       expect(result).toBe('5d');
     });
 
-    it('should return "-" when the input value is not a duration shortcut', () => {
+    it('should format the selected duration for shortcut when the input is focused and an interval', () => {
+      const duration = {hours: 1};
       const result = formatShortcut({
-        selection: {
-          type: 'interval',
-          interval: {
-            start: new Date('2026-01-19T00:00:00Z'),
-            end: new Date('2026-01-19T01:00:00Z'),
-          },
-        },
+        selection: {type: 'relative', duration},
+        inputValue: '1 Dec 2025, 00:00 – 2 Dec 2025, 00:00',
+        isFocused: true,
+      });
+      expect(result).toBe('1d');
+    });
+
+    it('should return "-" when the input is focused and cannot be parsed', () => {
+      const duration = {hours: 1};
+      const result = formatShortcut({
+        selection: {type: 'relative', duration},
         inputValue: 'Hello world',
-        isFocused: false,
+        isFocused: true,
       });
       expect(result).toBe('-');
     });
