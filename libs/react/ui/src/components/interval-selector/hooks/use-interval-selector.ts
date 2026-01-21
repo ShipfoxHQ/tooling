@@ -21,11 +21,11 @@ export function useIntervalSelector({
   const state = useIntervalSelectorState();
 
   const triggerShakeAnimation = useCallback(() => {
-    state.setIsInvalid(true);
-    state.setShouldShake(true);
     if (state.shakeTimeoutRef.current) {
       clearTimeout(state.shakeTimeoutRef.current);
     }
+    state.setIsInvalid(true);
+    state.setShouldShake(true);
     state.shakeTimeoutRef.current = setTimeout(() => {
       state.setShouldShake(false);
       state.shakeTimeoutRef.current = null;
@@ -42,6 +42,10 @@ export function useIntervalSelector({
     closeInputAndPopover();
     state.setCalendarOpen(false);
     state.setHighlightedIndex(-1);
+    if (state.shakeTimeoutRef.current) {
+      clearTimeout(state.shakeTimeoutRef.current);
+      state.shakeTimeoutRef.current = null;
+    }
   }, [closeInputAndPopover, state]);
 
   const onSelect = useCallback(

@@ -86,7 +86,7 @@ export function IntervalSelector({
       <PopoverContent
         align="start"
         sideOffset={8}
-        className="w-(--radix-popover-trigger-width) md:w-auto p-0"
+        className="w-(--radix-popover-trigger-width) p-0"
         onOpenAutoFocus={(e) => e.preventDefault()}
         onInteractOutside={(e) => {
           e.preventDefault();
