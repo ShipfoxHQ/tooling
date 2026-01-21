@@ -24,7 +24,7 @@ describe('useIntervalSelectorNavigation', () => {
     setHighlightedIndex: vi.fn(),
     popoverOpen: true,
     calendarOpen: false,
-    handleOpenCalendar: vi.fn(),
+    onOpenCalendar: vi.fn(),
     onSelect: vi.fn(),
   };
 
@@ -57,18 +57,11 @@ describe('useIntervalSelectorNavigation', () => {
     it('should navigate down with ArrowDown', () => {
       const {result} = renderHook(() => useIntervalSelectorNavigation(mockProps));
 
-      const handleConfirmInput = vi.fn();
-      const closeAll = vi.fn();
-
       act(() => {
-        result.current.handleKeyDown(
-          {
-            key: 'ArrowDown',
-            preventDefault: vi.fn(),
-          } as unknown as React.KeyboardEvent<HTMLInputElement>,
-          handleConfirmInput,
-          closeAll,
-        );
+        result.current.onKeyDown({
+          key: 'ArrowDown',
+          preventDefault: vi.fn(),
+        } as unknown as React.KeyboardEvent<HTMLInputElement>);
       });
 
       expect(mockProps.setHighlightedIndex).toHaveBeenCalledWith(0);
@@ -82,18 +75,11 @@ describe('useIntervalSelectorNavigation', () => {
         }),
       );
 
-      const handleConfirmInput = vi.fn();
-      const closeAll = vi.fn();
-
       act(() => {
-        result.current.handleKeyDown(
-          {
-            key: 'ArrowUp',
-            preventDefault: vi.fn(),
-          } as unknown as React.KeyboardEvent<HTMLInputElement>,
-          handleConfirmInput,
-          closeAll,
-        );
+        result.current.onKeyDown({
+          key: 'ArrowUp',
+          preventDefault: vi.fn(),
+        } as unknown as React.KeyboardEvent<HTMLInputElement>);
       });
 
       expect(mockProps.setHighlightedIndex).toHaveBeenCalledWith(0);
@@ -107,18 +93,11 @@ describe('useIntervalSelectorNavigation', () => {
         }),
       );
 
-      const handleConfirmInput = vi.fn();
-      const closeAll = vi.fn();
-
       act(() => {
-        result.current.handleKeyDown(
-          {
-            key: 'ArrowDown',
-            preventDefault: vi.fn(),
-          } as unknown as React.KeyboardEvent<HTMLInputElement>,
-          handleConfirmInput,
-          closeAll,
-        );
+        result.current.onKeyDown({
+          key: 'ArrowDown',
+          preventDefault: vi.fn(),
+        } as unknown as React.KeyboardEvent<HTMLInputElement>);
       });
 
       expect(mockProps.setHighlightedIndex).toHaveBeenCalledWith(0);
@@ -132,18 +111,11 @@ describe('useIntervalSelectorNavigation', () => {
         }),
       );
 
-      const handleConfirmInput = vi.fn();
-      const closeAll = vi.fn();
-
       act(() => {
-        result.current.handleKeyDown(
-          {
-            key: 'ArrowUp',
-            preventDefault: vi.fn(),
-          } as unknown as React.KeyboardEvent<HTMLInputElement>,
-          handleConfirmInput,
-          closeAll,
-        );
+        result.current.onKeyDown({
+          key: 'ArrowUp',
+          preventDefault: vi.fn(),
+        } as unknown as React.KeyboardEvent<HTMLInputElement>);
       });
 
       expect(mockProps.setHighlightedIndex).toHaveBeenCalledWith(3);
@@ -157,18 +129,11 @@ describe('useIntervalSelectorNavigation', () => {
         }),
       );
 
-      const handleConfirmInput = vi.fn();
-      const closeAll = vi.fn();
-
       act(() => {
-        result.current.handleKeyDown(
-          {
-            key: 'Enter',
-            preventDefault: vi.fn(),
-          } as unknown as React.KeyboardEvent<HTMLInputElement>,
-          handleConfirmInput,
-          closeAll,
-        );
+        result.current.onKeyDown({
+          key: 'Enter',
+          preventDefault: vi.fn(),
+        } as unknown as React.KeyboardEvent<HTMLInputElement>);
       });
 
       expect(mockProps.onSelect).toHaveBeenCalledWith({type: 'relative', duration: {minutes: 5}});
@@ -182,66 +147,14 @@ describe('useIntervalSelectorNavigation', () => {
         }),
       );
 
-      const handleConfirmInput = vi.fn();
-      const closeAll = vi.fn();
-
       act(() => {
-        result.current.handleKeyDown(
-          {
-            key: 'Enter',
-            preventDefault: vi.fn(),
-          } as unknown as React.KeyboardEvent<HTMLInputElement>,
-          handleConfirmInput,
-          closeAll,
-        );
+        result.current.onKeyDown({
+          key: 'Enter',
+          preventDefault: vi.fn(),
+        } as unknown as React.KeyboardEvent<HTMLInputElement>);
       });
 
-      expect(mockProps.handleOpenCalendar).toHaveBeenCalled();
-    });
-
-    it('should call handleConfirmInput on Enter when popover closed', () => {
-      const {result} = renderHook(() =>
-        useIntervalSelectorNavigation({
-          ...mockProps,
-          popoverOpen: false,
-        }),
-      );
-
-      const handleConfirmInput = vi.fn();
-      const closeAll = vi.fn();
-
-      act(() => {
-        result.current.handleKeyDown(
-          {
-            key: 'Enter',
-            preventDefault: vi.fn(),
-          } as unknown as React.KeyboardEvent<HTMLInputElement>,
-          handleConfirmInput,
-          closeAll,
-        );
-      });
-
-      expect(handleConfirmInput).toHaveBeenCalled();
-    });
-
-    it('should close all on Escape', () => {
-      const {result} = renderHook(() => useIntervalSelectorNavigation(mockProps));
-
-      const handleConfirmInput = vi.fn();
-      const closeAll = vi.fn();
-
-      act(() => {
-        result.current.handleKeyDown(
-          {
-            key: 'Escape',
-            preventDefault: vi.fn(),
-          } as unknown as React.KeyboardEvent<HTMLInputElement>,
-          handleConfirmInput,
-          closeAll,
-        );
-      });
-
-      expect(closeAll).toHaveBeenCalled();
+      expect(mockProps.onOpenCalendar).toHaveBeenCalled();
     });
   });
 });

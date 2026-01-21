@@ -1,9 +1,7 @@
-import {Input} from 'components/input';
-import {Kbd} from 'components/kbd';
-import {Popover, PopoverContent, PopoverTrigger} from 'components/popover';
-import {cn} from 'utils/cn';
+import {Popover, PopoverContent} from 'components/popover';
 import {useIntervalSelector} from './hooks/use-interval-selector';
 import {IntervalSelectorCalendar} from './interval-selector-calendar';
+import {IntervalSelectorInput} from './interval-selector-input';
 import {IntervalSelectorSuggestions} from './interval-selector-suggestions';
 import type {IntervalSelection, IntervalSuggestion, RelativeSuggestion} from './types';
 import {defaultIntervalSuggestions, defaultRelativeSuggestions} from './utils';
@@ -29,75 +27,48 @@ export function IntervalSelector({
 }: IntervalSelectorProps) {
   const {
     onSelect,
-    isFocused,
     popoverOpen,
     calendarOpen,
-    displayValue,
-    shortcutValue,
     highlightedIndex,
-    isInvalid,
-    shouldShake,
     inputRef,
-    handleFocus,
-    handleBlur,
-    handleMouseDown,
-    handleMouseUp,
-    handleInputChange,
-    handleKeyDown,
-    handleOpenCalendar,
-    setPopoverOpen,
+    isNavigating,
+    isFocused,
+    setIsFocused,
+    onBlur,
+    onFocus,
+    onKeyDown,
+    onChange,
+    onOpenCalendar,
     closeAll,
+    onInteractOutside,
   } = useIntervalSelector({
-    selection,
     onSelectionChange,
     relativeSuggestions,
     intervalSuggestions,
   });
 
   return (
-    <Popover
-      open={popoverOpen}
-      onOpenChange={(open) => {
-        if (open) {
-          setPopoverOpen(true);
-        } else if (!isFocused && !calendarOpen) {
-          setPopoverOpen(false);
-        }
-      }}
-    >
-      <PopoverTrigger asChild>
-        <div className={cn('relative', className, shouldShake && 'animate-shake')}>
-          <Input
-            ref={inputRef}
-            value={displayValue}
-            onChange={isFocused ? handleInputChange : undefined}
-            onFocus={handleFocus}
-            onBlur={handleBlur}
-            onMouseDown={handleMouseDown}
-            onMouseUp={handleMouseUp}
-            onKeyDown={handleKeyDown}
-            readOnly={!isFocused}
-            aria-invalid={isInvalid && isFocused}
-            iconLeft={<Kbd className="h-16 shrink-0 min-w-36">{shortcutValue}</Kbd>}
-            className={cn('w-full pl-50', inputClassName)}
-          />
-        </div>
-      </PopoverTrigger>
+    <Popover open={popoverOpen}>
+      <IntervalSelectorInput
+        onSelect={onSelect}
+        selection={selection}
+        isNavigating={isNavigating}
+        className={className}
+        inputClassName={inputClassName}
+        onChange={onChange}
+        onKeyDown={onKeyDown}
+        onFocus={onFocus}
+        onBlur={onBlur}
+        inputRef={inputRef}
+        isFocused={isFocused}
+        setIsFocused={setIsFocused}
+      />
       <PopoverContent
         align="start"
         sideOffset={8}
         className="w-(--radix-popover-trigger-width) p-0"
         onOpenAutoFocus={(e) => e.preventDefault()}
-        onInteractOutside={(e) => {
-          e.preventDefault();
-          const target = e.target as HTMLElement;
-          if (
-            inputRef.current &&
-            (inputRef.current.contains(target) || target.closest('[data-radix-popover-trigger]'))
-          )
-            return;
-          closeAll();
-        }}
+        onInteractOutside={onInteractOutside}
         onEscapeKeyDown={(e) => {
           e.preventDefault();
           closeAll();
@@ -111,7 +82,7 @@ export function IntervalSelector({
             relativeSuggestions={relativeSuggestions}
             intervalSuggestions={intervalSuggestions}
             onSelect={onSelect}
-            onOpenCalendar={handleOpenCalendar}
+            onOpenCalendar={onOpenCalendar}
             highlightedIndex={highlightedIndex}
           />
         ) : null}
