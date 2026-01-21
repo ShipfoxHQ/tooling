@@ -1,5 +1,5 @@
 import {Calendar} from 'components/calendar';
-import {endOfDay, format} from 'date-fns';
+import {endOfDay, format, startOfDay} from 'date-fns';
 import {useCallback, useState} from 'react';
 import type {DateRange} from 'react-day-picker';
 import type {IntervalSelection} from './types';
@@ -16,7 +16,8 @@ export function IntervalSelectorCalendar({onSelect}: IntervalSelectorCalendarPro
       if (!selectedDay) return setSelectedRange(undefined);
       if (!selectedRange?.from) return setSelectedRange({from: selectedDay, to: undefined});
 
-      const start = selectedDay < selectedRange.from ? selectedDay : selectedRange.from;
+      const start =
+        selectedDay < selectedRange.from ? startOfDay(selectedDay) : startOfDay(selectedRange.from);
       const end =
         selectedDay < selectedRange.from ? endOfDay(selectedRange.from) : endOfDay(selectedDay);
 
