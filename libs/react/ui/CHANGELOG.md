@@ -1,5 +1,11 @@
 # @shipfox/react-ui
 
+## 0.23.0
+
+### Minor Changes
+
+- 2d34b03: Add Interval Selector components
+
 ## 0.22.0
 
 ### Minor Changes

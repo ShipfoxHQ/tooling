@@ -3,6 +3,7 @@
  */
 
 import type {VisibilityState} from '@tanstack/react-table';
+import type {IntervalSelection} from 'components/interval-selector';
 
 /**
  * View column configuration for table visibility control
@@ -21,11 +22,6 @@ export interface FilterOption {
   label: string;
   checked: boolean;
 }
-
-/**
- * Time period option
- */
-export type TimePeriod = '1hour' | '1day' | '2days' | '7days' | '30days';
 
 export type ResourceType =
   | 'ci.pipeline'
@@ -52,9 +48,9 @@ export interface DashboardState {
   searchQuery: string;
   setSearchQuery: (query: string) => void;
 
-  // Time period
-  timePeriod: TimePeriod;
-  setTimePeriod: (period: TimePeriod) => void;
+  // Time interval selection
+  selection: IntervalSelection;
+  setSelection: (selection: IntervalSelection) => void;
 
   // Last updated timestamp
   lastUpdated: string;
