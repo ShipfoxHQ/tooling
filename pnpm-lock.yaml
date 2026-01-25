@@ -373,7 +373,7 @@ importers:
     devDependencies:
       '@argos-ci/cli':
         specifier: ^4.0.0
-        version: 4.0.4
+        version: 4.0.5
       '@argos-ci/storybook':
         specifier: ^5.2.1
         version: 5.2.11
@@ -664,8 +664,8 @@ packages:
     resolution: {integrity: sha512-eQqtM54Vh83++Dac5+7ml4YXKW/KnUHRQWjTZ+VGeXfOJdjnZa4JjfVL6fnFG6CKrXjCK5dd9gcZRmbVpbt8rA==}
     engines: {node: '>=20.0.0'}
 
-  '@argos-ci/cli@4.0.4':
-    resolution: {integrity: sha512-MWiGXyOTH63S38mlVbA6vWuw1C3EG/GUkV31fjRvYA3jSBPSpLKh5lLZGuOiw8Y0ffl+eqIObfOoZkyTF8k9wQ==}
+  '@argos-ci/cli@4.0.5':
+    resolution: {integrity: sha512-7oFMUrZlw22lKKaAlwGoTDSeazGEa+37WuBRb34a9A6GYfa0CKE6DNz0vOZWF+hOMfDy68eRJNwzt+y9HwVi7Q==}
     engines: {node: '>=20.0.0'}
     hasBin: true
 
@@ -2017,8 +2017,8 @@ packages:
     resolution: {integrity: sha512-YcPQ8a0jwYU9bTdJDpXjMi7Brhkr1mXsXrUJvjqM2mQDgkRiz8jFaQGOdaLxgjtUfQgZhKy/O3cG/YwmgKaxLA==}
     engines: {node: '>=12.22.0'}
 
-  '@pnpm/npm-conf@2.3.1':
-    resolution: {integrity: sha512-c83qWb22rNRuB0UaVCI0uRPNRr8Z0FWnEIvT47jiHAmOIUHbBOg5XvV7pM5x+rKn9HRpjxquDbXYSXr3fAKFcw==}
+  '@pnpm/npm-conf@3.0.2':
+    resolution: {integrity: sha512-h104Kh26rR8tm+a3Qkc5S4VLYint3FE48as7+/5oCEcKR2idC/pF1G6AhIXKI+eHPJa/3J9i5z0Al47IeGHPkA==}
     engines: {node: '>=12'}
 
   '@polka/url@1.0.0-next.29':
@@ -4623,8 +4623,8 @@ packages:
   openapi-typescript-helpers@0.0.15:
     resolution: {integrity: sha512-opyTPaunsklCBpTK8JGef6mfPhLSnyy5a0IN9vKtx3+4aExf+KxEqYwIy3hqkedXIB97u357uLMJsOnm3GVjsw==}
 
-  ora@9.0.0:
-    resolution: {integrity: sha512-m0pg2zscbYgWbqRR6ABga5c3sZdEon7bSgjnlXC64kxtxLOyjRcbbUkLj7HFyy/FTD+P2xdBWu8snGhYI0jc4A==}
+  ora@9.1.0:
+    resolution: {integrity: sha512-53uuLsXHOAJl5zLrUrzY9/kE+uIFEx7iaH4g2BIJQK4LZjY4LpCCYZVKDWIkL+F01wAaCg93duQ1whnK/AmY1A==}
     engines: {node: '>=20'}
 
   outdent@0.5.0:
@@ -5000,8 +5000,8 @@ packages:
   regex@6.1.0:
     resolution: {integrity: sha512-6VwtthbV4o/7+OaAF9I5L5V3llLEsoPyq9P1JVXkedTP33c7MfCG0/5NOPcSJn0TzXcG9YUrR0gQSWioew3LDg==}
 
-  registry-auth-token@5.1.0:
-    resolution: {integrity: sha512-GdekYuwLXLxMuFTwAPg5UKGLW/UXzQrZvH/Zj791BQif5T05T0RsaLfHc9q3ZOKi7n+BoprPD9mJ0O0k4xzUlw==}
+  registry-auth-token@5.1.1:
+    resolution: {integrity: sha512-P7B4+jq8DeD2nMsAcdfaqHbssgHtZ7Z5+++a5ask90fvmJ8p5je4mOa+wzu+DB4vQ5tdJV/xywY+UnVFeQLV5Q==}
     engines: {node: '>=14'}
 
   registry-url@6.0.1:
@@ -5822,11 +5822,11 @@ snapshots:
 
   '@argos-ci/browser@5.1.2': {}
 
-  '@argos-ci/cli@4.0.4':
+  '@argos-ci/cli@4.0.5':
     dependencies:
       '@argos-ci/core': 5.0.4
       commander: 14.0.2
-      ora: 9.0.0
+      ora: 9.1.0
       update-notifier: 7.3.1
     transitivePeerDependencies:
       - supports-color
@@ -7383,7 +7383,7 @@ snapshots:
     dependencies:
       graceful-fs: 4.2.10
 
-  '@pnpm/npm-conf@2.3.1':
+  '@pnpm/npm-conf@3.0.2':
     dependencies:
       '@pnpm/config.env-replace': 1.1.0
       '@pnpm/network.ca-file': 1.0.2
@@ -9943,7 +9943,7 @@ snapshots:
 
   openapi-typescript-helpers@0.0.15: {}
 
-  ora@9.0.0:
+  ora@9.1.0:
     dependencies:
       chalk: 5.6.2
       cli-cursor: 5.0.0
@@ -9953,7 +9953,6 @@ snapshots:
       log-symbols: 7.0.1
       stdin-discarder: 0.2.2
       string-width: 8.1.0
-      strip-ansi: 7.1.2
 
   outdent@0.5.0: {}
 
@@ -9980,7 +9979,7 @@ snapshots:
   package-json@10.0.1:
     dependencies:
       ky: 1.14.2
-      registry-auth-token: 5.1.0
+      registry-auth-token: 5.1.1
       registry-url: 6.0.1
       semver: 7.7.3
 
@@ -10349,9 +10348,9 @@ snapshots:
     dependencies:
       regex-utilities: 2.3.0
 
-  registry-auth-token@5.1.0:
+  registry-auth-token@5.1.1:
     dependencies:
-      '@pnpm/npm-conf': 2.3.1
+      '@pnpm/npm-conf': 3.0.2
 
   registry-url@6.0.1:
     dependencies:
