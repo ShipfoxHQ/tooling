@@ -142,10 +142,10 @@ importers:
         specifier: workspace:*
         version: link:../../common/config
       pino:
-        specifier: ^10.0.0
+        specifier: ^10.3.0
         version: 10.3.0
       pino-pretty:
-        specifier: ^13.1.1
+        specifier: ^13.1.3
         version: 13.1.3
     devDependencies:
       '@shipfox/biome':
@@ -806,13 +806,11 @@ packages:
   '@biomejs/cli-darwin-arm64@2.3.12':
     resolution: {integrity: sha512-cO6fn+KiMBemva6EARDLQBxeyvLzgidaFRJi8G7OeRqz54kWK0E+uSjgFaiHlc3DZYoa0+1UFE8mDxozpc9ieg==}
     engines: {node: '>=14.21.3'}
-    cpu: [arm64]
     os: [darwin]
 
   '@biomejs/cli-darwin-x64@2.3.12':
     resolution: {integrity: sha512-/fiF/qmudKwSdvmSrSe/gOTkW77mHHkH8Iy7YC2rmpLuk27kbaUOPa7kPiH5l+3lJzTUfU/t6x1OuIq/7SGtxg==}
     engines: {node: '>=14.21.3'}
-    cpu: [x64]
     os: [darwin]
 
   '@biomejs/cli-linux-arm64-musl@2.3.12':
@@ -824,7 +822,6 @@ packages:
   '@biomejs/cli-linux-arm64@2.3.12':
     resolution: {integrity: sha512-nbOsuQROa3DLla5vvsTZg+T5WVPGi9/vYxETm9BOuLHBJN3oWQIg3MIkE2OfL18df1ZtNkqXkH6Yg9mdTPem7A==}
     engines: {node: '>=14.21.3'}
-    cpu: [arm64]
     os: [linux]
 
   '@biomejs/cli-linux-x64-musl@2.3.12':
@@ -836,7 +833,6 @@ packages:
   '@biomejs/cli-linux-x64@2.3.12':
     resolution: {integrity: sha512-CQtqrJ+qEEI8tgRSTjjzk6wJAwfH3wQlkIGsM5dlecfRZaoT+XCms/mf7G4kWNexrke6mnkRzNy6w8ebV177ow==}
     engines: {node: '>=14.21.3'}
-    cpu: [x64]
     os: [linux]
 
   '@biomejs/cli-win32-arm64@2.3.12':
