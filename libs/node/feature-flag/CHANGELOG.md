@@ -1,5 +1,12 @@
 # @shipfox/node-feature-flag
 
+## 0.6.1
+
+### Patch Changes
+
+- Updated dependencies [fa38530]
+  - @shipfox/node-log@0.3.0
+
 ## 0.6.0
 
 ### Minor Changes
