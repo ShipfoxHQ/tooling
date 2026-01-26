@@ -1,5 +1,11 @@
 # @shipfox/node-log
 
+## 0.3.0
+
+### Minor Changes
+
+- fa38530: Log to file and stdout a the same time + expose flush
+
 ## 0.2.0
 
 ### Minor Changes
