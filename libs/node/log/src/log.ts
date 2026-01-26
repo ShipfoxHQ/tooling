@@ -11,20 +11,21 @@ import {config} from './config';
 
 export type {Level, LogFn} from 'pino';
 
-let transport: TransportSingleOptions | undefined;
+const transports: TransportSingleOptions[] = [];
 if (config.LOG_PRETTY) {
-  transport = {target: 'pino-pretty', options: {colorize: true}};
+  transports.push({target: 'pino-pretty', options: {colorize: true}});
 } else if (config.LOG_FILE) {
-  transport = {target: 'pino/file', options: {destination: config.LOG_FILE, mkdir: true}};
+  // This also logs to stdout
+  transports.push({target: 'pino/file', options: {destination: 1}});
+  transports.push({target: 'pino/file', options: {destination: config.LOG_FILE, mkdir: true}});
+} else {
+  transports.push({target: 'pino/file', options: {destination: 1}});
 }
 
 export const settings: LoggerOptions = {
   level: config.LOG_LEVEL,
-  transport,
+  transport: {targets: transports},
   timestamp: stdTimeFunctions.isoTime,
-  formatters: {
-    level: (label) => ({level: label.toUpperCase()}),
-  },
   serializers: {
     error: stdSerializers.errWithCause,
     errors: (errors: unknown) => {
