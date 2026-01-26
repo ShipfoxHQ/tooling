@@ -69,7 +69,7 @@ export function BarChart({
   const hasData = data && data.length > 0 && visibleBars.length > 0;
   const hasNonZeroData =
     hasData &&
-    data.some((item) =>
+    (data as Array<Record<string, unknown>>).some((item) =>
       visibleBars.some((bar) => {
         const value = item[bar.dataKey];
         return value !== undefined && value !== null && Number(value) !== 0;
