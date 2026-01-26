@@ -47,6 +47,8 @@ export function createLogger(options: LoggerOptions) {
 
 export type Logger = {
   [level in Level]: LogFn;
+} & {
+  flush: (cb?: (error?: Error) => void) => void;
 };
 
 export const log: Logger = {
@@ -56,4 +58,5 @@ export const log: Logger = {
   warn: logger.warn.bind(logger),
   error: logger.error.bind(logger),
   fatal: logger.fatal.bind(logger),
+  flush: logger.flush.bind(logger),
 };
