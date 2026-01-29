@@ -3,7 +3,10 @@ import {cn} from 'utils/cn';
 
 function Table({className, ...props}: ComponentProps<'table'>) {
   return (
-    <div className="relative w-full overflow-auto scrollbar rounded-x-8 rounded-b-8">
+    <div
+      className="relative w-full overflow-auto scrollbar rounded-x-8 rounded-b-8"
+      style={props.style}
+    >
       <table
         data-slot="table"
         className={cn('w-full caption-bottom text-sm', className)}

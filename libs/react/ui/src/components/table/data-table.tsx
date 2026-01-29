@@ -206,13 +206,30 @@ export function DataTable<TData, TValue>({
     },
   });
 
-  const skeletonRowCount = pageSize > 5 ? 5 : pageSize;
+  const rowModel = table.getRowModel();
+  const rowCount = rowModel.rows.length;
+  const hasRows = rowCount > 0;
+
+  const currentPageSize = pagination ? paginationState.pageSize : pageSize;
+  const skeletonRowCount = currentPageSize > 5 ? 5 : currentPageSize;
+
+  const headerHeight = 40;
+  const rowHeight = 40;
+  const paginationHeight = 48;
+
+  const rowsForHeight = hasRows ? currentPageSize : 5;
+  const shouldShowPagination = pagination && hasRows;
+  const minTableHeight = pagination
+    ? headerHeight + rowsForHeight * rowHeight + (shouldShowPagination ? paginationHeight : 0)
+    : undefined;
+
+  const emptyRowCount = pagination && hasRows ? Math.max(0, currentPageSize - rowCount) : 0;
 
   if (isLoading) {
     return (
       <Card className={cn('p-0 gap-0', className)} {...props}>
         <CardContent className="overflow-hidden p-0">
-          <Table>
+          <Table style={minTableHeight ? {minHeight: `${minTableHeight}px`} : undefined}>
             <TableHeader>
               <TableRow className="hover:bg-transparent border-b">
                 {columns.map((_, idx) => (
@@ -242,8 +259,8 @@ export function DataTable<TData, TValue>({
   return (
     <Card className={cn('p-0 gap-0', className)} {...props}>
       <CardContent className="overflow-hidden p-0">
-        <Table>
-          {table.getRowModel().rows.length > 0 ? (
+        <Table style={minTableHeight ? {minHeight: `${minTableHeight}px`} : undefined}>
+          {hasRows ? (
             <TableHeader>
               {table.getHeaderGroups().map((headerGroup) => (
                 <TableRow key={headerGroup.id} className="hover:bg-transparent border-b">
@@ -259,30 +276,48 @@ export function DataTable<TData, TValue>({
             </TableHeader>
           ) : null}
           <TableBody>
-            {table.getRowModel().rows?.length ? (
-              table.getRowModel().rows.map((row) => (
-                <TableRow
-                  key={row.id}
-                  onClick={() => onRowClick?.(row.original)}
-                  data-selected={row.getIsSelected()}
-                  className={onRowClick ? 'cursor-pointer' : ''}
-                  tabIndex={onRowClick ? 0 : undefined}
-                  role={onRowClick ? 'button' : undefined}
-                  onKeyDown={(event) => {
-                    if (!onRowClick) return;
-                    if (event.key === 'Enter' || event.key === ' ') {
-                      event.preventDefault();
-                      onRowClick(row.original);
-                    }
-                  }}
-                >
-                  {row.getVisibleCells().map((cell) => (
-                    <TableCell key={cell.id}>
-                      {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                    </TableCell>
-                  ))}
-                </TableRow>
-              ))
+            {hasRows ? (
+              <>
+                {rowModel.rows.map((row) => (
+                  <TableRow
+                    key={row.id}
+                    onClick={() => onRowClick?.(row.original)}
+                    data-selected={row.getIsSelected()}
+                    className={onRowClick ? 'cursor-pointer' : ''}
+                    tabIndex={onRowClick ? 0 : undefined}
+                    role={onRowClick ? 'button' : undefined}
+                    onKeyDown={(event) => {
+                      if (!onRowClick) return;
+                      if (event.key === 'Enter' || event.key === ' ') {
+                        event.preventDefault();
+                        onRowClick(row.original);
+                      }
+                    }}
+                  >
+                    {row.getVisibleCells().map((cell) => (
+                      <TableCell key={cell.id}>
+                        {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                      </TableCell>
+                    ))}
+                  </TableRow>
+                ))}
+                {emptyRowCount > 0 &&
+                  Array.from({length: emptyRowCount}, (_, idx) => {
+                    const emptyRowKey = `empty-row-${rowCount}-pos-${idx + rowCount}`;
+                    return (
+                      <TableRow
+                        key={emptyRowKey}
+                        className="hover:bg-transparent pointer-events-none"
+                      >
+                        {table.getAllColumns().map((column) => (
+                          <TableCell key={column.id}>
+                            <span className="invisible">.</span>
+                          </TableCell>
+                        ))}
+                      </TableRow>
+                    );
+                  })}
+              </>
             ) : (
               <TableRow className="hover:bg-transparent">
                 <TableCell
@@ -294,7 +329,7 @@ export function DataTable<TData, TValue>({
               </TableRow>
             )}
           </TableBody>
-          {pagination && table.getRowModel().rows?.length > 0 && (
+          {shouldShowPagination && (
             <TablePagination
               table={table}
               pageSizeOptions={pageSizeOptions}
