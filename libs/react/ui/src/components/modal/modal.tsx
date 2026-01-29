@@ -287,6 +287,7 @@ type ModalBodyHeaderProps = ComponentProps<'div'> & {
   alt?: string;
   title: string;
   description?: ReactNode;
+  children?: ReactNode;
 };
 
 function ModalBodyHeader({
@@ -295,6 +296,7 @@ function ModalBodyHeader({
   alt = '',
   title,
   description,
+  children,
   ...props
 }: ModalBodyHeaderProps) {
   return (
@@ -310,6 +312,7 @@ function ModalBodyHeader({
           </Text>
         )}
       </div>
+      {children}
     </div>
   );
 }
