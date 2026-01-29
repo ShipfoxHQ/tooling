@@ -1,5 +1,11 @@
 # @shipfox/react-ui
 
+## 0.24.0
+
+### Minor Changes
+
+- 7a9dad5: Add ModalBodyHeader component
+
 ## 0.23.0
 
 ### Minor Changes
