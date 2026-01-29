@@ -287,7 +287,7 @@ export function DataTable<TData, TValue>({
               <TableRow className="hover:bg-transparent">
                 <TableCell
                   colSpan={table.getAllColumns().length}
-                  className="h-240 text-center rounded-t-8"
+                  className="h-240 text-center rounded-t-8 hover:bg-transparent"
                 >
                   {emptyState || <EmptyState />}
                 </TableCell>
