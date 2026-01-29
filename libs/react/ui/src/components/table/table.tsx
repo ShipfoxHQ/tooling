@@ -73,7 +73,7 @@ function TableCell({className, ...props}: ComponentProps<'td'>) {
     <td
       data-slot="table-cell"
       className={cn(
-        'px-12 py-10 align-middle text-sm leading-20 text-foreground-neutral-base',
+        'px-12 py-10 align-middle text-sm leading-20 text-foreground-neutral-base truncate',
         'bg-background-neutral-base',
         'group-hover/row:bg-background-neutral-hover',
         'group-data-[selected=true]/row:bg-background-neutral-pressed!',

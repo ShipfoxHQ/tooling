@@ -214,8 +214,8 @@ export function DataTable<TData, TValue>({
   const skeletonRowCount = currentPageSize > 5 ? 5 : currentPageSize;
 
   const headerHeight = 40;
-  const rowHeight = 40;
-  const paginationHeight = 48;
+  const rowHeight = 46;
+  const paginationHeight = 52.5;
 
   const rowsForHeight = hasRows ? currentPageSize : 5;
   const shouldShowPagination = pagination && hasRows;
