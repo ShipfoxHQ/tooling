@@ -98,7 +98,7 @@ export const generateSearchJobData = (count: number): SearchJobData[] => {
 /**
  * Sample job data
  */
-export const jobsData = generateJobData(100);
+export const jobsData = generateJobData(51);
 
 /**
  * Sample search job data

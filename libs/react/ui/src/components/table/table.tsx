@@ -3,7 +3,10 @@ import {cn} from 'utils/cn';
 
 function Table({className, ...props}: ComponentProps<'table'>) {
   return (
-    <div className="relative w-full overflow-auto scrollbar rounded-x-8 rounded-b-8">
+    <div
+      className="relative w-full overflow-auto scrollbar rounded-x-8 rounded-b-8"
+      style={props.style}
+    >
       <table
         data-slot="table"
         className={cn('w-full caption-bottom text-sm', className)}
@@ -70,7 +73,7 @@ function TableCell({className, ...props}: ComponentProps<'td'>) {
     <td
       data-slot="table-cell"
       className={cn(
-        'px-12 py-10 align-middle text-sm leading-20 text-foreground-neutral-base',
+        'px-12 py-10 align-middle text-sm leading-20 text-foreground-neutral-base truncate',
         'bg-background-neutral-base',
         'group-hover/row:bg-background-neutral-hover',
         'group-data-[selected=true]/row:bg-background-neutral-pressed!',
