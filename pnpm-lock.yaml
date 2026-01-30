@@ -312,7 +312,7 @@ importers:
         version: 1.2.2(@types/react@19.2.10)(react@19.1.1)
       '@remixicon/react':
         specifier: ^4.6.0
-        version: 4.8.0(react@19.1.1)
+        version: 4.9.0(react@19.1.1)
       '@swc/helpers':
         specifier: ^0.5.17
         version: 0.5.18
@@ -2568,8 +2568,8 @@ packages:
       react-redux:
         optional: true
 
-  '@remixicon/react@4.8.0':
-    resolution: {integrity: sha512-cbzR04GKWa3zWdgn0C2i+u/avb167iWeu9gqFO00UGu84meARPAm3oKowDZTU6dlk/WS3UHo6k//LMRM1l7CRw==}
+  '@remixicon/react@4.9.0':
+    resolution: {integrity: sha512-5/jLDD4DtKxH2B4QVXTobvV1C2uL8ab9D5yAYNtFt+w80O0Ys1xFOrspqROL3fjrZi+7ElFUWE37hBfaAl6U+Q==}
     peerDependencies:
       react: '>=18.2.0'
 
@@ -7952,7 +7952,7 @@ snapshots:
       react: 19.1.1
       react-redux: 9.2.0(@types/react@19.2.10)(react@19.1.1)(redux@5.0.1)
 
-  '@remixicon/react@4.8.0(react@19.1.1)':
+  '@remixicon/react@4.9.0(react@19.1.1)':
     dependencies:
       react: 19.1.1
 
