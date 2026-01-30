@@ -1,5 +1,12 @@
 # @shipfox/react-ui
 
+## 0.25.0
+
+### Minor Changes
+
+- e0e55ad: Update ModalBodyHeader and Table components
+- e0e55ad: Update ModalBodyHeader component
+
 ## 0.24.0
 
 ### Minor Changes
