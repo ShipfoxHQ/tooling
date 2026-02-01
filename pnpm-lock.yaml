@@ -376,7 +376,7 @@ importers:
         version: 4.0.5
       '@argos-ci/storybook':
         specifier: ^5.2.1
-        version: 5.2.12
+        version: 5.2.13
       '@hookform/resolvers':
         specifier: ^5.2.2
         version: 5.2.2(react-hook-form@7.70.0(react@19.1.1))
@@ -663,6 +663,10 @@ packages:
     resolution: {integrity: sha512-LxEZZyn/PTgI8P5AEANufZ/K+gM2E4R78vySEvBK3wRQZ8qi4RkCWKUGWJEMauM1yQE1e2PdJ1Kitu56Of8yIg==}
     engines: {node: '>=20.0.0'}
 
+  '@argos-ci/api-client@0.16.0':
+    resolution: {integrity: sha512-BG6g+AZABKN8W2syzfPWKhPxxrAB9Wjp2iNS11R4IskHDV6T41+qeQDpT88GOq6eUZ64Sjzoh/nXG+9EpNxtfw==}
+    engines: {node: '>=20.0.0'}
+
   '@argos-ci/browser@5.1.2':
     resolution: {integrity: sha512-eQqtM54Vh83++Dac5+7ml4YXKW/KnUHRQWjTZ+VGeXfOJdjnZa4JjfVL6fnFG6CKrXjCK5dd9gcZRmbVpbt8rA==}
     engines: {node: '>=20.0.0'}
@@ -676,12 +680,16 @@ packages:
     resolution: {integrity: sha512-tz5t/SrSO8Swc8haVbJkVfMTeTEgG7ex+p0j3PNru7vsFoy3Y4048zoYxoheMPDv9XXaiBJcxP2Cf58puT/WMw==}
     engines: {node: '>=20.0.0'}
 
-  '@argos-ci/playwright@6.4.0':
-    resolution: {integrity: sha512-YfQBmJp0Qd6yzl/GbnJZImSJtCR5CR/+GKgx17KmE5jI+nMUpGwmRqAiV+7A/CWSrQqP0u5Q+0a/XWlfczs+yA==}
+  '@argos-ci/core@5.1.0':
+    resolution: {integrity: sha512-Yi3Wbhz9qMjYPmUkNCNaS5A6LCwiyTIcpqyd9y5Smx9uWRw/JkhYXmjUCaixegoa9R88Ym67xj2aG+2NWVTw/A==}
     engines: {node: '>=20.0.0'}
 
-  '@argos-ci/storybook@5.2.12':
-    resolution: {integrity: sha512-9zXuAa/D7MZmRzO3lm0XCh+ftFz459LMRkXN5x23ewTRc74Z/CmuZFJwPgt4sUh+Jf4OZPuvSXxIRO2HccTPfA==}
+  '@argos-ci/playwright@6.4.1':
+    resolution: {integrity: sha512-24TnYsD50dPNH9NbDsHvrJW4O3eY5l4MapOIqaBZALfyLKJ7/1hC8dJObXUs5zz05lEVIdewaEK49TizSy3qjw==}
+    engines: {node: '>=20.0.0'}
+
+  '@argos-ci/storybook@5.2.13':
+    resolution: {integrity: sha512-D6xxJ0723T1MjRO+/UShZdXU0da+HxgSz+hUa90l2RgapEVpWm//+teGt0lHJppEwiskcIUMuM2v8Z4SDe9+sQ==}
     engines: {node: '>=20.0.0'}
 
   '@argos-ci/util@3.2.0':
@@ -703,6 +711,10 @@ packages:
 
   '@babel/code-frame@7.28.6':
     resolution: {integrity: sha512-JYgintcMjRiCvS8mMECzaEn+m3PfoQiyqukOMCCVQtoJGYJw8j/8LBJEiqkHLkfwCcs74E3pbAUFNg7d9VNJ+Q==}
+    engines: {node: '>=6.9.0'}
+
+  '@babel/code-frame@7.29.0':
+    resolution: {integrity: sha512-9NhCeYjq9+3uxgdtp20LSiJXJvN0FeCtNGpJxuMFZ1Kv3cWUNb6DOhJwUvcVCzKGR66cw4njwM6hrJLqgOwbcw==}
     engines: {node: '>=6.9.0'}
 
   '@babel/compat-data@7.28.5':
@@ -5860,6 +5872,13 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
+  '@argos-ci/api-client@0.16.0':
+    dependencies:
+      debug: 4.4.3
+      openapi-fetch: 0.15.0
+    transitivePeerDependencies:
+      - supports-color
+
   '@argos-ci/browser@5.1.2': {}
 
   '@argos-ci/cli@4.0.5':
@@ -5884,19 +5903,32 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@argos-ci/playwright@6.4.0':
+  '@argos-ci/core@5.1.0':
+    dependencies:
+      '@argos-ci/api-client': 0.16.0
+      '@argos-ci/util': 3.2.0
+      convict: 6.2.4
+      debug: 4.4.3
+      fast-glob: 3.3.3
+      mime-types: 3.0.2
+      sharp: 0.34.5
+      tmp: 0.2.5
+    transitivePeerDependencies:
+      - supports-color
+
+  '@argos-ci/playwright@6.4.1':
     dependencies:
       '@argos-ci/browser': 5.1.2
-      '@argos-ci/core': 5.0.4
+      '@argos-ci/core': 5.1.0
       '@argos-ci/util': 3.2.0
       chalk: 5.6.2
       debug: 4.4.3
     transitivePeerDependencies:
       - supports-color
 
-  '@argos-ci/storybook@5.2.12':
+  '@argos-ci/storybook@5.2.13':
     dependencies:
-      '@argos-ci/playwright': 6.4.0
+      '@argos-ci/playwright': 6.4.1
       '@argos-ci/util': 3.2.0
     transitivePeerDependencies:
       - supports-color
@@ -5928,6 +5960,12 @@ snapshots:
       picocolors: 1.1.1
 
   '@babel/code-frame@7.28.6':
+    dependencies:
+      '@babel/helper-validator-identifier': 7.28.5
+      js-tokens: 4.0.0
+      picocolors: 1.1.1
+
+  '@babel/code-frame@7.29.0':
     dependencies:
       '@babel/helper-validator-identifier': 7.28.5
       js-tokens: 4.0.0
@@ -8434,7 +8472,7 @@ snapshots:
 
   '@testing-library/dom@10.4.0':
     dependencies:
-      '@babel/code-frame': 7.28.6
+      '@babel/code-frame': 7.29.0
       '@babel/runtime': 7.28.6
       '@types/aria-query': 5.0.4
       aria-query: 5.3.0
