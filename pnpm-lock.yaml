@@ -373,7 +373,7 @@ importers:
     devDependencies:
       '@argos-ci/cli':
         specifier: ^4.0.0
-        version: 4.0.5
+        version: 4.1.0
       '@argos-ci/storybook':
         specifier: ^5.2.1
         version: 5.2.13
@@ -659,10 +659,6 @@ packages:
   '@adobe/css-tools@4.4.4':
     resolution: {integrity: sha512-Elp+iwUx5rN5+Y8xLt5/GRoG20WGoDCQ/1Fb+1LiGtvwbDavuSk0jhD/eZdckHAuzcDzccnkv+rEjyWfRx18gg==}
 
-  '@argos-ci/api-client@0.15.0':
-    resolution: {integrity: sha512-LxEZZyn/PTgI8P5AEANufZ/K+gM2E4R78vySEvBK3wRQZ8qi4RkCWKUGWJEMauM1yQE1e2PdJ1Kitu56Of8yIg==}
-    engines: {node: '>=20.0.0'}
-
   '@argos-ci/api-client@0.16.0':
     resolution: {integrity: sha512-BG6g+AZABKN8W2syzfPWKhPxxrAB9Wjp2iNS11R4IskHDV6T41+qeQDpT88GOq6eUZ64Sjzoh/nXG+9EpNxtfw==}
     engines: {node: '>=20.0.0'}
@@ -671,14 +667,10 @@ packages:
     resolution: {integrity: sha512-eQqtM54Vh83++Dac5+7ml4YXKW/KnUHRQWjTZ+VGeXfOJdjnZa4JjfVL6fnFG6CKrXjCK5dd9gcZRmbVpbt8rA==}
     engines: {node: '>=20.0.0'}
 
-  '@argos-ci/cli@4.0.5':
-    resolution: {integrity: sha512-7oFMUrZlw22lKKaAlwGoTDSeazGEa+37WuBRb34a9A6GYfa0CKE6DNz0vOZWF+hOMfDy68eRJNwzt+y9HwVi7Q==}
+  '@argos-ci/cli@4.1.0':
+    resolution: {integrity: sha512-g1/ajFBfTRhRUUNCLB6hbzkcRdjdSSoZ+azrTMXoka1p2D1fnXgfHuTkPdBSpsqj3BOVluu00tRouM8XG7h73g==}
     engines: {node: '>=20.0.0'}
     hasBin: true
-
-  '@argos-ci/core@5.0.4':
-    resolution: {integrity: sha512-tz5t/SrSO8Swc8haVbJkVfMTeTEgG7ex+p0j3PNru7vsFoy3Y4048zoYxoheMPDv9XXaiBJcxP2Cf58puT/WMw==}
-    engines: {node: '>=20.0.0'}
 
   '@argos-ci/core@5.1.0':
     resolution: {integrity: sha512-Yi3Wbhz9qMjYPmUkNCNaS5A6LCwiyTIcpqyd9y5Smx9uWRw/JkhYXmjUCaixegoa9R88Ym67xj2aG+2NWVTw/A==}
@@ -3629,8 +3621,8 @@ packages:
   comma-separated-tokens@2.0.3:
     resolution: {integrity: sha512-Fu4hJdvzeylCfQPp9SGWidpzrMs7tTrlu6Vb8XGaRGck8QSNZJJp538Wrb60Lax4fPwR64ViY468OIUTbRlGZg==}
 
-  commander@14.0.2:
-    resolution: {integrity: sha512-TywoWNNRbhoD0BXs1P3ZEScW8W5iKrnbithIl0YH+uCmBd0QpPOA8yc82DS3BIE5Ma6FnBVUsJ7wVUDz4dvOWQ==}
+  commander@14.0.3:
+    resolution: {integrity: sha512-H+y0Jo/T1RZ9qPP4Eh1pkcQcLRglraJaSLoyOtHxu6AapkjWVCy2Sit1QQ4x3Dng8qDlSsZEet7g5Pq06MvTgw==}
     engines: {node: '>=20'}
 
   commander@6.2.1:
@@ -4358,8 +4350,8 @@ packages:
     resolution: {integrity: sha512-dcS1ul+9tmeD95T+x28/ehLgd9mENa3LsvDTtzm3vyBEO7RPptvAD+t44WVXaUjTBRcrpFeFlC8WCruUR456hw==}
     engines: {node: '>=0.10.0'}
 
-  ky@1.14.2:
-    resolution: {integrity: sha512-q3RBbsO5A5zrPhB6CaCS8ZUv+NWCXv6JJT4Em0i264G9W0fdPB8YRfnnEi7Dm7X7omAkBIPojzYJ2D1oHTHqug==}
+  ky@1.14.3:
+    resolution: {integrity: sha512-9zy9lkjac+TR1c2tG+mkNSVlyOpInnWdSMiue4F+kq8TwJSgv6o8jhLRg8Ho6SnZ9wOYUq/yozts9qQCfk7bIw==}
     engines: {node: '>=18'}
 
   latest-version@9.0.0:
@@ -5278,8 +5270,8 @@ packages:
     resolution: {integrity: sha512-tsaTIkKW9b4N+AEj+SVA+WhJzV7/zMhcSu78mLKWSk7cXMOSHsBKFWUs0fWwq8QyK3MgJBQRX6Gbi4kYbdvGkQ==}
     engines: {node: '>=18'}
 
-  string-width@8.1.0:
-    resolution: {integrity: sha512-Kxl3KJGb/gxkaUMOjRsQ8IrXiGW75O4E3RPjFIINOVH8AMl2SQ/yWdTzWwF3FevIX9LcMAjJW+GRwAlAbTSXdg==}
+  string-width@8.1.1:
+    resolution: {integrity: sha512-KpqHIdDL9KwYk22wEOg/VIqYbrnLeSApsKT/bSj6Ez7pn3CftUiLAv2Lccpq1ALcpLV9UX1Ppn92npZWu2w/aw==}
     engines: {node: '>=20'}
 
   stringify-entities@4.0.4:
@@ -5865,13 +5857,6 @@ snapshots:
 
   '@adobe/css-tools@4.4.4': {}
 
-  '@argos-ci/api-client@0.15.0':
-    dependencies:
-      debug: 4.4.3
-      openapi-fetch: 0.15.0
-    transitivePeerDependencies:
-      - supports-color
-
   '@argos-ci/api-client@0.16.0':
     dependencies:
       debug: 4.4.3
@@ -5881,25 +5866,12 @@ snapshots:
 
   '@argos-ci/browser@5.1.2': {}
 
-  '@argos-ci/cli@4.0.5':
+  '@argos-ci/cli@4.1.0':
     dependencies:
-      '@argos-ci/core': 5.0.4
-      commander: 14.0.2
+      '@argos-ci/core': 5.1.0
+      commander: 14.0.3
       ora: 9.1.0
       update-notifier: 7.3.1
-    transitivePeerDependencies:
-      - supports-color
-
-  '@argos-ci/core@5.0.4':
-    dependencies:
-      '@argos-ci/api-client': 0.15.0
-      '@argos-ci/util': 3.2.0
-      convict: 6.2.4
-      debug: 4.4.3
-      fast-glob: 3.3.3
-      mime-types: 3.0.2
-      sharp: 0.34.5
-      tmp: 0.2.5
     transitivePeerDependencies:
       - supports-color
 
@@ -9135,7 +9107,7 @@ snapshots:
 
   comma-separated-tokens@2.0.3: {}
 
-  commander@14.0.2: {}
+  commander@14.0.3: {}
 
   commander@6.2.1: {}
 
@@ -9838,7 +9810,7 @@ snapshots:
 
   kind-of@6.0.3: {}
 
-  ky@1.14.2: {}
+  ky@1.14.3: {}
 
   latest-version@9.0.0:
     dependencies:
@@ -10098,7 +10070,7 @@ snapshots:
       is-unicode-supported: 2.1.0
       log-symbols: 7.0.1
       stdin-discarder: 0.2.2
-      string-width: 8.1.0
+      string-width: 8.1.1
 
   outdent@0.5.0: {}
 
@@ -10124,7 +10096,7 @@ snapshots:
 
   package-json@10.0.1:
     dependencies:
-      ky: 1.14.2
+      ky: 1.14.3
       registry-auth-token: 5.1.1
       registry-url: 6.0.1
       semver: 7.7.3
@@ -10770,7 +10742,7 @@ snapshots:
       get-east-asian-width: 1.4.0
       strip-ansi: 7.1.2
 
-  string-width@8.1.0:
+  string-width@8.1.1:
     dependencies:
       get-east-asian-width: 1.4.0
       strip-ansi: 7.1.2
