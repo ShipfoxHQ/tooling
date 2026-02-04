@@ -1,214 +1,280 @@
-import {Badge} from 'components/badge';
-import {Icon} from 'components/icon';
-import {Input} from 'components/input';
-import {Popover, PopoverContent, PopoverTrigger} from 'components/popover';
-import type {ComponentProps} from 'react';
+import {Popover, PopoverTrigger} from 'components/popover';
+import {useEffect} from 'react';
 import {cn} from 'utils/cn';
-import {QueryBuilderSuggestions} from './query-builder-suggestions';
-import type {QueryBuilderSuggestion} from './use-query-builder';
-import {useQueryBuilder} from './use-query-builder';
+import {QueryBuilderDropdown, QueryBuilderInput, QueryBuilderTextInput} from './components';
+import {
+  useQueryBuilderDuration,
+  useQueryBuilderFocus,
+  useQueryBuilderHandlers,
+  useQueryBuilderInput,
+  useQueryBuilderKeyboard,
+  useQueryBuilderModifiers,
+  useQueryBuilderSelection,
+  useQueryBuilderState,
+  useQueryBuilderSuggestions,
+  useQueryBuilderSyntax,
+  useQueryBuilderTextEdit,
+  useRecentDurations,
+  useTextEditMode,
+} from './hooks';
+import {getDropdownHeader, getPlaceholder} from './utils/helpers';
 
-export interface QueryBuilderProps extends Omit<ComponentProps<'div'>, 'onChange'> {
-  /**
-   * Current query string value
-   */
+export interface QueryBuilderProps {
   value?: string;
-  /**
-   * Callback when query value changes
-   */
-  onValueChange?: (value: string) => void;
-  /**
-   * Callback when query is executed/changed (for running queries)
-   */
   onQueryChange?: (query: string) => void;
-  /**
-   * Available suggestions for autocomplete
-   */
-  suggestions?: QueryBuilderSuggestion[];
-  /**
-   * Placeholder text for the input
-   */
   placeholder?: string;
-  /**
-   * Container element for popover positioning
-   */
-  container?: HTMLElement | null;
-  /**
-   * Additional class name
-   */
   className?: string;
-  /**
-   * Additional class name for input
-   */
-  inputClassName?: string;
+  container?: HTMLElement | null;
 }
 
 export function QueryBuilder({
   value = '',
-  onValueChange,
   onQueryChange,
-  suggestions = [],
-  placeholder = 'Add filter...',
-  container,
+  placeholder = 'Type to search: status, duration, branch...',
   className,
-  inputClassName,
+  container,
 }: QueryBuilderProps) {
+  const {recentDurations, addToRecentDurations} = useRecentDurations();
+  const {isAltHeld} = useQueryBuilderModifiers();
+
+  const state = useQueryBuilderState(value, onQueryChange, addToRecentDurations);
   const {
-    isFocused,
-    popoverOpen,
-    textEditMode,
+    tokens,
+    setTokens,
     inputValue,
-    highlightedIndex,
-    isShiftPressed,
-    isAltPressed,
-    currentProperty,
-    filteredSuggestions,
-    queryAST,
+    setInputValue,
+    editingTokenId,
+    setEditingTokenId,
+    isFocused,
+    setIsFocused,
+    showDropdown,
+    setShowDropdown,
+    selectedDropdownIndex,
+    setSelectedDropdownIndex,
+    showSyntaxHelp,
+    setShowSyntaxHelp,
+    syntaxError,
+    setSyntaxError,
+    syntaxHelpAutoOpened,
+    setSyntaxHelpAutoOpened,
+    isManualEdit,
+    setIsManualEdit,
+    pendingMainInputFocus,
+    setPendingMainInputFocus,
+    durationRange,
+    setDurationRange,
+    conflictHints,
+    stableDropdownOrder,
+    setStableDropdownOrder,
+    stableDropdownFieldRef,
+    stableRecentDurations,
+    setStableRecentDurations,
     inputRef,
-    handleFocus,
-    handleBlur,
-    handleInputChange,
-    handleKeyDown,
-    handleSuggestionSelect,
-    handleRemoveFilterProperty,
-    handleToggleTextEditMode,
-    setPopoverOpen,
-  } = useQueryBuilder({
-    value,
-    onValueChange,
-    suggestions,
-    onQueryChange,
+    containerRef,
+    isSelectingRef,
+    editingToken,
+    addCompleteToken,
+    addValueToEditingToken,
+    convertToWildcard,
+    startEditingToken,
+    finalizeEditing,
+    deleteToken,
+    selectField,
+  } = state;
+
+  const {dropdownItems} = useQueryBuilderSuggestions(
+    inputValue,
+    tokens,
+    editingToken,
+    isAltHeld,
+    conflictHints,
+    stableDropdownOrder,
+    stableDropdownFieldRef,
+    stableRecentDurations,
+    recentDurations,
+  );
+
+  const textEditMode = useTextEditMode(tokens, setTokens);
+
+  useEffect(() => {
+    setSelectedDropdownIndex(0);
+  }, [dropdownItems.length, setSelectedDropdownIndex]);
+
+  useEffect(() => {
+    inputRef.current?.focus();
+  }, [inputRef]);
+
+  useQueryBuilderSyntax({
+    inputValue,
+    showDropdown,
+    showSyntaxHelp,
+    syntaxHelpAutoOpened,
+    syntaxError,
+    setSyntaxError,
+    setShowSyntaxHelp,
+    setSyntaxHelpAutoOpened,
   });
 
-  return (
-    <Popover
-      open={popoverOpen}
-      onOpenChange={(open) => {
-        if (open) {
-          setPopoverOpen(true);
-        } else if (!isFocused) {
-          setPopoverOpen(false);
-        }
-      }}
-    >
-      <PopoverTrigger asChild>
-        <div className={cn('relative flex-1', className)}>
-          <div
-            className={cn(
-              'flex flex-wrap items-center gap-4 p-8 min-h-40 rounded-6 border',
-              'bg-background-field-base',
-              'border-border-neutral-base-component',
-              'hover:bg-background-field-hover',
-              'focus-within:border-border-interactive-with-active focus-within:bg-background-field-hover',
-              'transition-colors',
-            )}
-          >
-            {/* Filter pills */}
-            {queryAST.filters.map((filter) => (
-              <Badge
-                key={filter.property}
-                variant="neutral"
-                size="xs"
-                radius="rounded"
-                iconRight="close"
-                onIconRightClick={(e) => {
-                  e.stopPropagation();
-                  // Remove entire filter
-                  handleRemoveFilterProperty(filter.property);
-                }}
-                iconRightAriaLabel={`Remove ${filter.property} filter`}
-                className={cn(
-                  'flex items-center gap-4',
-                  filter.values.some((v) => v.negated) && 'border-foreground-danger-base',
-                )}
-              >
-                <span className="font-medium">{filter.property}:</span>
-                <span>
-                  {filter.values.map((filterValue, idx) => (
-                    <span key={`${filter.property}:${filterValue.value}:${idx}`}>
-                      {filterValue.negated && (
-                        <span className="text-foreground-danger-base">-</span>
-                      )}
-                      {filterValue.value}
-                      {idx < filter.values.length - 1 && (
-                        <span className="text-foreground-neutral-muted">, </span>
-                      )}
-                    </span>
-                  ))}
-                </span>
-              </Badge>
-            ))}
+  const {handleDropdownSelect} = useQueryBuilderSelection({
+    editingTokenId,
+    tokens,
+    isManualEdit,
+    recentDurations,
+    inputRef,
+    selectField,
+    convertToWildcard,
+    addValueToEditingToken,
+    setEditingTokenId,
+    setTokens,
+    setInputValue,
+    setIsManualEdit,
+    finalizeEditing,
+    setDurationRange,
+    setStableDropdownOrder,
+    setStableRecentDurations,
+    stableDropdownFieldRef,
+  });
 
-            {/* Input field */}
-            <Input
-              ref={inputRef}
-              value={inputValue}
-              onChange={isFocused ? handleInputChange : undefined}
+  const {handleInputChange, handlePaste, handleInputAreaClick} = useQueryBuilderInput({
+    editingTokenId,
+    setInputValue,
+    setShowDropdown,
+    setIsManualEdit,
+    setTokens,
+    finalizeEditing,
+    inputRef,
+  });
+
+  const {handleDurationRangeChange} = useQueryBuilderDuration({
+    editingTokenId,
+    tokens,
+    setDurationRange,
+    setInputValue,
+    addValueToEditingToken,
+  });
+
+  const {handleFocus, handleBlur, handlePopoverOpenChange} = useQueryBuilderFocus({
+    showDropdown,
+    isSelectingRef,
+    inputRef,
+    setIsFocused,
+    setShowDropdown,
+    setShowSyntaxHelp,
+  });
+
+  const {
+    handleClearAll,
+    handleTokenClick,
+    handleEditingTokenClick,
+    handleEditingTokenKeyDown,
+    handleToggleSyntaxHelp,
+    handleEscape,
+    handleToggleTextMode,
+  } = useQueryBuilderHandlers({
+    setTokens,
+    setInputValue,
+    setEditingTokenId,
+    setPendingMainInputFocus,
+    setShowSyntaxHelp,
+    setShowSyntaxHelpAutoOpened: setSyntaxHelpAutoOpened,
+    setShowDropdown,
+    inputRef,
+    startEditingToken,
+    deleteToken,
+    recentDurations,
+    toggleTextMode: textEditMode.toggleInputMode,
+  });
+
+  const {handleTextInputChange, handleTextInputKeyDown} = useQueryBuilderTextEdit({
+    textEditMode,
+  });
+
+  const {handleKeyDown} = useQueryBuilderKeyboard({
+    showDropdown,
+    deferredDropdownItems: dropdownItems,
+    selectedDropdownIndex,
+    setSelectedDropdownIndex,
+    handleDropdownSelect,
+    inputValue,
+    tokens,
+    editingTokenId,
+    addCompleteToken,
+    finalizeEditing,
+    deleteToken,
+    setTokens,
+    setEditingTokenId,
+    setInputValue,
+    setShowDropdown,
+    inputRef,
+  });
+
+  if (textEditMode.isTextEditMode) {
+    return (
+      <div className={cn('w-full relative', className)} ref={containerRef}>
+        <QueryBuilderTextInput
+          value={textEditMode.textEditValue}
+          onChange={handleTextInputChange}
+          onKeyDown={handleTextInputKeyDown}
+          onToggleMode={handleToggleTextMode}
+          error={textEditMode.textEditError}
+          inputRef={textEditMode.textEditInputRef}
+        />
+      </div>
+    );
+  }
+
+  return (
+    <div className={cn('w-full relative', className)} ref={containerRef}>
+      <Popover open={showDropdown} onOpenChange={handlePopoverOpenChange}>
+        <PopoverTrigger asChild>
+          <div className="w-full">
+            <QueryBuilderInput
+              tokens={tokens}
+              inputValue={inputValue}
+              editingTokenId={editingTokenId}
+              isFocused={isFocused}
+              syntaxError={syntaxError}
+              placeholder={getPlaceholder(tokens, placeholder)}
+              inputRef={inputRef}
+              containerRef={containerRef}
+              onInputChange={handleInputChange}
+              onKeyDown={handleKeyDown}
+              onPaste={handlePaste}
               onFocus={handleFocus}
               onBlur={handleBlur}
-              onKeyDown={handleKeyDown}
-              readOnly={!isFocused && !textEditMode}
-              placeholder={queryAST.filters.length === 0 ? placeholder : ''}
-              iconLeft={
-                <Icon
-                  name="searchLine"
-                  className="size-16 text-foreground-neutral-muted shrink-0"
-                />
-              }
-              iconRight={
-                <button
-                  type="button"
-                  onClick={handleToggleTextEditMode}
-                  className="shrink-0 cursor-pointer rounded-4 p-2 hover:bg-background-button-transparent-hover transition-colors"
-                  aria-label={textEditMode ? 'Exit text edit mode' : 'Enter text edit mode'}
-                >
-                  <Icon
-                    name={textEditMode ? 'close' : 'fileEditLine'}
-                    className="size-16 text-foreground-neutral-muted"
-                  />
-                </button>
-              }
-              className={cn(
-                'flex-1 min-w-120 border-0 bg-transparent p-0 shadow-none focus-visible:shadow-none',
-                'placeholder:text-foreground-neutral-muted',
-                inputClassName,
-              )}
+              onInputAreaClick={handleInputAreaClick}
+              onTokenClick={handleTokenClick}
+              onTokenDelete={deleteToken}
+              onClearAll={handleClearAll}
+              onToggleTextMode={handleToggleTextMode}
+              onEditingTokenClick={handleEditingTokenClick}
+              onEditingTokenKeyDown={handleEditingTokenKeyDown}
             />
           </div>
-        </div>
-      </PopoverTrigger>
-      <PopoverContent
-        align="start"
-        sideOffset={8}
-        className="w-(--radix-popover-trigger-width) md:w-auto p-0"
-        onOpenAutoFocus={(e) => e.preventDefault()}
-        onInteractOutside={(e) => {
-          e.preventDefault();
-          const target = e.target as HTMLElement;
-          if (
-            inputRef.current &&
-            (inputRef.current.contains(target) || target.closest('[data-radix-popover-trigger]'))
-          )
-            return;
-          setPopoverOpen(false);
-        }}
-        onEscapeKeyDown={(e) => {
-          e.preventDefault();
-          setPopoverOpen(false);
-          inputRef.current?.blur();
-        }}
-        container={container}
-      >
-        {popoverOpen && filteredSuggestions.length > 0 && (
-          <QueryBuilderSuggestions
-            suggestions={filteredSuggestions}
-            highlightedIndex={highlightedIndex}
-            onSelect={handleSuggestionSelect}
-            isShiftPressed={isShiftPressed}
-            isAltPressed={isAltPressed}
+        </PopoverTrigger>
+        {showDropdown && (
+          <QueryBuilderDropdown
+            showDropdown={showDropdown}
+            showSyntaxHelp={showSyntaxHelp}
+            syntaxError={syntaxError}
+            editingToken={editingToken}
+            inputValue={inputValue}
+            durationRange={durationRange}
+            selectedDropdownIndex={selectedDropdownIndex}
+            dropdownItems={dropdownItems}
+            isAltHeld={isAltHeld}
+            inputRef={inputRef}
+            containerRef={containerRef}
+            container={container}
+            isSelectingRef={isSelectingRef}
+            onSelect={handleDropdownSelect}
+            onDurationRangeChange={handleDurationRangeChange}
+            onToggleSyntaxHelp={handleToggleSyntaxHelp}
+            onEscape={handleEscape}
+            getDropdownHeader={() => getDropdownHeader(editingToken, inputValue)}
           />
         )}
-      </PopoverContent>
-    </Popover>
+      </Popover>
+    </div>
   );
 }

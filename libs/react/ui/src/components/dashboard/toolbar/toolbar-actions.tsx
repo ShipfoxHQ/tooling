@@ -4,8 +4,8 @@
  * Contains filter, search, and view controls for dashboard tables.
  */
 
-import type {ComponentProps, ReactNode} from 'react';
 import {QueryBuilder} from 'components/query-builder';
+import type {ComponentProps, ReactNode} from 'react';
 import {cn} from 'utils/cn';
 import {useDashboardContext} from '../context';
 import {FilterButton} from './filter-button';
@@ -74,10 +74,9 @@ export function ToolbarActions({
       {showSearch && (
         <QueryBuilder
           value={searchQuery}
-          onValueChange={setSearchQuery}
           onQueryChange={setSearchQuery}
           placeholder={searchPlaceholder}
-          suggestions={[]}
+          className="flex-1"
         />
       )}
       {showView && <ViewDropdown columns={columns} onColumnsChange={setColumns} />}
