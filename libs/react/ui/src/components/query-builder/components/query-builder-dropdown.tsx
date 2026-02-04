@@ -84,7 +84,7 @@ export function QueryBuilderDropdown({
     <PopoverContent
       align="start"
       sideOffset={4}
-      className="w-[--radix-popover-trigger-width] p-0 min-w-260 max-w-380"
+      className="w-[--radix-popover-trigger-width] p-0"
       onOpenAutoFocus={(e) => e.preventDefault()}
       onEscapeKeyDown={(e) => {
         e.preventDefault();
@@ -139,7 +139,9 @@ export function QueryBuilderDropdown({
           <div
             className={cn(
               'w-full border-t border-border-neutral-base-component',
-              syntaxError ? 'bg-red-500/8' : 'bg-purple-500/3',
+              syntaxError
+                ? 'bg-background-accent-error-base/8'
+                : 'bg-background-accent-purple-base/3',
             )}
           >
             <QueryBuilderSyntaxHelp

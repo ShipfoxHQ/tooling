@@ -126,7 +126,7 @@ export function QueryBuilderInput({
               className={cn(
                 'font-normal leading-20 min-h-px not-italic placeholder:text-foreground-neutral-subtle text-sm bg-transparent outline-none',
                 tokens.length === 0 ? 'flex-1' : 'basis-0 grow min-w-120',
-                syntaxError ? 'text-red-500' : 'text-foreground-neutral-base',
+                syntaxError ? 'text-foreground-highlight-error' : 'text-foreground-neutral-base',
               )}
               autoComplete="off"
               spellCheck={false}

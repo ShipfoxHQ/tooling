@@ -47,10 +47,10 @@ export function QueryBuilderTextInput({
           type="button"
           aria-label="Switch to builder mode"
         >
-          <Icon name="gridLine" className="size-14" />
+          <Icon name="functionLine" className="size-14" />
         </button>
       </div>
-      {error && <div className="mt-4 text-xs text-red-500">{error}</div>}
+      {error && <div className="mt-4 text-xs text-foreground-highlight-error">{error}</div>}
     </div>
   );
 }

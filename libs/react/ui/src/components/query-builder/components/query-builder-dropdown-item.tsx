@@ -52,7 +52,9 @@ export function QueryBuilderDropdownItem({
         </span>
       </div>
       {item.conflictHint ? (
-        <span className="text-xs text-red-500 font-medium">{item.conflictHint}</span>
+        <span className="text-xs text-foreground-highlight-error font-medium">
+          {item.conflictHint}
+        </span>
       ) : item.count !== undefined ? (
         <span className="text-xs text-foreground-neutral-subtle font-mono tabular-nums">
           {item.count}

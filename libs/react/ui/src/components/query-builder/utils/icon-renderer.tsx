@@ -3,16 +3,16 @@ import type {AutocompleteSuggestion} from './suggestions';
 
 export function renderSuggestionIcon(s: AutocompleteSuggestion): React.ReactNode {
   if (s.type === 'wildcard') {
-    return <span className="text-purple-500 text-sm font-bold">*</span>;
+    return <span className="text-background-accent-purple-base text-sm font-bold">*</span>;
   }
   if (s.type === 'custom' || s.icon === 'plus') {
-    return <Icon name="addLine" className="size-16 text-green-500" />;
+    return <Icon name="addLine" className="size-16 text-tag-success-text" />;
   }
   if (s.icon === 'clock') {
     return <Icon name="timeLine" className="size-16 text-foreground-neutral-subtle" />;
   }
   if (s.icon === 'negate') {
-    return <span className="text-orange-500 font-bold text-sm">-</span>;
+    return <span className="text-background-accent-warning-base font-bold text-sm">-</span>;
   }
   if (s.icon === 'search') {
     return <Icon name="searchLine" className="size-16 text-foreground-neutral-subtle" />;
@@ -33,19 +33,23 @@ export function renderSuggestionLabel(
   const labelText = isNegatedLabel ? s.label.toString().slice(1) : s.label;
 
   if (isValueType && isSelected) {
-    return isNegatedLabel ? <span className="text-orange-500">-{labelText}</span> : labelText;
+    return isNegatedLabel ? (
+      <span className="text-background-accent-warning-base">-{labelText}</span>
+    ) : (
+      labelText
+    );
   }
   if (applyNegation) {
     return (
       <>
-        <span className="text-orange-500">-</span>
+        <span className="text-background-accent-warning-base">-</span>
         {s.label}
       </>
     );
   }
   if (s.isNegated && s.label.toString().startsWith('-')) {
     const textPart = s.label.toString().slice(1);
-    return <span className="text-orange-500">-{textPart}</span>;
+    return <span className="text-background-accent-warning-base">-{textPart}</span>;
   }
   return s.label;
 }
