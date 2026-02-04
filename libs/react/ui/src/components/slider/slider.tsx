@@ -7,7 +7,7 @@ const trackDefaults =
 const rangeDefaults =
   'bg-foreground-highlight-interactive absolute select-none data-[orientation=horizontal]:h-full data-[orientation=vertical]:w-full';
 const thumbDefaults =
-  "block size-8 min-w-8 min-h-8 shrink-0 select-none rounded-full border border-border-highlights-interactive bg-foreground-highlight-interactive shadow-button-neutral transition-[color,box-shadow] outline-none after:absolute after:-inset-2 after:block after:content-[''] hover:ring-2 hover:ring-background-accent-warning-base/50 focus-visible:ring-2 focus-visible:ring-background-accent-warning-base focus-visible:ring-offset-2 active:ring-2 active:ring-background-accent-warning-base/50 disabled:pointer-events-none disabled:opacity-50";
+  "relative block size-8 min-w-8 min-h-8 shrink-0 select-none rounded-full border border-border-highlights-interactive bg-foreground-highlight-interactive shadow-button-neutral transition-[color,box-shadow] outline-none after:absolute after:-inset-2 after:block after:content-[''] hover:ring-2 hover:ring-background-accent-warning-base/50 focus-visible:ring-2 focus-visible:ring-background-accent-warning-base focus-visible:ring-offset-2 active:ring-2 active:ring-background-accent-warning-base/50 data-disabled:pointer-events-none data-disabled:opacity-50";
 
 export type SliderProps = ComponentProps<typeof SliderPrimitive.Root> & {
   trackClassName?: string;
@@ -26,7 +26,7 @@ function Slider({
   thumbClassName,
   ...props
 }: SliderProps) {
-  const _values = Array.isArray(value)
+  const values = Array.isArray(value)
     ? value
     : Array.isArray(defaultValue)
       ? defaultValue
@@ -51,7 +51,7 @@ function Slider({
           className={cn(rangeDefaults, rangeClassName)}
         />
       </SliderPrimitive.Track>
-      {_values.map((val) => (
+      {values.map((val) => (
         <SliderPrimitive.Thumb
           data-slot="slider-thumb"
           key={val}
