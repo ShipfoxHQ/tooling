@@ -3,10 +3,10 @@ import {cva} from 'class-variance-authority';
 import {Button} from 'components/button';
 import {Icon} from 'components/icon';
 import {Kbd} from 'components/kbd';
-import {Text} from 'components/typography';
+import {Header, Text} from 'components/typography';
 import {motion, type Transition} from 'framer-motion';
 import {useMediaQuery} from 'hooks/useMediaQuery';
-import {type ComponentProps, createContext, useContext} from 'react';
+import {type ComponentProps, createContext, type ReactNode, useContext} from 'react';
 import {cn} from 'utils/cn';
 import {Drawer as VaulDrawer} from 'vaul';
 
@@ -282,6 +282,41 @@ function ModalDescription({className, ...props}: ModalDescriptionProps) {
   return <DialogPrimitive.Description className={descClassName} {...props} />;
 }
 
+type ModalBodyHeaderProps = ComponentProps<'div'> & {
+  src: string;
+  alt?: string;
+  title: string;
+  description?: ReactNode;
+  children?: ReactNode;
+};
+
+function ModalBodyHeader({
+  className,
+  src,
+  alt = '',
+  title,
+  description,
+  children,
+  ...props
+}: ModalBodyHeaderProps) {
+  return (
+    <div className={cn('flex flex-col gap-32 items-start max-w-xl', className)} {...props}>
+      <img src={src} alt={alt} className="size-116 object-contain" />
+      <div className="flex flex-col gap-4 text-center md:text-left!">
+        <Header variant="h1" className="text-3xl font-semibold">
+          {title}
+        </Header>
+        {description && (
+          <Text size="sm" className="text-foreground-neutral-subtle">
+            {description}
+          </Text>
+        )}
+      </div>
+      {children}
+    </div>
+  );
+}
+
 export {
   Modal,
   ModalPortal,
@@ -292,6 +327,7 @@ export {
   ModalHeader,
   ModalBody,
   ModalFooter,
+  ModalBodyHeader,
   ModalTitle,
   ModalDescription,
   modalContentVariants,
@@ -305,4 +341,5 @@ export type {
   ModalOverlayProps,
   ModalTitleProps,
   ModalDescriptionProps,
+  ModalBodyHeaderProps,
 };
