@@ -33,11 +33,7 @@ export function renderSuggestionLabel(
   const labelText = isNegatedLabel ? s.label.toString().slice(1) : s.label;
 
   if (isValueType && isSelected) {
-    return isNegatedLabel ? (
-      <span className="text-orange-500">-{labelText}</span>
-    ) : (
-      <>{labelText}</>
-    );
+    return isNegatedLabel ? <span className="text-orange-500">-{labelText}</span> : labelText;
   }
   if (applyNegation) {
     return (

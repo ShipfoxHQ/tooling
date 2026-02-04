@@ -3,9 +3,9 @@ import type {
   FilterType,
   Query,
   QueryFilter,
+  SyntaxError as QuerySyntaxError,
   QueryToken,
   QueryValue,
-  SyntaxError,
   ValidationResult,
 } from '../types';
 
@@ -90,7 +90,7 @@ export function getFieldRule(fieldName: string): FieldRule | undefined {
   return FIELD_RULES.find((f) => f.name === fieldName);
 }
 
-export function validateSyntax(input: string): SyntaxError | null {
+export function validateSyntax(input: string): QuerySyntaxError | null {
   if (!input || !input.trim()) return null;
 
   const trimmed = input.trim();
@@ -235,7 +235,7 @@ export function parseQuery(text: string): Query {
     const pillMatch = part.match(REGEX_PILL_PART);
     if (!pillMatch) continue;
 
-    const [, fieldName, operator, valuesPart] = pillMatch;
+    const [, fieldName, _operator, valuesPart] = pillMatch;
     const field = FIELD_RULES.find((f) => f.name.toLowerCase() === fieldName.toLowerCase());
     if (!field) continue;
 

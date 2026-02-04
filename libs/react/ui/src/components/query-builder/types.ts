@@ -1,10 +1,4 @@
-export type FilterType =
-  | 'status'
-  | 'duration'
-  | 'ci_pipeline'
-  | 'repository'
-  | 'branch'
-  | 'runner';
+export type FilterType = 'status' | 'duration' | 'ci_pipeline' | 'repository' | 'branch' | 'runner';
 
 export interface QueryValue {
   value: string;

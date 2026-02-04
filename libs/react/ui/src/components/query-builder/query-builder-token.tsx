@@ -11,10 +11,10 @@ export interface QueryBuilderTokenProps {
   inputRef?: React.RefObject<HTMLInputElement | null>;
   inputValue?: string;
   onInputChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
-  onKeyDown?: (e: React.KeyboardEvent) => void;
+  onKeyDown?: (e: React.KeyboardEvent<HTMLInputElement>) => void;
   onPaste?: (e: React.ClipboardEvent) => void;
   onFocus?: () => void;
-  onBlur?: () => void;
+  onBlur?: (e: React.FocusEvent<HTMLInputElement>) => void;
   hasSyntaxError?: boolean;
 }
 
@@ -38,7 +38,7 @@ function renderValues(compact: boolean, values: QueryValue[]) {
   }
 
   return values.map((v, i) => (
-    <span key={i} className="text-sm">
+    <span key={`${v.value}-${v.isNegated}-${i}`} className="text-sm">
       {i > 0 && <span className="mx-2 text-purple-500 text-xs">,</span>}
       {renderValue(v)}
     </span>
@@ -91,7 +91,7 @@ export function QueryBuilderToken({
             </p>
             <div className="flex flex-col gap-2">
               {token.values.map((v, i) => (
-                <span key={i} className="text-xs">
+                <span key={`${v.value}-${v.isNegated}-${i}`} className="text-xs">
                   {i > 0 && <span className="mr-4 text-purple-500">,</span>}
                   <span
                     className={v.isNegated ? 'text-orange-500' : 'text-foreground-neutral-base'}
@@ -144,7 +144,6 @@ export function QueryBuilderToken({
               style={{width: inputValue ? `${Math.max(1, inputValue.length)}ch` : '1ch'}}
               autoComplete="off"
               spellCheck={false}
-              autoFocus
             />
           )}
         </div>

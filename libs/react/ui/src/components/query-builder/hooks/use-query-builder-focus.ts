@@ -3,7 +3,7 @@ import {useCallback, useEffect, useRef} from 'react';
 interface UseQueryBuilderFocusProps {
   showDropdown: boolean;
   isSelectingRef: React.RefObject<boolean>;
-  inputRef: React.RefObject<HTMLInputElement>;
+  inputRef: React.RefObject<HTMLInputElement | null>;
   setIsFocused: (value: boolean) => void;
   setShowDropdown: (value: boolean) => void;
   setShowSyntaxHelp: (value: boolean) => void;
@@ -28,7 +28,7 @@ export function useQueryBuilderFocus({
   }, []);
 
   const handleFocus = useCallback(
-    (e?: React.FocusEvent<HTMLInputElement>) => {
+    (_e?: React.FocusEvent<HTMLInputElement>) => {
       if (blurTimeoutRef.current) {
         clearTimeout(blurTimeoutRef.current);
         blurTimeoutRef.current = null;

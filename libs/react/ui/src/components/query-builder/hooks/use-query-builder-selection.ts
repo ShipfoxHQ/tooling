@@ -7,7 +7,7 @@ interface UseQueryBuilderSelectionProps {
   tokens: QueryToken[];
   isManualEdit: boolean;
   recentDurations: string[];
-  inputRef: React.RefObject<HTMLInputElement>;
+  inputRef: React.RefObject<HTMLInputElement | null>;
   selectField: (fieldName: string, recentDurations: string[]) => void;
   convertToWildcard: (fieldName: string) => void;
   addValueToEditingToken: (value: string, isNegated: boolean) => void;

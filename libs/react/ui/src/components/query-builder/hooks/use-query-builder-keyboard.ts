@@ -1,6 +1,6 @@
 import {useCallback} from 'react';
 import type {QueryToken} from '../types';
-import {FIELD_RULES, parseQueryString} from '../utils';
+import {FIELD_RULES} from '../utils';
 import {parseInput} from '../utils/suggestions';
 
 interface UseQueryBuilderKeyboardProps {
@@ -19,7 +19,7 @@ interface UseQueryBuilderKeyboardProps {
   setEditingTokenId: (id: string | null) => void;
   setInputValue: (value: string) => void;
   setShowDropdown: (show: boolean) => void;
-  inputRef: React.RefObject<HTMLInputElement>;
+  inputRef: React.RefObject<HTMLInputElement | null>;
 }
 
 export function useQueryBuilderKeyboard({
@@ -41,7 +41,7 @@ export function useQueryBuilderKeyboard({
   inputRef,
 }: UseQueryBuilderKeyboardProps) {
   const handleKeyDown = useCallback(
-    (e: React.KeyboardEvent) => {
+    (e: React.KeyboardEvent<HTMLInputElement>) => {
       if (showDropdown && deferredDropdownItems.length > 0) {
         if (e.key === 'ArrowDown') {
           e.preventDefault();
@@ -89,8 +89,8 @@ export function useQueryBuilderKeyboard({
             const matchedValue = field?.enumValues?.find(
               (v) => v.toLowerCase() === parsed.value?.toLowerCase(),
             );
-            if (matchedValue) {
-              addCompleteToken(parsed.field!, matchedValue, parsed.operator || ':');
+            if (matchedValue && parsed.field) {
+              addCompleteToken(parsed.field, matchedValue, parsed.operator || ':');
               return;
             }
           }
@@ -148,6 +148,7 @@ export function useQueryBuilderKeyboard({
       showDropdown,
       deferredDropdownItems,
       selectedDropdownIndex,
+      setSelectedDropdownIndex,
       handleDropdownSelect,
       inputValue,
       tokens,

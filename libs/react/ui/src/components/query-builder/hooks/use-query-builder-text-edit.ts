@@ -5,7 +5,7 @@ interface UseQueryBuilderTextEditProps {
     isTextEditMode: boolean;
     textEditValue: string;
     textEditError: string | null;
-    textEditInputRef: React.RefObject<HTMLInputElement>;
+    textEditInputRef: React.RefObject<HTMLInputElement | null>;
     setTextEditValue: (value: string) => void;
     setTextEditError: (error: string | null) => void;
     applyTextChanges: () => void;

@@ -1,7 +1,7 @@
 import {useDeferredValue, useMemo} from 'react';
 import type {QueryToken} from '../types';
 import {renderSuggestionIcon, renderSuggestionLabel} from '../utils/icon-renderer';
-import {type AutocompleteSuggestion, generateSuggestions} from '../utils/suggestions';
+import {generateSuggestions} from '../utils/suggestions';
 
 export interface DropdownItem {
   value: string;
@@ -39,40 +39,46 @@ export function useQueryBuilderSuggestions(
     [inputValue, tokens, editingToken, stableRecentDurations, recentDurations],
   );
 
-  let orderedSuggestions = [...suggestions];
+  const orderedSuggestions = useMemo(() => {
+    let ordered = [...suggestions];
 
-  if (isAltHeld) {
-    orderedSuggestions = orderedSuggestions.filter((s) => {
-      if (s.type !== 'value' && s.type !== 'complete') return true;
-      if (s.isNegated && s.isSelected) return true;
-      return !s.isNegated;
-    });
-  }
+    if (isAltHeld) {
+      ordered = ordered.filter((s) => {
+        if (s.type !== 'value' && s.type !== 'complete') return true;
+        if (s.isNegated && s.isSelected) return true;
+        return !s.isNegated;
+      });
+    }
 
-  if (!editingToken) {
-    orderedSuggestions = orderedSuggestions.filter(
-      (s) => s.type !== 'preset' && s.type !== 'section-header',
-    );
-  }
+    if (!editingToken) {
+      ordered = ordered.filter((s) => s.type !== 'preset' && s.type !== 'section-header');
+    }
 
-  if (stableDropdownOrder && editingToken && stableDropdownFieldRef.current === editingToken.key) {
-    orderedSuggestions.sort((a, b) => {
-      if (
-        a.type === 'field' ||
-        a.type === 'wildcard' ||
-        b.type === 'field' ||
-        b.type === 'wildcard'
-      ) {
-        return 0;
-      }
-      const aIndex = stableDropdownOrder.indexOf(a.value);
-      const bIndex = stableDropdownOrder.indexOf(b.value);
-      if (aIndex === -1 && bIndex === -1) return 0;
-      if (aIndex === -1) return 1;
-      if (bIndex === -1) return -1;
-      return aIndex - bIndex;
-    });
-  }
+    if (
+      stableDropdownOrder &&
+      editingToken &&
+      stableDropdownFieldRef.current === editingToken.key
+    ) {
+      ordered.sort((a, b) => {
+        if (
+          a.type === 'field' ||
+          a.type === 'wildcard' ||
+          b.type === 'field' ||
+          b.type === 'wildcard'
+        ) {
+          return 0;
+        }
+        const aIndex = stableDropdownOrder.indexOf(a.value);
+        const bIndex = stableDropdownOrder.indexOf(b.value);
+        if (aIndex === -1 && bIndex === -1) return 0;
+        if (aIndex === -1) return 1;
+        if (bIndex === -1) return -1;
+        return aIndex - bIndex;
+      });
+    }
+
+    return ordered;
+  }, [suggestions, isAltHeld, editingToken, stableDropdownOrder, stableDropdownFieldRef]);
 
   const dropdownItems = useMemo(() => {
     return orderedSuggestions.map((s) => {
@@ -91,7 +97,7 @@ export function useQueryBuilderSuggestions(
       const isValueType = s.type === 'value' || s.type === 'complete';
       const isPreset = s.type === 'preset';
       const applyNegation = isAltHeld && isValueType && !s.isNegated && !s.isSelected;
-      const effectiveNegated = applyNegation ? true : s.isNegated;
+      const effectiveNegated = applyNegation ? true : (s.isNegated ?? false);
 
       let encodedValue: string;
       if (s.type === 'field') {
@@ -126,7 +132,7 @@ export function useQueryBuilderSuggestions(
         type: isPreset ? ('preset' as const) : undefined,
       };
     });
-  }, [orderedSuggestions, isAltHeld, conflictHints, editingToken]);
+  }, [orderedSuggestions, isAltHeld, conflictHints]);
 
   const deferredDropdownItems = useDeferredValue(dropdownItems);
 

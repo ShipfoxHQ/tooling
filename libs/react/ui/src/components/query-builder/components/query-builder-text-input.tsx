@@ -1,5 +1,4 @@
 import {Icon} from 'components/icon';
-import {cn} from 'utils/cn';
 
 interface QueryBuilderTextInputProps {
   value: string;
@@ -7,7 +6,7 @@ interface QueryBuilderTextInputProps {
   onKeyDown: (e: React.KeyboardEvent) => void;
   onToggleMode: () => void;
   error: string | null;
-  inputRef: React.RefObject<HTMLInputElement>;
+  inputRef: React.RefObject<HTMLInputElement | null>;
 }
 
 export function QueryBuilderTextInput({

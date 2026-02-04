@@ -9,7 +9,7 @@ interface UseQueryBuilderHandlersProps {
   setShowSyntaxHelp: (value: boolean | ((v: boolean) => boolean)) => void;
   setShowSyntaxHelpAutoOpened: (value: boolean) => void;
   setShowDropdown: (value: boolean) => void;
-  inputRef: React.RefObject<HTMLInputElement>;
+  inputRef: React.RefObject<HTMLInputElement | null>;
   startEditingToken: (token: QueryToken, recentDurations: string[]) => void;
   deleteToken: (tokenId: string) => void;
   recentDurations: string[];
@@ -26,7 +26,7 @@ export function useQueryBuilderHandlers({
   setShowDropdown,
   inputRef,
   startEditingToken,
-  deleteToken,
+  deleteToken: _deleteToken,
   recentDurations,
   toggleTextMode,
 }: UseQueryBuilderHandlersProps) {

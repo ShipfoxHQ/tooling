@@ -1,4 +1,5 @@
 import {useEffect} from 'react';
+import type {SyntaxError as QuerySyntaxError} from '../types';
 import {validateSyntax} from '../utils';
 
 interface UseQueryBuilderSyntaxProps {
@@ -6,8 +7,8 @@ interface UseQueryBuilderSyntaxProps {
   showDropdown: boolean;
   showSyntaxHelp: boolean;
   syntaxHelpAutoOpened: boolean;
-  syntaxError: {message: string} | null;
-  setSyntaxError: (error: {message: string} | null) => void;
+  syntaxError: QuerySyntaxError | null;
+  setSyntaxError: React.Dispatch<React.SetStateAction<QuerySyntaxError | null>>;
   setShowSyntaxHelp: (value: boolean) => void;
   setSyntaxHelpAutoOpened: (value: boolean) => void;
 }

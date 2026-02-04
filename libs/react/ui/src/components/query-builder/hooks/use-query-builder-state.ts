@@ -1,5 +1,5 @@
 import {useCallback, useEffect, useMemo, useRef, useState} from 'react';
-import type {QueryToken, SyntaxError} from '../types';
+import type {SyntaxError as QuerySyntaxError, QueryToken} from '../types';
 import {
   FIELD_RULES,
   getFieldRule,
@@ -21,7 +21,7 @@ export function useQueryBuilderState(
   const [showDropdown, setShowDropdown] = useState(false);
   const [selectedDropdownIndex, setSelectedDropdownIndex] = useState(0);
   const [showSyntaxHelp, setShowSyntaxHelp] = useState(false);
-  const [syntaxError, setSyntaxError] = useState<SyntaxError | null>(null);
+  const [syntaxError, setSyntaxError] = useState<QuerySyntaxError | null>(null);
   const [syntaxHelpAutoOpened, setSyntaxHelpAutoOpened] = useState(false);
   const [isManualEdit, setIsManualEdit] = useState(false);
   const [pendingMainInputFocus, setPendingMainInputFocus] = useState(false);
@@ -64,7 +64,7 @@ export function useQueryBuilderState(
       lastSyncedValueRef.current = value;
       setTokens(parsedTokens);
     }
-  }, [value, serializeTokensToQuery]);
+  }, [value, serializeTokensToQuery, tokens]);
 
   useEffect(() => {
     if (pendingMainInputFocus && editingTokenId === null) {
@@ -177,13 +177,13 @@ export function useQueryBuilderState(
             setTokens((prev) =>
               prev.map((t) => {
                 if (t.id === editingTokenId) {
-                  const filteredValues = t.values.filter(
-                    (v) =>
-                      !(
-                        v.value === validation.conflictingValue!.value &&
-                        v.isNegated === validation.conflictingValue!.isNegated
-                      ),
-                  );
+                  const filteredValues = t.values.filter((v) => {
+                    if (!validation.conflictingValue) return true;
+                    return !(
+                      v.value === validation.conflictingValue.value &&
+                      v.isNegated === validation.conflictingValue.isNegated
+                    );
+                  });
                   return {...t, values: [...filteredValues, {value, isNegated}]};
                 }
                 return t;
@@ -303,7 +303,9 @@ export function useQueryBuilderState(
       const editingToken = tokens.find((t) => t.id === editingTokenId);
 
       if (editingToken && editingToken.key === 'duration' && editingToken.values.length > 0) {
-        editingToken.values.forEach((v) => addToRecentDurations?.(v.value));
+        editingToken.values.forEach((v) => {
+          addToRecentDurations?.(v.value);
+        });
       }
 
       setTokens((prev) => {

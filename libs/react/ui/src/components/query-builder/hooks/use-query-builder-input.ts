@@ -9,7 +9,7 @@ interface UseQueryBuilderInputProps {
   setIsManualEdit: (value: boolean) => void;
   setTokens: React.Dispatch<React.SetStateAction<QueryToken[]>>;
   finalizeEditing: () => void;
-  inputRef: React.RefObject<HTMLInputElement>;
+  inputRef: React.RefObject<HTMLInputElement | null>;
 }
 
 export function useQueryBuilderInput({

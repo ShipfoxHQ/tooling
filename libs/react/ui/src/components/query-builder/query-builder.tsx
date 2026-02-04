@@ -59,7 +59,7 @@ export function QueryBuilder({
     setSyntaxHelpAutoOpened,
     isManualEdit,
     setIsManualEdit,
-    pendingMainInputFocus,
+    pendingMainInputFocus: _pendingMainInputFocus,
     setPendingMainInputFocus,
     durationRange,
     setDurationRange,
@@ -98,7 +98,7 @@ export function QueryBuilder({
 
   useEffect(() => {
     setSelectedDropdownIndex(0);
-  }, [dropdownItems.length, setSelectedDropdownIndex]);
+  }, [setSelectedDropdownIndex]);
 
   useEffect(() => {
     inputRef.current?.focus();
@@ -262,7 +262,6 @@ export function QueryBuilder({
             durationRange={durationRange}
             selectedDropdownIndex={selectedDropdownIndex}
             dropdownItems={dropdownItems}
-            isAltHeld={isAltHeld}
             inputRef={inputRef}
             containerRef={containerRef}
             container={container}

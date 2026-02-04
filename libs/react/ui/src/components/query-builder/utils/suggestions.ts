@@ -403,7 +403,7 @@ export function generateSuggestions(
             (parsed.value.includes(',') &&
               parsed.value.split(',').every((part) => parseDurationComparison(part.trim()))));
         const exactEnumMatch = field.enumValues.some(
-          (v) => v.toLowerCase() === parsed.value!.toLowerCase(),
+          (v) => v.toLowerCase() === parsed.value?.toLowerCase(),
         );
         if (isDurationComparison) {
           suggestions.unshift({

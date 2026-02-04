@@ -1,19 +1,19 @@
 import {Icon} from 'components/icon';
 import {cn} from 'utils/cn';
 import {QueryBuilderToken} from '../query-builder-token';
-import type {QueryToken, SyntaxError} from '../types';
+import type {SyntaxError as QuerySyntaxError, QueryToken} from '../types';
 
 interface QueryBuilderInputProps {
   tokens: QueryToken[];
   inputValue: string;
   editingTokenId: string | null;
   isFocused: boolean;
-  syntaxError: SyntaxError | null;
+  syntaxError: QuerySyntaxError | null;
   placeholder: string;
-  inputRef: React.RefObject<HTMLInputElement>;
-  containerRef: React.RefObject<HTMLDivElement>;
+  inputRef: React.RefObject<HTMLInputElement | null>;
+  containerRef?: React.RefObject<HTMLDivElement | null>;
   onInputChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
-  onKeyDown: (e: React.KeyboardEvent) => void;
+  onKeyDown: (e: React.KeyboardEvent<HTMLInputElement>) => void;
   onPaste: (e: React.ClipboardEvent) => void;
   onFocus: (e?: React.FocusEvent<HTMLInputElement>) => void;
   onBlur: (e: React.FocusEvent<HTMLInputElement>) => void;
@@ -34,7 +34,7 @@ export function QueryBuilderInput({
   syntaxError,
   placeholder,
   inputRef,
-  containerRef,
+  containerRef: _containerRef,
   onInputChange,
   onKeyDown,
   onPaste,
@@ -49,18 +49,25 @@ export function QueryBuilderInput({
   onEditingTokenKeyDown,
 }: QueryBuilderInputProps) {
   return (
-    <div
+    <fieldset
+      aria-label="Query builder input"
       className={cn(
-        'bg-background-field-base h-32 relative rounded-6 transition-shadow flex',
+        'border-0 p-0 m-0 min-w-0 bg-background-field-base h-32 relative rounded-6 transition-shadow flex',
         isFocused ? 'shadow-border-interactive-with-active' : 'shadow-border-interactive-base',
         'w-full cursor-text',
       )}
       onClick={onInputAreaClick}
+      onKeyDown={(e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          onInputAreaClick(e as unknown as React.MouseEvent<HTMLFieldSetElement>);
+        }
+      }}
     >
       <div
         className={cn(
           'flex-1 flex flex-row items-center rounded-l-inherit h-full',
-          tokens.length > 0 ? 'overflow-x-auto overflow-y-hidden' : '',
+          tokens.length > 0 ? 'overflow-x-auto scrollbar overflow-y-hidden' : '',
         )}
       >
         <div
@@ -96,13 +103,14 @@ export function QueryBuilderInput({
           </div>
 
           {editingTokenId ? (
-            <div
-              role="textbox"
+            <input
+              type="text"
               tabIndex={0}
               aria-label="Add new filter"
-              className="flex-1 min-w-40 h-full cursor-text"
-              onClick={onEditingTokenClick}
+              className="flex-1 min-w-40 h-full cursor-text bg-transparent outline-none"
+              onFocus={onEditingTokenClick}
               onKeyDown={onEditingTokenKeyDown}
+              readOnly
             />
           ) : (
             <input
@@ -152,6 +160,6 @@ export function QueryBuilderInput({
       >
         <Icon name="editLine" className="size-16" />
       </button>
-    </div>
+    </fieldset>
   );
 }
