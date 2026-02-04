@@ -52,9 +52,8 @@ export function QueryBuilderInput({
     <fieldset
       aria-label="Query builder input"
       className={cn(
-        'border-0 p-0 m-0 min-w-0 bg-background-field-base h-32 relative rounded-6 transition-shadow flex',
+        'border-0 p-0 m-0 min-w-0 bg-background-field-base h-32 relative rounded-6 transition-shadow flex w-full cursor-text',
         isFocused ? 'shadow-border-interactive-with-active' : 'shadow-border-interactive-base',
-        'w-full cursor-text',
       )}
       onClick={onInputAreaClick}
       onKeyDown={(e) => {
@@ -76,7 +75,7 @@ export function QueryBuilderInput({
             tokens.length > 0 ? 'shrink-0' : 'w-full',
           )}
         >
-          <Icon name="searchLine" className="size-16 shrink-0 text-foreground-neutral-base" />
+          <Icon name="searchLine" className="size-16 shrink-0 text-foreground-neutral-subtle" />
 
           <div className={cn('flex gap-6 items-center', tokens.length > 0 ? 'shrink-0' : '')}>
             {tokens.map((token) => (
@@ -89,7 +88,7 @@ export function QueryBuilderInput({
                 {...(editingTokenId === token.id
                   ? {
                       inputRef,
-                      inputValue,
+                      inputValue: inputValue ?? '',
                       onInputChange,
                       onKeyDown,
                       onPaste,
@@ -107,16 +106,17 @@ export function QueryBuilderInput({
               type="text"
               tabIndex={0}
               aria-label="Add new filter"
+              value=""
+              readOnly
               className="flex-1 min-w-40 h-full cursor-text bg-transparent outline-none"
               onFocus={onEditingTokenClick}
               onKeyDown={onEditingTokenKeyDown}
-              readOnly
             />
           ) : (
             <input
               ref={inputRef}
               type="text"
-              value={inputValue}
+              value={inputValue ?? ''}
               onChange={onInputChange}
               onKeyDown={onKeyDown}
               onPaste={onPaste}
