@@ -9,6 +9,7 @@ export interface QueryBuilderTokenProps {
   onClick: () => void;
   onDelete: () => void;
   inputRef?: React.RefObject<HTMLInputElement | null>;
+  anchorRef?: React.RefObject<HTMLDivElement | null>;
   inputValue?: string;
   onInputChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
   onKeyDown?: (e: React.KeyboardEvent<HTMLInputElement>) => void;
@@ -51,6 +52,7 @@ export function QueryBuilderToken({
   onClick,
   onDelete,
   inputRef,
+  anchorRef,
   inputValue,
   onInputChange,
   onKeyDown,
@@ -120,7 +122,7 @@ export function QueryBuilderToken({
   }
 
   return (
-    <div className="flex items-center relative rounded-bl-6 rounded-tl-6 shrink-0">
+    <div ref={anchorRef} className="flex items-center relative rounded-bl-6 rounded-tl-6 shrink-0">
       <div className="absolute border border-border-highlights-interactive inset-0 pointer-events-none rounded-6" />
       <div className="flex items-center overflow-clip rounded-6 shadow-border-interactive-with-active">
         <div

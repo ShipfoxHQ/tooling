@@ -12,6 +12,7 @@ interface QueryBuilderInputProps {
   placeholder: string;
   inputRef: React.RefObject<HTMLInputElement | null>;
   containerRef?: React.RefObject<HTMLDivElement | null>;
+  editingTokenAnchorRef?: React.RefObject<HTMLDivElement | null>;
   onInputChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   onKeyDown: (e: React.KeyboardEvent<HTMLInputElement>) => void;
   onPaste: (e: React.ClipboardEvent) => void;
@@ -35,6 +36,7 @@ export function QueryBuilderInput({
   placeholder,
   inputRef,
   containerRef: _containerRef,
+  editingTokenAnchorRef,
   onInputChange,
   onKeyDown,
   onPaste,
@@ -88,6 +90,7 @@ export function QueryBuilderInput({
                 {...(editingTokenId === token.id
                   ? {
                       inputRef,
+                      anchorRef: editingTokenAnchorRef,
                       inputValue: inputValue ?? '',
                       onInputChange,
                       onKeyDown,

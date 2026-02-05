@@ -33,6 +33,7 @@ export function useQueryBuilderState(
 
   const inputRef = useRef<HTMLInputElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
+  const editingTokenAnchorRef = useRef<HTMLDivElement>(null);
   const isSelectingRef = useRef(false);
   const lastSyncedValueRef = useRef<string>(value);
   const isInternalUpdateRef = useRef(false);
@@ -401,6 +402,7 @@ export function useQueryBuilderState(
     setStableRecentDurations,
     inputRef,
     containerRef,
+    editingTokenAnchorRef,
     isSelectingRef,
     editingToken,
     addCompleteToken,

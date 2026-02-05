@@ -5,11 +5,16 @@ import {cn} from 'utils/cn';
 interface QueryBuilderFooterProps {
   showSyntaxHelp: boolean;
   onToggleSyntaxHelp: () => void;
+  isEditingToken: boolean;
 }
 
-export function QueryBuilderFooter({showSyntaxHelp, onToggleSyntaxHelp}: QueryBuilderFooterProps) {
+export function QueryBuilderFooter({
+  showSyntaxHelp,
+  onToggleSyntaxHelp,
+  isEditingToken,
+}: QueryBuilderFooterProps) {
   return (
-    <div className="border-t border-border-neutral-base-component bg-background-components-base px-16 py-8">
+    <div className="border-t border-border-neutral-base-component bg-background-components-base p-8">
       <div className="flex items-center justify-between gap-12">
         <div className="flex items-center gap-12">
           <button
@@ -29,28 +34,19 @@ export function QueryBuilderFooter({showSyntaxHelp, onToggleSyntaxHelp}: QueryBu
             Syntax
           </button>
         </div>
-        <div className="flex items-center gap-12">
-          <div className="flex items-center gap-8">
-            <span className="text-xs text-foreground-neutral-subtle">Negate</span>
-            <Kbd className="h-16 shrink-0">⌥</Kbd>
+        {isEditingToken && (
+          <div className="flex items-center gap-12">
+            <div className="flex items-center gap-8">
+              <span className="text-xs text-foreground-neutral-subtle">Negate</span>
+              <Kbd className="h-16 shrink-0">⌥</Kbd>
+            </div>
+            <div className="h-12 w-px bg-border-neutral-strong" />
+            <div className="flex items-center gap-8">
+              <span className="text-xs text-foreground-neutral-subtle">New tag</span>
+              <Kbd className="h-16 shrink-0">Tab</Kbd>
+            </div>
           </div>
-          <div className="h-12 w-px bg-border-neutral-strong" />
-          <div className="flex items-center gap-8">
-            <span className="text-xs text-foreground-neutral-subtle">New tag</span>
-            <Kbd className="h-16 shrink-0">Tab</Kbd>
-          </div>
-          <div className="h-12 w-px bg-border-neutral-strong" />
-          <div className="flex items-center gap-8">
-            <span className="text-xs text-foreground-neutral-subtle">Navigation</span>
-            <Kbd className="size-16 shrink-0">↓</Kbd>
-            <Kbd className="size-16 shrink-0">↑</Kbd>
-          </div>
-          <div className="h-12 w-px bg-border-neutral-strong" />
-          <div className="flex items-center gap-8">
-            <span className="text-xs text-foreground-neutral-subtle">Select</span>
-            <Kbd className="size-16 shrink-0">↵</Kbd>
-          </div>
-        </div>
+        )}
       </div>
     </div>
   );

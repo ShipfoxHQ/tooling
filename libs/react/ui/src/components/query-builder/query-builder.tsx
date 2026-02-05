@@ -71,6 +71,7 @@ export function QueryBuilder({
     setStableRecentDurations,
     inputRef,
     containerRef,
+    editingTokenAnchorRef,
     isSelectingRef,
     editingToken,
     addCompleteToken,
@@ -237,6 +238,7 @@ export function QueryBuilder({
               placeholder={getPlaceholder(tokens, placeholder)}
               inputRef={inputRef}
               containerRef={containerRef}
+              editingTokenAnchorRef={editingTokenAnchorRef}
               onInputChange={handleInputChange}
               onKeyDown={handleKeyDown}
               onPaste={handlePaste}
@@ -264,6 +266,7 @@ export function QueryBuilder({
             dropdownItems={dropdownItems}
             inputRef={inputRef}
             containerRef={containerRef}
+            editingTokenAnchorRef={editingTokenAnchorRef}
             container={container}
             isSelectingRef={isSelectingRef}
             onSelect={handleDropdownSelect}

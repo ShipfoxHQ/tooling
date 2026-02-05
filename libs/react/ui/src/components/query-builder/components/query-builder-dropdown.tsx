@@ -5,8 +5,9 @@ import {useCallback} from 'react';
 import {cn} from 'utils/cn';
 import {DurationSlider} from '../duration-slider';
 import type {DropdownItem} from '../hooks';
+import {useDropdownPosition} from '../hooks/use-dropdown-position';
 import type {SyntaxError as QuerySyntaxError, QueryToken} from '../types';
-import {calculateDropdownPosition, parseInput} from '../utils/suggestions';
+import {parseInput} from '../utils/suggestions';
 import {QueryBuilderDropdownItem} from './query-builder-dropdown-item';
 import {QueryBuilderFooter} from './query-builder-footer';
 import {QueryBuilderSyntaxHelp} from './query-builder-syntax-help';
@@ -22,6 +23,7 @@ interface QueryBuilderDropdownProps {
   dropdownItems: DropdownItem[];
   inputRef: React.RefObject<HTMLInputElement | null>;
   containerRef: React.RefObject<HTMLDivElement | null>;
+  editingTokenAnchorRef: React.RefObject<HTMLDivElement | null>;
   container?: HTMLElement | null;
   isSelectingRef: React.RefObject<boolean>;
   onSelect: (value: string) => void;
@@ -41,6 +43,7 @@ export function QueryBuilderDropdown({
   dropdownItems,
   inputRef,
   containerRef,
+  editingTokenAnchorRef,
   container,
   isSelectingRef,
   onSelect,
@@ -80,6 +83,8 @@ export function QueryBuilderDropdown({
     [isSelectingRef, inputRef],
   );
 
+  const position = useDropdownPosition(editingToken, editingTokenAnchorRef, inputRef, containerRef);
+
   return (
     <PopoverContent
       align="start"
@@ -93,9 +98,17 @@ export function QueryBuilderDropdown({
       onInteractOutside={handleInteractOutside}
       onPointerDownOutside={handlePointerDownOutside}
       container={container}
-      style={{
-        left: `${calculateDropdownPosition(inputRef, containerRef)}px`,
-      }}
+      style={
+        position
+          ? {
+              position: 'absolute',
+              left: position.left,
+              top: position.top,
+              minWidth: position.minWidth,
+              width: 'max-content',
+            }
+          : undefined
+      }
     >
       <div className="flex flex-col bg-background-neutral-base rounded-10 overflow-hidden shadow-tooltip">
         {getDropdownHeader() && (
@@ -155,6 +168,7 @@ export function QueryBuilderDropdown({
         <QueryBuilderFooter
           showSyntaxHelp={showSyntaxHelp}
           onToggleSyntaxHelp={onToggleSyntaxHelp}
+          isEditingToken={editingToken !== null}
         />
       </div>
     </PopoverContent>

@@ -503,27 +503,3 @@ export function generateSuggestions(
 
   return suggestions;
 }
-
-export function calculateDropdownPosition(
-  inputRef: React.RefObject<HTMLInputElement | null>,
-  containerRef: React.RefObject<HTMLDivElement | null>,
-): number {
-  if (!inputRef.current || !containerRef.current) {
-    return 0;
-  }
-
-  const DROPDOWN_MIN_WIDTH = 260;
-  const DROPDOWN_EDGE_PADDING = 8;
-
-  const inputRect = inputRef.current.getBoundingClientRect();
-  const containerRect = containerRef.current.getBoundingClientRect();
-
-  let leftOffset = inputRect.left - containerRect.left;
-
-  const maxLeftOffset = containerRect.width - DROPDOWN_MIN_WIDTH - DROPDOWN_EDGE_PADDING;
-  if (leftOffset > maxLeftOffset && maxLeftOffset > 0) {
-    leftOffset = maxLeftOffset;
-  }
-
-  return Math.max(0, leftOffset);
-}
