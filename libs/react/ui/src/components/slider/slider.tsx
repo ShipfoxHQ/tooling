@@ -5,9 +5,9 @@ import {cn} from 'utils/cn';
 const trackDefaults =
   'bg-background-switch-off relative grow overflow-hidden rounded-full data-[orientation=horizontal]:h-4 data-[orientation=horizontal]:w-full data-[orientation=vertical]:h-full data-[orientation=vertical]:w-4';
 const rangeDefaults =
-  'bg-foreground-highlight-interactive absolute select-none data-[orientation=horizontal]:h-full data-[orientation=vertical]:w-full';
+  'bg-foreground-highlight-interactive absolute select-none rounded-full data-[orientation=horizontal]:h-full data-[orientation=vertical]:w-full';
 const thumbDefaults =
-  "relative block size-8 min-w-8 min-h-8 shrink-0 select-none rounded-full border border-border-highlights-interactive bg-foreground-highlight-interactive shadow-button-neutral transition-[color,box-shadow] outline-none after:absolute after:-inset-2 after:block after:content-[''] hover:ring-2 hover:ring-background-accent-warning-base/50 focus-visible:ring-2 focus-visible:ring-background-accent-warning-base focus-visible:ring-offset-2 active:ring-2 active:ring-background-accent-warning-base/50 data-disabled:pointer-events-none data-disabled:opacity-50";
+  "relative block size-6 min-w-6 min-h-6 shrink-0 select-none rounded-full border border-border-highlights-interactive bg-foreground-highlight-interactive drop-shadow transition-[color,box-shadow] outline-none after:absolute after:-inset-2 after:block after:content-[''] ring-2 ring-white ring-offset-2 data-disabled:pointer-events-none data-disabled:opacity-50";
 
 export type SliderProps = ComponentProps<typeof SliderPrimitive.Root> & {
   trackClassName?: string;
