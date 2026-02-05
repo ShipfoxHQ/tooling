@@ -21,7 +21,7 @@ export function QueryBuilderTextInput({
     <div className="w-full">
       <div className="bg-background-field-base h-32 relative rounded-6 transition-shadow shadow-border-interactive-with-active w-full flex">
         <div className="flex-1 flex items-center gap-8 px-8 py-6 overflow-hidden">
-          <Icon name="searchLine" className="size-16 shrink-0 text-foreground-neutral-base" />
+          <Icon name="searchLine" className="size-16 shrink-0 text-foreground-neutral-subtle" />
           <input
             ref={inputRef}
             type="text"

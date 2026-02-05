@@ -104,8 +104,7 @@ export function QueryBuilderDropdown({
               position: 'absolute',
               left: position.left,
               top: position.top,
-              minWidth: position.minWidth,
-              width: 'max-content',
+              minWidth: '300px',
             }
           : undefined
       }

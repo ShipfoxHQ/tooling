@@ -1,4 +1,5 @@
-import {Icon} from 'components/icon';
+import {Button} from 'components/button';
+import {Tooltip, TooltipContent, TooltipTrigger} from 'components/tooltip';
 import {useState} from 'react';
 import {cn} from 'utils/cn';
 import type {QueryToken, QueryValue} from './types';
@@ -65,58 +66,83 @@ export function QueryBuilderToken({
   const hasMultipleValues = token.values.length >= 2;
 
   if (!isEditing) {
+    const showTokenTooltip = showTooltip && (hasMultipleValues || token.isWildcard);
     return (
       <div className="relative">
-        <button
-          onClick={onClick}
-          onMouseEnter={() => (hasMultipleValues || token.isWildcard) && setShowTooltip(true)}
-          onMouseLeave={() => setShowTooltip(false)}
-          className={cn(
-            'flex gap-2 items-center justify-center px-8 py-2 rounded-6 shrink-0',
-            'hover:bg-background-button-transparent-hover transition-colors',
-            token.isWildcard
-              ? 'bg-background-accent-purple-base/15'
-              : 'bg-background-button-transparent-base',
-          )}
-          type="button"
-        >
-          <span className="text-sm text-foreground-neutral-base">{token.key}</span>
-          <span className="text-sm text-background-accent-purple-base">{token.operator}</span>
-          {token.isWildcard ? (
-            <span className="text-sm text-background-accent-purple-base">*</span>
-          ) : (
-            renderValues(true, token.values)
-          )}
-        </button>
-        {showTooltip && hasMultipleValues && !token.isWildcard && (
-          <div className="absolute left-0 top-full mt-1 z-20 bg-background-neutral-base border border-border-neutral-base-component rounded-6 px-8 py-6 shadow-tooltip whitespace-nowrap">
-            <p className="text-xs text-foreground-neutral-subtle mb-4">
-              {token.values.length} values:
-            </p>
-            <div className="flex flex-col gap-2">
-              {token.values.map((v, i) => (
-                <span key={`${v.value}-${v.isNegated}-${i}`} className="text-xs">
-                  {i > 0 && <span className="mr-4 text-background-accent-purple-base">,</span>}
-                  <span
-                    className={
-                      v.isNegated
-                        ? 'text-background-accent-warning-base'
-                        : 'text-foreground-neutral-base'
-                    }
-                  >
-                    {v.isNegated ? '-' : ''}
-                    {v.value}
-                  </span>
-                </span>
-              ))}
-            </div>
-          </div>
-        )}
-        {showTooltip && token.isWildcard && (
-          <div className="absolute left-0 top-full mt-1 z-20 bg-background-neutral-base border border-border-neutral-base-component rounded-6 px-8 py-6 shadow-tooltip whitespace-nowrap">
-            <p className="text-xs text-foreground-neutral-subtle">Matches any value</p>
-          </div>
-        )}
+        <div className="group flex items-center rounded-6 overflow-hidden shrink-0">
+          <Tooltip open={showTokenTooltip} onOpenChange={setShowTooltip} delayDuration={0}>
+            <TooltipTrigger asChild>
+              <Button
+                variant="secondary"
+                size="xs"
+                onClick={onClick}
+                onMouseEnter={() => (hasMultipleValues || token.isWildcard) && setShowTooltip(true)}
+                onMouseLeave={() => setShowTooltip(false)}
+                className={cn(
+                  'flex gap-2 rounded-l-6 rounded-r-none! px-8! py-1!',
+                  token.isWildcard && 'bg-background-accent-purple-base/15!',
+                )}
+              >
+                <span className="text-sm text-foreground-neutral-base">{token.key}</span>
+                <span className="text-sm text-background-accent-purple-base">{token.operator}</span>
+                {token.isWildcard ? (
+                  <span className="text-sm text-background-accent-purple-base">*</span>
+                ) : (
+                  renderValues(true, token.values)
+                )}
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent
+              side="bottom"
+              sideOffset={8}
+              className="w-fit max-w-none px-8 py-6 whitespace-nowrap"
+              animated={false}
+            >
+              {hasMultipleValues && !token.isWildcard ? (
+                <>
+                  <p className="text-xs text-foreground-neutral-subtle mb-4">
+                    {token.values.length} values:
+                  </p>
+                  <p className="text-xs max-w-100 overflow-hidden text-wrap wrap-break-word">
+                    {token.values.map((v, i) => (
+                      <span key={`${v.value}-${v.isNegated}-${i}`}>
+                        {i > 0 && <span className="text-background-accent-purple-base">, </span>}
+                        <span
+                          className={cn(
+                            'whitespace-nowrap',
+                            v.isNegated
+                              ? 'text-background-accent-warning-base'
+                              : 'text-foreground-neutral-base',
+                          )}
+                        >
+                          {v.isNegated ? '-' : ''}
+                          {v.value}
+                        </span>
+                      </span>
+                    ))}
+                  </p>
+                </>
+              ) : token.isWildcard ? (
+                <p className="text-xs text-foreground-neutral-subtle">Matches any value</p>
+              ) : null}
+            </TooltipContent>
+          </Tooltip>
+          <Button
+            variant="danger"
+            size="xs"
+            iconLeft="closeLine"
+            onClick={(e) => {
+              e.stopPropagation();
+              onDelete();
+            }}
+            className={cn(
+              'bg-background-highlight-interactive! p-0! min-w-0! h-24! w-0! overflow-hidden! opacity-0! shadow-none!',
+              'group-hover:w-24! group-hover:opacity-100!',
+              'rounded-l-none! rounded-r-6! transition-[width,opacity] duration-200 ease-out',
+            )}
+            aria-label="Remove filter"
+          />
+        </div>
       </div>
     );
   }
@@ -124,13 +150,13 @@ export function QueryBuilderToken({
   return (
     <div ref={anchorRef} className="flex items-center relative rounded-bl-6 rounded-tl-6 shrink-0">
       <div className="absolute border border-border-highlights-interactive inset-0 pointer-events-none rounded-6" />
-      <div className="flex items-center overflow-clip rounded-6 shadow-border-interactive-with-active">
+      <div className="flex items-center overflow-clip rounded-6 shadow-tooltip">
         <div
           className={cn(
-            'flex gap-2 items-center justify-center px-8 py-2 rounded-bl-6 rounded-tl-6 flex-wrap',
+            'flex gap-2 items-center justify-center px-8 py-1 rounded-bl-6 rounded-tl-6 flex-wrap',
             token.isWildcard
               ? 'bg-background-accent-purple-base/15'
-              : 'bg-background-button-transparent-base',
+              : 'bg-background-button-neutral-default',
           )}
         >
           <span className="text-sm text-foreground-neutral-base">{token.key}</span>
@@ -159,16 +185,14 @@ export function QueryBuilderToken({
             />
           )}
         </div>
-        <button
+        <Button
+          variant="danger"
+          size="xs"
+          iconLeft="closeLine"
           onClick={onDelete}
-          className="bg-background-accent-error-base relative rounded-br-6 rounded-tr-6 shrink-0 size-24 hover:bg-background-accent-error-strong transition-colors"
-          type="button"
-        >
-          <Icon
-            name="closeLine"
-            className="size-16 text-foreground-neutral-base absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2"
-          />
-        </button>
+          className="bg-background-highlight-interactive! p-0! min-w-0! w-24! h-24! rounded-l-none! rounded-br-6! rounded-tr-6! shadow-none!"
+          aria-label="Remove filter"
+        />
       </div>
     </div>
   );

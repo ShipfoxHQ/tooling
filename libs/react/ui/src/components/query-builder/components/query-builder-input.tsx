@@ -68,7 +68,7 @@ export function QueryBuilderInput({
       <div
         className={cn(
           'flex-1 flex flex-row items-center rounded-l-inherit h-full',
-          tokens.length > 0 ? 'overflow-x-auto scrollbar overflow-y-hidden' : '',
+          tokens.length > 0 ? 'overflow-x-auto overflow-y-hidden scrollbar-hidden' : '',
         )}
       >
         <div

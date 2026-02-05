@@ -2,18 +2,13 @@ import {useLayoutEffect, useState} from 'react';
 import type {QueryToken} from '../types';
 
 const SIDE_OFFSET = 4;
-const MIN_WIDTH = 260;
 
-function measure(
-  anchor: HTMLElement,
-  container: HTMLElement,
-): {left: number; top: number; minWidth: number} {
+function measure(anchor: HTMLElement, container: HTMLElement): {left: number; top: number} {
   const anchorRect = anchor.getBoundingClientRect();
   const containerRect = container.getBoundingClientRect();
   return {
     left: anchorRect.left - containerRect.left,
     top: SIDE_OFFSET,
-    minWidth: Math.max(MIN_WIDTH, anchorRect.width),
   };
 }
 
@@ -22,11 +17,10 @@ export function useDropdownPosition(
   tokenAnchorRef: React.RefObject<HTMLDivElement | null>,
   inputRef: React.RefObject<HTMLInputElement | null>,
   containerRef: React.RefObject<HTMLDivElement | null>,
-): {left: number; top: number; minWidth: number} | null {
+): {left: number; top: number} | null {
   const [style, setStyle] = useState<{
     left: number;
     top: number;
-    minWidth: number;
   } | null>(null);
 
   useLayoutEffect(() => {
