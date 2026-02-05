@@ -36,6 +36,7 @@ export * from './select';
 export * from './sheet';
 export * from './shiny-text';
 export * from './skeleton';
+export * from './slider';
 export * from './table';
 export * from './tabs';
 export * from './textarea';
