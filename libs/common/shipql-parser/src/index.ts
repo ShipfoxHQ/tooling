@@ -1,6 +1,7 @@
 import {parse as _parse} from './parser';
 
 export const parse = _parse as (input: string) => AstNode | null;
+export {stringify} from './stringify';
 
 // ── AST node types ──────────────────────────────────────────────────
 
