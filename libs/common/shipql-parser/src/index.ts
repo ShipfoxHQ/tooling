@@ -40,10 +40,4 @@ export type NotNode = {
   expr: AstNode;
 };
 
-export type AstNode =
-  | MatchNode
-  | RangeNode
-  | TextNode
-  | AndNode
-  | OrNode
-  | NotNode;
+export type AstNode = MatchNode | RangeNode | TextNode | AndNode | OrNode | NotNode;
