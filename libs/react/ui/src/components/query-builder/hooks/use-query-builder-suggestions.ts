@@ -21,28 +21,27 @@ export function useQueryBuilderSuggestions(
   tokens: QueryToken[],
   editingToken: QueryToken | null,
   isAltHeld: boolean,
+  isShiftHeld: boolean,
   conflictHints: Record<string, string>,
   stableDropdownOrder: string[] | null,
-  stableDropdownFieldRef: React.MutableRefObject<string | null>,
-  stableRecentDurations: string[] | null,
-  recentDurations: string[],
+  stableDropdownFieldRef: React.RefObject<string | null>,
+  durationRange?: [number, number],
 ) {
-  const suggestions = useMemo(
-    () =>
-      generateSuggestions(
-        inputValue,
-        tokens,
-        editingToken,
-        undefined,
-        stableRecentDurations || recentDurations,
-      ),
-    [inputValue, tokens, editingToken, stableRecentDurations, recentDurations],
-  );
+  const suggestions = useMemo(() => {
+    const result = generateSuggestions(
+      inputValue,
+      tokens,
+      editingToken,
+      undefined,
+      durationRange,
+    );
+    return result;
+  }, [inputValue, tokens, editingToken, durationRange]);
 
   const orderedSuggestions = useMemo(() => {
     let ordered = [...suggestions];
 
-    if (isAltHeld) {
+    if (isAltHeld || isShiftHeld) {
       ordered = ordered.filter((s) => {
         if (s.type !== 'value' && s.type !== 'complete') return true;
         if (s.isNegated && s.isSelected) return true;
@@ -78,7 +77,14 @@ export function useQueryBuilderSuggestions(
     }
 
     return ordered;
-  }, [suggestions, isAltHeld, editingToken, stableDropdownOrder, stableDropdownFieldRef]);
+  }, [
+    suggestions,
+    isAltHeld,
+    isShiftHeld,
+    editingToken,
+    stableDropdownOrder,
+    stableDropdownFieldRef,
+  ]);
 
   const dropdownItems = useMemo(() => {
     return orderedSuggestions.map((s) => {
@@ -96,7 +102,8 @@ export function useQueryBuilderSuggestions(
 
       const isValueType = s.type === 'value' || s.type === 'complete';
       const isPreset = s.type === 'preset';
-      const applyNegation = isAltHeld && isValueType && !s.isNegated && !s.isSelected;
+      const applyNegation =
+        (isAltHeld || isShiftHeld) && isValueType && !s.isNegated && !s.isSelected;
       const effectiveNegated = applyNegation ? true : (s.isNegated ?? false);
 
       let encodedValue: string;
@@ -132,7 +139,7 @@ export function useQueryBuilderSuggestions(
         type: isPreset ? ('preset' as const) : undefined,
       };
     });
-  }, [orderedSuggestions, isAltHeld, conflictHints]);
+  }, [orderedSuggestions, isAltHeld, isShiftHeld, conflictHints]);
 
   const deferredDropdownItems = useDeferredValue(dropdownItems);
 

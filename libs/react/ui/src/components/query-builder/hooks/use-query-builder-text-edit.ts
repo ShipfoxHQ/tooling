@@ -10,6 +10,7 @@ interface UseQueryBuilderTextEditProps {
     setTextEditError: (error: string | null) => void;
     applyTextChanges: () => void;
     revertTextChanges: () => void;
+    exitTextEditMode: () => void;
     toggleInputMode: () => void;
   };
 }
@@ -30,14 +31,20 @@ export function useQueryBuilderTextEdit({textEditMode}: UseQueryBuilderTextEditP
         textEditMode.applyTextChanges();
       } else if (e.key === 'Escape') {
         e.preventDefault();
-        textEditMode.revertTextChanges();
+        textEditMode.exitTextEditMode();
+        textEditMode.textEditInputRef.current?.blur();
       }
     },
     [textEditMode],
   );
 
+  const handleTextInputBlur = useCallback(() => {
+    textEditMode.exitTextEditMode();
+  }, [textEditMode]);
+
   return {
     handleTextInputChange,
     handleTextInputKeyDown,
+    handleTextInputBlur,
   };
 }

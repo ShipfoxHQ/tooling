@@ -60,6 +60,10 @@ export function useTextEditMode(
     setTextEditError(null);
   }, [tokens, serializeTokensToQuery]);
 
+  const exitTextEditMode = useCallback(() => {
+    setIsTextEditMode(false);
+  }, []);
+
   return {
     isTextEditMode,
     textEditValue,
@@ -70,5 +74,6 @@ export function useTextEditMode(
     toggleInputMode,
     applyTextChanges,
     revertTextChanges,
+    exitTextEditMode,
   };
 }

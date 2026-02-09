@@ -3,64 +3,45 @@ import {PopoverContent} from 'components/popover';
 import {ScrollArea} from 'components/scroll-area';
 import {useCallback} from 'react';
 import {cn} from 'utils/cn';
+import {useQueryBuilderContext} from '../context';
 import {DurationSlider} from '../duration-slider';
-import type {DropdownItem} from '../hooks';
 import {useDropdownPosition} from '../hooks/use-dropdown-position';
-import type {SyntaxError as QuerySyntaxError, QueryToken} from '../types';
 import {parseInput} from '../utils/suggestions';
 import {QueryBuilderDropdownItem} from './query-builder-dropdown-item';
 import {QueryBuilderFooter} from './query-builder-footer';
 import {QueryBuilderSyntaxHelp} from './query-builder-syntax-help';
 
-interface QueryBuilderDropdownProps {
-  showDropdown: boolean;
-  showSyntaxHelp: boolean;
-  syntaxError: QuerySyntaxError | null;
-  editingToken: QueryToken | null;
-  inputValue: string;
-  durationRange: [number, number];
-  selectedDropdownIndex: number;
-  dropdownItems: DropdownItem[];
-  inputRef: React.RefObject<HTMLInputElement | null>;
-  containerRef: React.RefObject<HTMLDivElement | null>;
-  editingTokenAnchorRef: React.RefObject<HTMLDivElement | null>;
-  container?: HTMLElement | null;
-  isSelectingRef: React.RefObject<boolean>;
-  onSelect: (value: string) => void;
-  onDurationRangeChange: (range: [number, number], hasInputError?: boolean) => void;
-  onToggleSyntaxHelp: () => void;
-  onEscape: () => void;
-  getDropdownHeader: () => string;
-}
+export function QueryBuilderDropdown() {
+  const {
+    showSyntaxHelp,
+    syntaxError,
+    editingToken,
+    inputValue,
+    durationRange,
+    selectedDropdownIndex,
+    dropdownItems,
+    inputRef,
+    containerRef,
+    editingTokenAnchorRef,
+    container,
+    isSelectingRef,
+    onDropdownSelect,
+    onDurationRangeChange,
+    onDurationRangeCommit,
+    onToggleSyntaxHelp,
+    onEscape,
+    getDropdownHeader,
+  } = useQueryBuilderContext();
 
-export function QueryBuilderDropdown({
-  showSyntaxHelp,
-  syntaxError,
-  editingToken,
-  inputValue,
-  durationRange,
-  selectedDropdownIndex,
-  dropdownItems,
-  inputRef,
-  containerRef,
-  editingTokenAnchorRef,
-  container,
-  isSelectingRef,
-  onSelect,
-  onDurationRangeChange,
-  onToggleSyntaxHelp,
-  onEscape,
-  getDropdownHeader,
-}: QueryBuilderDropdownProps) {
   const handleMouseDown = useCallback(
     (value: string) => {
       isSelectingRef.current = true;
-      onSelect(value);
+      onDropdownSelect(value);
       setTimeout(() => {
         isSelectingRef.current = false;
       }, 150);
     },
-    [isSelectingRef, onSelect],
+    [isSelectingRef, onDropdownSelect],
   );
 
   const handleInteractOutside = useCallback(
@@ -109,7 +90,7 @@ export function QueryBuilderDropdown({
           : undefined
       }
     >
-      <div className="flex flex-col bg-background-neutral-base rounded-10 overflow-hidden shadow-tooltip">
+      <div className="flex flex-col bg-background-neutral-base rounded-10 overflow-hidden shadow-tooltip max-h-[min(70vh,400px)] min-h-0">
         {getDropdownHeader() && (
           <div className="shrink-0 w-full px-6 pt-4 pb-2">
             <Label className="text-xs text-foreground-neutral-muted font-medium uppercase tracking-wider">
@@ -122,20 +103,20 @@ export function QueryBuilderDropdown({
           <DurationSlider
             value={durationRange}
             onChange={onDurationRangeChange}
+            onCommit={onDurationRangeCommit}
             min={0}
             max={3600000}
           />
         )}
 
         {dropdownItems.length > 0 ? (
-          <ScrollArea className="max-h-300">
+          <ScrollArea className="flex-1 min-h-0 max-h-300 overflow-y-auto scrollbar">
             <div className="flex flex-col">
               {dropdownItems.map((item, index) => (
                 <QueryBuilderDropdownItem
                   key={item.value}
                   item={item}
                   isHighlighted={selectedDropdownIndex === index}
-                  onSelect={onSelect}
                   onMouseDown={handleMouseDown}
                 />
               ))}

@@ -6,11 +6,11 @@ interface UseQueryBuilderSelectionProps {
   editingTokenId: string | null;
   tokens: QueryToken[];
   isManualEdit: boolean;
-  recentDurations: string[];
   inputRef: React.RefObject<HTMLInputElement | null>;
-  selectField: (fieldName: string, recentDurations: string[]) => void;
+  selectField: (fieldName: string) => void;
   convertToWildcard: (fieldName: string) => void;
   addValueToEditingToken: (value: string, isNegated: boolean) => void;
+  setEditingTokenDurationValues: (values: {value: string; isNegated: boolean}[]) => void;
   setEditingTokenId: (id: string | null) => void;
   setTokens: React.Dispatch<React.SetStateAction<QueryToken[]>>;
   setInputValue: (value: string) => void;
@@ -26,11 +26,11 @@ export function useQueryBuilderSelection({
   editingTokenId,
   tokens,
   isManualEdit,
-  recentDurations,
   inputRef,
   selectField,
   convertToWildcard,
   addValueToEditingToken,
+  setEditingTokenDurationValues,
   setEditingTokenId,
   setTokens,
   setInputValue,
@@ -43,12 +43,12 @@ export function useQueryBuilderSelection({
 }: UseQueryBuilderSelectionProps) {
   const handleFieldSelect = useCallback(
     (fieldName: string) => {
-      selectField(fieldName, recentDurations);
+      selectField(fieldName);
       setTimeout(() => {
         inputRef.current?.focus();
       }, 0);
     },
-    [selectField, recentDurations, inputRef],
+    [selectField, inputRef],
   );
 
   const handleWildcardSelect = useCallback(
@@ -64,6 +64,9 @@ export function useQueryBuilderSelection({
   const handleCompleteValueSelect = useCallback(
     (fieldName: string, fieldValue: string, isNegated: boolean) => {
       const wasManualEdit = isManualEdit;
+      const currentEditingToken = editingTokenId
+        ? (tokens.find((t) => t.id === editingTokenId) ?? null)
+        : null;
 
       if (editingTokenId) {
         if (fieldName === 'duration' && fieldValue.includes(',')) {
@@ -71,9 +74,7 @@ export function useQueryBuilderSelection({
             .split(',')
             .map((p) => p.trim())
             .filter(Boolean);
-          durationParts.forEach((part) => {
-            addValueToEditingToken(part, isNegated);
-          });
+          setEditingTokenDurationValues(durationParts.map((value) => ({value, isNegated})));
         } else {
           addValueToEditingToken(fieldValue, isNegated);
         }
@@ -82,28 +83,54 @@ export function useQueryBuilderSelection({
         const existingToken = tokens.find((t) => t.key === fieldName && !t.isWildcard);
         if (existingToken) {
           setEditingTokenId(existingToken.id);
-          setTokens((prev) =>
-            prev.map((t) => {
-              if (t.id === existingToken.id) {
-                const valueExists = t.values.some(
-                  (v) => v.value === fieldValue && v.isNegated === isNegated,
-                );
-                if (!valueExists) {
-                  return {...t, values: [...t.values, {value: fieldValue, isNegated}]};
+          if (fieldName === 'duration' && fieldValue.includes(',')) {
+            const durationParts = fieldValue
+              .split(',')
+              .map((p) => p.trim())
+              .filter(Boolean);
+            setTokens((prev) =>
+              prev.map((t) => {
+                if (t.id === existingToken.id && t.key === 'duration') {
+                  return {
+                    ...t,
+                    values: durationParts.map((value) => ({value, isNegated})),
+                  };
                 }
-              }
-              return t;
-            }),
-          );
+                return t;
+              }),
+            );
+          } else {
+            setTokens((prev) =>
+              prev.map((t) => {
+                if (t.id === existingToken.id) {
+                  const valueExists = t.values.some(
+                    (v) => v.value === fieldValue && v.isNegated === isNegated,
+                  );
+                  if (!valueExists) {
+                    return {...t, values: [...t.values, {value: fieldValue, isNegated}]};
+                  }
+                }
+                return t;
+              }),
+            );
+          }
         } else {
           const newTokenId = `${Date.now()}-${Math.random()}`;
+          const initialValues =
+            fieldName === 'duration' && fieldValue.includes(',')
+              ? fieldValue
+                  .split(',')
+                  .map((p) => p.trim())
+                  .filter(Boolean)
+                  .map((value) => ({value, isNegated}))
+              : [{value: fieldValue, isNegated}];
           setTokens((prev) => [
             ...prev,
             {
               id: newTokenId,
               key: fieldName,
               operator: ':',
-              values: [{value: fieldValue, isNegated}],
+              values: initialValues,
               isBuilding: true,
             },
           ]);
@@ -114,13 +141,19 @@ export function useQueryBuilderSelection({
             stableDropdownFieldRef.current = fieldName;
           }
           if (fieldName === 'duration') {
-            setStableRecentDurations([...recentDurations]);
+            setStableRecentDurations(null);
           }
         }
         setInputValue('');
       }
 
-      if (!wasManualEdit && editingTokenId) {
+      const hadValuesBefore = (currentEditingToken?.values?.length ?? 0) > 0;
+      const isAddingSecondDuration =
+        fieldName === 'duration' &&
+        hadValuesBefore &&
+        (currentEditingToken?.values?.length ?? 0) === 1;
+      const shouldFinalize = !wasManualEdit && !!editingTokenId && isAddingSecondDuration;
+      if (shouldFinalize) {
         finalizeEditing();
         setEditingTokenId(null);
         setInputValue('');
@@ -135,6 +168,7 @@ export function useQueryBuilderSelection({
       tokens,
       isManualEdit,
       addValueToEditingToken,
+      setEditingTokenDurationValues,
       setEditingTokenId,
       setTokens,
       setInputValue,
@@ -143,7 +177,6 @@ export function useQueryBuilderSelection({
       setStableDropdownOrder,
       setStableRecentDurations,
       stableDropdownFieldRef,
-      recentDurations,
       inputRef,
     ],
   );
@@ -151,6 +184,10 @@ export function useQueryBuilderSelection({
   const handlePresetSelect = useCallback(
     (fieldName: string, presetValue: string) => {
       const wasManualEdit = isManualEdit;
+      const currentToken = editingTokenId
+        ? (tokens.find((t) => t.id === editingTokenId) ?? null)
+        : null;
+      const hadValuesBefore = (currentToken?.values?.length ?? 0) > 0;
 
       if (editingTokenId) {
         addValueToEditingToken(presetValue, false);
@@ -172,7 +209,10 @@ export function useQueryBuilderSelection({
       }
       setInputValue('');
 
-      if (!wasManualEdit && editingTokenId) {
+      const isAddingSecondDuration =
+        fieldName === 'duration' && hadValuesBefore && (currentToken?.values?.length ?? 0) === 1;
+      const shouldFinalize = !wasManualEdit && !!editingTokenId && isAddingSecondDuration;
+      if (shouldFinalize) {
         finalizeEditing();
         setEditingTokenId(null);
         setInputValue('');
@@ -184,6 +224,7 @@ export function useQueryBuilderSelection({
     },
     [
       editingTokenId,
+      tokens,
       isManualEdit,
       addValueToEditingToken,
       setIsManualEdit,

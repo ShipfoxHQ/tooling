@@ -6,11 +6,18 @@ import {formatDuration, parseDuration} from './utils';
 export interface DurationSliderProps {
   value: [number, number];
   onChange: (value: [number, number], hasInputError?: boolean) => void;
+  onCommit?: (value: [number, number], hasInputError?: boolean) => void;
   min?: number;
   max?: number;
 }
 
-export function DurationSlider({value, onChange, min = 0, max = 3600000}: DurationSliderProps) {
+export function DurationSlider({
+  value,
+  onChange,
+  onCommit,
+  min = 0,
+  max = 3600000,
+}: DurationSliderProps) {
   const [minInputText, setMinInputText] = useState(
     value[0] === min ? '' : formatDuration(value[0]),
   );
@@ -32,7 +39,6 @@ export function DurationSlider({value, onChange, min = 0, max = 3600000}: Durati
       value[0] === lastSliderValueRef.current[0] &&
       value[1] === lastSliderValueRef.current[1];
     if (fromSlider) {
-      lastSliderValueRef.current = null;
       return;
     }
     setSliderKey((k) => k + 1);
@@ -72,9 +78,19 @@ export function DurationSlider({value, onChange, min = 0, max = 3600000}: Durati
     }
   };
 
+  const handleSliderChange = (v: number[]) => {
+    lastSliderValueRef.current = [v[0], v[1]];
+    setMinInputText(v[0] === min ? '' : formatDuration(v[0]));
+    setMaxInputText(v[1] === max ? '' : formatDuration(v[1]));
+    setMinInputError(false);
+    setMaxInputError(false);
+    onChange([v[0], v[1]], false);
+  };
+
   const handleSliderCommit = (v: number[]) => {
     lastSliderValueRef.current = [v[0], v[1]];
     onChange([v[0], v[1]], false);
+    onCommit?.([v[0], v[1]], false);
     setMinInputError(false);
     setMaxInputError(false);
   };
@@ -101,7 +117,8 @@ export function DurationSlider({value, onChange, min = 0, max = 3600000}: Durati
         </div>
         <Slider
           key={sliderKey}
-          defaultValue={value}
+          value={value}
+          onValueChange={handleSliderChange}
           onValueCommit={handleSliderCommit}
           min={min}
           max={max}

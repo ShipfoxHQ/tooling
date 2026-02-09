@@ -19,6 +19,7 @@ interface UseQueryBuilderKeyboardProps {
   setEditingTokenId: (id: string | null) => void;
   setInputValue: (value: string) => void;
   setShowDropdown: (show: boolean) => void;
+  setIsFocused: (value: boolean) => void;
   inputRef: React.RefObject<HTMLInputElement | null>;
 }
 
@@ -38,6 +39,7 @@ export function useQueryBuilderKeyboard({
   setEditingTokenId,
   setInputValue,
   setShowDropdown,
+  setIsFocused,
   inputRef,
 }: UseQueryBuilderKeyboardProps) {
   const handleKeyDown = useCallback(
@@ -105,7 +107,9 @@ export function useQueryBuilderKeyboard({
       if (e.key === 'Escape') {
         e.preventDefault();
         finalizeEditing();
+        setIsFocused(false);
         setShowDropdown(false);
+        inputRef.current?.blur();
         return;
       }
 
@@ -160,6 +164,7 @@ export function useQueryBuilderKeyboard({
       setEditingTokenId,
       setInputValue,
       setShowDropdown,
+      setIsFocused,
       inputRef,
     ],
   );

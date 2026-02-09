@@ -18,7 +18,7 @@ function QueryBuilderExample() {
   const [query, setQuery] = useState('');
 
   return (
-    <div className="space-y-8 w-[700px]">
+    <div className="space-y-8 w-700">
       <QueryBuilder value={query} onQueryChange={setQuery} className="w-full" />
       <div className="text-xs text-foreground-neutral-muted font-mono p-8 bg-background-neutral-base rounded-6">
         Query: {query || '(empty)'}
@@ -33,20 +33,4 @@ export const Default: Story = {
       <QueryBuilderExample />
     </div>
   ),
-};
-
-export const WithInitialQuery: Story = {
-  render: () => {
-    const [query, setQuery] = useState('status:success,failed');
-    return (
-      <div className="w-screen h-screen p-16">
-        <div className="space-y-8 w-[700px]">
-          <QueryBuilder value={query} onQueryChange={setQuery} className="w-full" />
-          <div className="text-xs text-foreground-neutral-muted font-mono p-8 bg-background-neutral-base rounded-6">
-            Query: {query}
-          </div>
-        </div>
-      </div>
-    );
-  },
 };

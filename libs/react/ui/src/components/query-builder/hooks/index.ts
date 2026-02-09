@@ -1,3 +1,4 @@
+export * from './use-query-builder-core';
 export * from './use-query-builder-duration';
 export * from './use-query-builder-focus';
 export * from './use-query-builder-handlers';
@@ -10,5 +11,4 @@ export type {DropdownItem} from './use-query-builder-suggestions';
 export * from './use-query-builder-suggestions';
 export * from './use-query-builder-syntax';
 export * from './use-query-builder-text-edit';
-export * from './use-recent-durations';
 export * from './use-text-edit-mode';

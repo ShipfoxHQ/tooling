@@ -1,5 +1,5 @@
 import type {QueryToken} from '../types';
-import {FIELD_RULES, parseDurationComparison} from './index';
+import {durationRangeToInputValue, FIELD_RULES, parseDurationComparison} from './index';
 
 export interface AutocompleteSuggestion {
   type:
@@ -19,7 +19,7 @@ export interface AutocompleteSuggestion {
   isNegated?: boolean;
   isSelected?: boolean;
   count?: number;
-  section?: 'common' | 'recent';
+  section?: 'common';
   presetMs?: number;
 }
 
@@ -102,7 +102,7 @@ export function generateSuggestions(
   existingTokens: QueryToken[],
   editingToken: QueryToken | null,
   valueCounts?: Record<string, Record<string, number>>,
-  recentDurations?: string[],
+  durationRange?: [number, number],
 ): AutocompleteSuggestion[] {
   const parsed = parseInput(input);
   const suggestions: AutocompleteSuggestion[] = [];
@@ -121,31 +121,15 @@ export function generateSuggestions(
       if (field.name === 'duration') {
         const selectedDurations = editingToken.values.map((v) => v.value);
 
-        if (searchValue) {
-          const durationParsed = parseDurationComparison(searchValue);
-          if (durationParsed) {
-            const displayValue = `${durationParsed.operator}${durationParsed.rawValue}`;
-            const isSelected = selectedDurations.includes(displayValue);
+        if (durationRange) {
+          const rangeStr = durationRangeToInputValue(durationRange);
+          if (rangeStr) {
             suggestions.push({
               type: 'custom',
-              value: displayValue,
-              label: `Duration ${durationParsed.operator} ${durationParsed.rawValue}`,
+              value: rangeStr,
+              label: `Add "${rangeStr}"`,
               field: field.name,
-              preview: `duration:${displayValue}`,
-              icon: isSelected ? 'check' : 'plus',
-              isNegated: false,
-              isSelected,
-            });
-          } else if (
-            searchValue.includes(',') &&
-            searchValue.split(',').every((part) => parseDurationComparison(part.trim()))
-          ) {
-            suggestions.push({
-              type: 'custom',
-              value: searchValue,
-              label: `Add "${searchValue}"`,
-              field: field.name,
-              preview: `duration:${searchValue}`,
+              preview: `duration:${rangeStr}`,
               icon: 'plus',
               isNegated: false,
               isSelected: false,
@@ -153,56 +137,26 @@ export function generateSuggestions(
           }
         }
 
-        const recentNotFavorites = recentDurations || [];
-        if (recentNotFavorites.length > 0) {
+        suggestions.push({
+          type: 'section-header',
+          value: 'common-header',
+          label: 'Common',
+          field: field.name,
+        });
+        DURATION_PRESETS.forEach((preset) => {
+          const isSelected = selectedDurations.includes(preset.value);
           suggestions.push({
-            type: 'section-header',
-            value: 'recent-header',
-            label: 'Recent',
+            type: 'preset',
+            value: preset.value,
+            label: `Duration ${preset.label}`,
             field: field.name,
+            preview: `duration:${preset.value}`,
+            icon: isSelected ? 'check' : 'arrow',
+            isSelected,
+            presetMs: preset.ms,
+            section: 'common',
           });
-          recentNotFavorites.forEach((recent) => {
-            const isSelected = selectedDurations.includes(recent);
-            suggestions.push({
-              type: 'preset',
-              value: recent,
-              label: `Duration ${recent}`,
-              field: field.name,
-              preview: `duration:${recent}`,
-              icon: isSelected ? 'check' : 'clock',
-              isSelected,
-              section: 'recent',
-            });
-          });
-        }
-
-        const recentValues = new Set(recentNotFavorites);
-        const filteredPresets = DURATION_PRESETS.filter(
-          (preset) => !recentValues.has(preset.value),
-        );
-
-        if (filteredPresets.length > 0) {
-          suggestions.push({
-            type: 'section-header',
-            value: 'common-header',
-            label: 'Common',
-            field: field.name,
-          });
-          filteredPresets.forEach((preset) => {
-            const isSelected = selectedDurations.includes(preset.value);
-            suggestions.push({
-              type: 'preset',
-              value: preset.value,
-              label: `Duration ${preset.label}`,
-              field: field.name,
-              preview: `duration:${preset.value}`,
-              icon: isSelected ? 'arrow' : 'arrow',
-              isSelected,
-              presetMs: preset.ms,
-              section: 'common',
-            });
-          });
-        }
+        });
 
         suggestions.push({
           type: 'wildcard',

@@ -38,7 +38,7 @@ export function QueryBuilderFooter({
           <div className="flex items-center gap-12">
             <div className="flex items-center gap-8">
               <span className="text-xs text-foreground-neutral-subtle">Negate</span>
-              <Kbd className="h-16 shrink-0">⌥</Kbd>
+              <Kbd className="h-16 shrink-0">Shift</Kbd>
             </div>
             <div className="h-12 w-px bg-border-neutral-strong" />
             <div className="flex items-center gap-8">

@@ -1,13 +1,22 @@
 import {useCallback} from 'react';
 import type {QueryToken} from '../types';
-import {formatDuration} from '../utils';
+import {durationRangeToInputValue} from '../utils';
+
+function durationRangeToValues(newInputValue: string): {value: string; isNegated: boolean}[] {
+  if (!newInputValue.trim()) return [];
+  if (newInputValue.includes(',')) {
+    const parts = newInputValue.split(',').map((p) => p.trim()).filter(Boolean);
+    return parts.map((value) => ({value, isNegated: false}));
+  }
+  return [{value: newInputValue, isNegated: false}];
+}
 
 interface UseQueryBuilderDurationProps {
   editingTokenId: string | null;
   tokens: QueryToken[];
   setDurationRange: React.Dispatch<React.SetStateAction<[number, number]>>;
   setInputValue: (value: string) => void;
-  addValueToEditingToken: (value: string, isNegated: boolean) => void;
+  setEditingTokenDurationValues: (values: {value: string; isNegated: boolean}[]) => void;
 }
 
 export function useQueryBuilderDuration({
@@ -15,46 +24,43 @@ export function useQueryBuilderDuration({
   tokens,
   setDurationRange,
   setInputValue,
-  addValueToEditingToken,
+  setEditingTokenDurationValues,
 }: UseQueryBuilderDurationProps) {
-  const handleDurationRangeChange = useCallback(
-    (range: [number, number], hasInputError?: boolean) => {
+  const applyRange = useCallback(
+    (range: [number, number]) => {
       setDurationRange(range);
-      const [min, max] = range;
-      const minAtEdge = min === 0;
-      const maxAtEdge = max === 3600000;
-
-      let newInputValue = '';
-      if (minAtEdge && maxAtEdge) {
-        newInputValue = '';
-      } else if (minAtEdge) {
-        newInputValue = `<${formatDuration(max)}`;
-      } else if (maxAtEdge) {
-        newInputValue = `>${formatDuration(min)}`;
-      } else {
-        newInputValue = `>${formatDuration(min)},<${formatDuration(max)}`;
-      }
-      setInputValue(newInputValue);
-
-      if (!hasInputError && editingTokenId && newInputValue) {
-        const token = tokens.find((t) => t.id === editingTokenId);
-        if (token && token.key === 'duration') {
-          if (newInputValue.includes(',')) {
-            const parts = newInputValue
-              .split(',')
-              .map((p) => p.trim())
-              .filter(Boolean);
-            parts.forEach((part) => {
-              addValueToEditingToken(part, false);
-            });
-          } else {
-            addValueToEditingToken(newInputValue, false);
-          }
-        }
-      }
+      setInputValue(durationRangeToInputValue(range));
     },
-    [editingTokenId, tokens, addValueToEditingToken, setDurationRange, setInputValue],
+    [setDurationRange, setInputValue],
   );
 
-  return {handleDurationRangeChange};
+  const handleDurationRangeChange = useCallback(
+    (range: [number, number], hasInputError?: boolean) => {
+      applyRange(range);
+      if (hasInputError) return;
+      const newInputValue = durationRangeToInputValue(range);
+      if (!editingTokenId || !newInputValue) return;
+      const token = tokens.find((t) => t.id === editingTokenId);
+      if (token?.key === 'duration') {
+        setEditingTokenDurationValues(durationRangeToValues(newInputValue));
+      }
+    },
+    [applyRange, editingTokenId, tokens, setEditingTokenDurationValues],
+  );
+
+  const handleDurationRangeCommit = useCallback(
+    (range: [number, number], hasInputError?: boolean) => {
+      applyRange(range);
+      const newInputValue = durationRangeToInputValue(range);
+      if (hasInputError || !editingTokenId || !newInputValue) return;
+      const token = tokens.find((t) => t.id === editingTokenId);
+      if (token?.key === 'duration') {
+        const values = durationRangeToValues(newInputValue);
+        setEditingTokenDurationValues(values);
+      }
+    },
+    [applyRange, editingTokenId, tokens, setEditingTokenDurationValues],
+  );
+
+  return {handleDurationRangeChange, handleDurationRangeCommit};
 }

@@ -473,6 +473,18 @@ export function formatDuration(ms: number): string {
   }
 }
 
+const MAX_DURATION_MS = 3600000;
+
+export function durationRangeToInputValue(range: [number, number]): string {
+  const [min, max] = range;
+  const minAtEdge = min === 0;
+  const maxAtEdge = max === MAX_DURATION_MS;
+  if (minAtEdge && maxAtEdge) return '';
+  if (minAtEdge) return `<${formatDuration(max)}`;
+  if (maxAtEdge) return `>${formatDuration(min)}`;
+  return `>${formatDuration(min)},<${formatDuration(max)}`;
+}
+
 export function parseNumericRange(value: string): {min: number | null; max: number | null} | null {
   const lessThanMatch = value.match(REGEX_LESS_THAN_RANGE);
   if (lessThanMatch) {

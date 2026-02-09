@@ -10,9 +10,7 @@ interface UseQueryBuilderHandlersProps {
   setShowSyntaxHelpAutoOpened: (value: boolean) => void;
   setShowDropdown: (value: boolean) => void;
   inputRef: React.RefObject<HTMLInputElement | null>;
-  startEditingToken: (token: QueryToken, recentDurations: string[]) => void;
-  deleteToken: (tokenId: string) => void;
-  recentDurations: string[];
+  startEditingToken: (token: QueryToken) => void;
   toggleTextMode: () => void;
 }
 
@@ -26,8 +24,6 @@ export function useQueryBuilderHandlers({
   setShowDropdown,
   inputRef,
   startEditingToken,
-  deleteToken: _deleteToken,
-  recentDurations,
   toggleTextMode,
 }: UseQueryBuilderHandlersProps) {
   const handleClearAll = useCallback(() => {
@@ -38,9 +34,9 @@ export function useQueryBuilderHandlers({
 
   const handleTokenClick = useCallback(
     (token: QueryToken) => {
-      startEditingToken(token, recentDurations);
+      startEditingToken(token);
     },
-    [startEditingToken, recentDurations],
+    [startEditingToken],
   );
 
   const handleEditingTokenClick = useCallback(() => {
@@ -51,7 +47,9 @@ export function useQueryBuilderHandlers({
 
   const handleEditingTokenKeyDown = useCallback(
     (e: React.KeyboardEvent) => {
-      if (e.key === 'Enter' || e.key === ' ') {
+      if (e.key === 'Enter' || (e.key === ' ' && !e.shiftKey)) {
+        e.preventDefault();
+        e.stopPropagation();
         setEditingTokenId(null);
         setInputValue('');
         setPendingMainInputFocus(true);

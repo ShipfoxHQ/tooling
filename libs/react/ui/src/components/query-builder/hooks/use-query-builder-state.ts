@@ -9,14 +9,13 @@ import {
   validateAddValue,
 } from '../utils';
 
-export function useQueryBuilderState(
-  value: string,
-  onQueryChange?: (query: string) => void,
-  addToRecentDurations?: (value: string) => void,
-) {
+export function useQueryBuilderState(value: string, onQueryChange?: (query: string) => void) {
   const [tokens, setTokens] = useState<QueryToken[]>(() => parseQueryString(value));
   const [inputValue, setInputValue] = useState('');
-  const [editingTokenId, setEditingTokenId] = useState<string | null>(null);
+  const [editingTokenId, setEditingTokenIdInternal] = useState<string | null>(null);
+  const setEditingTokenId = useCallback((id: string | null) => {
+    setEditingTokenIdInternal(id);
+  }, []);
   const [isFocused, setIsFocused] = useState(false);
   const [showDropdown, setShowDropdown] = useState(false);
   const [selectedDropdownIndex, setSelectedDropdownIndex] = useState(0);
@@ -58,14 +57,10 @@ export function useQueryBuilderState(
     if (value === undefined || value === lastSyncedValueRef.current) {
       return;
     }
-    const parsedTokens = parseQueryString(value);
-    const currentText = serializeTokensToQuery(tokens);
-    if (currentText !== value) {
-      isInternalUpdateRef.current = true;
-      lastSyncedValueRef.current = value;
-      setTokens(parsedTokens);
-    }
-  }, [value, serializeTokensToQuery, tokens]);
+    isInternalUpdateRef.current = true;
+    lastSyncedValueRef.current = value;
+    setTokens(parseQueryString(value));
+  }, [value]);
 
   useEffect(() => {
     if (pendingMainInputFocus && editingTokenId === null) {
@@ -134,7 +129,22 @@ export function useQueryBuilderState(
       setInputValue('');
       setEditingTokenId(null);
     },
-    [],
+    [setEditingTokenId],
+  );
+
+  const setEditingTokenDurationValues = useCallback(
+    (values: {value: string; isNegated: boolean}[]) => {
+      if (!editingTokenId) return;
+      setTokens((prev) =>
+        prev.map((t) => {
+          if (t.id !== editingTokenId || t.key !== 'duration') return t;
+          return {...t, values: values.map((v) => ({value: v.value, isNegated: v.isNegated}))};
+        }),
+      );
+      setInputValue('');
+      setShowDropdown(true);
+    },
+    [editingTokenId],
   );
 
   const addValueToEditingToken = useCallback(
@@ -192,9 +202,6 @@ export function useQueryBuilderState(
             );
             setInputValue('');
             setShowDropdown(true);
-            if (token.key === 'duration') {
-              addToRecentDurations?.(value);
-            }
             return true;
           }
 
@@ -241,14 +248,9 @@ export function useQueryBuilderState(
       );
       setInputValue('');
       setShowDropdown(true);
-
-      if (token.key === 'duration') {
-        addToRecentDurations?.(value);
-      }
-
       return true;
     },
-    [editingTokenId, tokens, addToRecentDurations],
+    [editingTokenId, tokens],
   );
 
   const convertToWildcard = useCallback(
@@ -266,49 +268,44 @@ export function useQueryBuilderState(
       setEditingTokenId(null);
       setShowDropdown(true);
     },
-    [editingTokenId, addCompleteToken],
+    [editingTokenId, addCompleteToken, setEditingTokenId],
   );
 
-  const startEditingToken = useCallback((token: QueryToken, recentDurations: string[]) => {
-    setEditingTokenId(token.id);
-    setInputValue('');
-    setShowDropdown(true);
+  const startEditingToken = useCallback(
+    (token: QueryToken) => {
+      setEditingTokenId(token.id);
+      setInputValue('');
+      setShowDropdown(true);
 
-    const field = FIELD_RULES.find((f) => f.name === token.key);
-    if (field?.enumValues) {
-      setStableDropdownOrder([...field.enumValues]);
-      stableDropdownFieldRef.current = token.key;
-    }
-    if (token.key === 'duration') {
-      setStableRecentDurations([...recentDurations]);
-      let minVal = 0;
-      let maxVal = 3600000;
-      token.values.forEach((v) => {
-        const parsed = parseDurationComparison(v.value);
-        if (parsed) {
-          if (parsed.operator === '<' || parsed.operator === '<=') {
-            maxVal = Math.min(parsed.durationMs, 3600000);
-          } else if (parsed.operator === '>' || parsed.operator === '>=') {
-            minVal = Math.min(parsed.durationMs, 3600000);
+      const field = FIELD_RULES.find((f) => f.name === token.key);
+      if (field?.enumValues) {
+        setStableDropdownOrder([...field.enumValues]);
+        stableDropdownFieldRef.current = token.key;
+      }
+      if (token.key === 'duration') {
+        setStableRecentDurations(null);
+        let minVal = 0;
+        let maxVal = 3600000;
+        token.values.forEach((v) => {
+          const parsed = parseDurationComparison(v.value);
+          if (parsed) {
+            if (parsed.operator === '<' || parsed.operator === '<=') {
+              maxVal = Math.min(parsed.durationMs, 3600000);
+            } else if (parsed.operator === '>' || parsed.operator === '>=') {
+              minVal = Math.min(parsed.durationMs, 3600000);
+            }
           }
-        }
-      });
-      setDurationRange([minVal, maxVal]);
-    }
+        });
+        setDurationRange([minVal, maxVal]);
+      }
 
-    inputRef.current?.focus();
-  }, []);
+      inputRef.current?.focus();
+    },
+    [setEditingTokenId],
+  );
 
   const finalizeEditing = useCallback(() => {
     if (editingTokenId) {
-      const editingToken = tokens.find((t) => t.id === editingTokenId);
-
-      if (editingToken && editingToken.key === 'duration' && editingToken.values.length > 0) {
-        editingToken.values.forEach((v) => {
-          addToRecentDurations?.(v.value);
-        });
-      }
-
       setTokens((prev) => {
         const token = prev.find((t) => t.id === editingTokenId);
         if (token && token.values.length === 0 && !token.isWildcard) {
@@ -327,7 +324,7 @@ export function useQueryBuilderState(
     setStableDropdownOrder(null);
     stableDropdownFieldRef.current = null;
     setStableRecentDurations(null);
-  }, [editingTokenId, syntaxHelpAutoOpened, tokens, addToRecentDurations]);
+  }, [editingTokenId, syntaxHelpAutoOpened, setEditingTokenId]);
 
   const deleteToken = useCallback(
     (tokenId: string) => {
@@ -337,37 +334,40 @@ export function useQueryBuilderState(
       }
       inputRef.current?.focus();
     },
-    [editingTokenId],
+    [editingTokenId, setEditingTokenId],
   );
 
-  const selectField = useCallback((fieldName: string, recentDurations: string[]) => {
-    const newTokenId = `${Date.now()}-${Math.random()}`;
-    const newToken: QueryToken = {
-      id: newTokenId,
-      key: fieldName,
-      operator: ':',
-      values: [],
-      isBuilding: true,
-    };
-    setTokens((prev) => [...prev, newToken]);
-    setEditingTokenId(newTokenId);
-    setInputValue('');
-    setIsManualEdit(false);
+  const selectField = useCallback(
+    (fieldName: string) => {
+      const newTokenId = `${Date.now()}-${Math.random()}`;
+      const newToken: QueryToken = {
+        id: newTokenId,
+        key: fieldName,
+        operator: ':',
+        values: [],
+        isBuilding: true,
+      };
+      setTokens((prev) => [...prev, newToken]);
+      setEditingTokenId(newTokenId);
+      setInputValue('');
+      setIsManualEdit(false);
 
-    const field = FIELD_RULES.find((f) => f.name === fieldName);
-    if (field?.enumValues) {
-      setStableDropdownOrder([...field.enumValues]);
-      stableDropdownFieldRef.current = fieldName;
-    }
-    if (fieldName === 'duration') {
-      setStableRecentDurations([...recentDurations]);
-    }
+      const field = FIELD_RULES.find((f) => f.name === fieldName);
+      if (field?.enumValues) {
+        setStableDropdownOrder([...field.enumValues]);
+        stableDropdownFieldRef.current = fieldName;
+      }
+      if (fieldName === 'duration') {
+        setStableRecentDurations(null);
+      }
 
-    setTimeout(() => {
-      setShowDropdown(true);
-      setSelectedDropdownIndex(0);
-    }, 100);
-  }, []);
+      setTimeout(() => {
+        setShowDropdown(true);
+        setSelectedDropdownIndex(0);
+      }, 100);
+    },
+    [setEditingTokenId],
+  );
 
   return {
     tokens,
@@ -407,6 +407,7 @@ export function useQueryBuilderState(
     editingToken,
     addCompleteToken,
     addValueToEditingToken,
+    setEditingTokenDurationValues,
     convertToWildcard,
     startEditingToken,
     finalizeEditing,
