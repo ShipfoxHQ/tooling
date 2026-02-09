@@ -66,10 +66,10 @@ describe('stringify', () => {
     expect(result).toBe('latency:<100');
   });
 
-  it('should stringify = operator', () => {
+  it('should stringify = operator as plain match (normalized to =)', () => {
     const result = stringify(parse('status:=200'));
 
-    expect(result).toBe('status:=200');
+    expect(result).toBe('status:200');
   });
 
   it('should quote comparison values with special characters', () => {

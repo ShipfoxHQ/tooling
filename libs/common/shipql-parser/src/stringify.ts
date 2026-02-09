@@ -15,7 +15,7 @@ export function stringify(ast: AstNode | null): string {
   switch (ast.type) {
     case 'match': {
       const value = quoteIfNeeded(ast.value);
-      return ast.op === 'eq' ? `${ast.facet}:${value}` : `${ast.facet}:${ast.op}${value}`;
+      return ast.op === '=' ? `${ast.facet}:${value}` : `${ast.facet}:${ast.op}${value}`;
     }
 
     case 'range':

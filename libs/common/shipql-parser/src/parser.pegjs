@@ -78,7 +78,7 @@ FacetBody
       return node("match", { op, value });
     }
   / value:Value {
-      return node("match", { op: "eq", value });
+      return node("match", { op: "=", value });
     }
 
 FreeText
@@ -123,7 +123,7 @@ GroupPrimary
       return node("not", { expr });
     }
   / value:Value {
-      return node("match", { op: "eq", value });
+      return node("match", { op: "=", value });
     }
   / "(" _ expr:GroupExpr _ ")" { return expr; }
 

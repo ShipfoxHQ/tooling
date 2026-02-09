@@ -8,7 +8,7 @@ export {stringify} from './stringify';
 export type MatchNode = {
   type: 'match';
   facet: string;
-  op: 'eq' | '>=' | '<=' | '>' | '<' | '=';
+  op: '>=' | '<=' | '>' | '<' | '=';
   value: string;
 };
 
