@@ -109,20 +109,21 @@ The parser produces a tree of the following node types.
 
 ### `MatchNode`
 
-A facet compared against a value. The `op` field distinguishes exact matches (`eq`) from comparison operators.
+A facet compared against a value. The `op` field indicates the comparison operator. Plain `facet:value` syntax uses `=`.
 
 ```ts
 type MatchNode = {
   type: 'match';
   facet: string;
-  op: 'eq' | '>=' | '<=' | '>' | '<' | '=';
+  op: '>=' | '<=' | '>' | '<' | '=';
   value: string;
 };
 ```
 
 | Input | `op` | `facet` | `value` |
 |---|---|---|---|
-| `status:success` | `eq` | `status` | `success` |
+| `status:success` | `=` | `status` | `success` |
+| `status:=success` | `=` | `status` | `success` |
 | `latency:>500` | `>` | `latency` | `500` |
 | `status:>=400` | `>=` | `status` | `400` |
 
