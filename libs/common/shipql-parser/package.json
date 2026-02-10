@@ -1,0 +1,25 @@
+{
+  "name": "@shipfox/shipql-parser",
+  "license": "MIT",
+  "private": false,
+  "version": "0.0.0",
+  "packageManager": "pnpm@9.15.9",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "type": "module",
+  "scripts": {
+    "parser": "peggy -o src/parser.js --format es src/parser.pegjs",
+    "build": "pnpm run parser && swc",
+    "check": "biome-check",
+    "test": "pnpm run parser && vitest-run",
+    "type": "tsc-emit"
+  },
+  "devDependencies": {
+    "@shipfox/biome": "workspace:*",
+    "@shipfox/swc": "workspace:*",
+    "@shipfox/ts-config": "workspace:*",
+    "@shipfox/typescript": "workspace:*",
+    "@shipfox/vitest": "workspace:*",
+    "peggy": "^5.0.6"
+  }
+}
