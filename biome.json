@@ -18,7 +18,8 @@
       "!**/coverage",
       "!**/nix/store",
       "!**/storybook-static",
-      "!**/screenshots"
+      "!**/screenshots",
+      "!libs/common/shipql-parser/src/parser.js"
     ],
     "ignoreUnknown": false
   },

@@ -62,7 +62,13 @@ describe('parser', () => {
     expect(result).toEqual({
       type: 'and',
       left: {type: 'match', facet: 'status', op: '=', value: 'success', source: 'status:success'},
-      right: {type: 'match', facet: 'repository', op: '=', value: 'shipfox', source: 'repository:shipfox'},
+      right: {
+        type: 'match',
+        facet: 'repository',
+        op: '=',
+        value: 'shipfox',
+        source: 'repository:shipfox',
+      },
       source: 'status:success repository:shipfox',
     });
   });
@@ -91,7 +97,13 @@ describe('parser', () => {
     expect(result).toEqual({
       type: 'and',
       left: {type: 'match', facet: 'status', op: '=', value: 'success', source: 'status:success'},
-      right: {type: 'match', facet: 'repository', op: '=', value: 'shipfox', source: 'repository:shipfox'},
+      right: {
+        type: 'match',
+        facet: 'repository',
+        op: '=',
+        value: 'shipfox',
+        source: 'repository:shipfox',
+      },
       source: 'status:success AND repository:shipfox',
     });
   });
@@ -187,7 +199,13 @@ describe('parser', () => {
 
     expect(result).toEqual({
       type: 'not',
-      expr: {type: 'match', facet: 'message', op: '=', value: 'bad request', source: 'message:"bad request"'},
+      expr: {
+        type: 'match',
+        facet: 'message',
+        op: '=',
+        value: 'bad request',
+        source: 'message:"bad request"',
+      },
       source: '-message:"bad request"',
     });
   });
@@ -372,7 +390,13 @@ describe('parser', () => {
     expect(result).toEqual({
       type: 'and',
       left: {type: 'match', facet: 'env', op: '=', value: 'prod', source: 'env:prod'},
-      right: {type: 'range', facet: 'status', min: '200', max: '299', source: 'status:[200 TO 299]'},
+      right: {
+        type: 'range',
+        facet: 'status',
+        min: '200',
+        max: '299',
+        source: 'status:[200 TO 299]',
+      },
       source: 'env:prod status:[200 TO 299]',
     });
   });
@@ -451,8 +475,20 @@ describe('parser', () => {
 
     expect(result).toEqual({
       type: 'or',
-      left: {type: 'match', facet: 'message', op: '=', value: 'hello world', source: '"hello world"'},
-      right: {type: 'match', facet: 'message', op: '=', value: 'goodbye world', source: '"goodbye world"'},
+      left: {
+        type: 'match',
+        facet: 'message',
+        op: '=',
+        value: 'hello world',
+        source: '"hello world"',
+      },
+      right: {
+        type: 'match',
+        facet: 'message',
+        op: '=',
+        value: 'goodbye world',
+        source: '"goodbye world"',
+      },
       source: 'message:("hello world" OR "goodbye world")',
     });
   });
