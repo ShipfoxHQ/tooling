@@ -150,13 +150,13 @@ describe('stringify', () => {
   it('should stringify NOT', () => {
     const result = stringify(parse('NOT status:error'));
 
-    expect(result).toBe('NOT status:error');
+    expect(result).toBe('-status:error');
   });
 
-  it('should stringify dash negation as NOT', () => {
+  it('should stringify dash negation as dash', () => {
     const result = stringify(parse('-status:error'));
 
-    expect(result).toBe('NOT status:error');
+    expect(result).toBe('-status:error');
   });
 
   it('should wrap compound expressions inside NOT', () => {
@@ -168,7 +168,7 @@ describe('stringify', () => {
   it('should stringify NOT combined with AND', () => {
     const result = stringify(parse('env:prod NOT status:error'));
 
-    expect(result).toBe('env:prod NOT status:error');
+    expect(result).toBe('env:prod -status:error');
   });
 
   // ── free text ─────────────────────────────────────────────────────
