@@ -5,7 +5,7 @@ import type {AstNode} from './index';
  *
  * The output is a canonical form:
  * - AND is always implicit (no "AND" keyword)
- * - NOT is always the keyword form (no "-" shorthand)
+ * - NOT uses the shorthand "-" prefix form when possible, falls back to "NOT" for compound expressions
  * - Values are quoted only when necessary (spaces, empty, or special characters)
  * - Parentheses are added only when needed to preserve precedence
  */
@@ -31,7 +31,12 @@ export function stringify(ast: AstNode | null): string {
       return `${stringifyChild(ast.left, 'or')} OR ${stringifyChild(ast.right, 'or')}`;
 
     case 'not':
-      return `NOT ${stringifyChild(ast.expr, 'not')}`;
+      // The "-" shorthand only works directly attached to a term;
+      // compound expressions (AND/OR) need parens which requires the "NOT" keyword form.
+      if (ast.expr.type === 'and' || ast.expr.type === 'or') {
+        return `NOT (${stringify(ast.expr)})`;
+      }
+      return `-${stringify(ast.expr)}`;
   }
 }
 
