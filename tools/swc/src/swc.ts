@@ -1,6 +1,7 @@
 #! /usr/bin/env node
 
 import {execSync} from 'node:child_process';
+import {existsSync} from 'node:fs';
 import {
   buildShellCommand,
   getProjectBinaryPath,
@@ -11,7 +12,10 @@ import {cleanup, getOwnedFileStats, replaceTypescriptPaths} from './utils';
 
 async function run() {
   const swcPath = getProjectBinaryPath('swc', import.meta.url);
-  const configPath = getProjectFilePath('.swcrc', import.meta.url);
+  const projectSpecificConfigPath = getProjectFilePath('.swcrc');
+  const configPath = existsSync(projectSpecificConfigPath)
+    ? projectSpecificConfigPath
+    : getProjectFilePath('.swcrc', import.meta.url);
   const outputPath = getProjectFilePath('dist');
   const ownedFiles = await getOwnedFileStats(outputPath);
   const extraArgs = process.argv.slice(2);

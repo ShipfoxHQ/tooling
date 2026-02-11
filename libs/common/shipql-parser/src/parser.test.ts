@@ -12,6 +12,7 @@ describe('parser', () => {
       facet: 'status',
       op: '=',
       value: 'success',
+      source: 'status:success',
     });
   });
 
@@ -23,6 +24,7 @@ describe('parser', () => {
       facet: 'http.status',
       op: '=',
       value: '200',
+      source: 'http.status:200',
     });
   });
 
@@ -36,6 +38,7 @@ describe('parser', () => {
       facet: 'message',
       op: '=',
       value: 'hello world',
+      source: 'message:"hello world"',
     });
   });
 
@@ -47,6 +50,7 @@ describe('parser', () => {
       facet: 'field',
       op: '=',
       value: '',
+      source: 'field:""',
     });
   });
 
@@ -57,8 +61,15 @@ describe('parser', () => {
 
     expect(result).toEqual({
       type: 'and',
-      left: {type: 'match', facet: 'status', op: '=', value: 'success'},
-      right: {type: 'match', facet: 'repository', op: '=', value: 'shipfox'},
+      left: {type: 'match', facet: 'status', op: '=', value: 'success', source: 'status:success'},
+      right: {
+        type: 'match',
+        facet: 'repository',
+        op: '=',
+        value: 'shipfox',
+        source: 'repository:shipfox',
+      },
+      source: 'status:success repository:shipfox',
     });
   });
 
@@ -69,10 +80,12 @@ describe('parser', () => {
       type: 'and',
       left: {
         type: 'and',
-        left: {type: 'match', facet: 'a', op: '=', value: '1'},
-        right: {type: 'match', facet: 'b', op: '=', value: '2'},
+        left: {type: 'match', facet: 'a', op: '=', value: '1', source: 'a:1'},
+        right: {type: 'match', facet: 'b', op: '=', value: '2', source: 'b:2'},
+        source: 'a:1 b:2',
       },
-      right: {type: 'match', facet: 'c', op: '=', value: '3'},
+      right: {type: 'match', facet: 'c', op: '=', value: '3', source: 'c:3'},
+      source: 'a:1 b:2 c:3',
     });
   });
 
@@ -83,8 +96,15 @@ describe('parser', () => {
 
     expect(result).toEqual({
       type: 'and',
-      left: {type: 'match', facet: 'status', op: '=', value: 'success'},
-      right: {type: 'match', facet: 'repository', op: '=', value: 'shipfox'},
+      left: {type: 'match', facet: 'status', op: '=', value: 'success', source: 'status:success'},
+      right: {
+        type: 'match',
+        facet: 'repository',
+        op: '=',
+        value: 'shipfox',
+        source: 'repository:shipfox',
+      },
+      source: 'status:success AND repository:shipfox',
     });
   });
 
@@ -95,8 +115,9 @@ describe('parser', () => {
 
     expect(result).toEqual({
       type: 'or',
-      left: {type: 'match', facet: 'status', op: '=', value: 'success'},
-      right: {type: 'match', facet: 'status', op: '=', value: 'error'},
+      left: {type: 'match', facet: 'status', op: '=', value: 'success', source: 'status:success'},
+      right: {type: 'match', facet: 'status', op: '=', value: 'error', source: 'status:error'},
+      source: 'status:success OR status:error',
     });
   });
 
@@ -110,10 +131,12 @@ describe('parser', () => {
       type: 'or',
       left: {
         type: 'and',
-        left: {type: 'match', facet: 'a', op: '=', value: '1'},
-        right: {type: 'match', facet: 'b', op: '=', value: '2'},
+        left: {type: 'match', facet: 'a', op: '=', value: '1', source: 'a:1'},
+        right: {type: 'match', facet: 'b', op: '=', value: '2', source: 'b:2'},
+        source: 'a:1 b:2',
       },
-      right: {type: 'match', facet: 'c', op: '=', value: '3'},
+      right: {type: 'match', facet: 'c', op: '=', value: '3', source: 'c:3'},
+      source: 'a:1 b:2 OR c:3',
     });
   });
 
@@ -124,7 +147,8 @@ describe('parser', () => {
 
     expect(result).toEqual({
       type: 'not',
-      expr: {type: 'match', facet: 'status', op: '=', value: 'error'},
+      expr: {type: 'match', facet: 'status', op: '=', value: 'error', source: 'status:error'},
+      source: 'NOT status:error',
     });
   });
 
@@ -133,11 +157,13 @@ describe('parser', () => {
 
     expect(result).toEqual({
       type: 'and',
-      left: {type: 'match', facet: 'env', op: '=', value: 'prod'},
+      left: {type: 'match', facet: 'env', op: '=', value: 'prod', source: 'env:prod'},
       right: {
         type: 'not',
-        expr: {type: 'match', facet: 'status', op: '=', value: 'error'},
+        expr: {type: 'match', facet: 'status', op: '=', value: 'error', source: 'status:error'},
+        source: 'NOT status:error',
       },
+      source: 'env:prod NOT status:error',
     });
   });
 
@@ -148,7 +174,8 @@ describe('parser', () => {
 
     expect(result).toEqual({
       type: 'not',
-      expr: {type: 'match', facet: 'status', op: '=', value: 'error'},
+      expr: {type: 'match', facet: 'status', op: '=', value: 'error', source: 'status:error'},
+      source: '-status:error',
     });
   });
 
@@ -157,11 +184,13 @@ describe('parser', () => {
 
     expect(result).toEqual({
       type: 'and',
-      left: {type: 'match', facet: 'env', op: '=', value: 'prod'},
+      left: {type: 'match', facet: 'env', op: '=', value: 'prod', source: 'env:prod'},
       right: {
         type: 'not',
-        expr: {type: 'match', facet: 'status', op: '=', value: 'error'},
+        expr: {type: 'match', facet: 'status', op: '=', value: 'error', source: 'status:error'},
+        source: '-status:error',
       },
+      source: 'env:prod -status:error',
     });
   });
 
@@ -170,7 +199,14 @@ describe('parser', () => {
 
     expect(result).toEqual({
       type: 'not',
-      expr: {type: 'match', facet: 'message', op: '=', value: 'bad request'},
+      expr: {
+        type: 'match',
+        facet: 'message',
+        op: '=',
+        value: 'bad request',
+        source: 'message:"bad request"',
+      },
+      source: '-message:"bad request"',
     });
   });
 
@@ -182,6 +218,7 @@ describe('parser', () => {
       facet: 'id',
       op: '=',
       value: 'abc-123',
+      source: 'id:abc-123',
     });
   });
 
@@ -192,12 +229,14 @@ describe('parser', () => {
 
     expect(result).toEqual({
       type: 'and',
-      left: {type: 'match', facet: 'status', op: '=', value: 'error'},
+      left: {type: 'match', facet: 'status', op: '=', value: 'error', source: 'status:error'},
       right: {
         type: 'or',
-        left: {type: 'match', facet: 'env', op: '=', value: 'prod'},
-        right: {type: 'match', facet: 'env', op: '=', value: 'staging'},
+        left: {type: 'match', facet: 'env', op: '=', value: 'prod', source: 'env:prod'},
+        right: {type: 'match', facet: 'env', op: '=', value: 'staging', source: 'env:staging'},
+        source: '(env:prod OR env:staging)',
       },
+      source: 'status:error AND (env:prod OR env:staging)',
     });
   });
 
@@ -209,6 +248,7 @@ describe('parser', () => {
     expect(result).toEqual({
       type: 'text',
       value: 'hello',
+      source: 'hello',
     });
   });
 
@@ -217,8 +257,9 @@ describe('parser', () => {
 
     expect(result).toEqual({
       type: 'and',
-      left: {type: 'text', value: 'error'},
-      right: {type: 'match', facet: 'service', op: '=', value: 'api'},
+      left: {type: 'text', value: 'error', source: 'error'},
+      right: {type: 'match', facet: 'service', op: '=', value: 'api', source: 'service:api'},
+      source: 'error service:api',
     });
   });
 
@@ -232,6 +273,7 @@ describe('parser', () => {
       facet: 'status',
       op: '>=',
       value: '200',
+      source: 'status:>=200',
     });
   });
 
@@ -243,6 +285,7 @@ describe('parser', () => {
       facet: 'latency',
       op: '>',
       value: '500',
+      source: 'latency:>500',
     });
   });
 
@@ -254,6 +297,7 @@ describe('parser', () => {
       facet: 'status',
       op: '<=',
       value: '299',
+      source: 'status:<=299',
     });
   });
 
@@ -265,6 +309,7 @@ describe('parser', () => {
       facet: 'latency',
       op: '<',
       value: '100',
+      source: 'latency:<100',
     });
   });
 
@@ -276,6 +321,7 @@ describe('parser', () => {
       facet: 'status',
       op: '=',
       value: '200',
+      source: 'status:=200',
     });
   });
 
@@ -287,6 +333,7 @@ describe('parser', () => {
       facet: 'timestamp',
       op: '>=',
       value: '2025-01-01',
+      source: 'timestamp:>="2025-01-01"',
     });
   });
 
@@ -295,8 +342,9 @@ describe('parser', () => {
 
     expect(result).toEqual({
       type: 'and',
-      left: {type: 'match', facet: 'service', op: '=', value: 'api'},
-      right: {type: 'match', facet: 'status', op: '>=', value: '400'},
+      left: {type: 'match', facet: 'service', op: '=', value: 'api', source: 'service:api'},
+      right: {type: 'match', facet: 'status', op: '>=', value: '400', source: 'status:>=400'},
+      source: 'service:api status:>=400',
     });
   });
 
@@ -305,7 +353,8 @@ describe('parser', () => {
 
     expect(result).toEqual({
       type: 'not',
-      expr: {type: 'match', facet: 'latency', op: '>', value: '1000'},
+      expr: {type: 'match', facet: 'latency', op: '>', value: '1000', source: 'latency:>1000'},
+      source: '-latency:>1000',
     });
   });
 
@@ -319,6 +368,7 @@ describe('parser', () => {
       facet: 'status',
       min: '200',
       max: '299',
+      source: 'status:[200 TO 299]',
     });
   });
 
@@ -330,6 +380,7 @@ describe('parser', () => {
       facet: 'timestamp',
       min: '2025-01-01',
       max: '2025-12-31',
+      source: 'timestamp:["2025-01-01" TO "2025-12-31"]',
     });
   });
 
@@ -338,8 +389,15 @@ describe('parser', () => {
 
     expect(result).toEqual({
       type: 'and',
-      left: {type: 'match', facet: 'env', op: '=', value: 'prod'},
-      right: {type: 'range', facet: 'status', min: '200', max: '299'},
+      left: {type: 'match', facet: 'env', op: '=', value: 'prod', source: 'env:prod'},
+      right: {
+        type: 'range',
+        facet: 'status',
+        min: '200',
+        max: '299',
+        source: 'status:[200 TO 299]',
+      },
+      source: 'env:prod status:[200 TO 299]',
     });
   });
 
@@ -348,7 +406,8 @@ describe('parser', () => {
 
     expect(result).toEqual({
       type: 'not',
-      expr: {type: 'range', facet: 'status', min: '400', max: '599'},
+      expr: {type: 'range', facet: 'status', min: '400', max: '599', source: 'status:[400 TO 599]'},
+      source: '-status:[400 TO 599]',
     });
   });
 
@@ -360,6 +419,7 @@ describe('parser', () => {
       facet: 'status',
       min: '200',
       max: '299',
+      source: 'status:[  200  TO  299  ]',
     });
   });
 
@@ -370,8 +430,9 @@ describe('parser', () => {
 
     expect(result).toEqual({
       type: 'or',
-      left: {type: 'match', facet: 'env', op: '=', value: 'prod'},
-      right: {type: 'match', facet: 'env', op: '=', value: 'staging'},
+      left: {type: 'match', facet: 'env', op: '=', value: 'prod', source: 'prod'},
+      right: {type: 'match', facet: 'env', op: '=', value: 'staging', source: 'staging'},
+      source: 'env:(prod OR staging)',
     });
   });
 
@@ -380,8 +441,9 @@ describe('parser', () => {
 
     expect(result).toEqual({
       type: 'and',
-      left: {type: 'match', facet: 'tag', op: '=', value: 'web'},
-      right: {type: 'match', facet: 'tag', op: '=', value: 'api'},
+      left: {type: 'match', facet: 'tag', op: '=', value: 'web', source: 'web'},
+      right: {type: 'match', facet: 'tag', op: '=', value: 'api', source: 'api'},
+      source: 'tag:(web AND api)',
     });
   });
 
@@ -390,8 +452,9 @@ describe('parser', () => {
 
     expect(result).toEqual({
       type: 'and',
-      left: {type: 'match', facet: 'tag', op: '=', value: 'web'},
-      right: {type: 'match', facet: 'tag', op: '=', value: 'api'},
+      left: {type: 'match', facet: 'tag', op: '=', value: 'web', source: 'web'},
+      right: {type: 'match', facet: 'tag', op: '=', value: 'api', source: 'api'},
+      source: 'tag:(web api)',
     });
   });
 
@@ -403,6 +466,7 @@ describe('parser', () => {
       facet: 'env',
       op: '=',
       value: 'prod',
+      source: 'env:(prod)',
     });
   });
 
@@ -411,8 +475,21 @@ describe('parser', () => {
 
     expect(result).toEqual({
       type: 'or',
-      left: {type: 'match', facet: 'message', op: '=', value: 'hello world'},
-      right: {type: 'match', facet: 'message', op: '=', value: 'goodbye world'},
+      left: {
+        type: 'match',
+        facet: 'message',
+        op: '=',
+        value: 'hello world',
+        source: '"hello world"',
+      },
+      right: {
+        type: 'match',
+        facet: 'message',
+        op: '=',
+        value: 'goodbye world',
+        source: '"goodbye world"',
+      },
+      source: 'message:("hello world" OR "goodbye world")',
     });
   });
 
@@ -421,7 +498,8 @@ describe('parser', () => {
 
     expect(result).toEqual({
       type: 'not',
-      expr: {type: 'match', facet: 'env', op: '=', value: 'prod'},
+      expr: {type: 'match', facet: 'env', op: '=', value: 'prod', source: 'prod'},
+      source: 'env:(NOT prod)',
     });
   });
 
@@ -432,9 +510,11 @@ describe('parser', () => {
       type: 'not',
       expr: {
         type: 'or',
-        left: {type: 'match', facet: 'env', op: '=', value: 'prod'},
-        right: {type: 'match', facet: 'env', op: '=', value: 'staging'},
+        left: {type: 'match', facet: 'env', op: '=', value: 'prod', source: 'prod'},
+        right: {type: 'match', facet: 'env', op: '=', value: 'staging', source: 'staging'},
+        source: 'env:(prod OR staging)',
       },
+      source: '-env:(prod OR staging)',
     });
   });
 
@@ -445,10 +525,12 @@ describe('parser', () => {
       type: 'or',
       left: {
         type: 'or',
-        left: {type: 'match', facet: 'env', op: '=', value: 'dev'},
-        right: {type: 'match', facet: 'env', op: '=', value: 'staging'},
+        left: {type: 'match', facet: 'env', op: '=', value: 'dev', source: 'dev'},
+        right: {type: 'match', facet: 'env', op: '=', value: 'staging', source: 'staging'},
+        source: 'dev OR staging',
       },
-      right: {type: 'match', facet: 'env', op: '=', value: 'prod'},
+      right: {type: 'match', facet: 'env', op: '=', value: 'prod', source: 'prod'},
+      source: 'env:(dev OR staging OR prod)',
     });
   });
 
@@ -460,10 +542,12 @@ describe('parser', () => {
       type: 'or',
       left: {
         type: 'and',
-        left: {type: 'match', facet: 'env', op: '=', value: 'a'},
-        right: {type: 'match', facet: 'env', op: '=', value: 'b'},
+        left: {type: 'match', facet: 'env', op: '=', value: 'a', source: 'a'},
+        right: {type: 'match', facet: 'env', op: '=', value: 'b', source: 'b'},
+        source: 'a b',
       },
-      right: {type: 'match', facet: 'env', op: '=', value: 'c'},
+      right: {type: 'match', facet: 'env', op: '=', value: 'c', source: 'c'},
+      source: 'env:(a b OR c)',
     });
   });
 
@@ -472,12 +556,14 @@ describe('parser', () => {
 
     expect(result).toEqual({
       type: 'and',
-      left: {type: 'match', facet: 'status', op: '=', value: '200'},
+      left: {type: 'match', facet: 'status', op: '=', value: '200', source: 'status:200'},
       right: {
         type: 'or',
-        left: {type: 'match', facet: 'env', op: '=', value: 'prod'},
-        right: {type: 'match', facet: 'env', op: '=', value: 'staging'},
+        left: {type: 'match', facet: 'env', op: '=', value: 'prod', source: 'prod'},
+        right: {type: 'match', facet: 'env', op: '=', value: 'staging', source: 'staging'},
+        source: 'env:(prod OR staging)',
       },
+      source: 'status:200 env:(prod OR staging)',
     });
   });
 
@@ -486,8 +572,9 @@ describe('parser', () => {
 
     expect(result).toEqual({
       type: 'or',
-      left: {type: 'match', facet: 'http.method', op: '=', value: 'GET'},
-      right: {type: 'match', facet: 'http.method', op: '=', value: 'POST'},
+      left: {type: 'match', facet: 'http.method', op: '=', value: 'GET', source: 'GET'},
+      right: {type: 'match', facet: 'http.method', op: '=', value: 'POST', source: 'POST'},
+      source: 'http.method:(GET OR POST)',
     });
   });
 
@@ -499,6 +586,7 @@ describe('parser', () => {
     expect(result).toEqual({
       type: 'text',
       value: 'hello world',
+      source: '"hello world"',
     });
   });
 
@@ -508,6 +596,7 @@ describe('parser', () => {
     expect(result).toEqual({
       type: 'text',
       value: 'hello',
+      source: '"hello"',
     });
   });
 
@@ -516,8 +605,9 @@ describe('parser', () => {
 
     expect(result).toEqual({
       type: 'and',
-      left: {type: 'text', value: 'error occurred'},
-      right: {type: 'match', facet: 'service', op: '=', value: 'api'},
+      left: {type: 'text', value: 'error occurred', source: '"error occurred"'},
+      right: {type: 'match', facet: 'service', op: '=', value: 'api', source: 'service:api'},
+      source: '"error occurred" service:api',
     });
   });
 
@@ -526,8 +616,9 @@ describe('parser', () => {
 
     expect(result).toEqual({
       type: 'and',
-      left: {type: 'match', facet: 'service', op: '=', value: 'api'},
-      right: {type: 'text', value: 'error occurred'},
+      left: {type: 'match', facet: 'service', op: '=', value: 'api', source: 'service:api'},
+      right: {type: 'text', value: 'error occurred', source: '"error occurred"'},
+      source: 'service:api "error occurred"',
     });
   });
 
@@ -536,8 +627,9 @@ describe('parser', () => {
 
     expect(result).toEqual({
       type: 'or',
-      left: {type: 'text', value: 'hello world'},
-      right: {type: 'text', value: 'goodbye world'},
+      left: {type: 'text', value: 'hello world', source: '"hello world"'},
+      right: {type: 'text', value: 'goodbye world', source: '"goodbye world"'},
+      source: '"hello world" OR "goodbye world"',
     });
   });
 
@@ -546,7 +638,8 @@ describe('parser', () => {
 
     expect(result).toEqual({
       type: 'not',
-      expr: {type: 'text', value: 'error message'},
+      expr: {type: 'text', value: 'error message', source: '"error message"'},
+      source: 'NOT "error message"',
     });
   });
 
@@ -555,8 +648,9 @@ describe('parser', () => {
 
     expect(result).toEqual({
       type: 'and',
-      left: {type: 'text', value: 'error'},
-      right: {type: 'text', value: 'status code'},
+      left: {type: 'text', value: 'error', source: 'error'},
+      right: {type: 'text', value: 'status code', source: '"status code"'},
+      source: 'error "status code"',
     });
   });
 
@@ -566,6 +660,7 @@ describe('parser', () => {
     expect(result).toEqual({
       type: 'text',
       value: '',
+      source: '""',
     });
   });
 
@@ -579,6 +674,7 @@ describe('parser', () => {
       facet: 'ANDROID',
       op: '=',
       value: 'true',
+      source: 'ANDROID:true',
     });
   });
 
@@ -590,6 +686,7 @@ describe('parser', () => {
       facet: 'ORDER',
       op: '=',
       value: 'asc',
+      source: 'ORDER:asc',
     });
   });
 
@@ -607,6 +704,7 @@ describe('parser', () => {
       facet: 'status',
       op: '=',
       value: 'success',
+      source: 'status:success',
     });
   });
 });
