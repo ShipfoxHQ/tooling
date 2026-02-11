@@ -1,16 +1,27 @@
 import {describe, expect, it} from '@shipfox/vitest/vi';
 import {parse} from './index';
 import {stringify} from './stringify';
+import type {AstNode} from './types';
 
 // ── helpers ─────────────────────────────────────────────────────────
 
-/** Parse → stringify → parse and assert the two ASTs are identical. */
+/** Recursively strip `source` from an AST so we can compare structure only. */
+function stripSource(ast: AstNode | null): Omit<AstNode, 'source'> | null {
+  if (ast === null) return null;
+  const {source: _, ...rest} = ast;
+  if ('left' in rest) rest.left = stripSource(rest.left) as AstNode;
+  if ('right' in rest) rest.right = stripSource(rest.right) as AstNode;
+  if ('expr' in rest) rest.expr = stripSource(rest.expr) as AstNode;
+  return rest;
+}
+
+/** Parse → stringify → parse and assert the two ASTs are structurally identical. */
 function expectRoundTrip(input: string) {
   const ast = parse(input);
   const output = stringify(ast);
   const reparsed = parse(output);
 
-  expect(reparsed).toEqual(ast);
+  expect(stripSource(reparsed)).toEqual(stripSource(ast));
 }
 
 describe('stringify', () => {

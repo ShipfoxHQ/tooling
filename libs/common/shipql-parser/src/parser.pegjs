@@ -1,6 +1,23 @@
 {
   function node(type, props) {
-    return { type, ...props };
+    const loc = location();
+    return { type, ...props, _start: loc.start.offset, _end: loc.end.offset };
+  }
+
+  function addSource(ast) {
+    if (ast === null) return null;
+    const source = input.substring(ast._start, ast._end);
+    const { _start, _end, ...rest } = ast;
+
+    switch (rest.type) {
+      case "and":
+      case "or":
+        return { ...rest, left: addSource(rest.left), right: addSource(rest.right), source };
+      case "not":
+        return { ...rest, expr: addSource(rest.expr), source };
+      default:
+        return { ...rest, source };
+    }
   }
 
   function injectFacet(ast, facet) {
@@ -17,7 +34,7 @@
 // ─── Entry ───────────────────────────────────────────────────────────
 
 Query
-  = _ expr:Expression _ { return expr; }
+  = _ expr:Expression _ { return addSource(expr); }
   / _ { return null; }
 
 // ─── Expressions (precedence: OR < AND < NOT < Primary) ─────────────
@@ -29,7 +46,7 @@ OrExpression
   = left:AndExpression
     tail:(_ "OR" !IdentChar _ AndExpression)* {
       return tail.reduce(
-        (acc, [, , , , right]) => node("or", { left: acc, right }),
+        (acc, [, , , , right]) => ({ type: "or", left: acc, right, _start: acc._start, _end: right._end }),
         left
       );
     }
@@ -43,7 +60,7 @@ AndExpression
       return tail.reduce(
         (acc, part) => {
           const right = part[part.length - 1];
-          return node("and", { left: acc, right });
+          return { type: "and", left: acc, right, _start: acc._start, _end: right._end };
         },
         left
       );
@@ -59,15 +76,23 @@ Primary
       return node("not", { expr });
     }
   / FacetValue
-  / "(" _ expr:Expression _ ")" { return expr; }
+  / "(" _ expr:Expression _ ")" {
+      const loc = location();
+      return { ...expr, _start: loc.start.offset, _end: loc.end.offset };
+    }
   / FreeText
 
 FacetValue
   = facet:Identifier ":" "(" _ expr:GroupExpr _ ")" {
-      return injectFacet(expr, facet);
+      const loc = location();
+      const result = injectFacet(expr, facet);
+      result._start = loc.start.offset;
+      result._end = loc.end.offset;
+      return result;
     }
   / facet:Identifier ":" body:FacetBody {
-      return { ...body, facet };
+      const loc = location();
+      return { ...body, facet, _start: loc.start.offset, _end: loc.end.offset };
     }
 
 FacetBody
@@ -98,7 +123,7 @@ GroupOrExpr
   = left:GroupAndExpr
     tail:(_ "OR" !IdentChar _ GroupAndExpr)* {
       return tail.reduce(
-        (acc, [, , , , right]) => node("or", { left: acc, right }),
+        (acc, [, , , , right]) => ({ type: "or", left: acc, right, _start: acc._start, _end: right._end }),
         left
       );
     }
@@ -112,7 +137,7 @@ GroupAndExpr
       return tail.reduce(
         (acc, part) => {
           const right = part[part.length - 1];
-          return node("and", { left: acc, right });
+          return { type: "and", left: acc, right, _start: acc._start, _end: right._end };
         },
         left
       );
@@ -125,7 +150,10 @@ GroupPrimary
   / value:Value {
       return node("match", { op: "=", value });
     }
-  / "(" _ expr:GroupExpr _ ")" { return expr; }
+  / "(" _ expr:GroupExpr _ ")" {
+      const loc = location();
+      return { ...expr, _start: loc.start.offset, _end: loc.end.offset };
+    }
 
 // ─── Tokens ─────────────────────────────────────────────────────────
 
