@@ -1,10 +1,15 @@
 import {gsap} from 'gsap';
-import {InertiaPlugin} from 'gsap/InertiaPlugin';
 import type React from 'react';
 import {useCallback, useEffect, useMemo, useRef} from 'react';
 import {cn} from 'utils';
 
-gsap.registerPlugin(InertiaPlugin);
+let inertiaPluginRegistered = false;
+async function ensureInertiaPlugin() {
+  if (inertiaPluginRegistered) return;
+  const {InertiaPlugin} = await import('gsap/InertiaPlugin');
+  gsap.registerPlugin(InertiaPlugin);
+  inertiaPluginRegistered = true;
+}
 
 const HEX_COLOR_REGEX = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i;
 
@@ -211,6 +216,8 @@ export function DotGrid({
   }, [buildGrid]);
 
   useEffect(() => {
+    ensureInertiaPlugin();
+
     const onMove = (e: MouseEvent) => {
       const now = performance.now();
       const pr = pointerRef.current;
