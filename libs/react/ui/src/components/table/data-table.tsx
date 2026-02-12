@@ -184,13 +184,15 @@ export function DataTable<TData, TValue>({
     return [selectionColumn, ...columns];
   }, [columns, showSelectedCount]);
 
+  const isPaginationNeeded = pagination && data.length > pageSize;
+
   const table = useReactTable({
     data,
     columns: columnsWithSelection,
     getCoreRowModel: getCoreRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
     getSortedRowModel: getSortedRowModel(),
-    getPaginationRowModel: pagination ? getPaginationRowModel() : undefined,
+    getPaginationRowModel: isPaginationNeeded ? getPaginationRowModel() : undefined,
     enableRowSelection: showSelectedCount,
     onSortingChange: setSorting,
     onColumnFiltersChange: setColumnFilters,
@@ -202,7 +204,7 @@ export function DataTable<TData, TValue>({
       columnFilters,
       columnVisibility,
       rowSelection,
-      pagination: pagination ? paginationState : undefined,
+      pagination: isPaginationNeeded ? paginationState : undefined,
     },
   });
 
@@ -210,7 +212,7 @@ export function DataTable<TData, TValue>({
   const rowCount = rowModel.rows.length;
   const hasRows = rowCount > 0;
 
-  const currentPageSize = pagination ? paginationState.pageSize : pageSize;
+  const currentPageSize = isPaginationNeeded ? paginationState.pageSize : pageSize;
   const skeletonRowCount = currentPageSize > 5 ? 5 : currentPageSize;
 
   const headerHeight = 40;
@@ -218,12 +220,12 @@ export function DataTable<TData, TValue>({
   const paginationHeight = 52.5;
 
   const rowsForHeight = hasRows ? currentPageSize : 5;
-  const shouldShowPagination = pagination && hasRows;
-  const minTableHeight = pagination
+  const shouldShowPagination = isPaginationNeeded && hasRows;
+  const minTableHeight = isPaginationNeeded
     ? headerHeight + rowsForHeight * rowHeight + (shouldShowPagination ? paginationHeight : 0)
     : undefined;
 
-  const emptyRowCount = pagination && hasRows ? Math.max(0, currentPageSize - rowCount) : 0;
+  const emptyRowCount = isPaginationNeeded && hasRows ? Math.max(0, currentPageSize - rowCount) : 0;
 
   if (isLoading) {
     return (
