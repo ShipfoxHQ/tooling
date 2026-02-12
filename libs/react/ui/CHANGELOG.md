@@ -1,5 +1,11 @@
 # @shipfox/react-ui
 
+## 0.27.0
+
+### Minor Changes
+
+- c2d53f1: Fixed Dot Grid, Enhanced Slider and DataTable pagination handling and Improved Tailwind Config export
+
 ## 0.26.0
 
 ### Minor Changes
