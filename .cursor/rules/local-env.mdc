@@ -1,0 +1,16 @@
+---
+description: "This rule provides information on the local environment and tooling"
+alwaysApply: true
+---
+
+All the tooling is standardized with Nix and defined in `flake.nix`. To launch a command you must therefore use `nix develop --command bash -c "${COMMAND}"`.
+
+**Important:** Nix requires write access to its cache directory (`~/.cache/nix/`) which is outside the workspace. When running any `nix` command via the Shell tool, you MUST set `required_permissions: ["all"]` to avoid sandbox errors.
+
+This is a monorepo that uses Turborepo as its build system. Turbo commands are accessible with `pnpm turbo ...` and MUST be combined with nix. For example `nix develop --command bash -c "pnpm turbo test"`.
+
+Each package defines its own tasks in its `package.json`. However nearly all package have the following tasks which should be executed to validate conformity.
+
+- `build`: Compiles / transpiles the code
+- `test`: Runs unit tests
+- `check`: Runs linters and formatters
