@@ -1,5 +1,11 @@
 # @shipfox/swc
 
+## 1.2.3
+
+### Patch Changes
+
+- f3b2a31: Ensure parser.js is exported
+
 ## 1.2.2
 
 ### Patch Changes

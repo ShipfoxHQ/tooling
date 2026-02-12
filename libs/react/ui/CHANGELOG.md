@@ -1,5 +1,14 @@
 # @shipfox/react-ui
 
+## 0.26.0
+
+### Minor Changes
+
+- 4e562b8: Add Slider component
+- ba119b9: Fix Dot Grid
+- 5617554: Update Slider and DataTable pagination handling
+- 865a044: Export Tailwind Config
+
 ## 0.25.0
 
 ### Minor Changes
