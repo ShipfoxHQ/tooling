@@ -51,10 +51,10 @@ function Slider({
           className={cn(rangeDefaults, rangeClassName)}
         />
       </SliderPrimitive.Track>
-      {values.map((val) => (
+      {values.map((_, index) => (
         <SliderPrimitive.Thumb
           data-slot="slider-thumb"
-          key={val}
+          key={`thumb-${index.toString()}`}
           className={cn(thumbDefaults, thumbClassName)}
         />
       ))}
