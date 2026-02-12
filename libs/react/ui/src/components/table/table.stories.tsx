@@ -47,7 +47,7 @@ export const WithPagination: Story = {
         columns={jobColumns}
         data={jobsData}
         pagination={true}
-        pageSize={10}
+        pageSize={5}
         pageSizeOptions={[5, 10, 20, 50]}
       />
     </div>
