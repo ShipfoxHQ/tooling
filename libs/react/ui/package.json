@@ -12,9 +12,21 @@
     "dist/**/*.js",
     "dist/**/*.d.ts",
     "dist/styles.css",
+    "tailwind.config.ts",
     "README.md",
     "LICENSE"
   ],
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    },
+    "./tailwind.config": {
+      "types": "./tailwind.config.ts",
+      "default": "./tailwind.config.ts"
+    },
+    "./dist/styles.css": "./dist/styles.css"
+  },
   "scripts": {
     "build": "swc && pnpm run build:css",
     "build:css": "vite build --config vite.css.config.ts && rm -f dist/css-entry.js dist/css-entry.js.map",
