@@ -4,11 +4,11 @@
  * Contains filter, search, and view controls for dashboard tables.
  */
 
+import {QueryBuilder} from 'components/query-builder';
 import type {ComponentProps, ReactNode} from 'react';
 import {cn} from 'utils/cn';
 import {useDashboardContext} from '../context';
 import {FilterButton} from './filter-button';
-import {ToolbarSearch} from './toolbar-search';
 import {ViewDropdown} from './view-dropdown';
 
 export interface ToolbarActionsProps extends Omit<ComponentProps<'div'>, 'children'> {
@@ -65,13 +65,20 @@ export function ToolbarActions({
   children,
   ...props
 }: ToolbarActionsProps) {
-  const {setSearchQuery, resourceType, setResourceType, columns, setColumns} =
+  const {searchQuery, setSearchQuery, resourceType, setResourceType, columns, setColumns} =
     useDashboardContext();
 
   return (
     <div className={cn('flex items-start md:items-center gap-8 md:gap-12', className)} {...props}>
       {showFilter && <FilterButton value={resourceType} onValueChange={setResourceType} />}
-      {showSearch && <ToolbarSearch placeholder={searchPlaceholder} onSelect={setSearchQuery} />}
+      {showSearch && (
+        <QueryBuilder
+          value={searchQuery}
+          onQueryChange={setSearchQuery}
+          placeholder={searchPlaceholder}
+          className="flex-1"
+        />
+      )}
       {showView && <ViewDropdown columns={columns} onColumnsChange={setColumns} />}
       {children}
     </div>

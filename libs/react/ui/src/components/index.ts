@@ -30,6 +30,7 @@ export * from './label';
 export * from './modal';
 export * from './moving-border';
 export * from './popover';
+export * from './query-builder';
 export * from './scroll-area';
 export * from './search';
 export * from './select';
