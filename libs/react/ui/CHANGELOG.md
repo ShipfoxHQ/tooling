@@ -1,5 +1,11 @@
 # @shipfox/react-ui
 
+## 0.26.0
+
+### Minor Changes
+
+- 4e562b8: Add Slider component
+
 ## 0.25.0
 
 ### Minor Changes
