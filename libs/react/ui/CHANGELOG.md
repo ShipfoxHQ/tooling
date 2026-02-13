@@ -1,5 +1,11 @@
 # @shipfox/react-ui
 
+## 0.28.0
+
+### Minor Changes
+
+- 4275a95: Export theme state
+
 ## 0.27.0
 
 ### Minor Changes
