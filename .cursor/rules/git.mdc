@@ -1,0 +1,28 @@
+---
+description: "This rule provides information on how we use git and GitHub"
+alwaysApply: true
+---
+
+The base branch of the repository is `main`. We take a trunk-based approach with short lived branches with small changes.
+
+Commit messages should be short sentences which describe the change at a high level point of view. Never add a `Co-authored-by` trailer to commits.
+
+Before making a commit ensure that tests, formatting and build are passing.
+
+The GitHub CLI `gh` is installed locally, therefore you can use it to open PRs.
+
+When granted a ticket should be referenced in the branch name on PR description content. The PR title should reflect in business terms what the PR does at high level, if specific to a package in the monorepo, it should be prefixed with the package name in square brackets.
+
+Overall you should respect the Google "Writing good CL descriptions" guidelines.
+
+Changesets are required for PRs. Since the `pnpm changeset` CLI is interactive, create the changeset file directly at `.changeset/<random-words>.md` using the following format:
+
+```md
+---
+"<package-name>": <patch|minor|major>
+---
+
+<Short description of the change>
+```
+
+Multiple packages can be listed in the frontmatter if the change spans several packages. Use `patch` for bug fixes, `minor` for new features, and `major` for breaking changes.
