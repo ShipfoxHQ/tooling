@@ -394,7 +394,7 @@ importers:
     devDependencies:
       '@argos-ci/cli':
         specifier: ^4.0.0
-        version: 4.1.0
+        version: 4.1.1
       '@argos-ci/storybook':
         specifier: ^5.2.1
         version: 5.2.13
@@ -685,13 +685,17 @@ packages:
     resolution: {integrity: sha512-eQqtM54Vh83++Dac5+7ml4YXKW/KnUHRQWjTZ+VGeXfOJdjnZa4JjfVL6fnFG6CKrXjCK5dd9gcZRmbVpbt8rA==}
     engines: {node: '>=20.0.0'}
 
-  '@argos-ci/cli@4.1.0':
-    resolution: {integrity: sha512-g1/ajFBfTRhRUUNCLB6hbzkcRdjdSSoZ+azrTMXoka1p2D1fnXgfHuTkPdBSpsqj3BOVluu00tRouM8XG7h73g==}
+  '@argos-ci/cli@4.1.1':
+    resolution: {integrity: sha512-r9qKSleXiIKRWViGtAmT9wrcYfrsG1ogqLfx7tQlYhXVqhFxdMlMaV6S5aiFuov82F+LK3t897EkVuSm6y2OIw==}
     engines: {node: '>=20.0.0'}
     hasBin: true
 
   '@argos-ci/core@5.1.0':
     resolution: {integrity: sha512-Yi3Wbhz9qMjYPmUkNCNaS5A6LCwiyTIcpqyd9y5Smx9uWRw/JkhYXmjUCaixegoa9R88Ym67xj2aG+2NWVTw/A==}
+    engines: {node: '>=20.0.0'}
+
+  '@argos-ci/core@5.1.1':
+    resolution: {integrity: sha512-RI5pYb5wmWUoXzWefNCjKSqGA3BroUB2ac9awlYV3McJjSAW8nCGJUt2Eds90Shkp+i4S6KbMLnLG56slhTCsg==}
     engines: {node: '>=20.0.0'}
 
   '@argos-ci/playwright@6.4.1':
@@ -3713,8 +3717,8 @@ packages:
     resolution: {integrity: sha512-kNOjDqAh7px0XWNI+4QbzoiR/nTkHAWNud2uvnJquD1/x5a7EQZMJT0AczqK0Qn67oY/TTQ1LbUKajZpp3I9tQ==}
     engines: {node: '>=8.0.0'}
 
-  atomically@2.1.0:
-    resolution: {integrity: sha512-+gDffFXRW6sl/HCwbta7zK4uNqbPjv4YJEAdz7Vu+FLQHe77eZ4bvbJGi4hE0QPeJlMYMA3piXEr1UL3dAwx7Q==}
+  atomically@2.1.1:
+    resolution: {integrity: sha512-P4w9o2dqARji6P7MHprklbfiArZAWvo07yW7qs3pdljb3BWr12FIB7W+p0zJiuiVsUpRO0iZn1kFFcpPegg0tQ==}
 
   b4a@1.7.3:
     resolution: {integrity: sha512-5Q2mfq2WfGuFp3uS//0s6baOJLMoVduPYVeNmDYxu5OUA1/cBfvr2RIS7vi62LdNj/urk1hfmj867I3qt6uZ7Q==}
@@ -4318,8 +4322,8 @@ packages:
     resolution: {integrity: sha512-DyFP3BM/3YHTQOCUL/w0OZHR0lpKeGrxotcHWcqNEdnltqFwXVfhEBQ94eIo34AfQpo0rGki4cyIiftY06h2Fg==}
     engines: {node: 6.* || 8.* || >= 10.*}
 
-  get-east-asian-width@1.4.0:
-    resolution: {integrity: sha512-QZjmEOC+IT1uk6Rx0sX22V6uHWVwbdbxf1faPqJ1QhLdGgsRGCZoyaQBm/piRdJy/D2um6hM1UP7ZEeQ4EkP+Q==}
+  get-east-asian-width@1.5.0:
+    resolution: {integrity: sha512-CQ+bEO+Tva/qlmw24dCejulK5pMzVnUOFOijVogd3KQs07HnRIgp8TGipvCCRT06xeYEbpbgwaCxglFyiuIcmA==}
     engines: {node: '>=18'}
 
   get-nonce@1.0.1:
@@ -4928,14 +4932,14 @@ packages:
     resolution: {integrity: sha512-YgBpdJHPyQ2UE5x+hlSXcnejzAvD0b22U2OuAP+8OnlJT+PjWPxtgmGqKKc+RgTM63U9gN0YzrYc71R2WT/hTA==}
     engines: {node: '>=18'}
 
-  openapi-fetch@0.15.0:
-    resolution: {integrity: sha512-OjQUdi61WO4HYhr9+byCPMj0+bgste/LtSBEcV6FzDdONTs7x0fWn8/ndoYwzqCsKWIxEZwo4FN/TG1c1rI8IQ==}
+  openapi-fetch@0.15.2:
+    resolution: {integrity: sha512-rdYTzUmSsJevmNqg7fwUVGuKc2Gfb9h6ph74EVPkPfIGJaZTfqdIbJahtbJ3qg1LKinln30hqZniLnKpH0RJBg==}
 
   openapi-typescript-helpers@0.0.15:
     resolution: {integrity: sha512-opyTPaunsklCBpTK8JGef6mfPhLSnyy5a0IN9vKtx3+4aExf+KxEqYwIy3hqkedXIB97u357uLMJsOnm3GVjsw==}
 
-  ora@9.1.0:
-    resolution: {integrity: sha512-53uuLsXHOAJl5zLrUrzY9/kE+uIFEx7iaH4g2BIJQK4LZjY4LpCCYZVKDWIkL+F01wAaCg93duQ1whnK/AmY1A==}
+  ora@9.3.0:
+    resolution: {integrity: sha512-lBX72MWFduWEf7v7uWf5DHp9Jn5BI8bNPGuFgtXMmr2uDz2Gz2749y3am3agSDdkhHPHYmmxEGSKH85ZLGzgXw==}
     engines: {node: '>=20'}
 
   outdent@0.5.0:
@@ -5523,8 +5527,8 @@ packages:
   std-env@3.10.0:
     resolution: {integrity: sha512-5GS12FdOZNliM5mAOxFRg7Ir0pWz8MdpYm6AY6VPkGpbA7ZzmbzNcBJQ0GPvvyWgcY7QAhCgf9Uy89I03faLkg==}
 
-  stdin-discarder@0.2.2:
-    resolution: {integrity: sha512-UhDfHmA92YAlNnCfhmq0VeNL5bDbiZGg7sZ2IvPsXubGkiNa9EC+tUTsjBRsYUAz87btI6/1wf4XoVvQ3uRnmQ==}
+  stdin-discarder@0.3.1:
+    resolution: {integrity: sha512-reExS1kSGoElkextOcPkel4NE99S0BWxjUHQeDFnR8S993JxpPX7KU4MNmO19NXhlJp+8dmdCbKQVNgLJh2teA==}
     engines: {node: '>=18'}
 
   storybook-addon-pseudo-states@10.2.10:
@@ -5552,8 +5556,8 @@ packages:
     resolution: {integrity: sha512-tsaTIkKW9b4N+AEj+SVA+WhJzV7/zMhcSu78mLKWSk7cXMOSHsBKFWUs0fWwq8QyK3MgJBQRX6Gbi4kYbdvGkQ==}
     engines: {node: '>=18'}
 
-  string-width@8.1.1:
-    resolution: {integrity: sha512-KpqHIdDL9KwYk22wEOg/VIqYbrnLeSApsKT/bSj6Ez7pn3CftUiLAv2Lccpq1ALcpLV9UX1Ppn92npZWu2w/aw==}
+  string-width@8.2.0:
+    resolution: {integrity: sha512-6hJPQ8N0V0P3SNmP6h2J99RLuzrWz2gvT7VnK5tKvrNqJoyS9W4/Fb8mo31UiPvy00z7DQXkP2hnKBVav76thw==}
     engines: {node: '>=20'}
 
   stringify-entities@4.0.4:
@@ -6125,22 +6129,35 @@ snapshots:
   '@argos-ci/api-client@0.16.0':
     dependencies:
       debug: 4.4.3
-      openapi-fetch: 0.15.0
+      openapi-fetch: 0.15.2
     transitivePeerDependencies:
       - supports-color
 
   '@argos-ci/browser@5.1.2': {}
 
-  '@argos-ci/cli@4.1.0':
+  '@argos-ci/cli@4.1.1':
     dependencies:
-      '@argos-ci/core': 5.1.0
+      '@argos-ci/core': 5.1.1
       commander: 14.0.3
-      ora: 9.1.0
+      ora: 9.3.0
       update-notifier: 7.3.1
     transitivePeerDependencies:
       - supports-color
 
   '@argos-ci/core@5.1.0':
+    dependencies:
+      '@argos-ci/api-client': 0.16.0
+      '@argos-ci/util': 3.2.0
+      convict: 6.2.4
+      debug: 4.4.3
+      fast-glob: 3.3.3
+      mime-types: 3.0.2
+      sharp: 0.34.5
+      tmp: 0.2.5
+    transitivePeerDependencies:
+      - supports-color
+
+  '@argos-ci/core@5.1.1':
     dependencies:
       '@argos-ci/api-client': 0.16.0
       '@argos-ci/util': 3.2.0
@@ -9365,7 +9382,7 @@ snapshots:
 
   atomic-sleep@1.0.0: {}
 
-  atomically@2.1.0:
+  atomically@2.1.1:
     dependencies:
       stubborn-fs: 2.0.0
       when-exit: 2.1.5
@@ -9564,7 +9581,7 @@ snapshots:
 
   configstore@7.1.0:
     dependencies:
-      atomically: 2.1.0
+      atomically: 2.1.1
       dot-prop: 9.0.0
       graceful-fs: 4.2.11
       xdg-basedir: 5.1.0
@@ -9966,7 +9983,7 @@ snapshots:
 
   get-caller-file@2.0.5: {}
 
-  get-east-asian-width@1.4.0: {}
+  get-east-asian-width@1.5.0: {}
 
   get-nonce@1.0.1: {}
 
@@ -10514,13 +10531,13 @@ snapshots:
       is-inside-container: 1.0.0
       wsl-utils: 0.1.0
 
-  openapi-fetch@0.15.0:
+  openapi-fetch@0.15.2:
     dependencies:
       openapi-typescript-helpers: 0.0.15
 
   openapi-typescript-helpers@0.0.15: {}
 
-  ora@9.1.0:
+  ora@9.3.0:
     dependencies:
       chalk: 5.6.2
       cli-cursor: 5.0.0
@@ -10528,8 +10545,8 @@ snapshots:
       is-interactive: 2.0.0
       is-unicode-supported: 2.1.0
       log-symbols: 7.0.1
-      stdin-discarder: 0.2.2
-      string-width: 8.1.1
+      stdin-discarder: 0.3.1
+      string-width: 8.2.0
 
   outdent@0.5.0: {}
 
@@ -11153,7 +11170,7 @@ snapshots:
 
   std-env@3.10.0: {}
 
-  stdin-discarder@0.2.2: {}
+  stdin-discarder@0.3.1: {}
 
   storybook-addon-pseudo-states@10.2.10(storybook@10.2.10(@testing-library/dom@10.4.1)(prettier@2.8.8)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)):
     dependencies:
@@ -11200,12 +11217,12 @@ snapshots:
   string-width@7.2.0:
     dependencies:
       emoji-regex: 10.6.0
-      get-east-asian-width: 1.4.0
+      get-east-asian-width: 1.5.0
       strip-ansi: 7.1.2
 
-  string-width@8.1.1:
+  string-width@8.2.0:
     dependencies:
-      get-east-asian-width: 1.4.0
+      get-east-asian-width: 1.5.0
       strip-ansi: 7.1.2
 
   stringify-entities@4.0.4:
@@ -11464,7 +11481,7 @@ snapshots:
       is-npm: 6.1.0
       latest-version: 9.0.0
       pupa: 3.3.0
-      semver: 7.7.3
+      semver: 7.7.4
       xdg-basedir: 5.1.0
 
   use-callback-ref@1.3.3(@types/react@19.2.14)(react@19.2.4):
