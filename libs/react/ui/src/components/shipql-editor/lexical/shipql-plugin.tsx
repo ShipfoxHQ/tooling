@@ -1,6 +1,6 @@
 import {useLexicalComposerContext} from '@lexical/react/LexicalComposerContext';
 import type {AstNode} from '@shipfox/shipql-parser';
-import {parse} from '@shipfox/shipql-parser';
+import {parse, removeBySource, stringify} from '@shipfox/shipql-parser';
 import {
   $createRangeSelection,
   $createTextNode,
@@ -10,6 +10,7 @@ import {
   $isTextNode,
   $setSelection,
   COMMAND_PRIORITY_HIGH,
+  createCommand,
   INSERT_PARAGRAPH_COMMAND,
   KEY_ENTER_COMMAND,
   type LexicalNode,
@@ -20,6 +21,8 @@ import {useEffect, useRef} from 'react';
 import {
   $createShipQLLeafNode,
   $isShipQLLeafNode,
+  isGroupedCompound,
+  isSimpleLeaf,
   type LeafAstNode,
   leafSource,
 } from './shipql-leaf-node';
@@ -29,17 +32,30 @@ import {
 type Segment = {kind: 'op'; text: string} | {kind: 'leaf'; text: string; node: LeafAstNode};
 
 function collectLeaves(ast: AstNode): Array<{source: string; node: LeafAstNode}> {
-  switch (ast.type) {
-    case 'match':
-    case 'range':
-    case 'text':
-      return [{source: leafSource(ast), node: ast}];
-    case 'and':
-    case 'or':
-      return [...collectLeaves(ast.left), ...collectLeaves(ast.right)];
-    case 'not':
-      return collectLeaves(ast.expr);
+  // Simple terminals are always a single leaf chip.
+  if (isSimpleLeaf(ast)) {
+    return [{source: leafSource(ast), node: ast}];
   }
+
+  // NOT: if the inner expression is a simple leaf or grouped compound,
+  // treat the whole NOT as a single chip. Otherwise recurse into expr.
+  if (ast.type === 'not') {
+    if (isSimpleLeaf(ast.expr) || isGroupedCompound(ast.expr)) {
+      return [{source: ast.source, node: ast}];
+    }
+    return collectLeaves(ast.expr);
+  }
+
+  // AND/OR: if the node is a grouped compound like `env:(prod OR staging)`,
+  // treat the whole thing as a single chip. Otherwise recurse both sides.
+  if (ast.type === 'and' || ast.type === 'or') {
+    if (isGroupedCompound(ast)) {
+      return [{source: ast.source, node: ast}];
+    }
+    return [...collectLeaves(ast.left), ...collectLeaves(ast.right)];
+  }
+
+  return [];
 }
 
 function tokenize(fullText: string, leaves: Array<{source: string; node: LeafAstNode}>): Segment[] {
@@ -81,6 +97,11 @@ function getAbsoluteOffset(para: ParagraphNode, point: Point): number {
   return offset + point.offset;
 }
 
+// ─── Commands ─────────────────────────────────────────────────────────────────
+
+/** Payload: the Lexical node key of the leaf to remove. */
+export const REMOVE_LEAF_COMMAND = createCommand<string>('REMOVE_LEAF_COMMAND');
+
 // ─── Plugin ───────────────────────────────────────────────────────────────────
 
 const REBUILD_TAG = 'shipql-rebuild';
@@ -112,6 +133,47 @@ export function ShipQLPlugin({onLeafFocus}: ShipQLPluginProps): null {
     const unregisterParagraph = editor.registerCommand(
       INSERT_PARAGRAPH_COMMAND,
       () => true,
+      COMMAND_PRIORITY_HIGH,
+    );
+
+    const unregisterRemoveLeaf = editor.registerCommand(
+      REMOVE_LEAF_COMMAND,
+      (nodeKey) => {
+        editor.update(() => {
+          const para = $getRoot().getFirstChild() as ParagraphNode | null;
+          if (!para) return;
+
+          // Find the leaf node's source text from its key.
+          let targetSource: string | null = null;
+          for (const child of para.getChildren()) {
+            if ($isShipQLLeafNode(child) && child.getKey() === nodeKey) {
+              targetSource = child.getTextContent();
+              break;
+            }
+          }
+          if (!targetSource) return;
+
+          // Parse, remove, re-stringify.
+          const fullText = para.getTextContent();
+          let ast: AstNode | null = null;
+          try {
+            ast = parse(fullText);
+          } catch {
+            return;
+          }
+          if (!ast) return;
+
+          const newAst = removeBySource(ast, targetSource);
+          const newText = stringify(newAst);
+
+          // Replace paragraph content — the update listener will re-tokenize.
+          para.clear();
+          if (newText) {
+            para.append($createTextNode(newText));
+          }
+        });
+        return true;
+      },
       COMMAND_PRIORITY_HIGH,
     );
 
@@ -236,6 +298,7 @@ export function ShipQLPlugin({onLeafFocus}: ShipQLPluginProps): null {
     return () => {
       unregisterEnter();
       unregisterParagraph();
+      unregisterRemoveLeaf();
       unregisterUpdate();
     };
   }, [editor]);

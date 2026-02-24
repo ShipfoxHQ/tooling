@@ -1,25 +1,41 @@
-import {
-  type AstNode,
-  type MatchNode,
-  parse,
-  type RangeNode,
-  type TextNode as ShipQLTextNode,
-  stringify,
-} from '@shipfox/shipql-parser';
+import {type AstNode, parse, stringify} from '@shipfox/shipql-parser';
 import {type EditorConfig, type NodeKey, type SerializedTextNode, TextNode} from 'lexical';
 
-export type LeafAstNode = MatchNode | RangeNode | ShipQLTextNode;
+export type LeafAstNode = AstNode;
 
-// These constant strings must remain as complete literals so Tailwind scans them.
-const LEAF_BASE_CLASSES = 'rounded-4 px-2 cursor-text transition-colors duration-150';
-const LEAF_NORMAL_CLASSES = 'bg-tag-blue-bg hover:bg-tag-blue-bg-hover';
+const LEAF_BASE_CLASSES =
+  'rounded-4 px-4 py-2 text-foreground-neutral-base cursor-text transition-[background-color,box-shadow] duration-150 ease-out';
+const LEAF_NORMAL_CLASSES =
+  'bg-background-button-neutral-default hover:ring-1 hover:ring-border-highlights-interactive shadow-button-neutral';
 const LEAF_ERROR_CLASSES = 'bg-tag-error-bg hover:bg-tag-error-bg-hover';
+
+export function isSimpleLeaf(ast: AstNode): boolean {
+  return ast.type === 'match' || ast.type === 'range' || ast.type === 'text';
+}
+
+/**
+ * Returns true if an and/or node represents a grouped compound like
+ * `env:(prod OR staging)` or `tag:(web AND api)` — i.e. a facet
+ * followed by parenthesised values joined by AND/OR.
+ */
+const GROUPED_COMPOUND_RE = /^-?[a-zA-Z_][\w.]*:\(.*\)$/;
+export function isGroupedCompound(ast: AstNode): boolean {
+  if (ast.type !== 'and' && ast.type !== 'or') return false;
+  return GROUPED_COMPOUND_RE.test(ast.source);
+}
+
+/** Returns true if a NOT node wraps a simple leaf or grouped compound (single chip). */
+export function isNotLeaf(ast: AstNode): boolean {
+  if (ast.type !== 'not') return false;
+  return isSimpleLeaf(ast.expr) || isGroupedCompound(ast.expr);
+}
 
 function isValidLeafText(text: string): boolean {
   if (!text.trim()) return false;
   try {
     const ast = parse(text);
-    return ast !== null && (ast.type === 'match' || ast.type === 'range' || ast.type === 'text');
+    if (ast === null) return false;
+    return isSimpleLeaf(ast) || isNotLeaf(ast) || isGroupedCompound(ast);
   } catch {
     return false;
   }
@@ -48,8 +64,8 @@ export class ShipQLLeafNode extends TextNode {
     let shipqlNode: LeafAstNode;
     try {
       const ast = parse(text);
-      if (ast !== null && (ast.type === 'match' || ast.type === 'range' || ast.type === 'text')) {
-        shipqlNode = ast as LeafAstNode;
+      if (ast !== null && isAstLeafNode(ast)) {
+        shipqlNode = ast;
       } else {
         shipqlNode = {type: 'text', value: text, source: text};
       }
@@ -77,6 +93,8 @@ export class ShipQLLeafNode extends TextNode {
     for (const cls of LEAF_BASE_CLASSES.split(' ')) element.classList.add(cls);
     for (const cls of (valid ? LEAF_NORMAL_CLASSES : LEAF_ERROR_CLASSES).split(' '))
       element.classList.add(cls);
+    element.setAttribute('data-shipql-leaf', 'true');
+    element.setAttribute('data-shipql-key', this.__key);
     return element;
   }
 
@@ -120,9 +138,9 @@ export function $createShipQLLeafNode(text: string, shipqlNode: LeafAstNode): Sh
   return new ShipQLLeafNode(text, shipqlNode);
 }
 
-// Re-export for use in consumers wanting to identify AST leaf nodes
+/** Returns true if the AST node qualifies as a visual leaf chip in the editor. */
 export function isAstLeafNode(ast: AstNode): ast is LeafAstNode {
-  return ast.type === 'match' || ast.type === 'range' || ast.type === 'text';
+  return isSimpleLeaf(ast) || isNotLeaf(ast) || isGroupedCompound(ast);
 }
 
 export function leafSource(node: LeafAstNode): string {

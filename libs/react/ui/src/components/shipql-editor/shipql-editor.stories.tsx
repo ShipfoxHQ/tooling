@@ -30,6 +30,13 @@ export const ComplexQuery: Story = {
   },
 };
 
+export const ExpandedLeaves: Story = {
+  name: 'Expanded Leaves (NOT, grouped)',
+  args: {
+    defaultValue: 'NOT service:payments env:(prod OR staging) -status:error',
+  },
+};
+
 function LeafFocusCallbackDemo(args: Parameters<typeof ShipQLEditor>[0]) {
   const [focused, setFocused] = useState<LeafAstNode | null>(null);
   const [lastAst, setLastAst] = useState<AstNode | null>(null);
