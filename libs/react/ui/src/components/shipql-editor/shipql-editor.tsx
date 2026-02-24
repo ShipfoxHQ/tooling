@@ -1,29 +1,85 @@
 import type {AstNode} from '@shipfox/shipql-parser';
-import {lazy, Suspense} from 'react';
+import {lazy, Suspense, useCallback, useRef, useState} from 'react';
+import {cn} from '../../utils/cn';
 import type {LeafAstNode} from './lexical/shipql-leaf-node';
 
 export interface ShipQLEditorProps {
-  /** Initial ShipQL string value (uncontrolled). To reset programmatically, change the `key` prop. */
   defaultValue?: string;
-  /** Called on blur when the full expression parses to a valid AST. */
   onChange?: (ast: AstNode) => void;
-  /** Called when the cursor enters or leaves a leaf node. Useful for driving autocomplete. */
   onLeafFocus?: (node: LeafAstNode | null) => void;
   placeholder?: string;
   className?: string;
   disabled?: boolean;
 }
 
+export interface ShipQLEditorInnerProps extends ShipQLEditorProps {
+  mode: 'editor' | 'text';
+  text: string;
+  editorKey: number;
+  onTextChange: (text: string) => void;
+  onClear: () => void;
+  onToggleMode: () => void;
+}
+
 const ShipQLEditorInner = lazy(() => import('./shipql-editor-inner'));
 
-export function ShipQLEditor(props: ShipQLEditorProps) {
+export function ShipQLEditor({disabled, className, ...props}: ShipQLEditorProps) {
+  const [mode, setMode] = useState<'editor' | 'text'>('editor');
+  const [text, setText] = useState(props.defaultValue ?? '');
+  const [editorKey, setEditorKey] = useState(0);
+  const textRef = useRef(text);
+  textRef.current = text;
+  const clearingRef = useRef(false);
+
+  const handleTextChange = useCallback((newText: string) => {
+    if (clearingRef.current) {
+      if (newText.trim() === '') clearingRef.current = false;
+      return;
+    }
+    textRef.current = newText;
+    setText(newText);
+  }, []);
+
+  const handleClear = useCallback(() => {
+    clearingRef.current = true;
+    setText('');
+    textRef.current = '';
+    setEditorKey((k) => k + 1);
+  }, []);
+
+  const handleToggleMode = useCallback(() => {
+    setMode((m) => {
+      if (m === 'editor') {
+        setText(textRef.current);
+        return 'text';
+      }
+      setEditorKey((k) => k + 1);
+      return 'editor';
+    });
+  }, []);
+
   return (
     <Suspense
       fallback={
-        <div className="h-9 w-full animate-pulse rounded-6 bg-background-components-base" />
+        <div
+          className={cn(
+            'h-8 w-full animate-pulse rounded-6 bg-background-components-base',
+            className,
+          )}
+        />
       }
     >
-      <ShipQLEditorInner {...props} />
+      <ShipQLEditorInner
+        {...props}
+        className={className}
+        disabled={disabled}
+        mode={mode}
+        text={text}
+        editorKey={editorKey}
+        onTextChange={handleTextChange}
+        onClear={handleClear}
+        onToggleMode={handleToggleMode}
+      />
     </Suspense>
   );
 }
