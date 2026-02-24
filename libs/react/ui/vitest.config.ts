@@ -24,6 +24,14 @@ export default defineConfig(
             argosVitestPlugin({
               uploadToArgos: !!process.env.CI,
               token: process.env.ARGOS_TOKEN,
+              argosCSS: `
+                *, *::before, *::after {
+                  animation-delay: 0s !important;
+                  animation-duration: 0s !important;
+                  transition-delay: 0s !important;
+                  transition-duration: 0s !important;
+                }
+              `,
             }),
           ],
           test: {
