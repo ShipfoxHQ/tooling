@@ -83,16 +83,21 @@ export const generateSearchJobData = (count: number): SearchJobData[] => {
   const branches = ['main', 'develop', 'staging', 'feat/new-feature'];
   const statuses: Array<'active' | 'completed' | 'failed'> = ['active', 'completed', 'failed'];
 
-  return Array.from({length: count}, (_, i) => ({
-    id: `job-${i + 1}`,
-    name: jobNames[i % jobNames.length],
-    total: Math.floor(Math.random() * 100) + 20,
-    success: Math.floor(Math.random() * 80) + 10,
-    failed: Math.floor(Math.random() * 20),
-    status: statuses[i % statuses.length],
-    repository: repositories[i % repositories.length],
-    branch: branches[i % branches.length],
-  }));
+  return Array.from({length: count}, (_, i) => {
+    const total = 40 + ((i * 7 + 3) % 80);
+    const failed = (i * 3 + 1) % 20;
+    const success = total - failed;
+    return {
+      id: `job-${i + 1}`,
+      name: jobNames[i % jobNames.length],
+      total,
+      success,
+      failed,
+      status: statuses[i % statuses.length],
+      repository: repositories[i % repositories.length],
+      branch: branches[i % branches.length],
+    };
+  });
 };
 
 /**
