@@ -4,7 +4,7 @@ import {type EditorConfig, type NodeKey, type SerializedTextNode, TextNode} from
 export type LeafAstNode = AstNode;
 
 const LEAF_BASE_CLASSES =
-  'rounded-4 px-4 py-2 text-foreground-neutral-base cursor-text transition-[background-color,box-shadow] duration-150 ease-out';
+  'whitespace-nowrap rounded-4 mx-1.5 px-4 py-2 text-foreground-neutral-base cursor-text transition-[background-color,box-shadow] duration-150 ease-out';
 const LEAF_NORMAL_CLASSES =
   'bg-background-button-neutral-default hover:ring-1 hover:ring-border-highlights-interactive shadow-button-neutral';
 const LEAF_ERROR_CLASSES = 'bg-tag-error-bg hover:bg-tag-error-bg-hover';

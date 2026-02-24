@@ -15,9 +15,9 @@ import {ShipQLPlugin} from './lexical/shipql-plugin';
 import type {ShipQLEditorInnerProps} from './shipql-editor';
 
 const INPUT_CLASSES =
-  'block w-full rounded-6 bg-background-field-base py-2 pl-7 pr-20 text-md text-foreground-neutral-base caret-foreground-neutral-base outline-none focus:border-border-highlights-interactive shadow-button-neutral';
+  'block w-full rounded-6 bg-background-field-base py-2 pl-7 pr-58 sm:pr-64 text-md text-foreground-neutral-base caret-foreground-neutral-base outline-none focus:border-border-highlights-interactive shadow-button-neutral';
 const BUTTON_CLASSES =
-  'shrink-0 text-foreground-neutral-subtle hover:text-foreground-neutral-base transition-all duration-150 px-8 flex items-center cursor-pointer w-32 h-32';
+  'shrink-0 text-foreground-neutral-subtle hover:text-foreground-neutral-base transition-all duration-150 flex justify-center items-center cursor-pointer w-28 sm:w-32 h-full';
 
 export default function ShipQLEditorInner({
   onChange,
@@ -55,6 +55,7 @@ export default function ShipQLEditorInner({
           <PlainTextPlugin
             contentEditable={
               <ContentEditable
+                id="shipql-editor"
                 aria-label="ShipQL query editor"
                 className={cn(INPUT_CLASSES, disabled && 'pointer-events-none opacity-50')}
               />
@@ -87,7 +88,7 @@ export default function ShipQLEditorInner({
       )}
 
       {!disabled && (
-        <div className="absolute right-px top-1/2 flex -translate-y-1/2 items-center">
+        <div className="absolute right-0 top-0 flex h-28 items-center">
           <button
             type="button"
             aria-label="Clear query"
@@ -99,11 +100,10 @@ export default function ShipQLEditorInner({
           >
             <Icon name="closeLine" size={16} />
           </button>
-          <div className="h-28 w-px bg-border-neutral-strong" />
           <button
             type="button"
             aria-label={mode === 'editor' ? 'Switch to free text mode' : 'Switch to editor mode'}
-            className={BUTTON_CLASSES}
+            className={cn(BUTTON_CLASSES, 'sm:border-l border-border-neutral-strong')}
             onClick={onToggleMode}
           >
             <Icon name={mode === 'editor' ? 'edit2Line' : 'codeLine'} size={16} />

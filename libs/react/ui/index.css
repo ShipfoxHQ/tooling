@@ -1045,3 +1045,7 @@
 .animate-shake {
   animation: shake 0.5s ease-in-out;
 }
+
+#shipql-editor p > span:first-child {
+  margin-left: 0;
+}
