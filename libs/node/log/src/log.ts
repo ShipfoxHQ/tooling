@@ -12,14 +12,15 @@ import {config} from './config';
 export type {Level, LogFn} from 'pino';
 
 const transports: TransportSingleOptions[] = [];
-if (config.LOG_PRETTY) {
-  transports.push({target: 'pino-pretty', options: {colorize: true}});
-} else if (config.LOG_FILE) {
-  // This also logs to stdout
-  transports.push({target: 'pino/file', options: {destination: 1}});
+if (config.LOG_STDOUT) {
+  if (config.LOG_PRETTY) {
+    transports.push({target: 'pino-pretty', options: {colorize: true}});
+  } else {
+    transports.push({target: 'pino/file', options: {destination: 1}});
+  }
+}
+if (config.LOG_FILE) {
   transports.push({target: 'pino/file', options: {destination: config.LOG_FILE, mkdir: true}});
-} else {
-  transports.push({target: 'pino/file', options: {destination: 1}});
 }
 
 export const settings: LoggerOptions = {
