@@ -2,6 +2,7 @@ import type {AstNode} from '@shipfox/shipql-parser';
 import {lazy, Suspense, useCallback, useRef, useState} from 'react';
 import {cn} from '../../utils/cn';
 import type {LeafAstNode} from './lexical/shipql-leaf-node';
+import type {FetchSuggestions, ShipQLFieldDef} from './suggestions/types';
 
 export interface ShipQLEditorProps {
   defaultValue?: string;
@@ -10,6 +11,8 @@ export interface ShipQLEditorProps {
   placeholder?: string;
   className?: string;
   disabled?: boolean;
+  fields?: ShipQLFieldDef[];
+  fetchSuggestions?: FetchSuggestions;
 }
 
 export interface ShipQLEditorInnerProps extends ShipQLEditorProps {
@@ -63,7 +66,7 @@ export function ShipQLEditor({disabled, className, ...props}: ShipQLEditorProps)
       fallback={
         <div
           className={cn(
-            'h-8 w-full animate-pulse rounded-6 bg-background-components-base',
+            'h-28 w-full animate-pulse rounded-6 bg-background-components-base',
             className,
           )}
         />
