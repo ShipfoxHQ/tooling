@@ -75,7 +75,7 @@ export default function ShipQLEditorInner({
   return (
     <div data-shipql-editor className={cn('relative', className)}>
       {mode === 'editor' ? (
-        <Popover open={hasSuggestions && suggestionsOpen} onOpenChange={setSuggestionsOpen}>
+        <Popover open={hasSuggestions && suggestionsOpen}>
           <PopoverAnchor className="w-full">
             <LexicalComposer
               key={editorKey}

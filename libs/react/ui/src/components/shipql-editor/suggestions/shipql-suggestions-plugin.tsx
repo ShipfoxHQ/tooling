@@ -3,6 +3,8 @@ import {
   $createRangeSelection,
   $createTextNode,
   $getRoot,
+  $getSelection,
+  $isRangeSelection,
   $setSelection,
   BLUR_COMMAND,
   COMMAND_PRIORITY_CRITICAL,
@@ -148,9 +150,7 @@ export function ShipQLSuggestionsPlugin({
         prevFocusedLeafRef.current,
       );
       setItemsRef.current(leafItems);
-      setOpenRef.current(
-        isFocusedRef.current && (leafItems.length > 0 || isLoadingValueSuggestions),
-      );
+      setOpenRef.current(isFocusedRef.current);
     } else {
       editor.getEditorState().read(() => {
         const para = $getRoot().getFirstChild() as ParagraphNode | null;
@@ -159,14 +159,10 @@ export function ShipQLSuggestionsPlugin({
         const newItems = buildSuggestionItems(facets, valueSuggestions, activeText, null);
         setItemsRef.current(newItems);
         setSelectedIndexRef.current(0);
-        const facetCtx = detectFacetContext(activeText, facets);
-        setOpenRef.current(
-          isFocusedRef.current &&
-            (newItems.length > 0 || isLoadingValueSuggestions || facetCtx !== null),
-        );
+        setOpenRef.current(isFocusedRef.current);
       });
     }
-  }, [facets, valueSuggestions, isLoadingValueSuggestions, editor]);
+  }, [facets, valueSuggestions, editor]);
 
   // ── Apply function ──────────────────────────────────────────────────────────
   useEffect(() => {
@@ -326,13 +322,28 @@ export function ShipQLSuggestionsPlugin({
 
     const unregisterUpdate = editor.registerUpdateListener(({editorState, tags}) => {
       if (tags.has('shipql-rebuild')) return;
-      if (prevFocusedLeafRef.current) return;
 
       editorState.read(() => {
         const para = $getRoot().getFirstChild() as ParagraphNode | null;
         if (!para) return;
 
-        const activeText = getActiveSegment(para);
+        let activeText = getActiveSegment(para);
+        let focusedLeaf: LeafAstNode | null = null;
+
+        const sel = $getSelection();
+        if ($isRangeSelection(sel)) {
+          const anchor = sel.anchor.getNode();
+          if ($isShipQLLeafNode(anchor)) {
+            const shipqlNode = anchor.getShipQLNode();
+            if (shipqlNode.type === 'text') {
+              activeText = anchor.getTextContent();
+              focusedLeaf = null;
+            } else {
+              focusedLeaf = shipqlNode;
+            }
+          }
+        }
+
         const facetCtx = detectFacetContext(activeText, facetsRef.current);
         const newFacet = facetCtx?.facet ?? null;
         setCurrentFacetRef.current(newFacet);
@@ -341,15 +352,12 @@ export function ShipQLSuggestionsPlugin({
           facetsRef.current,
           valueSuggestionsRef.current,
           activeText,
-          null,
+          focusedLeaf,
         );
         setItemsRef.current(newItems);
         setSelectedIndexRef.current(0);
 
-        setOpenRef.current(
-          isFocusedRef.current &&
-            (newItems.length > 0 || isLoadingValueSuggestionsRef.current || newFacet !== null),
-        );
+        setOpenRef.current(isFocusedRef.current);
       });
     });
 

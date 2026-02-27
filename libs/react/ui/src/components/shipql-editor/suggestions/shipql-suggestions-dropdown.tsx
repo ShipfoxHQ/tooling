@@ -37,8 +37,6 @@ export function ShipQLSuggestionsDropdown({
     [isSelectingRef, onSelect],
   );
 
-  if (!isLoading && items.length === 0) return null;
-
   return (
     <PopoverContent
       align="start"
@@ -56,7 +54,9 @@ export function ShipQLSuggestionsDropdown({
         <ScrollArea className="flex-1 min-h-0 overflow-y-auto scrollbar">
           <div className="flex flex-col">
             {isLoading && items.length === 0 ? (
-              <div className="px-8 py-6 text-sm text-foreground-neutral-muted">Loading...</div>
+              <div className="px-8 py-6 text-sm text-foreground-neutral-muted">Loading…</div>
+            ) : items.length === 0 ? (
+              <div className="px-8 py-6 text-sm text-foreground-neutral-muted">No matches</div>
             ) : (
               items.map((item, index) => (
                 <ShipQLSuggestionItem

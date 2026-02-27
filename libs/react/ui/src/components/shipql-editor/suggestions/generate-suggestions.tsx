@@ -44,8 +44,10 @@ export function buildSuggestionItems(
   activeText: string,
   focusedLeaf: LeafAstNode | null,
 ): SuggestionItem[] {
-  // Focused leaf — show values with current value marked selected
-  if (focusedLeaf) {
+  // Focused leaf — show values with current value marked selected.
+  // Text-type leaves (bare words) are not facet:value matches, so fall through
+  // to facet filtering using the leaf's text as the partial query.
+  if (focusedLeaf && focusedLeaf.type !== 'text') {
     const currentValue = extractValueFromLeaf(focusedLeaf);
     return valueSuggestions.map((v) => ({
       value: v,
@@ -71,8 +73,11 @@ export function buildSuggestionItems(
     }));
   }
 
-  // Otherwise show filtered facets
-  const partial = activeText.trim().toLowerCase();
+  // Otherwise show filtered facets. When cursor is inside a bare-word text
+  // leaf chip, use that leaf's value as the filter term.
+  const partial = (focusedLeaf?.type === 'text' ? focusedLeaf.value : activeText)
+    .trim()
+    .toLowerCase();
   const filtered = partial ? facets.filter((f) => f.toLowerCase().includes(partial)) : facets;
   return filtered.slice(0, 8).map((f) => ({
     value: f,
