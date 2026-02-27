@@ -1,9 +1,8 @@
 import type {AstNode} from '@shipfox/shipql-parser';
 import type {Meta, StoryObj} from '@storybook/react';
-import {useState} from 'react';
+import {useEffect, useState} from 'react';
 import type {LeafAstNode} from './lexical/shipql-leaf-node';
 import {ShipQLEditor} from './shipql-editor';
-import type {ShipQLFieldDef} from './suggestions/types';
 
 const meta = {
   title: 'Components/ShipQLEditor',
@@ -77,63 +76,69 @@ export const Disabled: Story = {
   },
 };
 
-const DEMO_FIELDS: ShipQLFieldDef[] = [
-  {
-    name: 'status',
-    label: 'Status',
-    type: 'list',
-    values: ['success', 'failed', 'cancelled', 'running'],
-  },
-  {name: 'env', label: 'Environment', type: 'list', values: ['prod', 'staging', 'dev']},
-  {name: 'service', label: 'Service', type: 'list', values: ['payments', 'auth', 'api', 'worker']},
-  {
-    name: 'repository',
-    label: 'Repository',
-    type: 'list',
-    values: ['shipfox-api', 'shipfox-web', 'tooling'],
-  },
-  {name: 'duration', label: 'Duration', type: 'range', min: 0, max: 120_000_000_000},
-];
+const FACETS = ['status', 'env', 'service', 'repository'];
 
-export const WithSuggestions: Story = {
-  args: {
-    fields: DEMO_FIELDS,
-    placeholder: 'Type a field or value…',
-  },
-};
-
-const BASE_FIELDS: ShipQLFieldDef[] = [
-  {name: 'status', label: 'Status', type: 'list'},
-  {name: 'duration', label: 'Duration', type: 'range', min: 0, max: 120_000_000_000},
-  {name: 'ci-pipeline', label: 'CI Pipeline', type: 'list'},
-  {name: 'repository', label: 'Repository', type: 'list'},
-  {name: 'branch', label: 'Branch', type: 'list'},
-];
-
-const FIELD_VALUES: Record<string, string[]> = {
+const FACET_VALUES: Record<string, string[]> = {
   status: ['success', 'failed', 'cancelled', 'running'],
-  'ci-pipeline': ['main', 'release', 'hotfix', 'feature'],
+  env: ['prod', 'staging', 'dev'],
+  service: ['payments', 'auth', 'api', 'worker'],
   repository: ['shipfox-api', 'shipfox-web', 'tooling'],
-  branch: ['main', 'develop', 'staging'],
 };
 
-async function mockFetchSuggestions(fieldName?: string): Promise<ShipQLFieldDef[]> {
-  await new Promise((r) => setTimeout(r, 150));
-  if (fieldName && FIELD_VALUES[fieldName]) {
-    return BASE_FIELDS.map((f) =>
-      f.name === fieldName ? {...f, values: FIELD_VALUES[fieldName]} : f,
-    );
-  }
-  return BASE_FIELDS;
-}
+function WithSuggestionsDemo(args: Parameters<typeof ShipQLEditor>[0]) {
+  const [currentFacet, setCurrentFacet] = useState<string | null>(null);
+  const valueSuggestions = currentFacet ? (FACET_VALUES[currentFacet] ?? []) : [];
 
-export const WithDynamicSuggestions: Story = {
-  name: 'With Dynamic Suggestions (async fetch)',
-  render: (args) => (
+  return (
     <ShipQLEditor
       {...args}
-      fetchSuggestions={mockFetchSuggestions}
+      facets={FACETS}
+      currentFacet={currentFacet}
+      setCurrentFacet={setCurrentFacet}
+      valueSuggestions={valueSuggestions}
+      placeholder="Type a field or value…"
+    />
+  );
+}
+
+export const WithSuggestions: Story = {
+  render: (args) => <WithSuggestionsDemo {...args} />,
+};
+
+function WithAsyncSuggestionsDemo(args: Parameters<typeof ShipQLEditor>[0]) {
+  const [currentFacet, setCurrentFacet] = useState<string | null>(null);
+  const [valueSuggestions, setValueSuggestions] = useState<string[]>([]);
+  const [isLoadingValueSuggestions, setIsLoadingValueSuggestions] = useState(false);
+
+  useEffect(() => {
+    if (!currentFacet) {
+      setValueSuggestions([]);
+      setIsLoadingValueSuggestions(false);
+      return;
+    }
+    setIsLoadingValueSuggestions(true);
+    setValueSuggestions([]);
+    const timer = setTimeout(() => {
+      setValueSuggestions(FACET_VALUES[currentFacet] ?? []);
+      setIsLoadingValueSuggestions(false);
+    }, 500);
+    return () => clearTimeout(timer);
+  }, [currentFacet]);
+
+  return (
+    <ShipQLEditor
+      {...args}
+      facets={FACETS}
+      currentFacet={currentFacet}
+      setCurrentFacet={setCurrentFacet}
+      valueSuggestions={valueSuggestions}
+      isLoadingValueSuggestions={isLoadingValueSuggestions}
       placeholder="Type to search — suggestions fetched dynamically…"
     />
-  ),
+  );
+}
+
+export const WithAsyncSuggestions: Story = {
+  name: 'With Async Suggestions',
+  render: (args) => <WithAsyncSuggestionsDemo {...args} />,
 };

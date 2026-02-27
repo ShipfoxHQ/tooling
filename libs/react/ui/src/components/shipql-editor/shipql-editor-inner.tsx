@@ -6,7 +6,7 @@ import {PlainTextPlugin} from '@lexical/react/LexicalPlainTextPlugin';
 import {Input} from 'components/input';
 import {Popover, PopoverAnchor} from 'components/popover';
 import {$createParagraphNode, $createTextNode, $getRoot} from 'lexical';
-import {useCallback, useEffect, useRef, useState} from 'react';
+import {useCallback, useRef, useState} from 'react';
 import {cn} from '../../utils/cn';
 import {Icon} from '../icon/icon';
 import {LeafCloseOverlay} from './lexical/leaf-close-overlay';
@@ -18,7 +18,7 @@ import {ShipQLPlugin} from './lexical/shipql-plugin';
 import type {ShipQLEditorInnerProps} from './shipql-editor';
 import {ShipQLSuggestionsDropdown} from './suggestions/shipql-suggestions-dropdown';
 import {ShipQLSuggestionsPlugin} from './suggestions/shipql-suggestions-plugin';
-import type {ShipQLFieldDef, SuggestionItem} from './suggestions/types';
+import type {SuggestionItem} from './suggestions/types';
 
 const INPUT_CLASSES =
   'block w-full rounded-6 bg-background-field-base py-2 pl-7 pr-58 sm:pr-64 text-md text-foreground-neutral-base caret-foreground-neutral-base outline-none focus:border-border-highlights-interactive shadow-button-neutral';
@@ -37,43 +37,27 @@ export default function ShipQLEditorInner({
   onTextChange,
   onClear,
   onToggleMode,
-  fields,
-  fetchSuggestions,
+  facets,
+  currentFacet,
+  setCurrentFacet,
+  valueSuggestions,
+  isLoadingValueSuggestions,
 }: ShipQLEditorInnerProps) {
   const [suggestionsOpen, setSuggestionsOpen] = useState(false);
   const [selectedIndex, setSelectedIndex] = useState(0);
   const [items, setItems] = useState<SuggestionItem[]>([]);
-  const [isNegated, setIsNegated] = useState(false);
   const [focusedLeafNode, setFocusedLeafNode] = useState<LeafAstNode | null>(null);
-  const [resolvedFields, setResolvedFields] = useState<ShipQLFieldDef[]>(fields ?? []);
 
   const isSelectingRef = useRef(false);
-  const applyRef = useRef<((encodedValue: string) => void) | null>(null);
-  const fetchRef = useRef(fetchSuggestions);
-  fetchRef.current = fetchSuggestions;
-  const fetchCancelRef = useRef<(() => void) | null>(null);
+  const applyRef = useRef<((value: string) => void) | null>(null);
 
-  // Sync static fields when no fetchSuggestions
-  useEffect(() => {
-    if (!fetchSuggestions) setResolvedFields(fields ?? []);
-  }, [fields, fetchSuggestions]);
+  const hasSuggestions = Boolean(facets && facets.length > 0);
 
-  const handleActiveFieldChange = useCallback(
-    (fieldName?: string) => {
-      fetchCancelRef.current?.();
-      if (!fetchRef.current) {
-        setResolvedFields(fields ?? []);
-        return;
-      }
-      let cancelled = false;
-      fetchCancelRef.current = () => {
-        cancelled = true;
-      };
-      fetchRef.current(fieldName).then((result) => {
-        if (!cancelled) setResolvedFields(result);
-      });
+  const handleSetCurrentFacet = useCallback(
+    (facet: string | null) => {
+      setCurrentFacet?.(facet);
     },
-    [fields],
+    [setCurrentFacet],
   );
 
   const handleLeafFocus = useCallback(
@@ -83,8 +67,6 @@ export default function ShipQLEditorInner({
     },
     [onLeafFocus],
   );
-
-  const hasSuggestions = Boolean(fetchSuggestions ?? (fields && fields.length > 0));
 
   const handleSelect = useCallback((value: string) => {
     applyRef.current?.(value);
@@ -136,7 +118,11 @@ export default function ShipQLEditorInner({
               {!disabled && <LeafCloseOverlay />}
               {hasSuggestions && (
                 <ShipQLSuggestionsPlugin
-                  fields={resolvedFields}
+                  facets={facets ?? []}
+                  currentFacet={currentFacet ?? null}
+                  setCurrentFacet={handleSetCurrentFacet}
+                  valueSuggestions={valueSuggestions ?? []}
+                  isLoadingValueSuggestions={isLoadingValueSuggestions ?? false}
                   open={suggestionsOpen}
                   setOpen={setSuggestionsOpen}
                   selectedIndex={selectedIndex}
@@ -145,10 +131,7 @@ export default function ShipQLEditorInner({
                   setItems={setItems}
                   isSelectingRef={isSelectingRef}
                   applyRef={applyRef}
-                  isNegated={isNegated}
-                  setIsNegated={setIsNegated}
                   focusedLeafNode={focusedLeafNode}
-                  onActiveFieldChange={handleActiveFieldChange}
                 />
               )}
             </LexicalComposer>
@@ -159,6 +142,7 @@ export default function ShipQLEditorInner({
               selectedIndex={selectedIndex}
               isSelectingRef={isSelectingRef}
               onSelect={handleSelect}
+              isLoading={isLoadingValueSuggestions}
             />
           )}
         </Popover>

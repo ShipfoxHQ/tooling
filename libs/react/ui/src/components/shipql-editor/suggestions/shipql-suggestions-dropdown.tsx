@@ -1,7 +1,6 @@
 import {PopoverContent} from 'components/popover';
 import {ScrollArea} from 'components/scroll-area';
 import {useCallback, useEffect, useRef} from 'react';
-import {DurationSuggestionContent} from './duration-suggestion-content';
 import {ShipQLSuggestionItem} from './shipql-suggestion-item';
 import type {SuggestionItem} from './types';
 
@@ -10,6 +9,7 @@ interface ShipQLSuggestionsDropdownProps {
   selectedIndex: number;
   isSelectingRef: React.RefObject<boolean>;
   onSelect: (value: string) => void;
+  isLoading?: boolean;
 }
 
 export function ShipQLSuggestionsDropdown({
@@ -17,6 +17,7 @@ export function ShipQLSuggestionsDropdown({
   selectedIndex,
   isSelectingRef,
   onSelect,
+  isLoading,
 }: ShipQLSuggestionsDropdownProps) {
   const itemRefs = useRef<(HTMLButtonElement | null)[]>([]);
 
@@ -36,7 +37,7 @@ export function ShipQLSuggestionsDropdown({
     [isSelectingRef, onSelect],
   );
 
-  if (items.length === 0) return null;
+  if (!isLoading && items.length === 0) return null;
 
   return (
     <PopoverContent
@@ -54,17 +55,10 @@ export function ShipQLSuggestionsDropdown({
       <div className="flex flex-col overflow-hidden rounded-10 bg-background-neutral-base shadow-tooltip max-h-[min(70vh,320px)] min-h-0">
         <ScrollArea className="flex-1 min-h-0 overflow-y-auto scrollbar">
           <div className="flex flex-col">
-            {items.map((item, index) => {
-              if (item.type === 'duration-range' && item.rangeField) {
-                return (
-                  <DurationSuggestionContent
-                    key={item.value}
-                    field={item.rangeField}
-                    onCommit={handleMouseDown}
-                  />
-                );
-              }
-              return (
+            {isLoading && items.length === 0 ? (
+              <div className="px-8 py-6 text-sm text-foreground-neutral-muted">Loading...</div>
+            ) : (
+              items.map((item, index) => (
                 <ShipQLSuggestionItem
                   key={item.value}
                   item={item}
@@ -74,8 +68,8 @@ export function ShipQLSuggestionsDropdown({
                     itemRefs.current[index] = el;
                   }}
                 />
-              );
-            })}
+              ))
+            )}
           </div>
         </ScrollArea>
         <div className="shrink-0 border-t border-border-neutral-base-component flex items-center px-8 py-4">
