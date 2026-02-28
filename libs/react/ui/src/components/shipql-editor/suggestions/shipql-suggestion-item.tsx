@@ -4,6 +4,7 @@ import type {SuggestionItem} from './types';
 interface ShipQLSuggestionItemProps {
   item: SuggestionItem;
   isHighlighted: boolean;
+  isNegated?: boolean;
   onMouseDown: (value: string) => void;
   itemRef?: (el: HTMLButtonElement | null) => void;
 }
@@ -11,13 +12,14 @@ interface ShipQLSuggestionItemProps {
 export function ShipQLSuggestionItem({
   item,
   isHighlighted,
+  isNegated,
   onMouseDown,
   itemRef,
 }: ShipQLSuggestionItemProps) {
   if (item.type === 'section-header') {
     return (
       <div className="flex w-full items-end px-6 h-24 shrink-0">
-        <span className="text-xs font-medium uppercase tracking-wider text-foreground-neutral-subtle">
+        <span className="text-xs font-normal uppercase text-foreground-neutral-muted">
           {item.label}
         </span>
       </div>
@@ -33,8 +35,7 @@ export function ShipQLSuggestionItem({
         onMouseDown(item.value);
       }}
       className={cn(
-        'flex w-full items-center gap-12 rounded-none px-8 py-6 h-24 text-left',
-        'transition-colors duration-75',
+        'flex w-full items-center gap-12 rounded-none px-8 py-6 h-24 text-left transition-colors duration-75 cursor-pointer',
         isHighlighted
           ? 'bg-background-button-transparent-hover'
           : 'hover:bg-background-button-transparent-hover',
@@ -45,10 +46,14 @@ export function ShipQLSuggestionItem({
         <span
           className={cn(
             'flex-1 truncate text-sm',
-            item.selected ? 'text-foreground-neutral-base' : 'text-foreground-neutral-subtle',
+            isNegated
+              ? 'text-foreground-highlights-interactive'
+              : item.selected
+                ? 'text-foreground-neutral-base'
+                : 'text-foreground-neutral-subtle',
           )}
         >
-          {item.label}
+          {isNegated ? `-${item.label}` : item.label}
         </span>
       </div>
       {isHighlighted && (

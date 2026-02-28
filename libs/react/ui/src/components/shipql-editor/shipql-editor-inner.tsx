@@ -21,7 +21,7 @@ import {ShipQLSuggestionsPlugin} from './suggestions/shipql-suggestions-plugin';
 import type {SuggestionItem} from './suggestions/types';
 
 const INPUT_CLASSES =
-  'block w-full rounded-6 bg-background-field-base py-2 pl-7 pr-58 sm:pr-64 text-md text-foreground-neutral-base caret-foreground-neutral-base outline-none focus:border-border-highlights-interactive shadow-button-neutral';
+  'block w-full rounded-6 bg-background-field-base py-2 pl-32 pr-58 sm:pr-64 text-md text-foreground-neutral-base caret-foreground-neutral-base outline-none focus:border-border-highlights-interactive shadow-button-neutral';
 const BUTTON_CLASSES =
   'shrink-0 text-foreground-neutral-subtle hover:text-foreground-neutral-base transition-all duration-150 flex justify-center items-center cursor-pointer w-28 sm:w-32 h-full';
 
@@ -44,14 +44,22 @@ export default function ShipQLEditorInner({
   isLoadingValueSuggestions,
 }: ShipQLEditorInnerProps) {
   const [suggestionsOpen, setSuggestionsOpen] = useState(false);
-  const [selectedIndex, setSelectedIndex] = useState(0);
+  const [selectedIndex, setSelectedIndex] = useState(-1);
   const [items, setItems] = useState<SuggestionItem[]>([]);
   const [focusedLeafNode, setFocusedLeafNode] = useState<LeafAstNode | null>(null);
+  const [isNegated, setIsNegated] = useState(false);
 
   const isSelectingRef = useRef(false);
   const applyRef = useRef<((value: string) => void) | null>(null);
+  const negationPrefixRef = useRef('');
 
   const hasSuggestions = Boolean(facets && facets.length > 0);
+  const showValueActions = Boolean(currentFacet);
+
+  const handleToggleNegate = useCallback((negated: boolean) => {
+    setIsNegated(negated);
+    negationPrefixRef.current = negated ? '-' : '';
+  }, []);
 
   const handleSetCurrentFacet = useCallback(
     (facet: string | null) => {
@@ -96,15 +104,24 @@ export default function ShipQLEditorInner({
             >
               <PlainTextPlugin
                 contentEditable={
-                  <ContentEditable
-                    id="shipql-editor"
-                    aria-label="ShipQL query editor"
-                    className={cn(INPUT_CLASSES, disabled && 'pointer-events-none opacity-50')}
-                  />
+                  <div className="relative">
+                    <div className="absolute left-0 top-4 select-none px-8 py-2 text-md text-foreground-neutral-muted">
+                      <Icon
+                        name={isLoadingValueSuggestions ? 'spinner' : 'searchLine'}
+                        size={16}
+                        className="shrink-0 text-foreground-neutral-muted"
+                      />
+                    </div>
+                    <ContentEditable
+                      id="shipql-editor"
+                      aria-label="ShipQL query editor"
+                      className={cn(INPUT_CLASSES, disabled && 'pointer-events-none opacity-50')}
+                    />
+                  </div>
                 }
                 placeholder={
                   placeholder ? (
-                    <div className="pointer-events-none absolute left-0 top-0 select-none px-7 py-2 text-md text-foreground-neutral-muted">
+                    <div className="pointer-events-none absolute left-0 top-0 select-none pl-32 pr-8 py-2 text-md text-foreground-neutral-muted">
                       {placeholder}
                     </div>
                   ) : null
@@ -131,6 +148,7 @@ export default function ShipQLEditorInner({
                   setItems={setItems}
                   isSelectingRef={isSelectingRef}
                   applyRef={applyRef}
+                  negationPrefixRef={negationPrefixRef}
                   focusedLeafNode={focusedLeafNode}
                 />
               )}
@@ -143,6 +161,9 @@ export default function ShipQLEditorInner({
               isSelectingRef={isSelectingRef}
               onSelect={handleSelect}
               isLoading={isLoadingValueSuggestions}
+              isNegated={isNegated}
+              onToggleNegate={handleToggleNegate}
+              showValueActions={showValueActions}
             />
           )}
         </Popover>
@@ -150,6 +171,9 @@ export default function ShipQLEditorInner({
         <Input
           ref={(el) => el?.focus()}
           aria-label="ShipQL query editor"
+          iconLeft={
+            <Icon name="searchLine" size={16} className="shrink-0 text-foreground-neutral-muted" />
+          }
           className={cn(INPUT_CLASSES, disabled && 'pointer-events-none opacity-50')}
           value={text}
           onChange={(e) => onTextChange(e.target.value)}

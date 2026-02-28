@@ -5,6 +5,7 @@ import {
   $getRoot,
   $getSelection,
   $isRangeSelection,
+  $isTextNode,
   $setSelection,
   BLUR_COMMAND,
   COMMAND_PRIORITY_CRITICAL,
@@ -12,6 +13,7 @@ import {
   COMMAND_PRIORITY_NORMAL,
   FOCUS_COMMAND,
   KEY_ARROW_DOWN_COMMAND,
+  KEY_ARROW_RIGHT_COMMAND,
   KEY_ARROW_UP_COMMAND,
   KEY_ENTER_COMMAND,
   KEY_ESCAPE_COMMAND,
@@ -25,6 +27,7 @@ import {
   buildSuggestionItems,
   detectFacetContext,
   extractFacetFromLeaf,
+  negationPrefixFromSource,
 } from './generate-suggestions';
 import type {SuggestionItem} from './types';
 
@@ -42,6 +45,7 @@ interface ShipQLSuggestionsPluginProps {
   setItems: (items: SuggestionItem[]) => void;
   isSelectingRef: React.RefObject<boolean>;
   applyRef: React.RefObject<((value: string) => void) | null>;
+  negationPrefixRef: React.RefObject<string>;
   focusedLeafNode: LeafAstNode | null;
 }
 
@@ -69,6 +73,7 @@ export function ShipQLSuggestionsPlugin({
   setItems,
   isSelectingRef,
   applyRef,
+  negationPrefixRef,
   focusedLeafNode,
 }: ShipQLSuggestionsPluginProps) {
   const [editor] = useLexicalComposerContext();
@@ -100,6 +105,7 @@ export function ShipQLSuggestionsPlugin({
   isLoadingValueSuggestionsRef.current = isLoadingValueSuggestions;
 
   const isFocusedRef = useRef(false);
+  const hasNavigatedRef = useRef(false);
   const prevFocusedLeafRef = useRef<LeafAstNode | null>(null);
 
   // ── Leaf refocus effect ─────────────────────────────────────────────────────
@@ -109,6 +115,8 @@ export function ShipQLSuggestionsPlugin({
 
     if (focusedLeafNode) {
       const facet = extractFacetFromLeaf(focusedLeafNode);
+      negationPrefixRef.current =
+        focusedLeafNode.type === 'not' ? negationPrefixFromSource(focusedLeafNode.source) : '';
       setCurrentFacetRef.current(facet ?? null);
       const leafItems = buildSuggestionItems(
         facetsRef.current,
@@ -117,7 +125,8 @@ export function ShipQLSuggestionsPlugin({
         focusedLeafNode,
       );
       setItemsRef.current(leafItems);
-      setSelectedIndexRef.current(0);
+      hasNavigatedRef.current = false;
+      setSelectedIndexRef.current(-1);
       if (isFocusedRef.current) setOpenRef.current(true);
     } else {
       // Leaf deselected — regenerate text-based suggestions immediately
@@ -126,6 +135,7 @@ export function ShipQLSuggestionsPlugin({
         if (!para) return;
         const activeText = getActiveSegment(para);
         const facetCtx = detectFacetContext(activeText, facetsRef.current);
+        negationPrefixRef.current = facetCtx?.negationPrefix ?? '';
         setCurrentFacetRef.current(facetCtx?.facet ?? null);
         const newItems = buildSuggestionItems(
           facetsRef.current,
@@ -134,10 +144,11 @@ export function ShipQLSuggestionsPlugin({
           null,
         );
         setItemsRef.current(newItems);
-        setSelectedIndexRef.current(0);
+        hasNavigatedRef.current = false;
+        setSelectedIndexRef.current(-1);
       });
     }
-  }, [focusedLeafNode, editor]);
+  }, [focusedLeafNode, editor, negationPrefixRef]);
 
   // ── Reactive regeneration when facets/valueSuggestions change ──────────────
   useEffect(() => {
@@ -158,7 +169,8 @@ export function ShipQLSuggestionsPlugin({
         const activeText = getActiveSegment(para);
         const newItems = buildSuggestionItems(facets, valueSuggestions, activeText, null);
         setItemsRef.current(newItems);
-        setSelectedIndexRef.current(0);
+        hasNavigatedRef.current = false;
+        setSelectedIndexRef.current(-1);
         setOpenRef.current(isFocusedRef.current);
       });
     }
@@ -171,9 +183,49 @@ export function ShipQLSuggestionsPlugin({
         const para = $getRoot().getFirstChild() as ParagraphNode | null;
         if (!para) return;
 
-        const children = para.getChildren();
+        const insertText = currentFacetRef.current
+          ? `${negationPrefixRef.current}${currentFacetRef.current}:${selectedValue} `
+          : `${selectedValue}:`;
 
-        // Find the last leaf chip
+        // Case 1: Cursor is inside a focused leaf chip — replace the chip in-place
+        if (focusedLeafNodeRef.current) {
+          const sel = $getSelection();
+          if ($isRangeSelection(sel)) {
+            const anchor = sel.anchor.getNode();
+            if ($isShipQLLeafNode(anchor)) {
+              const newNode = $createTextNode(insertText);
+              anchor.insertBefore(newNode);
+              anchor.remove();
+              const newSel = $createRangeSelection();
+              const len = newNode.getTextContentSize();
+              newSel.anchor.set(newNode.getKey(), len, 'text');
+              newSel.focus.set(newNode.getKey(), len, 'text');
+              $setSelection(newSel);
+              return;
+            }
+          }
+        }
+
+        // Case 2: Cursor is in a plain text node — replace that node's content
+        const sel = $getSelection();
+        if ($isRangeSelection(sel)) {
+          const anchor = sel.anchor.getNode();
+          if ($isTextNode(anchor) && !$isShipQLLeafNode(anchor)) {
+            const prevSibling = anchor.getPreviousSibling();
+            const prevText = prevSibling?.getTextContent() ?? '';
+            const needsSpace = prevText.length > 0 && !prevText.endsWith(' ');
+            const finalText = needsSpace ? ` ${insertText}` : insertText;
+            anchor.setTextContent(finalText);
+            const newSel = $createRangeSelection();
+            newSel.anchor.set(anchor.getKey(), finalText.length, 'text');
+            newSel.focus.set(anchor.getKey(), finalText.length, 'text');
+            $setSelection(newSel);
+            return;
+          }
+        }
+
+        // Case 3: Fallback — append after last leaf chip
+        const children = para.getChildren();
         let lastLeafIdx = -1;
         for (let i = children.length - 1; i >= 0; i--) {
           if ($isShipQLLeafNode(children[i])) {
@@ -181,55 +233,29 @@ export function ShipQLSuggestionsPlugin({
             break;
           }
         }
-
-        // Remove trailing plain-text nodes after the last leaf chip
         for (let i = children.length - 1; i > lastLeafIdx; i--) {
           children[i].remove();
         }
-
-        let insertText = '';
-
-        if (currentFacetRef.current) {
-          // Value selection — remove focused leaf chip if it matches the facet
-          if (focusedLeafNodeRef.current && lastLeafIdx >= 0) {
-            const lastLeaf = children[lastLeafIdx];
-            if ($isShipQLLeafNode(lastLeaf)) {
-              const leafText = lastLeaf.getTextContent().trimEnd();
-              const fieldPrefix = `${currentFacetRef.current}:`;
-              if (leafText === fieldPrefix || leafText.startsWith(fieldPrefix)) {
-                lastLeaf.remove();
-              }
-            }
-          }
-          insertText = `${currentFacetRef.current}:${selectedValue} `;
-        } else {
-          // Facet selection — insert `facet:` and keep dropdown open for value input
-          insertText = `${selectedValue}:`;
-        }
-
-        // Prefix with a space if the preceding content doesn't already end with one
         const currentText = para.getTextContent();
-        if (currentText.length > 0 && !currentText.endsWith(' ')) {
-          insertText = ` ${insertText}`;
-        }
-
-        const newNode = $createTextNode(insertText);
+        const finalText =
+          currentText.length > 0 && !currentText.endsWith(' ') ? ` ${insertText}` : insertText;
+        const newNode = $createTextNode(finalText);
         para.append(newNode);
-
-        const sel = $createRangeSelection();
+        const newSel = $createRangeSelection();
         const len = newNode.getTextContentSize();
-        sel.anchor.set(newNode.getKey(), len, 'text');
-        sel.focus.set(newNode.getKey(), len, 'text');
-        $setSelection(sel);
+        newSel.anchor.set(newNode.getKey(), len, 'text');
+        newSel.focus.set(newNode.getKey(), len, 'text');
+        $setSelection(newSel);
       });
 
-      setSelectedIndexRef.current(0);
+      hasNavigatedRef.current = false;
+      setSelectedIndexRef.current(-1);
     };
 
     return () => {
       applyRef.current = null;
     };
-  }, [editor, applyRef]);
+  }, [editor, applyRef, negationPrefixRef]);
 
   // ── Keyboard + update listeners ─────────────────────────────────────────────
   useEffect(() => {
@@ -263,7 +289,10 @@ export function ShipQLSuggestionsPlugin({
         const its = itemsRef.current;
         let next = selectedIndexRef.current + 1;
         while (next < its.length && its[next]?.type === 'section-header') next++;
-        if (next < its.length) setSelectedIndexRef.current(next);
+        if (next < its.length) {
+          hasNavigatedRef.current = true;
+          setSelectedIndexRef.current(next);
+        }
         return true;
       },
       COMMAND_PRIORITY_NORMAL,
@@ -277,7 +306,10 @@ export function ShipQLSuggestionsPlugin({
         const its = itemsRef.current;
         let prev = selectedIndexRef.current - 1;
         while (prev >= 0 && its[prev]?.type === 'section-header') prev--;
-        if (prev >= 0) setSelectedIndexRef.current(prev);
+        if (prev >= -1) {
+          hasNavigatedRef.current = prev >= 0;
+          setSelectedIndexRef.current(prev);
+        }
         return true;
       },
       COMMAND_PRIORITY_NORMAL,
@@ -287,6 +319,7 @@ export function ShipQLSuggestionsPlugin({
       KEY_ENTER_COMMAND,
       (e) => {
         if (!openRef.current || itemsRef.current.length === 0) return false;
+        if (!hasNavigatedRef.current || selectedIndexRef.current < 0) return false;
         const item = itemsRef.current[selectedIndexRef.current];
         if (!item || item.type === 'section-header') return false;
         e?.preventDefault();
@@ -299,14 +332,76 @@ export function ShipQLSuggestionsPlugin({
     const unregisterTab = editor.registerCommand(
       KEY_TAB_COMMAND,
       (e) => {
-        if (!openRef.current || itemsRef.current.length === 0) return false;
-        const item = itemsRef.current[selectedIndexRef.current];
-        if (!item || item.type === 'section-header') return false;
+        if (!openRef.current) return false;
         e?.preventDefault();
-        applyRef.current?.(item.value);
+        editor.update(() => {
+          const sel = $getSelection();
+          if (!$isRangeSelection(sel)) return;
+          const anchor = sel.anchor.getNode();
+          const para = $getRoot().getFirstChild() as ParagraphNode | null;
+          if (!para) return;
+          if ($isShipQLLeafNode(anchor)) {
+            const next = anchor.getNextSibling();
+            const newSel = $createRangeSelection();
+            if (next && $isTextNode(next)) {
+              newSel.anchor.set(next.getKey(), 0, 'text');
+              newSel.focus.set(next.getKey(), 0, 'text');
+            } else {
+              const emptyNode = $createTextNode(' ');
+              para.append(emptyNode);
+              newSel.anchor.set(emptyNode.getKey(), 1, 'text');
+              newSel.focus.set(emptyNode.getKey(), 1, 'text');
+            }
+            $setSelection(newSel);
+            return;
+          }
+          if ($isTextNode(anchor)) {
+            const len = anchor.getTextContentSize();
+            const newSel = $createRangeSelection();
+            newSel.anchor.set(anchor.getKey(), len, 'text');
+            newSel.focus.set(anchor.getKey(), len, 'text');
+            $setSelection(newSel);
+          }
+        });
         return true;
       },
       COMMAND_PRIORITY_CRITICAL,
+    );
+
+    const unregisterArrowRight = editor.registerCommand(
+      KEY_ARROW_RIGHT_COMMAND,
+      (e) => {
+        if (!openRef.current) return false;
+        let isInLeaf = false;
+        editor.getEditorState().read(() => {
+          const sel = $getSelection();
+          if ($isRangeSelection(sel)) isInLeaf = $isShipQLLeafNode(sel.anchor.getNode());
+        });
+        if (!isInLeaf) return false;
+        e?.preventDefault();
+        editor.update(() => {
+          const sel = $getSelection();
+          if (!$isRangeSelection(sel)) return;
+          const anchor = sel.anchor.getNode();
+          if (!$isShipQLLeafNode(anchor)) return;
+          const para = $getRoot().getFirstChild() as ParagraphNode | null;
+          if (!para) return;
+          const next = anchor.getNextSibling();
+          const newSel = $createRangeSelection();
+          if (next && $isTextNode(next)) {
+            newSel.anchor.set(next.getKey(), 0, 'text');
+            newSel.focus.set(next.getKey(), 0, 'text');
+          } else {
+            const emptyNode = $createTextNode(' ');
+            para.append(emptyNode);
+            newSel.anchor.set(emptyNode.getKey(), 1, 'text');
+            newSel.focus.set(emptyNode.getKey(), 1, 'text');
+          }
+          $setSelection(newSel);
+        });
+        return true;
+      },
+      COMMAND_PRIORITY_NORMAL,
     );
 
     const unregisterEscape = editor.registerCommand(
@@ -345,8 +440,14 @@ export function ShipQLSuggestionsPlugin({
         }
 
         const facetCtx = detectFacetContext(activeText, facetsRef.current);
-        const newFacet = facetCtx?.facet ?? null;
-        setCurrentFacetRef.current(newFacet);
+        if (focusedLeaf) {
+          negationPrefixRef.current =
+            focusedLeaf.type === 'not' ? negationPrefixFromSource(focusedLeaf.source) : '';
+          setCurrentFacetRef.current(extractFacetFromLeaf(focusedLeaf) ?? null);
+        } else {
+          negationPrefixRef.current = facetCtx?.negationPrefix ?? '';
+          setCurrentFacetRef.current(facetCtx?.facet ?? null);
+        }
 
         const newItems = buildSuggestionItems(
           facetsRef.current,
@@ -355,7 +456,8 @@ export function ShipQLSuggestionsPlugin({
           focusedLeaf,
         );
         setItemsRef.current(newItems);
-        setSelectedIndexRef.current(0);
+        hasNavigatedRef.current = false;
+        setSelectedIndexRef.current(-1);
 
         setOpenRef.current(isFocusedRef.current);
       });
@@ -368,10 +470,11 @@ export function ShipQLSuggestionsPlugin({
       unregisterArrowUp();
       unregisterEnter();
       unregisterTab();
+      unregisterArrowRight();
       unregisterEscape();
       unregisterUpdate();
     };
-  }, [editor, isSelectingRef, applyRef]);
+  }, [editor, isSelectingRef, applyRef, negationPrefixRef]);
 
   return null;
 }
