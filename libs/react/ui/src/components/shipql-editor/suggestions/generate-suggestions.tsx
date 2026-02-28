@@ -1,6 +1,19 @@
 import {Icon} from 'components/icon';
 import type {LeafAstNode} from '../lexical/shipql-leaf-node';
-import type {SuggestionItem} from './types';
+import type {FacetDef, RangeFacetConfig, SuggestionItem} from './types';
+
+// ─── Facet normalization ───────────────────────────────────────────────────────
+
+export function normalizeFacets(facets: FacetDef[]): string[] {
+  return facets.map((f) => (typeof f === 'string' ? f : f.name));
+}
+
+export function getFacetConfig(facets: FacetDef[], name: string): RangeFacetConfig | undefined {
+  for (const f of facets) {
+    if (typeof f !== 'string' && f.name.toLowerCase() === name.toLowerCase()) return f.config;
+  }
+  return undefined;
+}
 
 // ─── Leaf helpers ─────────────────────────────────────────────────────────────
 
@@ -58,11 +71,13 @@ export function detectFacetContext(activeText: string, facets: string[]): FacetC
 // ─── Suggestion builder ───────────────────────────────────────────────────────
 
 export function buildSuggestionItems(
-  facets: string[],
+  facets: FacetDef[],
   valueSuggestions: string[],
   activeText: string,
   focusedLeaf: LeafAstNode | null,
 ): SuggestionItem[] {
+  const facetNames = normalizeFacets(facets);
+
   const header = (label: string): SuggestionItem => ({
     value: `__header__${label}`,
     label,
@@ -76,6 +91,20 @@ export function buildSuggestionItems(
   // to facet filtering using the leaf's text as the partial query.
   if (focusedLeaf && focusedLeaf.type !== 'text') {
     const facetName = extractFacetFromLeaf(focusedLeaf) ?? '';
+    const rangeCfg = getFacetConfig(facets, facetName);
+    if (rangeCfg) {
+      return [
+        {
+          value: `__range__${facetName}`,
+          label: facetName,
+          icon: null,
+          selected: false,
+          type: 'range-slider',
+          rangeFacetConfig: rangeCfg,
+          facetName,
+        },
+      ];
+    }
     const currentValue = extractValueFromLeaf(focusedLeaf);
     if (valueSuggestions.length === 0) return [];
     return [
@@ -101,10 +130,26 @@ export function buildSuggestionItems(
     ];
   }
 
-  const facetCtx = detectFacetContext(activeText, facets);
+  const facetCtx = detectFacetContext(activeText, facetNames);
 
-  // Typing field:value — show filtered value suggestions
+  // Typing field:value — check for range-type facet first
   if (facetCtx) {
+    const rangeCfg = getFacetConfig(facets, facetCtx.facet);
+    if (rangeCfg) {
+      return [
+        {
+          value: `__range__${facetCtx.facet}`,
+          label: facetCtx.facet,
+          icon: null,
+          selected: false,
+          type: 'range-slider',
+          rangeFacetConfig: rangeCfg,
+          facetName: facetCtx.facet,
+        },
+      ];
+    }
+
+    // Regular facet — show filtered value suggestions
     const partial = facetCtx.partialValue.toLowerCase();
     const filtered = partial
       ? valueSuggestions.filter((v) => v.toLowerCase().includes(partial))
@@ -126,7 +171,9 @@ export function buildSuggestionItems(
   // before matching so "NOT sta" still suggests "status", "-sta" suggests "status", etc.
   const rawPartial = focusedLeaf?.type === 'text' ? focusedLeaf.value : activeText;
   const partial = stripNegationPrefix(rawPartial.trim()).stripped.toLowerCase();
-  const filtered = partial ? facets.filter((f) => f.toLowerCase().includes(partial)) : facets;
+  const filtered = partial
+    ? facetNames.filter((f) => f.toLowerCase().includes(partial))
+    : facetNames;
   if (filtered.length === 0) return [];
   return [
     header('TYPE'),

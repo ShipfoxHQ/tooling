@@ -2,6 +2,7 @@ import {PopoverContent} from 'components/popover';
 import {ScrollArea} from 'components/scroll-area';
 import {Skeleton} from 'components/skeleton';
 import {useCallback, useEffect, useRef} from 'react';
+import {ShipQLRangeFacetPanel} from './shipql-range-facet-panel';
 import {ShipQLSuggestionItem} from './shipql-suggestion-item';
 import {ShipQLSuggestionsFooter} from './shipql-suggestions-footer';
 import type {SuggestionItem} from './types';
@@ -67,6 +68,57 @@ export function ShipQLSuggestionsDropdown({
     [isSelectingRef, onSelect],
   );
 
+  const firstItem = items.length === 1 ? items[0] : undefined;
+  const rangeItem =
+    firstItem?.type === 'range-slider' && firstItem.facetName && firstItem.rangeFacetConfig
+      ? (firstItem as Required<Pick<SuggestionItem, 'facetName' | 'rangeFacetConfig'>> &
+          SuggestionItem)
+      : null;
+
+  const popoverContent = rangeItem ? (
+    <div className="flex flex-col overflow-hidden rounded-8 bg-background-neutral-base shadow-tooltip">
+      <ScrollArea className="flex-1 min-h-0 overflow-y-auto scrollbar">
+        <ShipQLRangeFacetPanel
+          facetName={rangeItem.facetName}
+          config={rangeItem.rangeFacetConfig}
+          isSelectingRef={isSelectingRef}
+          onApply={onSelect}
+        />
+      </ScrollArea>
+      <ShipQLSuggestionsFooter showValueActions={false} />
+    </div>
+  ) : (
+    <div className="flex flex-col overflow-hidden rounded-8 bg-background-neutral-base shadow-tooltip max-h-[min(70vh,320px)] min-h-0">
+      <ScrollArea className="flex-1 min-h-0 overflow-y-auto scrollbar">
+        <div className="flex flex-col">
+          {isLoading && items.length === 0 ? (
+            <div className="px-8 py-6 flex items-center">
+              <Skeleton className="w-60 h-20" />
+            </div>
+          ) : items.length === 0 ? (
+            <div className="px-8 py-6 text-sm text-foreground-neutral-muted">
+              No suggestions found
+            </div>
+          ) : (
+            items.map((item, index) => (
+              <ShipQLSuggestionItem
+                key={item.value}
+                item={item}
+                isHighlighted={selectedIndex === index}
+                isNegated={isNegated && showValueActions}
+                onMouseDown={handleMouseDown}
+                itemRef={(el) => {
+                  itemRefs.current[index] = el;
+                }}
+              />
+            ))
+          )}
+        </div>
+      </ScrollArea>
+      <ShipQLSuggestionsFooter showValueActions={showValueActions} />
+    </div>
+  );
+
   return (
     <PopoverContent
       align="start"
@@ -80,35 +132,7 @@ export function ShipQLSuggestionsDropdown({
         if (isSelectingRef.current) e.preventDefault();
       }}
     >
-      <div className="flex flex-col overflow-hidden rounded-8 bg-background-neutral-base shadow-tooltip max-h-[min(70vh,320px)] min-h-0">
-        <ScrollArea className="flex-1 min-h-0 overflow-y-auto scrollbar">
-          <div className="flex flex-col">
-            {isLoading && items.length === 0 ? (
-              <div className="px-8 py-6 flex items-center">
-                <Skeleton className="w-60 h-20" />
-              </div>
-            ) : items.length === 0 ? (
-              <div className="px-8 py-6 text-sm text-foreground-neutral-muted">
-                No suggestions found
-              </div>
-            ) : (
-              items.map((item, index) => (
-                <ShipQLSuggestionItem
-                  key={item.value}
-                  item={item}
-                  isHighlighted={selectedIndex === index}
-                  isNegated={isNegated && showValueActions}
-                  onMouseDown={handleMouseDown}
-                  itemRef={(el) => {
-                    itemRefs.current[index] = el;
-                  }}
-                />
-              ))
-            )}
-          </div>
-        </ScrollArea>
-        <ShipQLSuggestionsFooter showValueActions={showValueActions} />
-      </div>
+      {popoverContent}
     </PopoverContent>
   );
 }

@@ -28,11 +28,12 @@ import {
   detectFacetContext,
   extractFacetFromLeaf,
   negationPrefixFromSource,
+  normalizeFacets,
 } from './generate-suggestions';
-import type {SuggestionItem} from './types';
+import type {FacetDef, SuggestionItem} from './types';
 
 interface ShipQLSuggestionsPluginProps {
-  facets: string[];
+  facets: FacetDef[];
   currentFacet: string | null;
   setCurrentFacet: (facet: string | null) => void;
   valueSuggestions: string[];
@@ -134,7 +135,7 @@ export function ShipQLSuggestionsPlugin({
         const para = $getRoot().getFirstChild() as ParagraphNode | null;
         if (!para) return;
         const activeText = getActiveSegment(para);
-        const facetCtx = detectFacetContext(activeText, facetsRef.current);
+        const facetCtx = detectFacetContext(activeText, normalizeFacets(facetsRef.current));
         negationPrefixRef.current = facetCtx?.negationPrefix ?? '';
         setCurrentFacetRef.current(facetCtx?.facet ?? null);
         const newItems = buildSuggestionItems(
@@ -439,7 +440,7 @@ export function ShipQLSuggestionsPlugin({
           }
         }
 
-        const facetCtx = detectFacetContext(activeText, facetsRef.current);
+        const facetCtx = detectFacetContext(activeText, normalizeFacets(facetsRef.current));
         if (focusedLeaf) {
           negationPrefixRef.current =
             focusedLeaf.type === 'not' ? negationPrefixFromSource(focusedLeaf.source) : '';

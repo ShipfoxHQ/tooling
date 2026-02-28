@@ -1,6 +1,6 @@
 import {Icon} from 'components/icon';
 import {Kbd} from 'components/kbd';
-import {cn} from '../../../utils/cn';
+import {cn} from 'utils/cn';
 
 interface FooterBadgeProps {
   label: string;

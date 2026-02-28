@@ -1,4 +1,4 @@
-import {cn} from '../../../utils/cn';
+import {cn} from 'utils/cn';
 import type {SuggestionItem} from './types';
 
 interface ShipQLSuggestionItemProps {
@@ -18,7 +18,7 @@ export function ShipQLSuggestionItem({
 }: ShipQLSuggestionItemProps) {
   if (item.type === 'section-header') {
     return (
-      <div className="flex w-full items-end px-6 h-24 shrink-0">
+      <div className="flex w-full items-center px-8 h-30 shrink-0">
         <span className="text-xs font-normal uppercase text-foreground-neutral-muted">
           {item.label}
         </span>

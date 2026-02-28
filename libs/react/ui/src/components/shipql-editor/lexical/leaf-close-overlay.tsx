@@ -1,7 +1,7 @@
 import {useLexicalComposerContext} from '@lexical/react/LexicalComposerContext';
+import {Button} from 'components/button';
 import {useCallback, useEffect, useRef, useState} from 'react';
-import {cn} from '../../../utils/cn';
-import {Button} from '../../button/button';
+import {cn} from 'utils/cn';
 import {REMOVE_LEAF_COMMAND} from './shipql-plugin';
 
 interface HoveredLeaf {

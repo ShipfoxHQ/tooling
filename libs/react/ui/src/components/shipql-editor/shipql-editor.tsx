@@ -1,7 +1,10 @@
 import type {AstNode} from '@shipfox/shipql-parser';
 import {lazy, Suspense, useCallback, useRef, useState} from 'react';
-import {cn} from '../../utils/cn';
+import {cn} from 'utils/cn';
 import type {LeafAstNode} from './lexical/shipql-leaf-node';
+import type {FacetDef} from './suggestions/types';
+
+export type {FacetDef, RangeFacetConfig} from './suggestions/types';
 
 export interface ShipQLEditorProps {
   defaultValue?: string;
@@ -10,7 +13,7 @@ export interface ShipQLEditorProps {
   placeholder?: string;
   className?: string;
   disabled?: boolean;
-  facets?: string[];
+  facets?: FacetDef[];
   currentFacet?: string | null;
   setCurrentFacet?: (facet: string | null) => void;
   valueSuggestions?: string[];

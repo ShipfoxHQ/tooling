@@ -3,6 +3,7 @@ import type {Meta, StoryObj} from '@storybook/react';
 import {useEffect, useState} from 'react';
 import type {LeafAstNode} from './lexical/shipql-leaf-node';
 import {ShipQLEditor} from './shipql-editor';
+import type {FacetDef} from './suggestions/types';
 
 const meta = {
   title: 'Components/ShipQLEditor',
@@ -76,7 +77,23 @@ export const Disabled: Story = {
   },
 };
 
-const FACETS = ['status', 'env', 'service', 'repository'];
+// ─── Shared facet definitions ─────────────────────────────────────────────────
+
+const FACETS: FacetDef[] = [
+  'status',
+  'env',
+  'service',
+  'repository',
+  {
+    name: 'duration',
+    config: {
+      type: 'range',
+      min: '0',
+      max: '500',
+      presets: ['>10m', '>30m', '>1h', '>6h'],
+    },
+  },
+];
 
 const FACET_VALUES: Record<string, string[]> = {
   status: ['success', 'failed', 'cancelled', 'running'],
@@ -84,6 +101,8 @@ const FACET_VALUES: Record<string, string[]> = {
   service: ['payments', 'auth', 'api', 'worker'],
   repository: ['shipfox-api', 'shipfox-web', 'tooling'],
 };
+
+// ─── With Suggestions ─────────────────────────────────────────────────────────
 
 function WithSuggestionsDemo(args: Parameters<typeof ShipQLEditor>[0]) {
   const [currentFacet, setCurrentFacet] = useState<string | null>(null);
@@ -96,7 +115,7 @@ function WithSuggestionsDemo(args: Parameters<typeof ShipQLEditor>[0]) {
       currentFacet={currentFacet}
       setCurrentFacet={setCurrentFacet}
       valueSuggestions={valueSuggestions}
-      placeholder="Type a field or value…"
+      placeholder="Add filter..."
     />
   );
 }
@@ -104,6 +123,8 @@ function WithSuggestionsDemo(args: Parameters<typeof ShipQLEditor>[0]) {
 export const WithSuggestions: Story = {
   render: (args) => <WithSuggestionsDemo {...args} />,
 };
+
+// ─── With Async Suggestions ───────────────────────────────────────────────────
 
 function WithAsyncSuggestionsDemo(args: Parameters<typeof ShipQLEditor>[0]) {
   const [currentFacet, setCurrentFacet] = useState<string | null>(null);
@@ -133,7 +154,7 @@ function WithAsyncSuggestionsDemo(args: Parameters<typeof ShipQLEditor>[0]) {
       setCurrentFacet={setCurrentFacet}
       valueSuggestions={valueSuggestions}
       isLoadingValueSuggestions={isLoadingValueSuggestions}
-      placeholder="Type to search — suggestions fetched dynamically…"
+      placeholder="Add filter..."
     />
   );
 }
