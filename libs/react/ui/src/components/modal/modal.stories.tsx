@@ -288,7 +288,10 @@ export const GithubActions: Story = {
                   />
                   <div className={cn('relative overflow-hidden bg-transparent p-1 rounded-8')}>
                     {!isTest && (
-                      <div className="absolute inset-0" style={{borderRadius: 'calc(0.5rem * 0.96)'}}>
+                      <div
+                        className="absolute inset-0"
+                        style={{borderRadius: 'calc(0.5rem * 0.96)'}}
+                      >
                         <MovingBorder duration={6000} rx="30%" ry="30%">
                           <div className="h-100 w-200 bg-[radial-gradient(#ff9e7a_40%,transparent_60%)]" />
                         </MovingBorder>

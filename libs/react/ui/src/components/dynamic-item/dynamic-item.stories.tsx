@@ -1,8 +1,5 @@
 import type {Meta, StoryObj} from '@storybook/react';
 import {Button} from 'components/button/button';
-// In Playwright (Argos CI) navigator.webdriver is true. Skip network-dependent
-// assets and JS-driven animations so screenshots are deterministic.
-const isTest = typeof navigator !== 'undefined' && navigator.webdriver === true;
 import {ItemTitle} from 'components/item';
 import {MovingBorder} from 'components/moving-border';
 import {cn} from 'utils/cn';
@@ -13,6 +10,10 @@ import {Avatar} from '../avatar/avatar';
 import {AvatarGroup, AvatarGroupTooltip} from '../avatar/avatar-group';
 import {Icon} from '../icon/icon';
 import {DynamicItem} from './dynamic-item';
+
+// In Playwright (Argos CI) navigator.webdriver is true. Skip network-dependent
+// assets and JS-driven animations so screenshots are deterministic.
+const isTest = typeof navigator !== 'undefined' && navigator.webdriver === true;
 
 const meta = {
   title: 'Components/DynamicItem',
