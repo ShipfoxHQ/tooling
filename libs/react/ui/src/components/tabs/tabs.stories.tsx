@@ -70,6 +70,10 @@ export const Controlled: Story = {
 
 export const MultipleTabs: Story = {
   args: {defaultValue: 'tab1'} as never,
+  play: async (ctx) => {
+    await new Promise((resolve) => setTimeout(resolve, 100));
+    await argosScreenshot(ctx, 'Tabs Multiple');
+  },
   render: () => (
     <div className="bg-background-neutral-background p-24 w-[80vw]">
       <Tabs defaultValue="tab1">
