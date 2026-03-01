@@ -16,6 +16,7 @@ import type {ShipQLEditorInnerProps} from './shipql-editor';
 
 const INPUT_CLASSES =
   'block w-full rounded-6 bg-background-field-base py-2 pl-7 pr-58 sm:pr-64 text-md text-foreground-neutral-base caret-foreground-neutral-base outline-none focus:border-border-highlights-interactive shadow-button-neutral';
+const INPUT_ERROR_CLASSES = 'shadow-border-error';
 const BUTTON_CLASSES =
   'shrink-0 text-foreground-neutral-subtle hover:text-foreground-neutral-base transition-all duration-150 flex justify-center items-center cursor-pointer w-28 sm:w-32 h-full';
 
@@ -28,6 +29,7 @@ export default function ShipQLEditorInner({
   mode,
   text,
   editorKey,
+  isError,
   onTextChange,
   onClear,
   onToggleMode,
@@ -57,7 +59,11 @@ export default function ShipQLEditorInner({
               <ContentEditable
                 id="shipql-editor"
                 aria-label="ShipQL query editor"
-                className={cn(INPUT_CLASSES, disabled && 'pointer-events-none opacity-50')}
+                className={cn(
+                  INPUT_CLASSES,
+                  isError && INPUT_ERROR_CLASSES,
+                  disabled && 'pointer-events-none opacity-50',
+                )}
               />
             }
             placeholder={
@@ -80,6 +86,7 @@ export default function ShipQLEditorInner({
           ref={(el) => el?.focus()}
           aria-label="ShipQL query editor"
           className={cn(INPUT_CLASSES, disabled && 'pointer-events-none opacity-50')}
+          aria-invalid={isError}
           value={text}
           onChange={(e) => onTextChange(e.target.value)}
           placeholder={placeholder}
