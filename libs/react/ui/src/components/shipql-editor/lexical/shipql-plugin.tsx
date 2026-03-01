@@ -10,8 +10,10 @@ import {
   $isTextNode,
   $setSelection,
   COMMAND_PRIORITY_HIGH,
+  COMMAND_PRIORITY_NORMAL,
   createCommand,
   INSERT_PARAGRAPH_COMMAND,
+  KEY_ARROW_RIGHT_COMMAND,
   KEY_ENTER_COMMAND,
   type LexicalNode,
   type ParagraphNode,
@@ -134,6 +136,50 @@ export function ShipQLPlugin({onLeafFocus}: ShipQLPluginProps): null {
       INSERT_PARAGRAPH_COMMAND,
       () => true,
       COMMAND_PRIORITY_HIGH,
+    );
+
+    // When the cursor is on a leaf that is the last node in the paragraph,
+    // right arrow behaves like space — it moves the cursor out of the leaf.
+    const unregisterArrowRight = editor.registerCommand(
+      KEY_ARROW_RIGHT_COMMAND,
+      (event) => {
+        let shouldHandle = false;
+        editor.getEditorState().read(() => {
+          const sel = $getSelection();
+          if (!$isRangeSelection(sel)) return;
+          const anchor = sel.anchor.getNode();
+          if (!$isShipQLLeafNode(anchor)) return;
+          const next = anchor.getNextSibling();
+          // Only handle when the leaf is at the end of the input.
+          if (!next || ($isTextNode(next) && next.getTextContentSize() === 0)) {
+            shouldHandle = true;
+          }
+        });
+        if (!shouldHandle) return false;
+        event?.preventDefault();
+        editor.update(() => {
+          const sel = $getSelection();
+          if (!$isRangeSelection(sel)) return;
+          const anchor = sel.anchor.getNode();
+          if (!$isShipQLLeafNode(anchor)) return;
+          const para = $getRoot().getFirstChild() as ParagraphNode | null;
+          if (!para) return;
+          const next = anchor.getNextSibling();
+          const newSel = $createRangeSelection();
+          if (next && $isTextNode(next)) {
+            newSel.anchor.set(next.getKey(), 0, 'text');
+            newSel.focus.set(next.getKey(), 0, 'text');
+          } else {
+            const spaceNode = $createTextNode(' ');
+            para.append(spaceNode);
+            newSel.anchor.set(spaceNode.getKey(), 1, 'text');
+            newSel.focus.set(spaceNode.getKey(), 1, 'text');
+          }
+          $setSelection(newSel);
+        });
+        return true;
+      },
+      COMMAND_PRIORITY_NORMAL,
     );
 
     const unregisterRemoveLeaf = editor.registerCommand(
@@ -295,9 +341,39 @@ export function ShipQLPlugin({onLeafFocus}: ShipQLPluginProps): null {
       );
     });
 
+    // Perform the initial tokenization pass directly. The update listener is
+    // registered after Lexical has already committed its initialConfig editorState
+    // (useEffect runs post-paint), so the listener never fires for the first render.
+    // We do the full rebuild here instead of relying on the listener being triggered.
+    editor.update(() => {
+      const para = $getRoot().getFirstChild() as ParagraphNode | null;
+      if (!para) return;
+      const text = para.getTextContent();
+      if (!text) return;
+      const children = para.getChildren();
+      let ast: AstNode | null = null;
+      try {
+        ast = parse(text);
+      } catch {
+        return;
+      }
+      if (!ast) return;
+      const segments = tokenize(text, collectLeaves(ast));
+      if (!needsRebuild(children, segments)) return;
+      para.clear();
+      for (const seg of segments) {
+        para.append(
+          seg.kind === 'leaf'
+            ? $createShipQLLeafNode(seg.text, seg.node)
+            : $createTextNode(seg.text),
+        );
+      }
+    });
+
     return () => {
       unregisterEnter();
       unregisterParagraph();
+      unregisterArrowRight();
       unregisterRemoveLeaf();
       unregisterUpdate();
     };
