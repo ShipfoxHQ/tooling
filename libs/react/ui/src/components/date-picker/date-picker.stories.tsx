@@ -10,6 +10,9 @@ import {
 } from '../date-time-range-picker/date-time-range-picker';
 import {DatePicker} from './date-picker';
 
+// Fixed date to prevent calendar screenshots from changing day-to-day.
+const FIXED_DATE = new Date(2025, 5, 15); // June 15, 2025
+
 const meta: Meta<typeof DatePicker> = {
   title: 'Components/DatePicker',
   component: DatePicker,
@@ -54,7 +57,7 @@ async function openCalendarAndScreenshot(ctx: StoryContext, screenshotName: stri
 export const DatePickerStory: Story = {
   play: (ctx) => openCalendarAndScreenshot(ctx, 'DatePicker Calendar Open'),
   render: () => {
-    const [date, setDate] = useState<Date | undefined>(new Date());
+    const [date, setDate] = useState<Date | undefined>(FIXED_DATE);
     return (
       <div className="relative flex h-600 w-500 items-center justify-center rounded-16 bg-background-subtle-base shadow-tooltip overflow-visible">
         <DatePicker
@@ -71,7 +74,7 @@ export const DatePickerStory: Story = {
 export const DatePickerWithThresholdStory: Story = {
   play: (ctx) => openCalendarAndScreenshot(ctx, 'DatePicker With Threshold Calendar Open'),
   render: () => {
-    const [date, setDate] = useState<Date | undefined>(new Date());
+    const [date, setDate] = useState<Date | undefined>(FIXED_DATE);
     return (
       <div className="relative flex h-600 w-500 items-center justify-center rounded-16 bg-background-subtle-base shadow-tooltip overflow-visible">
         <DatePicker
@@ -90,8 +93,8 @@ export const DateRangePickerStory: Story = {
   play: (ctx) => openCalendarAndScreenshot(ctx, 'DateRangePicker Calendar Open'),
   render: () => {
     const [dateRange, setDateRange] = useState<DateRange | undefined>({
-      start: new Date(),
-      end: subDays(new Date(), -30),
+      start: FIXED_DATE,
+      end: subDays(FIXED_DATE, -30),
     });
     return (
       <div className="relative flex h-600 w-800 items-center justify-center rounded-16 bg-background-subtle-base shadow-tooltip overflow-visible">
@@ -109,7 +112,7 @@ export const DateRangePickerStory: Story = {
 
 export const AllStates: Story = {
   render: () => {
-    const now = new Date();
+    const now = FIXED_DATE;
     const past = subDays(now, 30);
     return (
       <div className="flex flex-col gap-32 p-32 min-w-350">
@@ -125,7 +128,7 @@ export const AllStates: Story = {
             <div>
               <p className="text-xs text-foreground-neutral-subtle mb-8 font-mono">FILLED</p>
               <DatePicker
-                date={new Date()}
+                date={FIXED_DATE}
                 onClear={() => {
                   /* noop for demo */
                 }}
@@ -135,7 +138,7 @@ export const AllStates: Story = {
             <div>
               <p className="text-xs text-foreground-neutral-subtle mb-8 font-mono">ERROR</p>
               <DatePicker
-                date={new Date()}
+                date={FIXED_DATE}
                 onClear={() => {
                   /* noop for demo */
                 }}
@@ -213,7 +216,7 @@ export const AllStates: Story = {
 
 export const DateFormats: Story = {
   render: () => {
-    const [date, setDate] = useState<Date | undefined>(new Date());
+    const [date, setDate] = useState<Date | undefined>(FIXED_DATE);
     const formats = [
       {format: 'MMMM dd, yyyy', placeholder: 'Month DD, YYYY', label: 'MMMM dd, yyyy'},
       {format: 'MMMM d, yyyy', placeholder: 'Month D, YYYY', label: 'MMMM d, yyyy'},
