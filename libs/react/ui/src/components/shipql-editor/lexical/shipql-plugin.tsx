@@ -152,11 +152,20 @@ export function ShipQLPlugin({onLeafFocus}: ShipQLPluginProps): null {
           const para = $getRoot().getFirstChild() as ParagraphNode | null;
           if (!para) return;
 
-          // Find the leaf node's source text from its key.
+          // Find the leaf node's source text from its key. When a plain
+          // TextNode sits immediately after the leaf (no leading space) the
+          // parser treats them as one token — e.g. [Leaf("status:"), Text("s")]
+          // parses as "status:s". Include that trailing fragment so
+          // removeBySource can match the full AST source.
           let targetSource: string | null = null;
           for (const child of para.getChildren()) {
             if ($isShipQLLeafNode(child) && child.getKey() === nodeKey) {
               targetSource = child.getTextContent();
+              const next = child.getNextSibling();
+              if (next && $isTextNode(next) && !$isShipQLLeafNode(next)) {
+                const trailing = next.getTextContent().split(' ')[0];
+                if (trailing) targetSource += trailing;
+              }
               break;
             }
           }

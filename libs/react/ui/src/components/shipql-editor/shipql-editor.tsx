@@ -28,6 +28,7 @@ export interface ShipQLEditorProps {
   setCurrentFacet?: (facet: string | null) => void;
   valueSuggestions?: string[];
   isLoadingValueSuggestions?: boolean;
+  onPartialValueChange?: (partialValue: string) => void;
 }
 
 export interface ShipQLEditorInnerProps extends ShipQLEditorProps {

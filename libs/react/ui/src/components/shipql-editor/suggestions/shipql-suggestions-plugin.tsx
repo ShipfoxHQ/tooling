@@ -47,14 +47,25 @@ interface ShipQLSuggestionsPluginProps {
   applyRef: React.RefObject<((value: string) => void) | null>;
   negationPrefixRef: React.RefObject<string>;
   focusedLeafNode: LeafAstNode | null;
+  onPartialValueChange?: (partialValue: string) => void;
 }
 
 function getActiveSegment(para: ParagraphNode): string {
   const children = para.getChildren();
   let active = '';
   for (let i = children.length - 1; i >= 0; i--) {
-    if ($isShipQLLeafNode(children[i])) break;
-    active = children[i].getTextContent() + active;
+    const child = children[i];
+    if ($isShipQLLeafNode(child)) {
+      // When trailing text starts immediately after a leaf that contains ':',
+      // the user is typing a value continuation — e.g.
+      // [Leaf("status:"), Text("s")] should yield "status:s", not just "s".
+      const leafText = child.getTextContent();
+      if (active.length > 0 && active[0] !== ' ' && leafText.includes(':')) {
+        active = leafText + active;
+      }
+      break;
+    }
+    active = child.getTextContent() + active;
   }
   return active.trimStart();
 }
@@ -75,6 +86,7 @@ export function ShipQLSuggestionsPlugin({
   applyRef,
   negationPrefixRef,
   focusedLeafNode,
+  onPartialValueChange,
 }: ShipQLSuggestionsPluginProps) {
   const [editor] = useLexicalComposerContext();
 
@@ -103,6 +115,8 @@ export function ShipQLSuggestionsPlugin({
   focusedLeafNodeRef.current = focusedLeafNode;
   const isLoadingValueSuggestionsRef = useRef(isLoadingValueSuggestions);
   isLoadingValueSuggestionsRef.current = isLoadingValueSuggestions;
+  const onPartialValueChangeRef = useRef(onPartialValueChange);
+  onPartialValueChangeRef.current = onPartialValueChange;
 
   const isFocusedRef = useRef(false);
   const hasNavigatedRef = useRef(false);
@@ -114,17 +128,37 @@ export function ShipQLSuggestionsPlugin({
     prevFocusedLeafRef.current = focusedLeafNode;
 
     if (focusedLeafNode) {
-      const facet = extractFacetFromLeaf(focusedLeafNode);
-      negationPrefixRef.current =
-        focusedLeafNode.type === 'not' ? negationPrefixFromSource(focusedLeafNode.source) : '';
-      setCurrentFacetRef.current(facet ?? null);
-      const leafItems = buildSuggestionItems(
-        facetsRef.current,
-        valueSuggestionsRef.current,
-        '',
-        focusedLeafNode,
-      );
-      setItemsRef.current(leafItems);
+      if (focusedLeafNode.type === 'text') {
+        // Text-type leaves (e.g. "status:") aren't real facet:value nodes.
+        // Detect facet context from the text content, mirroring the update
+        // listener's handling of text-type leaves.
+        const activeText = focusedLeafNode.value;
+        const facetCtx = detectFacetContext(activeText, normalizeFacets(facetsRef.current));
+        negationPrefixRef.current = facetCtx?.negationPrefix ?? '';
+        setCurrentFacetRef.current(facetCtx?.facet ?? null);
+        onPartialValueChangeRef.current?.(facetCtx?.partialValue ?? '');
+        const leafItems = buildSuggestionItems(
+          facetsRef.current,
+          valueSuggestionsRef.current,
+          activeText,
+          null,
+        );
+        setItemsRef.current(leafItems);
+      } else {
+        const facet = extractFacetFromLeaf(focusedLeafNode);
+        negationPrefixRef.current =
+          focusedLeafNode.type === 'not' ? negationPrefixFromSource(focusedLeafNode.source) : '';
+        setCurrentFacetRef.current(facet ?? null);
+        // Don't call onPartialValueChange here — the update listener that
+        // preceded this rebuild already set the correct partial value.
+        const leafItems = buildSuggestionItems(
+          facetsRef.current,
+          valueSuggestionsRef.current,
+          '',
+          focusedLeafNode,
+        );
+        setItemsRef.current(leafItems);
+      }
       hasNavigatedRef.current = false;
       setSelectedIndexRef.current(-1);
       if (isFocusedRef.current) setOpenRef.current(true);
@@ -137,6 +171,7 @@ export function ShipQLSuggestionsPlugin({
         const facetCtx = detectFacetContext(activeText, normalizeFacets(facetsRef.current));
         negationPrefixRef.current = facetCtx?.negationPrefix ?? '';
         setCurrentFacetRef.current(facetCtx?.facet ?? null);
+        onPartialValueChangeRef.current?.(facetCtx?.partialValue ?? '');
         const newItems = buildSuggestionItems(
           facetsRef.current,
           valueSuggestionsRef.current,
@@ -153,7 +188,7 @@ export function ShipQLSuggestionsPlugin({
   // ── Reactive regeneration when facets/valueSuggestions change ──────────────
   useEffect(() => {
     if (!openRef.current) return;
-    if (prevFocusedLeafRef.current) {
+    if (prevFocusedLeafRef.current && prevFocusedLeafRef.current.type !== 'text') {
       const leafItems = buildSuggestionItems(
         facets,
         valueSuggestions,
@@ -161,7 +196,14 @@ export function ShipQLSuggestionsPlugin({
         prevFocusedLeafRef.current,
       );
       setItemsRef.current(leafItems);
-      setOpenRef.current(isFocusedRef.current);
+      setOpenRef.current(isSelectingRef.current || isFocusedRef.current);
+    } else if (prevFocusedLeafRef.current?.type === 'text') {
+      // Text-type leaf (e.g. "status:") lives inside a ShipQLLeafNode, so
+      // getActiveSegment() would return '' — use the leaf's value instead.
+      const activeText = prevFocusedLeafRef.current.value;
+      const newItems = buildSuggestionItems(facets, valueSuggestions, activeText, null);
+      setItemsRef.current(newItems);
+      setOpenRef.current(isSelectingRef.current || isFocusedRef.current);
     } else {
       editor.getEditorState().read(() => {
         const para = $getRoot().getFirstChild() as ParagraphNode | null;
@@ -171,83 +213,105 @@ export function ShipQLSuggestionsPlugin({
         setItemsRef.current(newItems);
         hasNavigatedRef.current = false;
         setSelectedIndexRef.current(-1);
-        setOpenRef.current(isFocusedRef.current);
+        setOpenRef.current(isSelectingRef.current || isFocusedRef.current);
       });
     }
-  }, [facets, valueSuggestions, editor]);
+  }, [facets, valueSuggestions, editor, isSelectingRef]);
 
   // ── Apply function ──────────────────────────────────────────────────────────
   useEffect(() => {
     applyRef.current = (selectedValue: string) => {
-      editor.update(() => {
-        const para = $getRoot().getFirstChild() as ParagraphNode | null;
-        if (!para) return;
+      const isFacetSelection = !currentFacetRef.current;
 
-        const insertText = currentFacetRef.current
-          ? `${negationPrefixRef.current}${currentFacetRef.current}:${selectedValue} `
-          : `${selectedValue}:`;
+      editor.update(
+        () => {
+          const para = $getRoot().getFirstChild() as ParagraphNode | null;
+          if (!para) return;
 
-        // Case 1: Cursor is inside a focused leaf chip — replace the chip in-place
-        if (focusedLeafNodeRef.current) {
+          const insertText = currentFacetRef.current
+            ? `${negationPrefixRef.current}${currentFacetRef.current}:${selectedValue} `
+            : `${selectedValue}:`;
+
+          // Case 1: Cursor is inside a focused leaf chip — replace the chip in-place
+          if (focusedLeafNodeRef.current) {
+            const sel = $getSelection();
+            if ($isRangeSelection(sel)) {
+              const anchor = sel.anchor.getNode();
+              if ($isShipQLLeafNode(anchor)) {
+                const newNode = $createTextNode(insertText);
+                anchor.insertBefore(newNode);
+                anchor.remove();
+                const newSel = $createRangeSelection();
+                const len = newNode.getTextContentSize();
+                newSel.anchor.set(newNode.getKey(), len, 'text');
+                newSel.focus.set(newNode.getKey(), len, 'text');
+                $setSelection(newSel);
+                return;
+              }
+            }
+          }
+
+          // Case 2: Cursor is in a plain text node — replace that node's content
           const sel = $getSelection();
           if ($isRangeSelection(sel)) {
             const anchor = sel.anchor.getNode();
-            if ($isShipQLLeafNode(anchor)) {
-              const newNode = $createTextNode(insertText);
-              anchor.insertBefore(newNode);
-              anchor.remove();
+            if ($isTextNode(anchor) && !$isShipQLLeafNode(anchor)) {
+              const prevSibling = anchor.getPreviousSibling();
+              const prevText = prevSibling?.getTextContent() ?? '';
+              const needsSpace = prevText.length > 0 && !prevText.endsWith(' ');
+              const finalText = needsSpace ? ` ${insertText}` : insertText;
+              anchor.setTextContent(finalText);
               const newSel = $createRangeSelection();
-              const len = newNode.getTextContentSize();
-              newSel.anchor.set(newNode.getKey(), len, 'text');
-              newSel.focus.set(newNode.getKey(), len, 'text');
+              newSel.anchor.set(anchor.getKey(), finalText.length, 'text');
+              newSel.focus.set(anchor.getKey(), finalText.length, 'text');
               $setSelection(newSel);
               return;
             }
           }
-        }
 
-        // Case 2: Cursor is in a plain text node — replace that node's content
-        const sel = $getSelection();
-        if ($isRangeSelection(sel)) {
-          const anchor = sel.anchor.getNode();
-          if ($isTextNode(anchor) && !$isShipQLLeafNode(anchor)) {
-            const prevSibling = anchor.getPreviousSibling();
-            const prevText = prevSibling?.getTextContent() ?? '';
-            const needsSpace = prevText.length > 0 && !prevText.endsWith(' ');
-            const finalText = needsSpace ? ` ${insertText}` : insertText;
-            anchor.setTextContent(finalText);
-            const newSel = $createRangeSelection();
-            newSel.anchor.set(anchor.getKey(), finalText.length, 'text');
-            newSel.focus.set(anchor.getKey(), finalText.length, 'text');
-            $setSelection(newSel);
-            return;
+          // Case 3: Fallback — append after last leaf chip
+          const children = para.getChildren();
+          let lastLeafIdx = -1;
+          for (let i = children.length - 1; i >= 0; i--) {
+            if ($isShipQLLeafNode(children[i])) {
+              lastLeafIdx = i;
+              break;
+            }
           }
-        }
-
-        // Case 3: Fallback — append after last leaf chip
-        const children = para.getChildren();
-        let lastLeafIdx = -1;
-        for (let i = children.length - 1; i >= 0; i--) {
-          if ($isShipQLLeafNode(children[i])) {
-            lastLeafIdx = i;
-            break;
+          for (let i = children.length - 1; i > lastLeafIdx; i--) {
+            children[i].remove();
           }
-        }
-        for (let i = children.length - 1; i > lastLeafIdx; i--) {
-          children[i].remove();
-        }
-        const currentText = para.getTextContent();
-        const finalText =
-          currentText.length > 0 && !currentText.endsWith(' ') ? ` ${insertText}` : insertText;
-        const newNode = $createTextNode(finalText);
-        para.append(newNode);
-        const newSel = $createRangeSelection();
-        const len = newNode.getTextContentSize();
-        newSel.anchor.set(newNode.getKey(), len, 'text');
-        newSel.focus.set(newNode.getKey(), len, 'text');
-        $setSelection(newSel);
-      });
+          const currentText = para.getTextContent();
+          const finalText =
+            currentText.length > 0 && !currentText.endsWith(' ') ? ` ${insertText}` : insertText;
+          const newNode = $createTextNode(finalText);
+          para.append(newNode);
+          const newSel = $createRangeSelection();
+          const len = newNode.getTextContentSize();
+          newSel.anchor.set(newNode.getKey(), len, 'text');
+          newSel.focus.set(newNode.getKey(), len, 'text');
+          $setSelection(newSel);
+        },
+        // Tag facet selections so the update listener skips them — we handle
+        // state updates below to avoid the intermediate empty-items state.
+        isFacetSelection ? {tag: 'shipql-apply'} : undefined,
+      );
 
+      // For facet selections (e.g. "status" → inserts "status:"), notify the
+      // parent directly. The update listener is skipped (tagged) because it
+      // would call buildSuggestionItems with stale empty valueSuggestions,
+      // causing a flash of "No suggestions found".
+      if (isFacetSelection) {
+        setCurrentFacetRef.current(selectedValue);
+        onPartialValueChangeRef.current?.('');
+        negationPrefixRef.current = '';
+        setOpenRef.current(true);
+      }
+
+      // Defer focus so it fires after the browser's blur event (which hasn't
+      // fired yet during the mousedown handler that calls apply). A synchronous
+      // focus() call here is a no-op because the editor is still focused.
+      setTimeout(() => editor.focus(), 0);
       hasNavigatedRef.current = false;
       setSelectedIndexRef.current(-1);
     };
@@ -380,7 +444,7 @@ export function ShipQLSuggestionsPlugin({
     );
 
     const unregisterUpdate = editor.registerUpdateListener(({editorState, tags}) => {
-      if (tags.has('shipql-rebuild')) return;
+      if (tags.has('shipql-rebuild') || tags.has('shipql-apply')) return;
 
       editorState.read(() => {
         const para = $getRoot().getFirstChild() as ParagraphNode | null;
@@ -394,8 +458,12 @@ export function ShipQLSuggestionsPlugin({
           const anchor = sel.anchor.getNode();
           if ($isShipQLLeafNode(anchor)) {
             const shipqlNode = anchor.getShipQLNode();
-            if (shipqlNode.type === 'text') {
-              activeText = anchor.getTextContent();
+            const textContent = anchor.getTextContent();
+            if (shipqlNode.type === 'text' || textContent !== shipqlNode.source) {
+              // Text-type leaf, or user is actively typing inside a leaf
+              // (text content diverged from the AST source). Use the live
+              // text so detectFacetContext can extract the partial value.
+              activeText = textContent;
               focusedLeaf = null;
             } else {
               focusedLeaf = shipqlNode;
@@ -412,6 +480,7 @@ export function ShipQLSuggestionsPlugin({
           negationPrefixRef.current = facetCtx?.negationPrefix ?? '';
           setCurrentFacetRef.current(facetCtx?.facet ?? null);
         }
+        onPartialValueChangeRef.current?.(facetCtx?.partialValue ?? '');
 
         const newItems = buildSuggestionItems(
           facetsRef.current,
@@ -423,7 +492,7 @@ export function ShipQLSuggestionsPlugin({
         hasNavigatedRef.current = false;
         setSelectedIndexRef.current(-1);
 
-        setOpenRef.current(isFocusedRef.current);
+        setOpenRef.current(isSelectingRef.current || isFocusedRef.current);
       });
     });
 

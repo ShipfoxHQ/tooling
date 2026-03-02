@@ -149,15 +149,11 @@ export function buildSuggestionItems(
       ];
     }
 
-    // Regular facet — show filtered value suggestions
-    const partial = facetCtx.partialValue.toLowerCase();
-    const filtered = partial
-      ? valueSuggestions.filter((v) => v.toLowerCase().includes(partial))
-      : valueSuggestions;
-    if (filtered.length === 0) return [];
+    // Regular facet — show value suggestions (parent is responsible for filtering)
+    if (valueSuggestions.length === 0) return [];
     return [
       header(facetCtx.facet.toUpperCase()),
-      ...filtered.map((v) => ({
+      ...valueSuggestions.map((v) => ({
         value: v,
         label: v,
         icon: <Icon name="arrowRightLongFill" className="size-16 text-foreground-neutral-subtle" />,
