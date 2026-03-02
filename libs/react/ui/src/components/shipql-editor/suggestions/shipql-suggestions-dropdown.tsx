@@ -4,7 +4,7 @@ import {Skeleton} from 'components/skeleton';
 import {useCallback, useEffect, useRef} from 'react';
 import {ShipQLRangeFacetPanel} from './shipql-range-facet-panel';
 import {ShipQLSuggestionItem} from './shipql-suggestion-item';
-import {ShipQLSuggestionsFooter} from './shipql-suggestions-footer';
+import {ShipQLSuggestionsFooter, type SyntaxHintMode} from './shipql-suggestions-footer';
 import type {SuggestionItem} from './types';
 
 interface ShipQLSuggestionsDropdownProps {
@@ -16,6 +16,10 @@ interface ShipQLSuggestionsDropdownProps {
   isNegated: boolean;
   onToggleNegate: (negated: boolean) => void;
   showValueActions: boolean;
+  showSyntaxHelp: boolean;
+  onToggleSyntaxHelp: () => void;
+  isError?: boolean;
+  syntaxHintMode: SyntaxHintMode;
 }
 
 export function ShipQLSuggestionsDropdown({
@@ -27,6 +31,10 @@ export function ShipQLSuggestionsDropdown({
   isNegated,
   onToggleNegate,
   showValueActions,
+  showSyntaxHelp,
+  onToggleSyntaxHelp,
+  isError,
+  syntaxHintMode,
 }: ShipQLSuggestionsDropdownProps) {
   const itemRefs = useRef<(HTMLButtonElement | null)[]>([]);
 
@@ -85,7 +93,13 @@ export function ShipQLSuggestionsDropdown({
           onApply={onSelect}
         />
       </ScrollArea>
-      <ShipQLSuggestionsFooter showValueActions={false} />
+      <ShipQLSuggestionsFooter
+        showValueActions={false}
+        showSyntaxHelp={showSyntaxHelp}
+        onToggleSyntaxHelp={onToggleSyntaxHelp}
+        isError={isError}
+        syntaxHintMode="range"
+      />
     </div>
   ) : (
     <div className="flex flex-col overflow-hidden rounded-8 bg-background-neutral-base shadow-tooltip max-h-[min(70vh,320px)] min-h-0">
@@ -115,7 +129,13 @@ export function ShipQLSuggestionsDropdown({
           )}
         </div>
       </ScrollArea>
-      <ShipQLSuggestionsFooter showValueActions={showValueActions} />
+      <ShipQLSuggestionsFooter
+        showValueActions={showValueActions}
+        showSyntaxHelp={showSyntaxHelp}
+        onToggleSyntaxHelp={onToggleSyntaxHelp}
+        isError={isError}
+        syntaxHintMode={syntaxHintMode}
+      />
     </div>
   );
 

@@ -17,6 +17,7 @@ import {ShipQLLeafNode} from './lexical/shipql-leaf-node';
 import {ShipQLPlugin} from './lexical/shipql-plugin';
 import type {ShipQLEditorInnerProps} from './shipql-editor';
 import {ShipQLSuggestionsDropdown} from './suggestions/shipql-suggestions-dropdown';
+import type {SyntaxHintMode} from './suggestions/shipql-suggestions-footer';
 import {ShipQLSuggestionsPlugin} from './suggestions/shipql-suggestions-plugin';
 import type {SuggestionItem} from './suggestions/types';
 
@@ -50,6 +51,7 @@ export default function ShipQLEditorInner({
   const [items, setItems] = useState<SuggestionItem[]>([]);
   const [focusedLeafNode, setFocusedLeafNode] = useState<LeafAstNode | null>(null);
   const [isNegated, setIsNegated] = useState(false);
+  const [showSyntaxHelp, setShowSyntaxHelp] = useState(false);
 
   const isSelectingRef = useRef(false);
   const applyRef = useRef<((value: string) => void) | null>(null);
@@ -57,6 +59,8 @@ export default function ShipQLEditorInner({
 
   const hasSuggestions = Boolean(facets && facets.length > 0);
   const showValueActions = Boolean(currentFacet);
+  const isRangeContext = items.length === 1 && items[0]?.type === 'range-slider';
+  const syntaxHintMode: SyntaxHintMode = isRangeContext ? 'range' : 'value';
 
   const handleToggleNegate = useCallback((negated: boolean) => {
     setIsNegated(negated);
@@ -80,6 +84,10 @@ export default function ShipQLEditorInner({
 
   const handleSelect = useCallback((value: string) => {
     applyRef.current?.(value);
+  }, []);
+
+  const handleToggleSyntaxHelp = useCallback(() => {
+    setShowSyntaxHelp((prev) => !prev);
   }, []);
 
   return (
@@ -170,6 +178,10 @@ export default function ShipQLEditorInner({
               isNegated={isNegated}
               onToggleNegate={handleToggleNegate}
               showValueActions={showValueActions}
+              showSyntaxHelp={showSyntaxHelp}
+              onToggleSyntaxHelp={handleToggleSyntaxHelp}
+              isError={isError}
+              syntaxHintMode={syntaxHintMode}
             />
           )}
         </Popover>
