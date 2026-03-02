@@ -37,6 +37,10 @@ export const Default: Story = {
 
 export const Controlled: Story = {
   args: {value: 'analytics', onValueChange: () => undefined} as never,
+  play: async (ctx) => {
+    await new Promise((resolve) => setTimeout(resolve, 100));
+    await argosScreenshot(ctx, 'Tabs Controlled');
+  },
   render: () => {
     const [value, setValue] = useState('analytics');
     return (
