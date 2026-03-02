@@ -185,6 +185,7 @@ export const DatePicker = forwardRef<HTMLInputElement, DatePickerProps>(
         <PopoverContent className="w-auto p-0" align="start">
           <Calendar
             mode="single"
+            defaultMonth={date}
             selected={date}
             onSelect={handleSelect}
             disabled={disabledDates}

@@ -26,21 +26,12 @@ const performanceData = [
   {label: '6', dataA: 180, dataB: 250, dataC: 220, dataD: 160},
 ];
 
-function generateDurationData() {
-  const count = 40;
-  const data: {label: string; value: number}[] = [];
-  for (let i = 0; i < count; i++) {
-    const baseValue = 80 + Math.random() * 120;
-    const spike = i % 8 === 0 ? Math.random() * 300 : 0;
-    data.push({
-      label: String(i + 1),
-      value: Math.round(baseValue + spike),
-    });
-  }
-  return data;
-}
-
-const durationData = generateDurationData();
+// Deterministic bar chart data — sine-wave base with periodic spikes.
+// Avoids Math.random() so the chart renders identically on every run.
+const durationData = Array.from({length: 40}, (_, i) => ({
+  label: String(i + 1),
+  value: Math.round(80 + 60 * (Math.sin(i * 1.3 + 0.5) + 1) + (i % 8 === 0 ? 180 : 0)),
+}));
 
 interface ParsedValue {
   prefix: string;
@@ -90,7 +81,12 @@ function renderKpiValue(value: string | number) {
     return (
       <>
         {parsed.prefix}
-        <CountUp to={parsed.numericValue} from={0} duration={0.5} className="inline" />
+        <CountUp
+          to={parsed.numericValue}
+          from={parsed.numericValue}
+          duration={0.5}
+          className="inline"
+        />
         {parsed.suffix}
       </>
     );
