@@ -1,7 +1,7 @@
 {
   "name": "@shipfox/react-ui",
   "license": "MIT",
-  "version": "0.28.0",
+  "version": "0.30.0",
   "private": false,
   "packageManager": "pnpm@9.15.9",
   "main": "dist/index.js",
@@ -12,7 +12,7 @@
     "dist/**/*.js",
     "dist/**/*.d.ts",
     "dist/styles.css",
-    "tailwind.config.ts",
+    "index.css",
     "README.md",
     "LICENSE"
   ],
@@ -21,9 +21,9 @@
       "types": "./dist/index.d.ts",
       "default": "./dist/index.js"
     },
-    "./tailwind.config": {
-      "types": "./tailwind.config.ts",
-      "default": "./tailwind.config.ts"
+    "./index.css": {
+      "style": "./index.css",
+      "default": "./index.css"
     },
     "./dist/styles.css": "./dist/styles.css"
   },

@@ -1,5 +1,26 @@
 # @shipfox/react-ui
 
+## 0.30.0
+
+### Minor Changes
+
+- 7a9eb7a: Update css export and bump parser version
+
+### Patch Changes
+
+- Updated dependencies [7a9eb7a]
+  - @shipfox/shipql-parser@0.1.0
+
+## 0.29.0
+
+### Minor Changes
+
+- 08b960f: Export index.css for tailwind config
+
+### Patch Changes
+
+- fdac993: Fix non-deterministic rendering in `AnalyticsPage`: replace `Math.random()` in `generateDurationData` with a deterministic sine-wave formula, and set `CountUp` initial value equal to its target to avoid animation flicker on first render.
+
 ## 0.28.0
 
 ### Minor Changes

@@ -1,5 +1,11 @@
 # @shipfox/shipql-parser
 
+## 0.1.0
+
+### Minor Changes
+
+- 7a9eb7a: Update css export and bump parser version
+
 ## 0.0.1
 
 ### Patch Changes
