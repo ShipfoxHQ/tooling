@@ -56,6 +56,7 @@
     "@radix-ui/react-tooltip": "^1.2.8",
     "@radix-ui/react-use-controllable-state": "^1.2.2",
     "@remixicon/react": "^4.6.0",
+    "@shipfox/shipql-parser": "workspace:*",
     "canvas-confetti": "^1.9.4",
     "class-variance-authority": "^0.7.1",
     "cmdk": "^1.1.1",
@@ -70,7 +71,9 @@
     "sonner": "^2.0.7",
     "tailwind-merge": "^3.2.0",
     "vaul": "^1.1.1",
-    "@swc/helpers": "^0.5.17"
+    "@swc/helpers": "^0.5.17",
+    "lexical": "^0.40.0",
+    "@lexical/react": "^0.40.0"
   },
   "peerDependencies": {
     "@tanstack/react-table": "^8.19.3",
