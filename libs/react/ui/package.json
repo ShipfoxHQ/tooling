@@ -21,7 +21,10 @@
       "types": "./dist/index.d.ts",
       "default": "./dist/index.js"
     },
-    "./index.css": "./index.css",
+    "./index.css": {
+      "style": "./index.css",
+      "default": "./index.css"
+    },
     "./dist/styles.css": "./dist/styles.css"
   },
   "scripts": {
