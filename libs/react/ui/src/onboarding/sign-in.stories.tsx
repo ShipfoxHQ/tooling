@@ -17,6 +17,9 @@ type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {
   play: async (ctx) => {
+    // Wait for DotGrid's useEffect → buildGrid() and ResizeObserver initial
+    // callback to both fire and paint the canvas before screenshotting.
+    await new Promise((resolve) => setTimeout(resolve, 200));
     await argosScreenshot(ctx, 'example-screenshot');
   },
   render: () => {
