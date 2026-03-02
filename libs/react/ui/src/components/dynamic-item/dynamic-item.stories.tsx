@@ -11,6 +11,10 @@ import {AvatarGroup, AvatarGroupTooltip} from '../avatar/avatar-group';
 import {Icon} from '../icon/icon';
 import {DynamicItem} from './dynamic-item';
 
+// In Playwright (Argos CI) navigator.webdriver is true. Skip network-dependent
+// assets and JS-driven animations so screenshots are deterministic.
+const isTest = typeof navigator !== 'undefined' && navigator.webdriver === true;
+
 const meta = {
   title: 'Components/DynamicItem',
   component: DynamicItem,
@@ -31,13 +35,13 @@ export const OrganizationItem: Story = {
         description="3 members"
         rightElement={
           <AvatarGroup size="md">
-            <Avatar content="image" fallback="John Doe">
+            <Avatar content={isTest ? 'letters' : 'image'} fallback="John Doe">
               <AvatarGroupTooltip>John Doe</AvatarGroupTooltip>
             </Avatar>
-            <Avatar content="image" fallback="Jane Smith">
+            <Avatar content={isTest ? 'letters' : 'image'} fallback="Jane Smith">
               <AvatarGroupTooltip>Jane Smith</AvatarGroupTooltip>
             </Avatar>
-            <Avatar content="image" fallback="Bob Johnson">
+            <Avatar content={isTest ? 'letters' : 'image'} fallback="Bob Johnson">
               <AvatarGroupTooltip>Bob Johnson</AvatarGroupTooltip>
             </Avatar>
           </AvatarGroup>
@@ -50,10 +54,10 @@ export const OrganizationItem: Story = {
         description="2 members"
         rightElement={
           <AvatarGroup size="md">
-            <Avatar content="image" fallback="Alice Brown">
+            <Avatar content={isTest ? 'letters' : 'image'} fallback="Alice Brown">
               <AvatarGroupTooltip>Alice Brown</AvatarGroupTooltip>
             </Avatar>
-            <Avatar content="image" fallback="Carlos Vega">
+            <Avatar content={isTest ? 'letters' : 'image'} fallback="Carlos Vega">
               <AvatarGroupTooltip>Carlos Vega</AvatarGroupTooltip>
             </Avatar>
           </AvatarGroup>
@@ -66,31 +70,31 @@ export const OrganizationItem: Story = {
         description="9 members"
         rightElement={
           <AvatarGroup size="md" maxVisible={4} animateOnHover>
-            <Avatar content="image" fallback="Linda Tran">
+            <Avatar content={isTest ? 'letters' : 'image'} fallback="Linda Tran">
               <AvatarGroupTooltip>Linda Tran</AvatarGroupTooltip>
             </Avatar>
-            <Avatar content="image" fallback="Michael Chen">
+            <Avatar content={isTest ? 'letters' : 'image'} fallback="Michael Chen">
               <AvatarGroupTooltip>Michael Chen</AvatarGroupTooltip>
             </Avatar>
-            <Avatar content="image" fallback="Sarah Williams">
+            <Avatar content={isTest ? 'letters' : 'image'} fallback="Sarah Williams">
               <AvatarGroupTooltip>Sarah Williams</AvatarGroupTooltip>
             </Avatar>
-            <Avatar content="image" fallback="David Lee">
+            <Avatar content={isTest ? 'letters' : 'image'} fallback="David Lee">
               <AvatarGroupTooltip>David Lee</AvatarGroupTooltip>
             </Avatar>
-            <Avatar content="image" fallback="Emily Davis">
+            <Avatar content={isTest ? 'letters' : 'image'} fallback="Emily Davis">
               <AvatarGroupTooltip>Emily Davis</AvatarGroupTooltip>
             </Avatar>
-            <Avatar content="image" fallback="James Wilson">
+            <Avatar content={isTest ? 'letters' : 'image'} fallback="James Wilson">
               <AvatarGroupTooltip>James Wilson</AvatarGroupTooltip>
             </Avatar>
-            <Avatar content="image" fallback="Olivia Martinez">
+            <Avatar content={isTest ? 'letters' : 'image'} fallback="Olivia Martinez">
               <AvatarGroupTooltip>Olivia Martinez</AvatarGroupTooltip>
             </Avatar>
-            <Avatar content="image" fallback="Noah Anderson">
+            <Avatar content={isTest ? 'letters' : 'image'} fallback="Noah Anderson">
               <AvatarGroupTooltip>Noah Anderson</AvatarGroupTooltip>
             </Avatar>
-            <Avatar content="image" fallback="Sophia Taylor">
+            <Avatar content={isTest ? 'letters' : 'image'} fallback="Sophia Taylor">
               <AvatarGroupTooltip>Sophia Taylor</AvatarGroupTooltip>
             </Avatar>
           </AvatarGroup>
@@ -223,11 +227,13 @@ export const WithCustomElementsItem: Story = {
             className="hidden sm:block absolute overflow-clip right-2 top-1/2 -translate-y-1/2 translate-x-8 w-fit object-contain z-50"
           />
           <div className={cn('relative overflow-hidden bg-transparent p-1 rounded-8')}>
-            <div className="absolute inset-0" style={{borderRadius: 'calc(0.5rem * 0.96)'}}>
-              <MovingBorder duration={6000} rx="30%" ry="30%">
-                <div className="h-100 w-200 bg-[radial-gradient(#ff9e7a_40%,transparent_60%)]" />
-              </MovingBorder>
-            </div>
+            {!isTest && (
+              <div className="absolute inset-0" style={{borderRadius: 'calc(0.5rem * 0.96)'}}>
+                <MovingBorder duration={6000} rx="30%" ry="30%">
+                  <div className="h-100 w-200 bg-[radial-gradient(#ff9e7a_40%,transparent_60%)]" />
+                </MovingBorder>
+              </div>
+            )}
             <div
               className="relative"
               style={{

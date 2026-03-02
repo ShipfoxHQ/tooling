@@ -1,3 +1,4 @@
+import {argosScreenshot} from '@argos-ci/storybook/vitest';
 import type {Meta, StoryObj} from '@storybook/react';
 import {useState} from 'react';
 import {Tabs, TabsContent, TabsContents, TabsList, TabsTrigger} from '.';
@@ -16,6 +17,12 @@ type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {
   args: {defaultValue: 'analytics'} as never,
+  play: async (ctx) => {
+    // Wait for requestAnimationFrame inside TabsList to fire and position the
+    // active indicator before taking the Argos screenshot.
+    await new Promise((resolve) => setTimeout(resolve, 100));
+    await argosScreenshot(ctx, 'Tabs Default');
+  },
   render: () => (
     <div className="bg-background-neutral-background p-24 w-[80vw]">
       <Tabs defaultValue="analytics">
@@ -30,6 +37,10 @@ export const Default: Story = {
 
 export const Controlled: Story = {
   args: {value: 'analytics', onValueChange: () => undefined} as never,
+  play: async (ctx) => {
+    await new Promise((resolve) => setTimeout(resolve, 100));
+    await argosScreenshot(ctx, 'Tabs Controlled');
+  },
   render: () => {
     const [value, setValue] = useState('analytics');
     return (
@@ -63,6 +74,10 @@ export const Controlled: Story = {
 
 export const MultipleTabs: Story = {
   args: {defaultValue: 'tab1'} as never,
+  play: async (ctx) => {
+    await new Promise((resolve) => setTimeout(resolve, 100));
+    await argosScreenshot(ctx, 'Tabs Multiple');
+  },
   render: () => (
     <div className="bg-background-neutral-background p-24 w-[80vw]">
       <Tabs defaultValue="tab1">
