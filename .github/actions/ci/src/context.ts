@@ -1,6 +1,6 @@
 import {readFileSync} from 'node:fs';
-import core from '@actions/core';
-import github from '@actions/github';
+import * as core from '@actions/core';
+import * as github from '@actions/github';
 import type {components} from '@octokit/openapi-webhooks-types';
 import {nixExecSync} from './utils';
 
