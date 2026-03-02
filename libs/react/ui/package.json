@@ -12,7 +12,7 @@
     "dist/**/*.js",
     "dist/**/*.d.ts",
     "dist/styles.css",
-    "tailwind.config.ts",
+    "index.css",
     "README.md",
     "LICENSE"
   ],
@@ -21,10 +21,7 @@
       "types": "./dist/index.d.ts",
       "default": "./dist/index.js"
     },
-    "./tailwind.config": {
-      "types": "./tailwind.config.ts",
-      "default": "./tailwind.config.ts"
-    },
+    "./index.css": "./index.css",
     "./dist/styles.css": "./dist/styles.css"
   },
   "scripts": {
