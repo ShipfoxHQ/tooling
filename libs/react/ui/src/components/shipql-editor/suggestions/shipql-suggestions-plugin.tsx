@@ -13,7 +13,6 @@ import {
   COMMAND_PRIORITY_NORMAL,
   FOCUS_COMMAND,
   KEY_ARROW_DOWN_COMMAND,
-  KEY_ARROW_RIGHT_COMMAND,
   KEY_ARROW_UP_COMMAND,
   KEY_ENTER_COMMAND,
   KEY_ESCAPE_COMMAND,
@@ -369,42 +368,6 @@ export function ShipQLSuggestionsPlugin({
       COMMAND_PRIORITY_CRITICAL,
     );
 
-    const unregisterArrowRight = editor.registerCommand(
-      KEY_ARROW_RIGHT_COMMAND,
-      (e) => {
-        if (!openRef.current) return false;
-        let isInLeaf = false;
-        editor.getEditorState().read(() => {
-          const sel = $getSelection();
-          if ($isRangeSelection(sel)) isInLeaf = $isShipQLLeafNode(sel.anchor.getNode());
-        });
-        if (!isInLeaf) return false;
-        e?.preventDefault();
-        editor.update(() => {
-          const sel = $getSelection();
-          if (!$isRangeSelection(sel)) return;
-          const anchor = sel.anchor.getNode();
-          if (!$isShipQLLeafNode(anchor)) return;
-          const para = $getRoot().getFirstChild() as ParagraphNode | null;
-          if (!para) return;
-          const next = anchor.getNextSibling();
-          const newSel = $createRangeSelection();
-          if (next && $isTextNode(next)) {
-            newSel.anchor.set(next.getKey(), 0, 'text');
-            newSel.focus.set(next.getKey(), 0, 'text');
-          } else {
-            const emptyNode = $createTextNode(' ');
-            para.append(emptyNode);
-            newSel.anchor.set(emptyNode.getKey(), 1, 'text');
-            newSel.focus.set(emptyNode.getKey(), 1, 'text');
-          }
-          $setSelection(newSel);
-        });
-        return true;
-      },
-      COMMAND_PRIORITY_NORMAL,
-    );
-
     const unregisterEscape = editor.registerCommand(
       KEY_ESCAPE_COMMAND,
       (e) => {
@@ -471,7 +434,6 @@ export function ShipQLSuggestionsPlugin({
       unregisterArrowUp();
       unregisterEnter();
       unregisterTab();
-      unregisterArrowRight();
       unregisterEscape();
       unregisterUpdate();
     };

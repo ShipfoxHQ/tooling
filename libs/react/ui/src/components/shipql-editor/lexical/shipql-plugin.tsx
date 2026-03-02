@@ -10,14 +10,17 @@ import {
   $isTextNode,
   $setSelection,
   COMMAND_PRIORITY_HIGH,
+  COMMAND_PRIORITY_NORMAL,
   createCommand,
   INSERT_PARAGRAPH_COMMAND,
+  KEY_ARROW_RIGHT_COMMAND,
   KEY_ENTER_COMMAND,
   type LexicalNode,
   type ParagraphNode,
   type Point,
 } from 'lexical';
 import {useEffect, useRef} from 'react';
+import {handleArrowRightFromLeaf} from './handle-arrow-right-from-leaf';
 import {
   $createShipQLLeafNode,
   $isShipQLLeafNode,
@@ -134,6 +137,12 @@ export function ShipQLPlugin({onLeafFocus}: ShipQLPluginProps): null {
       INSERT_PARAGRAPH_COMMAND,
       () => true,
       COMMAND_PRIORITY_HIGH,
+    );
+
+    const unregisterArrowRight = editor.registerCommand(
+      KEY_ARROW_RIGHT_COMMAND,
+      (event) => handleArrowRightFromLeaf(event, editor),
+      COMMAND_PRIORITY_NORMAL,
     );
 
     const unregisterRemoveLeaf = editor.registerCommand(
@@ -295,9 +304,39 @@ export function ShipQLPlugin({onLeafFocus}: ShipQLPluginProps): null {
       );
     });
 
+    // Perform the initial tokenization pass directly. The update listener is
+    // registered after Lexical has already committed its initialConfig editorState
+    // (useEffect runs post-paint), so the listener never fires for the first render.
+    // We do the full rebuild here instead of relying on the listener being triggered.
+    editor.update(() => {
+      const para = $getRoot().getFirstChild() as ParagraphNode | null;
+      if (!para) return;
+      const text = para.getTextContent();
+      if (!text) return;
+      const children = para.getChildren();
+      let ast: AstNode | null = null;
+      try {
+        ast = parse(text);
+      } catch {
+        return;
+      }
+      if (!ast) return;
+      const segments = tokenize(text, collectLeaves(ast));
+      if (!needsRebuild(children, segments)) return;
+      para.clear();
+      for (const seg of segments) {
+        para.append(
+          seg.kind === 'leaf'
+            ? $createShipQLLeafNode(seg.text, seg.node)
+            : $createTextNode(seg.text),
+        );
+      }
+    });
+
     return () => {
       unregisterEnter();
       unregisterParagraph();
+      unregisterArrowRight();
       unregisterRemoveLeaf();
       unregisterUpdate();
     };

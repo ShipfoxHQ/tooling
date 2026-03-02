@@ -1,10 +1,20 @@
 import type {AstNode} from '@shipfox/shipql-parser';
+import {parse} from '@shipfox/shipql-parser';
 import {lazy, Suspense, useCallback, useRef, useState} from 'react';
 import {cn} from 'utils/cn';
 import type {LeafAstNode} from './lexical/shipql-leaf-node';
 import type {FacetDef} from './suggestions/types';
 
 export type {FacetDef, RangeFacetConfig} from './suggestions/types';
+
+function isParseError(text: string): boolean {
+  if (!text.trim()) return false;
+  try {
+    return parse(text) === null;
+  } catch {
+    return true;
+  }
+}
 
 export interface ShipQLEditorProps {
   defaultValue?: string;
@@ -24,6 +34,7 @@ export interface ShipQLEditorInnerProps extends ShipQLEditorProps {
   mode: 'editor' | 'text';
   text: string;
   editorKey: number;
+  isError: boolean;
   onTextChange: (text: string) => void;
   onClear: () => void;
   onToggleMode: () => void;
@@ -35,6 +46,7 @@ export function ShipQLEditor({disabled, className, ...props}: ShipQLEditorProps)
   const [mode, setMode] = useState<'editor' | 'text'>('editor');
   const [text, setText] = useState(props.defaultValue ?? '');
   const [editorKey, setEditorKey] = useState(0);
+  const [isError, setIsError] = useState(() => isParseError(props.defaultValue ?? ''));
   const textRef = useRef(text);
   textRef.current = text;
   const clearingRef = useRef(false);
@@ -46,12 +58,14 @@ export function ShipQLEditor({disabled, className, ...props}: ShipQLEditorProps)
     }
     textRef.current = newText;
     setText(newText);
+    setIsError(isParseError(newText));
   }, []);
 
   const handleClear = useCallback(() => {
     clearingRef.current = true;
     setText('');
     textRef.current = '';
+    setIsError(false);
     setEditorKey((k) => k + 1);
   }, []);
 
@@ -84,6 +98,7 @@ export function ShipQLEditor({disabled, className, ...props}: ShipQLEditorProps)
         mode={mode}
         text={text}
         editorKey={editorKey}
+        isError={isError}
         onTextChange={handleTextChange}
         onClear={handleClear}
         onToggleMode={handleToggleMode}
