@@ -2,4 +2,4 @@
 '@shipfox/react-ui': minor
 ---
 
-Externalize ShipQL editor suggestion state: replace `fields`/`fetchSuggestions` with `facets`, `currentFacet`, `setCurrentFacet`, `valueSuggestions`, and `isLoadingValueSuggestions` props. The editor is now "dumb" — it reports cursor context via `setCurrentFacet` and renders whatever `facets`/`valueSuggestions` the parent provides.
+Add suggestion dropdown to ShipQL editor with facet/value autocompletion, range facet panel, negation support, and error border on unparseable queries. Externalize suggestion state so the editor receives `facets`, `currentFacet`, `setCurrentFacet`, `valueSuggestions`, and `isLoadingValueSuggestions` from the parent. Fix initial tokenization and right-arrow leaf exit behavior.
