@@ -37,6 +37,10 @@ import {
   ModalTrigger,
 } from './modal';
 
+// In Playwright (Argos CI) navigator.webdriver is true. Disable JS-driven
+// animations so screenshots capture a stable, deterministic frame.
+const isTest = typeof navigator !== 'undefined' && navigator.webdriver === true;
+
 const OPEN_MODAL_REGEX = /open modal/i;
 const IMPORT_JOBS_REGEX = /import past jobs from github/i;
 const GITHUB_ACTIONS_REGEX = /run github actions on shipfox/i;
@@ -283,11 +287,16 @@ export const GithubActions: Story = {
                     className="hidden sm:block absolute overflow-clip right-2 top-1/2 -translate-y-1/2 translate-x-8 w-fit object-contain z-50"
                   />
                   <div className={cn('relative overflow-hidden bg-transparent p-1 rounded-8')}>
-                    <div className="absolute inset-0" style={{borderRadius: 'calc(0.5rem * 0.96)'}}>
-                      <MovingBorder duration={6000} rx="30%" ry="30%">
-                        <div className="h-100 w-200 bg-[radial-gradient(#ff9e7a_40%,transparent_60%)]" />
-                      </MovingBorder>
-                    </div>
+                    {!isTest && (
+                      <div
+                        className="absolute inset-0"
+                        style={{borderRadius: 'calc(0.5rem * 0.96)'}}
+                      >
+                        <MovingBorder duration={6000} rx="30%" ry="30%">
+                          <div className="h-100 w-200 bg-[radial-gradient(#ff9e7a_40%,transparent_60%)]" />
+                        </MovingBorder>
+                      </div>
+                    )}
                     <div
                       className="relative"
                       style={{

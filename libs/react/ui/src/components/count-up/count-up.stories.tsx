@@ -5,6 +5,10 @@ import {useCallback, useEffect, useRef, useState} from 'react';
 import {formatNumberCompact} from 'utils/format/number';
 import {CountUp} from './count-up';
 
+// In Playwright (Argos CI) navigator.webdriver is true. Skip animations so
+// screenshots always capture the final value rather than a mid-spring frame.
+const isTest = typeof navigator !== 'undefined' && navigator.webdriver === true;
+
 const meta = {
   title: 'Components/CountUp',
   component: CountUp,
@@ -55,6 +59,7 @@ export const Default: Story = {
     to: 1000,
     from: 0,
   },
+  render: ({to, from, ...args}) => <CountUp to={to} from={isTest ? to : from} {...args} />,
 };
 
 export const Basic: Story = {
@@ -65,7 +70,7 @@ export const Basic: Story = {
           Count from 0 to 1000
         </Code>
         <div className="text-4xl font-semibold">
-          <CountUp to={1000} from={0} duration={2} />
+          <CountUp to={1000} from={isTest ? 1000 : 0} duration={2} />
         </div>
       </div>
 
@@ -74,7 +79,7 @@ export const Basic: Story = {
           Count from 500 to 1000
         </Code>
         <div className="text-4xl font-semibold">
-          <CountUp to={1000} from={500} duration={2} />
+          <CountUp to={1000} from={isTest ? 1000 : 500} duration={2} />
         </div>
       </div>
 
@@ -83,7 +88,7 @@ export const Basic: Story = {
           Count down from 1000 to 0
         </Code>
         <div className="text-4xl font-semibold">
-          <CountUp to={1000} from={0} direction="down" duration={2} />
+          <CountUp to={isTest ? 0 : 1000} from={0} direction="down" duration={2} />
         </div>
       </div>
     </div>
@@ -98,7 +103,7 @@ export const WithSeparator: Story = {
           With comma separator
         </Code>
         <div className="text-4xl font-semibold">
-          <CountUp to={1234567} from={0} duration={2} separator="," />
+          <CountUp to={1234567} from={isTest ? 1234567 : 0} duration={2} separator="," />
         </div>
       </div>
 
@@ -107,7 +112,7 @@ export const WithSeparator: Story = {
           With space separator
         </Code>
         <div className="text-4xl font-semibold">
-          <CountUp to={1234567} from={0} duration={2} separator=" " />
+          <CountUp to={1234567} from={isTest ? 1234567 : 0} duration={2} separator=" " />
         </div>
       </div>
     </div>
@@ -122,7 +127,7 @@ export const WithDecimals: Story = {
           With 1 decimal place
         </Code>
         <div className="text-4xl font-semibold">
-          <CountUp to={99.5} from={0} duration={2} />
+          <CountUp to={99.5} from={isTest ? 99.5 : 0} duration={2} />
         </div>
       </div>
 
@@ -131,7 +136,7 @@ export const WithDecimals: Story = {
           With 2 decimal places
         </Code>
         <div className="text-4xl font-semibold">
-          <CountUp to={123.45} from={0} duration={2} />
+          <CountUp to={123.45} from={isTest ? 123.45 : 0} duration={2} />
         </div>
       </div>
     </div>
@@ -146,7 +151,7 @@ export const WithDelay: Story = {
           With 1 second delay
         </Code>
         <div className="text-4xl font-semibold">
-          <CountUp to={1000} from={0} duration={2} delay={1} />
+          <CountUp to={1000} from={isTest ? 1000 : 0} duration={2} delay={1} />
         </div>
       </div>
 
@@ -155,7 +160,7 @@ export const WithDelay: Story = {
           With 2 second delay
         </Code>
         <div className="text-4xl font-semibold">
-          <CountUp to={1000} from={0} duration={2} delay={2} />
+          <CountUp to={1000} from={isTest ? 1000 : 0} duration={2} delay={2} />
         </div>
       </div>
     </div>
@@ -170,7 +175,7 @@ export const DifferentDurations: Story = {
           Fast (0.5s)
         </Code>
         <div className="text-4xl font-semibold">
-          <CountUp to={1000} from={0} duration={0.5} />
+          <CountUp to={1000} from={isTest ? 1000 : 0} duration={0.5} />
         </div>
       </div>
 
@@ -179,7 +184,7 @@ export const DifferentDurations: Story = {
           Normal (2s)
         </Code>
         <div className="text-4xl font-semibold">
-          <CountUp to={1000} from={0} duration={2} />
+          <CountUp to={1000} from={isTest ? 1000 : 0} duration={2} />
         </div>
       </div>
 
@@ -188,7 +193,7 @@ export const DifferentDurations: Story = {
           Slow (5s)
         </Code>
         <div className="text-4xl font-semibold">
-          <CountUp to={1000} from={0} duration={5} />
+          <CountUp to={1000} from={isTest ? 1000 : 0} duration={5} />
         </div>
       </div>
     </div>
@@ -215,7 +220,13 @@ export const WithCallbacks: Story = {
             Callbacks triggered
           </Code>
           <div className="text-4xl font-semibold">
-            <CountUp to={1000} from={0} duration={2} onStart={handleStart} onEnd={handleEnd} />
+            <CountUp
+              to={1000}
+              from={isTest ? 1000 : 0}
+              duration={2}
+              onStart={handleStart}
+              onEnd={handleEnd}
+            />
           </div>
         </div>
         <div className="flex flex-col gap-4 text-sm">
@@ -327,7 +338,7 @@ export const WithCompactFormat: Story = {
           From 999 to 1.1K
         </Code>
         <div className="text-4xl font-semibold">
-          <CountUpCompact to={1100} from={999} duration={2} />
+          <CountUpCompact to={1100} from={isTest ? 1100 : 999} duration={2} />
         </div>
       </div>
 
@@ -336,7 +347,7 @@ export const WithCompactFormat: Story = {
           From 0 to 1.5K
         </Code>
         <div className="text-4xl font-semibold">
-          <CountUpCompact to={1500} from={0} duration={2} />
+          <CountUpCompact to={1500} from={isTest ? 1500 : 0} duration={2} />
         </div>
       </div>
 
@@ -345,7 +356,7 @@ export const WithCompactFormat: Story = {
           From 999,999 to 1.1M
         </Code>
         <div className="text-4xl font-semibold">
-          <CountUpCompact to={1100000} from={999999} duration={2} />
+          <CountUpCompact to={1100000} from={isTest ? 1100000 : 999999} duration={2} />
         </div>
       </div>
 
@@ -354,7 +365,7 @@ export const WithCompactFormat: Story = {
           From 0 to 2.5M
         </Code>
         <div className="text-4xl font-semibold">
-          <CountUpCompact to={2500000} from={0} duration={2} />
+          <CountUpCompact to={2500000} from={isTest ? 2500000 : 0} duration={2} />
         </div>
       </div>
 
@@ -363,7 +374,7 @@ export const WithCompactFormat: Story = {
           From 0 to 1.2B
         </Code>
         <div className="text-4xl font-semibold">
-          <CountUpCompact to={1200000000} from={0} duration={2} />
+          <CountUpCompact to={1200000000} from={isTest ? 1200000000 : 0} duration={2} />
         </div>
       </div>
 
@@ -372,7 +383,7 @@ export const WithCompactFormat: Story = {
           Count down from 1.5K to 999
         </Code>
         <div className="text-4xl font-semibold">
-          <CountUpCompact to={999} from={1500} direction="down" duration={2} />
+          <CountUpCompact to={isTest ? 999 : 1500} from={999} direction="down" duration={2} />
         </div>
       </div>
     </div>
