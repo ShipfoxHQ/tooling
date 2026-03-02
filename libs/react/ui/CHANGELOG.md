@@ -1,5 +1,16 @@
 # @shipfox/react-ui
 
+## 0.30.0
+
+### Minor Changes
+
+- 7a9eb7a: Update css export and bump parser version
+
+### Patch Changes
+
+- Updated dependencies [7a9eb7a]
+  - @shipfox/shipql-parser@0.1.0
+
 ## 0.29.0
 
 ### Minor Changes
