@@ -3,6 +3,10 @@ import {Code} from 'components/typography';
 import {Avatar} from './avatar';
 import {AvatarGroup, AvatarGroupTooltip} from './avatar-group';
 
+// In Playwright (Argos CI) navigator.webdriver is true. DiceBear image fetches
+// are unreliable in CI — skip them so screenshots are deterministic.
+const isTest = typeof navigator !== 'undefined' && navigator.webdriver === true;
+
 const contentOptions = ['letters', 'logo', 'logoPlaceholder', 'image', 'upload'] as const;
 const radiusOptions = ['full', 'rounded'] as const;
 const sizeOptions = ['3xs', '2xs', 'xs', 'sm', 'md', 'lg', 'xl', '2xl', '3xl'] as const;
@@ -98,10 +102,10 @@ export const AvatarGroupDefault: StoryObj<typeof avatarGroupMeta> = {
   },
   render: () => {
     const avatars = [
-      {name: 'John Doe', content: 'image'},
-      {name: 'Jane Smith', content: 'image'},
-      {name: 'Bob Johnson', content: 'image'},
-      {name: 'Alice Brown', content: 'image'},
+      {name: 'John Doe', content: isTest ? 'letters' : 'image'},
+      {name: 'Jane Smith', content: isTest ? 'letters' : 'image'},
+      {name: 'Bob Johnson', content: isTest ? 'letters' : 'image'},
+      {name: 'Alice Brown', content: isTest ? 'letters' : 'image'},
     ] as const;
 
     return (
@@ -127,12 +131,12 @@ export const AvatarGroupWithTooltips: StoryObj<typeof avatarGroupMeta> = {
   },
   render: () => {
     const avatars = [
-      {name: 'John Doe', content: 'image'},
-      {name: 'Jane Smith', content: 'image'},
-      {name: 'Bob Johnson', content: 'image'},
-      {name: 'Alice Brown', content: 'image'},
-      {name: 'Carlos Vega', content: 'image'},
-      {name: 'Linda Tran', content: 'image'},
+      {name: 'John Doe', content: isTest ? 'letters' : 'image'},
+      {name: 'Jane Smith', content: isTest ? 'letters' : 'image'},
+      {name: 'Bob Johnson', content: isTest ? 'letters' : 'image'},
+      {name: 'Alice Brown', content: isTest ? 'letters' : 'image'},
+      {name: 'Carlos Vega', content: isTest ? 'letters' : 'image'},
+      {name: 'Linda Tran', content: isTest ? 'letters' : 'image'},
     ] as const;
 
     return (
