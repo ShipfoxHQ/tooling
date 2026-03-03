@@ -1,5 +1,11 @@
 # @shipfox/docker
 
+## 1.2.0
+
+### Minor Changes
+
+- 6392f4f: Delete local images after build
+
 ## 1.1.4
 
 ### Patch Changes
