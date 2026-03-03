@@ -13,6 +13,8 @@ export function createPostgresClient(options?: pg.PoolConfig): pg.Pool {
     user: config.POSTGRES_USERNAME,
     password: config.POSTGRES_PASSWORD,
     max: config.POSTGRES_MAX_CONNECTIONS,
+    keepAlive: true,
+    idleTimeoutMillis: 10_000,
     ...options,
   });
   return _pool;
