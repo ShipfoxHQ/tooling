@@ -28,6 +28,7 @@ import {
   extractFacetFromLeaf,
   negationPrefixFromSource,
   normalizeFacets,
+  stripNegationPrefix,
 } from './generate-suggestions';
 import type {FacetDef, SuggestionItem} from './types';
 
@@ -134,7 +135,8 @@ export function ShipQLSuggestionsPlugin({
         // listener's handling of text-type leaves.
         const activeText = focusedLeafNode.value;
         const facetCtx = detectFacetContext(activeText, normalizeFacets(facetsRef.current));
-        negationPrefixRef.current = facetCtx?.negationPrefix ?? '';
+        negationPrefixRef.current =
+          facetCtx?.negationPrefix ?? stripNegationPrefix(activeText).prefix;
         setCurrentFacetRef.current(facetCtx?.facet ?? null);
         onPartialValueChangeRef.current?.(facetCtx?.partialValue ?? '');
         const leafItems = buildSuggestionItems(
@@ -169,7 +171,8 @@ export function ShipQLSuggestionsPlugin({
         if (!para) return;
         const activeText = getActiveSegment(para);
         const facetCtx = detectFacetContext(activeText, normalizeFacets(facetsRef.current));
-        negationPrefixRef.current = facetCtx?.negationPrefix ?? '';
+        negationPrefixRef.current =
+          facetCtx?.negationPrefix ?? stripNegationPrefix(activeText).prefix;
         setCurrentFacetRef.current(facetCtx?.facet ?? null);
         onPartialValueChangeRef.current?.(facetCtx?.partialValue ?? '');
         const newItems = buildSuggestionItems(
@@ -230,7 +233,7 @@ export function ShipQLSuggestionsPlugin({
 
           const insertText = currentFacetRef.current
             ? `${negationPrefixRef.current}${currentFacetRef.current}:${selectedValue} `
-            : `${selectedValue}:`;
+            : `${negationPrefixRef.current}${selectedValue}:`;
 
           // Case 1: Cursor is inside a focused leaf chip — replace the chip in-place
           if (focusedLeafNodeRef.current) {
@@ -304,7 +307,6 @@ export function ShipQLSuggestionsPlugin({
       if (isFacetSelection) {
         setCurrentFacetRef.current(selectedValue);
         onPartialValueChangeRef.current?.('');
-        negationPrefixRef.current = '';
         setOpenRef.current(true);
       }
 
@@ -353,6 +355,10 @@ export function ShipQLSuggestionsPlugin({
         const its = itemsRef.current;
         let next = selectedIndexRef.current + 1;
         while (next < its.length && its[next]?.type === 'section-header') next++;
+        if (next >= its.length) {
+          next = 0;
+          while (next < its.length && its[next]?.type === 'section-header') next++;
+        }
         if (next < its.length) {
           hasNavigatedRef.current = true;
           setSelectedIndexRef.current(next);
@@ -370,8 +376,12 @@ export function ShipQLSuggestionsPlugin({
         const its = itemsRef.current;
         let prev = selectedIndexRef.current - 1;
         while (prev >= 0 && its[prev]?.type === 'section-header') prev--;
-        if (prev >= -1) {
-          hasNavigatedRef.current = prev >= 0;
+        if (prev < 0) {
+          prev = its.length - 1;
+          while (prev >= 0 && its[prev]?.type === 'section-header') prev--;
+        }
+        if (prev >= 0) {
+          hasNavigatedRef.current = true;
           setSelectedIndexRef.current(prev);
         }
         return true;
@@ -477,7 +487,8 @@ export function ShipQLSuggestionsPlugin({
             focusedLeaf.type === 'not' ? negationPrefixFromSource(focusedLeaf.source) : '';
           setCurrentFacetRef.current(extractFacetFromLeaf(focusedLeaf) ?? null);
         } else {
-          negationPrefixRef.current = facetCtx?.negationPrefix ?? '';
+          negationPrefixRef.current =
+            facetCtx?.negationPrefix ?? stripNegationPrefix(activeText).prefix;
           setCurrentFacetRef.current(facetCtx?.facet ?? null);
         }
         onPartialValueChangeRef.current?.(facetCtx?.partialValue ?? '');

@@ -46,15 +46,20 @@ interface PresetRowProps {
   value: string;
   onClick: (value: string) => void;
   isRecent?: boolean;
+  isHighlighted?: boolean;
+  rowRef?: (el: HTMLButtonElement | null) => void;
 }
 
-function PresetRow({value, onClick, isRecent}: PresetRowProps) {
+function PresetRow({value, onClick, isRecent, isHighlighted, rowRef}: PresetRowProps) {
   return (
     <button
+      ref={rowRef}
       type="button"
       className={cn(
         'flex w-full items-center gap-12 rounded-none px-8 py-6 h-28 text-left transition-colors duration-75 cursor-pointer',
-        'hover:bg-background-button-transparent-hover',
+        isHighlighted
+          ? 'bg-background-button-transparent-hover'
+          : 'hover:bg-background-button-transparent-hover',
       )}
       onMouseDown={(e) => {
         e.preventDefault();
@@ -88,6 +93,10 @@ export function ShipQLRangeFacetPanel({
 
   const [sliderValues, setSliderValues] = useState<[number, number]>([absMin, absMax]);
   const [recentValues, setRecentValues] = useState<string[]>(() => loadRecent(facetName));
+  const [selectedPresetIndex, setSelectedPresetIndex] = useState(-1);
+  const selectedPresetIndexRef = useRef(-1);
+  selectedPresetIndexRef.current = selectedPresetIndex;
+  const presetRowRefs = useRef<(HTMLButtonElement | null)[]>([]);
 
   // Local string state for inputs so mid-edit typing isn't clamped
   const [minText, setMinText] = useState(String(absMin));
@@ -163,6 +172,53 @@ export function ShipQLRangeFacetPanel({
     },
     [facetName],
   );
+
+  // Build flat list of navigable preset values (recent + common)
+  const navigableItems = useMemo(() => {
+    const items: string[] = [];
+    for (const v of recentValues.slice(0, 3)) items.push(v);
+    if (config.presets) {
+      for (const v of config.presets) items.push(v);
+    }
+    return items;
+  }, [recentValues, config.presets]);
+
+  // Keyboard navigation for preset/recent items (capture phase to fire before Lexical)
+  useEffect(() => {
+    if (navigableItems.length === 0) return;
+    const handleKeyDown = (e: KeyboardEvent) => {
+      // Don't intercept when user is editing min/max inputs
+      if (document.activeElement instanceof HTMLInputElement) return;
+      if (e.key === 'ArrowDown') {
+        e.preventDefault();
+        e.stopPropagation();
+        setSelectedPresetIndex((prev) =>
+          prev + 1 >= navigableItems.length ? 0 : prev + 1,
+        );
+      } else if (e.key === 'ArrowUp') {
+        e.preventDefault();
+        e.stopPropagation();
+        setSelectedPresetIndex((prev) =>
+          prev - 1 < 0 ? navigableItems.length - 1 : prev - 1,
+        );
+      } else if (e.key === 'Enter') {
+        const idx = selectedPresetIndexRef.current;
+        if (idx < 0) return;
+        e.preventDefault();
+        e.stopPropagation();
+        const value = navigableItems[idx];
+        if (value) handlePreset(value);
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown, true);
+    return () => window.removeEventListener('keydown', handleKeyDown, true);
+  }, [navigableItems, handlePreset]);
+
+  // Scroll selected preset into view
+  useEffect(() => {
+    const el = presetRowRefs.current[selectedPresetIndex];
+    if (el) el.scrollIntoView({behavior: 'smooth', block: 'nearest'});
+  }, [selectedPresetIndex]);
 
   // Commit min input on blur or Enter
   const commitMin = useCallback(() => {
@@ -267,8 +323,17 @@ export function ShipQLRangeFacetPanel({
                   Clear
                 </Button>
               </div>
-              {recentValues.slice(0, 3).map((v) => (
-                <PresetRow key={v} value={v} onClick={handlePreset} isRecent />
+              {recentValues.slice(0, 3).map((v, i) => (
+                <PresetRow
+                  key={v}
+                  value={v}
+                  onClick={handlePreset}
+                  isRecent
+                  isHighlighted={selectedPresetIndex === i}
+                  rowRef={(el) => {
+                    presetRowRefs.current[i] = el;
+                  }}
+                />
               ))}
             </>
           )}
@@ -279,9 +344,20 @@ export function ShipQLRangeFacetPanel({
                   Common
                 </span>
               </div>
-              {config.presets.map((v) => (
-                <PresetRow key={v} value={v} onClick={handlePreset} />
-              ))}
+              {config.presets.map((v, i) => {
+                const idx = recentValues.slice(0, 3).length + i;
+                return (
+                  <PresetRow
+                    key={v}
+                    value={v}
+                    onClick={handlePreset}
+                    isHighlighted={selectedPresetIndex === idx}
+                    rowRef={(el) => {
+                      presetRowRefs.current[idx] = el;
+                    }}
+                  />
+                );
+              })}
             </>
           )}
         </div>
