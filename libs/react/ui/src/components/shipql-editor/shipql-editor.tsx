@@ -1,8 +1,11 @@
 import type {AstNode} from '@shipfox/shipql-parser';
 import {parse} from '@shipfox/shipql-parser';
 import {lazy, Suspense, useCallback, useRef, useState} from 'react';
-import {cn} from '../../utils/cn';
+import {cn} from 'utils/cn';
 import type {LeafAstNode} from './lexical/shipql-leaf-node';
+import type {FacetDef} from './suggestions/types';
+
+export type {FacetDef, RangeFacetConfig} from './suggestions/types';
 
 function isParseError(text: string): boolean {
   if (!text.trim()) return false;
@@ -13,6 +16,8 @@ function isParseError(text: string): boolean {
   }
 }
 
+export type LeafChangePayload = {partialValue: string; ast: AstNode | null};
+
 export interface ShipQLEditorProps {
   defaultValue?: string;
   onChange?: (ast: AstNode) => void;
@@ -20,6 +25,12 @@ export interface ShipQLEditorProps {
   placeholder?: string;
   className?: string;
   disabled?: boolean;
+  facets?: FacetDef[];
+  currentFacet?: string | null;
+  setCurrentFacet?: (facet: string | null) => void;
+  valueSuggestions?: string[];
+  isLoadingValueSuggestions?: boolean;
+  onLeafChange?: (payload: LeafChangePayload) => void;
 }
 
 export interface ShipQLEditorInnerProps extends ShipQLEditorProps {
@@ -77,7 +88,7 @@ export function ShipQLEditor({disabled, className, ...props}: ShipQLEditorProps)
       fallback={
         <div
           className={cn(
-            'h-8 w-full animate-pulse rounded-6 bg-background-components-base',
+            'h-28 w-full animate-pulse rounded-6 bg-background-components-base',
             className,
           )}
         />

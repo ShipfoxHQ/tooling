@@ -1,7 +1,7 @@
 import {useLexicalComposerContext} from '@lexical/react/LexicalComposerContext';
+import {Button} from 'components/button';
 import {useCallback, useEffect, useRef, useState} from 'react';
-import {cn} from '../../../utils/cn';
-import {Button} from '../../button/button';
+import {cn} from 'utils/cn';
 import {REMOVE_LEAF_COMMAND} from './shipql-plugin';
 
 interface HoveredLeaf {
@@ -18,6 +18,7 @@ export function LeafCloseOverlay() {
   const containerRef = useRef<HTMLDivElement>(null);
   const lastPosRef = useRef({top: 0, left: 0});
   const activeLeafElRef = useRef<HTMLElement | null>(null);
+  const keyboardNavigatingRef = useRef(false);
 
   const activateLeaf = useCallback((el: HTMLElement | null) => {
     if (activeLeafElRef.current && activeLeafElRef.current !== el) {
@@ -46,6 +47,7 @@ export function LeafCloseOverlay() {
   const handleMouseOver = useCallback(
     (e: MouseEvent) => {
       if (containerRef.current?.contains(e.target as Node)) return;
+      if (keyboardNavigatingRef.current) return;
 
       const target = (e.target as HTMLElement).closest<HTMLElement>('[data-shipql-leaf]');
       if (target) {
@@ -78,13 +80,65 @@ export function LeafCloseOverlay() {
     const container = rootElement.closest<HTMLElement>('[data-shipql-editor]');
     const target = container ?? rootElement;
 
+    const NAV_KEYS = new Set(['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'Home', 'End']);
+
+    const setLeafPointerEvents = (enabled: boolean) => {
+      const leaves = Array.from(target.querySelectorAll<HTMLElement>('[data-shipql-leaf]'));
+      for (const leaf of leaves) {
+        leaf.style.pointerEvents = enabled ? '' : 'none';
+      }
+    };
+
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (NAV_KEYS.has(e.key)) {
+        keyboardNavigatingRef.current = true;
+        activateLeaf(null);
+        setHovered(null);
+        setLeafPointerEvents(false);
+      }
+    };
+
+    const handleMouseMove = () => {
+      if (!keyboardNavigatingRef.current) return;
+      keyboardNavigatingRef.current = false;
+      setLeafPointerEvents(true);
+    };
+
     target.addEventListener('mouseover', handleMouseOver);
     target.addEventListener('mouseleave', handleMouseLeave);
+    target.addEventListener('keydown', handleKeyDown);
+    target.addEventListener('mousemove', handleMouseMove);
     return () => {
       target.removeEventListener('mouseover', handleMouseOver);
       target.removeEventListener('mouseleave', handleMouseLeave);
+      target.removeEventListener('keydown', handleKeyDown);
+      target.removeEventListener('mousemove', handleMouseMove);
     };
-  }, [editor, handleMouseOver, handleMouseLeave]);
+  }, [editor, handleMouseOver, handleMouseLeave, activateLeaf]);
+
+  // Recompute button position on every editor update so it tracks the leaf's
+  // right edge even when characters are added/removed (changing its width).
+  // Deferred to rAF so we read layout after the browser has painted the new DOM.
+  useEffect(() => {
+    let rafId = 0;
+    const unregister = editor.registerUpdateListener(() => {
+      if (keyboardNavigatingRef.current) return;
+      cancelAnimationFrame(rafId);
+      rafId = requestAnimationFrame(() => {
+        const el = activeLeafElRef.current;
+        if (!el) return;
+        const pos = resolvePosition(el.getBoundingClientRect());
+        if (!pos) return;
+        lastPosRef.current = pos;
+        const key = el.getAttribute('data-shipql-key');
+        if (key) setHovered({key, ...pos});
+      });
+    });
+    return () => {
+      cancelAnimationFrame(rafId);
+      unregister();
+    };
+  }, [editor, resolvePosition]);
 
   const {top, left} = hovered ?? lastPosRef.current;
 
