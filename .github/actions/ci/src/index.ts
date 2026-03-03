@@ -7,25 +7,49 @@ function getTurboTasks(): string[] {
   return tasks;
 }
 
-function runTurbo() {
+function getTurboEnv() {
   const context = getContext();
+  return {
+    ...process.env,
+    NODE_VERSION: context.versions.node,
+    PNPM_VERSION: context.versions.pnpm,
+    TURBO_SCM_BASE: context.turboBase,
+  };
+}
+
+function runTurbo() {
   const tasks = getTurboTasks();
   core.info(`Running tasks: ${tasks.join(', ')}`);
   const command = `pnpm turbo ${tasks.join(' ')} --affected --concurrency 100%`;
   core.info(`Running turbo command: ${command}`);
   nixExecSync(command, {
     stdio: 'inherit',
-    env: {
-      ...process.env,
-      NODE_VERSION: context.versions.node,
-      PNPM_VERSION: context.versions.pnpm,
-      TURBO_SCM_BASE: context.turboBase,
-    },
+    env: getTurboEnv(),
   });
+}
+
+function skipArgosIfNotAffected() {
+  try {
+    const dryRunOutput = nixExecSync('pnpm turbo test --affected --dry=json', {
+      env: getTurboEnv(),
+    });
+    const dryRun = JSON.parse(dryRunOutput) as {tasks: {taskId: string}[]};
+    const isReactUiAffected = dryRun.tasks.some((task) => task.taskId === '@shipfox/react-ui#test');
+    if (!isReactUiAffected) {
+      core.info('react-ui not affected — skipping Argos');
+      nixExecSync('pnpm --filter @shipfox/react-ui exec argos skip', {
+        stdio: 'inherit',
+        env: getTurboEnv(),
+      });
+    }
+  } catch (error) {
+    core.warning(`Failed to check Argos skip: ${error}`);
+  }
 }
 
 function run() {
   runTurbo();
+  skipArgosIfNotAffected();
 }
 
 try {
