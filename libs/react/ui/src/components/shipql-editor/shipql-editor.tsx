@@ -16,7 +16,7 @@ function isParseError(text: string): boolean {
   }
 }
 
-export type LeafChangePayload = { partialValue: string; ast: AstNode | null };
+export type LeafChangePayload = {partialValue: string; ast: AstNode | null};
 
 export interface ShipQLEditorProps {
   defaultValue?: string;

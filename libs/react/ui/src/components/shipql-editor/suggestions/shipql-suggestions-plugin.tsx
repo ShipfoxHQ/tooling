@@ -1,4 +1,6 @@
 import {useLexicalComposerContext} from '@lexical/react/LexicalComposerContext';
+import type {AstNode} from '@shipfox/shipql-parser';
+import {parse} from '@shipfox/shipql-parser';
 import {
   $createRangeSelection,
   $createTextNode,
@@ -22,8 +24,6 @@ import {
 import {useEffect, useRef} from 'react';
 import type {LeafAstNode} from '../lexical/shipql-leaf-node';
 import {$isShipQLLeafNode} from '../lexical/shipql-leaf-node';
-import type {AstNode} from '@shipfox/shipql-parser';
-import {parse} from '@shipfox/shipql-parser';
 import {
   buildSuggestionItems,
   detectFacetContext,
@@ -50,7 +50,7 @@ interface ShipQLSuggestionsPluginProps {
   applyRef: React.RefObject<((value: string) => void) | null>;
   negationPrefixRef: React.RefObject<string>;
   focusedLeafNode: LeafAstNode | null;
-  onLeafChange?: (payload: { partialValue: string; ast: AstNode | null }) => void;
+  onLeafChange?: (payload: {partialValue: string; ast: AstNode | null}) => void;
 }
 
 function getActiveSegment(para: ParagraphNode): string {
@@ -150,7 +150,7 @@ export function ShipQLSuggestionsPlugin({
         } catch {
           /* invalid */
         }
-        onLeafChangeRef.current?.({ partialValue: facetCtx?.partialValue ?? '', ast });
+        onLeafChangeRef.current?.({partialValue: facetCtx?.partialValue ?? '', ast});
         const leafItems = buildSuggestionItems(
           facetsRef.current,
           valueSuggestionsRef.current,
@@ -193,7 +193,7 @@ export function ShipQLSuggestionsPlugin({
         } catch {
           /* invalid */
         }
-        onLeafChangeRef.current?.({ partialValue: facetCtx?.partialValue ?? '', ast });
+        onLeafChangeRef.current?.({partialValue: facetCtx?.partialValue ?? '', ast});
         const newItems = buildSuggestionItems(
           facetsRef.current,
           valueSuggestionsRef.current,
@@ -335,7 +335,7 @@ export function ShipQLSuggestionsPlugin({
         } catch {
           /* invalid */
         }
-        onLeafChangeRef.current?.({ partialValue: '', ast });
+        onLeafChangeRef.current?.({partialValue: '', ast});
         setOpenRef.current(true);
       }
 
@@ -527,7 +527,7 @@ export function ShipQLSuggestionsPlugin({
         } catch {
           /* invalid */
         }
-        onLeafChangeRef.current?.({ partialValue: facetCtx?.partialValue ?? '', ast });
+        onLeafChangeRef.current?.({partialValue: facetCtx?.partialValue ?? '', ast});
 
         const newItems = buildSuggestionItems(
           facetsRef.current,

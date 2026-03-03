@@ -192,15 +192,11 @@ export function ShipQLRangeFacetPanel({
       if (e.key === 'ArrowDown') {
         e.preventDefault();
         e.stopPropagation();
-        setSelectedPresetIndex((prev) =>
-          prev + 1 >= navigableItems.length ? 0 : prev + 1,
-        );
+        setSelectedPresetIndex((prev) => (prev + 1 >= navigableItems.length ? 0 : prev + 1));
       } else if (e.key === 'ArrowUp') {
         e.preventDefault();
         e.stopPropagation();
-        setSelectedPresetIndex((prev) =>
-          prev - 1 < 0 ? navigableItems.length - 1 : prev - 1,
-        );
+        setSelectedPresetIndex((prev) => (prev - 1 < 0 ? navigableItems.length - 1 : prev - 1));
       } else if (e.key === 'Enter') {
         const idx = selectedPresetIndexRef.current;
         if (idx < 0) return;
