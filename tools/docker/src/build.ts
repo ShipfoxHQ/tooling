@@ -16,12 +16,15 @@ if (process.argv.includes('--setup-context')) {
   process.argv = process.argv.filter((arg) => arg !== '--setup-context');
 }
 
+const tags: string[] = [];
 let imageName: string | undefined;
 const tagArgIndex = process.argv.indexOf('--tag');
 if (tagArgIndex !== -1) {
   const tag = process.argv[tagArgIndex + 1];
   imageName = tag.split(':')[0];
-  args.push('--tag', makeTagLatest(tag));
+  const latestTag = makeTagLatest(tag);
+  args.push('--tag', latestTag);
+  tags.push(tag, latestTag);
 }
 
 if (process.env.GITHUB_ACTION) {
@@ -53,3 +56,9 @@ if (process.argv.length > 2) args.push(...process.argv.slice(2));
 const command = buildShellCommand(['docker', 'buildx', 'build', ...args, '.']);
 log.info(command);
 execSync(command, {stdio: 'inherit'});
+
+if (!process.argv.includes('--push') && tags.length > 0) {
+  const rmCommand = buildShellCommand(['docker', 'image', 'rm', ...tags]);
+  log.info(rmCommand);
+  execSync(rmCommand, {stdio: 'inherit'});
+}
