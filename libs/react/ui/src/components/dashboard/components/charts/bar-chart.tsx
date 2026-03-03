@@ -71,7 +71,7 @@ export function BarChart({
     hasData &&
     (data as Array<Record<string, unknown>>).some((item) =>
       visibleBars.some((bar) => {
-        const value = item[bar.dataKey];
+        const value = (item as Record<string, unknown>)[bar.dataKey];
         return value !== undefined && value !== null && Number(value) !== 0;
       }),
     );

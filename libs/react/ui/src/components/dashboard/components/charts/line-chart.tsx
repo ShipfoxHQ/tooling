@@ -67,7 +67,7 @@ export function LineChart({
     hasData &&
     (data as Array<Record<string, unknown>>).some((item) =>
       visibleLines.some((line) => {
-        const value = item[line.dataKey];
+        const value = (item as Record<string, unknown>)[line.dataKey];
         return value !== undefined && value !== null && Number(value) !== 0;
       }),
     );
