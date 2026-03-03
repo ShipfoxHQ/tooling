@@ -65,11 +65,11 @@ export function KpiCardsGroup({cards, className, ...props}: KpiCardsGroupProps) 
       {...props}
     >
       <div className="flex gap-16 pl-0 w-full">
-        {cards.map((card, index) => {
+        {cards.map((card) => {
           const {key: _key, ...cardProps} = card;
           return (
             <KpiCard
-              key={`${card.label}-${index}`}
+              key={card.label}
               {...cardProps}
               className={cn(
                 'shrink-0 w-[calc((100vw-56px)/2)] snap-start md:flex-1 md:w-0',

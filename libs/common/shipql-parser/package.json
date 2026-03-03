@@ -12,7 +12,7 @@
     "build": "pnpm run parser && swc",
     "check": "biome-check",
     "test": "pnpm run parser && vitest-run",
-    "type": "tsc-emit"
+    "type": "pnpm run parser && tsc-emit"
   },
   "devDependencies": {
     "@shipfox/biome": "workspace:*",
