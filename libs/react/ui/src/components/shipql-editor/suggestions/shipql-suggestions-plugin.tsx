@@ -1,6 +1,5 @@
 import {useLexicalComposerContext} from '@lexical/react/LexicalComposerContext';
 import type {AstNode} from '@shipfox/shipql-parser';
-import {parse} from '@shipfox/shipql-parser';
 import {
   $createRangeSelection,
   $createTextNode,
@@ -31,6 +30,7 @@ import {
   negationPrefixFromSource,
   normalizeFacets,
   stripNegationPrefix,
+  tryParse,
 } from './generate-suggestions';
 import type {FacetDef, SuggestionItem} from './types';
 
@@ -144,13 +144,10 @@ export function ShipQLSuggestionsPlugin({
         editor.getEditorState().read(() => {
           text = $getRoot().getTextContent();
         });
-        let ast: AstNode | null = null;
-        try {
-          ast = parse(text);
-        } catch {
-          /* invalid */
-        }
-        onLeafChangeRef.current?.({partialValue: facetCtx?.partialValue ?? '', ast});
+        onLeafChangeRef.current?.({
+          partialValue: facetCtx?.partialValue ?? '',
+          ast: tryParse(text),
+        });
         const leafItems = buildSuggestionItems(
           facetsRef.current,
           valueSuggestionsRef.current,
@@ -187,13 +184,10 @@ export function ShipQLSuggestionsPlugin({
           facetCtx?.negationPrefix ?? stripNegationPrefix(activeText).prefix;
         setCurrentFacetRef.current(facetCtx?.facet ?? null);
         const text = $getRoot().getTextContent();
-        let ast: AstNode | null = null;
-        try {
-          ast = parse(text);
-        } catch {
-          /* invalid */
-        }
-        onLeafChangeRef.current?.({partialValue: facetCtx?.partialValue ?? '', ast});
+        onLeafChangeRef.current?.({
+          partialValue: facetCtx?.partialValue ?? '',
+          ast: tryParse(text),
+        });
         const newItems = buildSuggestionItems(
           facetsRef.current,
           valueSuggestionsRef.current,
@@ -329,13 +323,7 @@ export function ShipQLSuggestionsPlugin({
         editor.getEditorState().read(() => {
           text = $getRoot().getTextContent();
         });
-        let ast: AstNode | null = null;
-        try {
-          ast = parse(text);
-        } catch {
-          /* invalid */
-        }
-        onLeafChangeRef.current?.({partialValue: '', ast});
+        onLeafChangeRef.current?.({partialValue: '', ast: tryParse(text)});
         setOpenRef.current(true);
       }
 
@@ -521,13 +509,10 @@ export function ShipQLSuggestionsPlugin({
           setCurrentFacetRef.current(facetCtx?.facet ?? null);
         }
         const text = $getRoot().getTextContent();
-        let ast: AstNode | null = null;
-        try {
-          ast = parse(text);
-        } catch {
-          /* invalid */
-        }
-        onLeafChangeRef.current?.({partialValue: facetCtx?.partialValue ?? '', ast});
+        onLeafChangeRef.current?.({
+          partialValue: facetCtx?.partialValue ?? '',
+          ast: tryParse(text),
+        });
 
         const newItems = buildSuggestionItems(
           facetsRef.current,

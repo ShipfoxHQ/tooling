@@ -1,6 +1,17 @@
+import {type AstNode, parse} from '@shipfox/shipql-parser';
 import {Icon} from 'components/icon';
 import type {LeafAstNode} from '../lexical/shipql-leaf-node';
 import type {FacetDef, RangeFacetConfig, SuggestionItem} from './types';
+
+// ─── Parse helper ─────────────────────────────────────────────────────────────
+
+export function tryParse(text: string): AstNode | null {
+  try {
+    return parse(text);
+  } catch {
+    return null;
+  }
+}
 
 // ─── Facet normalization ───────────────────────────────────────────────────────
 

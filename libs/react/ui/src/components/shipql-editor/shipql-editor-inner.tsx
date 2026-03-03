@@ -16,6 +16,7 @@ import type {LeafAstNode} from './lexical/shipql-leaf-node';
 import {ShipQLLeafNode} from './lexical/shipql-leaf-node';
 import {ShipQLPlugin} from './lexical/shipql-plugin';
 import type {ShipQLEditorInnerProps} from './shipql-editor';
+import {detectFacetContext, normalizeFacets, tryParse} from './suggestions/generate-suggestions';
 import {ShipQLSuggestionsDropdown} from './suggestions/shipql-suggestions-dropdown';
 import type {SyntaxHintMode} from './suggestions/shipql-suggestions-footer';
 import {ShipQLSuggestionsPlugin} from './suggestions/shipql-suggestions-plugin';
@@ -197,7 +198,16 @@ export default function ShipQLEditorInner({
           className={cn(INPUT_CLASSES, disabled && 'pointer-events-none opacity-50')}
           aria-invalid={isError}
           value={text}
-          onChange={(e) => onTextChange(e.target.value)}
+          onChange={(e) => {
+            const newText = e.target.value;
+            onTextChange(newText);
+
+            const facetNames = facets ? normalizeFacets(facets) : [];
+            const facetCtx = detectFacetContext(newText, facetNames);
+            setCurrentFacet?.(facetCtx?.facet ?? null);
+
+            onLeafChange?.({partialValue: facetCtx?.partialValue ?? '', ast: tryParse(newText)});
+          }}
           placeholder={placeholder}
           disabled={disabled}
         />
