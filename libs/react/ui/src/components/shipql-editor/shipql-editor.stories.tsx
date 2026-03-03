@@ -194,7 +194,11 @@ function WithAsyncSuggestionsDemo(args: Parameters<typeof ShipQLEditor>[0]) {
       <div className="rounded-6 border border-border-neutral-base bg-background-components-base p-3 text-sm font-code">
         <p className="mb-1 text-foreground-neutral-subtle">Parent state:</p>
         <pre className="text-foreground-neutral-base">
-          {JSON.stringify({currentFacet, partialValue, isLoadingValueSuggestions, valueSuggestions}, null, 2)}
+          {JSON.stringify(
+            {currentFacet, partialValue, isLoadingValueSuggestions, valueSuggestions},
+            null,
+            2,
+          )}
         </pre>
       </div>
     </div>
