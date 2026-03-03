@@ -22,6 +22,8 @@ import {
 import {useEffect, useRef} from 'react';
 import type {LeafAstNode} from '../lexical/shipql-leaf-node';
 import {$isShipQLLeafNode} from '../lexical/shipql-leaf-node';
+import type {AstNode} from '@shipfox/shipql-parser';
+import {parse} from '@shipfox/shipql-parser';
 import {
   buildSuggestionItems,
   detectFacetContext,
@@ -48,7 +50,7 @@ interface ShipQLSuggestionsPluginProps {
   applyRef: React.RefObject<((value: string) => void) | null>;
   negationPrefixRef: React.RefObject<string>;
   focusedLeafNode: LeafAstNode | null;
-  onPartialValueChange?: (partialValue: string) => void;
+  onLeafChange?: (payload: { partialValue: string; ast: AstNode | null }) => void;
 }
 
 function getActiveSegment(para: ParagraphNode): string {
@@ -87,7 +89,7 @@ export function ShipQLSuggestionsPlugin({
   applyRef,
   negationPrefixRef,
   focusedLeafNode,
-  onPartialValueChange,
+  onLeafChange,
 }: ShipQLSuggestionsPluginProps) {
   const [editor] = useLexicalComposerContext();
 
@@ -116,8 +118,8 @@ export function ShipQLSuggestionsPlugin({
   focusedLeafNodeRef.current = focusedLeafNode;
   const isLoadingValueSuggestionsRef = useRef(isLoadingValueSuggestions);
   isLoadingValueSuggestionsRef.current = isLoadingValueSuggestions;
-  const onPartialValueChangeRef = useRef(onPartialValueChange);
-  onPartialValueChangeRef.current = onPartialValueChange;
+  const onLeafChangeRef = useRef(onLeafChange);
+  onLeafChangeRef.current = onLeafChange;
 
   const isFocusedRef = useRef(false);
   const hasNavigatedRef = useRef(false);
@@ -138,7 +140,17 @@ export function ShipQLSuggestionsPlugin({
         negationPrefixRef.current =
           facetCtx?.negationPrefix ?? stripNegationPrefix(activeText).prefix;
         setCurrentFacetRef.current(facetCtx?.facet ?? null);
-        onPartialValueChangeRef.current?.(facetCtx?.partialValue ?? '');
+        let text = '';
+        editor.getEditorState().read(() => {
+          text = $getRoot().getTextContent();
+        });
+        let ast: AstNode | null = null;
+        try {
+          ast = parse(text);
+        } catch {
+          /* invalid */
+        }
+        onLeafChangeRef.current?.({ partialValue: facetCtx?.partialValue ?? '', ast });
         const leafItems = buildSuggestionItems(
           facetsRef.current,
           valueSuggestionsRef.current,
@@ -151,7 +163,7 @@ export function ShipQLSuggestionsPlugin({
         negationPrefixRef.current =
           focusedLeafNode.type === 'not' ? negationPrefixFromSource(focusedLeafNode.source) : '';
         setCurrentFacetRef.current(facet ?? null);
-        // Don't call onPartialValueChange here — the update listener that
+        // Don't call onLeafChange here — the update listener that
         // preceded this rebuild already set the correct partial value.
         const leafItems = buildSuggestionItems(
           facetsRef.current,
@@ -174,7 +186,14 @@ export function ShipQLSuggestionsPlugin({
         negationPrefixRef.current =
           facetCtx?.negationPrefix ?? stripNegationPrefix(activeText).prefix;
         setCurrentFacetRef.current(facetCtx?.facet ?? null);
-        onPartialValueChangeRef.current?.(facetCtx?.partialValue ?? '');
+        const text = $getRoot().getTextContent();
+        let ast: AstNode | null = null;
+        try {
+          ast = parse(text);
+        } catch {
+          /* invalid */
+        }
+        onLeafChangeRef.current?.({ partialValue: facetCtx?.partialValue ?? '', ast });
         const newItems = buildSuggestionItems(
           facetsRef.current,
           valueSuggestionsRef.current,
@@ -306,7 +325,17 @@ export function ShipQLSuggestionsPlugin({
       // causing a flash of "No suggestions found".
       if (isFacetSelection) {
         setCurrentFacetRef.current(selectedValue);
-        onPartialValueChangeRef.current?.('');
+        let text = '';
+        editor.getEditorState().read(() => {
+          text = $getRoot().getTextContent();
+        });
+        let ast: AstNode | null = null;
+        try {
+          ast = parse(text);
+        } catch {
+          /* invalid */
+        }
+        onLeafChangeRef.current?.({ partialValue: '', ast });
         setOpenRef.current(true);
       }
 
@@ -491,7 +520,14 @@ export function ShipQLSuggestionsPlugin({
             facetCtx?.negationPrefix ?? stripNegationPrefix(activeText).prefix;
           setCurrentFacetRef.current(facetCtx?.facet ?? null);
         }
-        onPartialValueChangeRef.current?.(facetCtx?.partialValue ?? '');
+        const text = $getRoot().getTextContent();
+        let ast: AstNode | null = null;
+        try {
+          ast = parse(text);
+        } catch {
+          /* invalid */
+        }
+        onLeafChangeRef.current?.({ partialValue: facetCtx?.partialValue ?? '', ast });
 
         const newItems = buildSuggestionItems(
           facetsRef.current,

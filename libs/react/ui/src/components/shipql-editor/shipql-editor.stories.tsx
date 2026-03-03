@@ -3,7 +3,7 @@ import type {AstNode} from '@shipfox/shipql-parser';
 import type {Meta, StoryObj} from '@storybook/react';
 import {useEffect, useState} from 'react';
 import type {LeafAstNode} from './lexical/shipql-leaf-node';
-import {ShipQLEditor} from './shipql-editor';
+import {type LeafChangePayload, ShipQLEditor} from './shipql-editor';
 import type {FacetDef} from './suggestions/types';
 
 // Wait for React.lazy Suspense + Lexical useEffect tokenisation to settle.
@@ -16,6 +16,14 @@ const meta = {
   title: 'Components/ShipQLEditor',
   component: ShipQLEditor,
   tags: ['autodocs'],
+  parameters: {
+    docs: {
+      description: {
+        component:
+          'Query editor for ShipQL. **onChange**: called on blur with the full valid AST. **onLeafChange**: called while the user is in a value context (typing after a facet or when focus moves in/out of leaves) with `{ partialValue, ast }` — use it to drive value suggestions or send state to the backend.',
+      },
+    },
+  },
   args: {
     placeholder: 'Type a ShipQL query…',
   },
@@ -120,7 +128,9 @@ const FACET_VALUES: Record<string, string[]> = {
 
 function WithSuggestionsDemo(args: Parameters<typeof ShipQLEditor>[0]) {
   const [currentFacet, setCurrentFacet] = useState<string | null>(null);
-  const [partialValue, setPartialValue] = useState('');
+  const [onLeafChangePayload, setOnLeafChangePayload] = useState<LeafChangePayload | null>(null);
+
+  const partialValue = onLeafChangePayload?.partialValue ?? '';
   const allValues = currentFacet ? (FACET_VALUES[currentFacet] ?? []) : [];
   const valueSuggestions = partialValue
     ? allValues.filter((v) => v.toLowerCase().includes(partialValue.toLowerCase()))
@@ -134,13 +144,22 @@ function WithSuggestionsDemo(args: Parameters<typeof ShipQLEditor>[0]) {
         currentFacet={currentFacet}
         setCurrentFacet={setCurrentFacet}
         valueSuggestions={valueSuggestions}
-        onPartialValueChange={setPartialValue}
+        onLeafChange={setOnLeafChangePayload}
         placeholder="Add filter..."
       />
       <div className="rounded-6 border border-border-neutral-base bg-background-components-base p-3 text-sm font-code">
         <p className="mb-1 text-foreground-neutral-subtle">Parent state:</p>
         <pre className="text-foreground-neutral-base">
-          {JSON.stringify({currentFacet, partialValue, valueSuggestions}, null, 2)}
+          {JSON.stringify(
+            {
+              currentFacet,
+              partialValue,
+              valueSuggestions,
+              onLeafChange: onLeafChangePayload ?? null,
+            },
+            null,
+            2,
+          )}
         </pre>
       </div>
     </div>
@@ -157,7 +176,7 @@ export const WithSuggestions: Story = {
 function WithAsyncSuggestionsDemo(args: Parameters<typeof ShipQLEditor>[0]) {
   const [currentFacet, setCurrentFacet] = useState<string | null>(null);
   const [allValues, setAllValues] = useState<string[]>([]);
-  const [partialValue, setPartialValue] = useState('');
+  const [onLeafChangePayload, setOnLeafChangePayload] = useState<LeafChangePayload | null>(null);
   const [isLoadingValueSuggestions, setIsLoadingValueSuggestions] = useState(false);
 
   useEffect(() => {
@@ -175,6 +194,7 @@ function WithAsyncSuggestionsDemo(args: Parameters<typeof ShipQLEditor>[0]) {
     return () => clearTimeout(timer);
   }, [currentFacet]);
 
+  const partialValue = onLeafChangePayload?.partialValue ?? '';
   const valueSuggestions = partialValue
     ? allValues.filter((v) => v.toLowerCase().includes(partialValue.toLowerCase()))
     : allValues;
@@ -188,14 +208,20 @@ function WithAsyncSuggestionsDemo(args: Parameters<typeof ShipQLEditor>[0]) {
         setCurrentFacet={setCurrentFacet}
         valueSuggestions={valueSuggestions}
         isLoadingValueSuggestions={isLoadingValueSuggestions}
-        onPartialValueChange={setPartialValue}
+        onLeafChange={setOnLeafChangePayload}
         placeholder="Add filter..."
       />
       <div className="rounded-6 border border-border-neutral-base bg-background-components-base p-3 text-sm font-code">
         <p className="mb-1 text-foreground-neutral-subtle">Parent state:</p>
         <pre className="text-foreground-neutral-base">
           {JSON.stringify(
-            {currentFacet, partialValue, isLoadingValueSuggestions, valueSuggestions},
+            {
+              currentFacet,
+              partialValue,
+              isLoadingValueSuggestions,
+              valueSuggestions,
+              onLeafChange: onLeafChangePayload ?? null,
+            },
             null,
             2,
           )}

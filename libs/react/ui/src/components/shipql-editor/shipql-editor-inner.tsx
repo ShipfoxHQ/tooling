@@ -45,7 +45,7 @@ export default function ShipQLEditorInner({
   setCurrentFacet,
   valueSuggestions,
   isLoadingValueSuggestions,
-  onPartialValueChange,
+  onLeafChange,
 }: ShipQLEditorInnerProps) {
   const [suggestionsOpen, setSuggestionsOpen] = useState(false);
   const [selectedIndex, setSelectedIndex] = useState(-1);
@@ -165,7 +165,7 @@ export default function ShipQLEditorInner({
                   applyRef={applyRef}
                   negationPrefixRef={negationPrefixRef}
                   focusedLeafNode={focusedLeafNode}
-                  onPartialValueChange={onPartialValueChange}
+                  onLeafChange={onLeafChange}
                 />
               )}
             </LexicalComposer>

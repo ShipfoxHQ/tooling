@@ -16,6 +16,8 @@ function isParseError(text: string): boolean {
   }
 }
 
+export type LeafChangePayload = { partialValue: string; ast: AstNode | null };
+
 export interface ShipQLEditorProps {
   defaultValue?: string;
   onChange?: (ast: AstNode) => void;
@@ -28,7 +30,7 @@ export interface ShipQLEditorProps {
   setCurrentFacet?: (facet: string | null) => void;
   valueSuggestions?: string[];
   isLoadingValueSuggestions?: boolean;
-  onPartialValueChange?: (partialValue: string) => void;
+  onLeafChange?: (payload: LeafChangePayload) => void;
 }
 
 export interface ShipQLEditorInnerProps extends ShipQLEditorProps {
