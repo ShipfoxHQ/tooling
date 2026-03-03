@@ -57,7 +57,7 @@ const command = buildShellCommand(['docker', 'buildx', 'build', ...args, '.']);
 log.info(command);
 execSync(command, {stdio: 'inherit'});
 
-if (!process.argv.includes('--push') && tags.length > 0) {
+if (tags.length > 0) {
   const rmCommand = buildShellCommand(['docker', 'image', 'rm', ...tags]);
   log.info(rmCommand);
   execSync(rmCommand, {stdio: 'inherit'});
