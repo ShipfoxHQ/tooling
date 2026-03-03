@@ -1,2 +1,8 @@
 export type {LeafAstNode} from './lexical/shipql-leaf-node';
-export * from './shipql-editor';
+export {
+  type FacetDef,
+  type LeafChangePayload,
+  type RangeFacetConfig,
+  ShipQLEditor,
+  type ShipQLEditorProps,
+} from './shipql-editor';
