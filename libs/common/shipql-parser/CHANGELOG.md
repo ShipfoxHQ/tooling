@@ -1,5 +1,11 @@
 # @shipfox/shipql-parser
 
+## 0.2.0
+
+### Minor Changes
+
+- a2d06a0: Release @shipfox/shipql-parser, @shipfox/react-ui, @shipfox/node-pg, @shipfox/biome
+
 ## 0.1.0
 
 ### Minor Changes

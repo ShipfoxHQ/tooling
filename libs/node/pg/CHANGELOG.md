@@ -1,5 +1,16 @@
 # @shipfox/node-pg
 
+## 0.3.0
+
+### Minor Changes
+
+- a2d06a0: Release @shipfox/shipql-parser, @shipfox/react-ui, @shipfox/node-pg, @shipfox/biome
+
+### Patch Changes
+
+- 8c87fdd: Add keepalive default value for postgres
+  - @shipfox/config@1.2.0
+
 ## 0.2.0
 
 ### Minor Changes

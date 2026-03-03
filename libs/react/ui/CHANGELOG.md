@@ -1,5 +1,17 @@
 # @shipfox/react-ui
 
+## 0.31.0
+
+### Minor Changes
+
+- a2d06a0: Release @shipfox/shipql-parser, @shipfox/react-ui, @shipfox/node-pg, @shipfox/biome
+- a2d06a0: ShipQL editor: add suggestion dropdown with facet/value autocompletion, range facet panel, and negation support. Externalize suggestion state—parent supplies `facets`, `currentFacet`, `setCurrentFacet`, `valueSuggestions`, and `isLoadingValueSuggestions`. Add `onLeafChange(payload)` with `{ partialValue, ast }` for value-context updates (drives suggestions / backend). Export `ShipQLEditor`, `ShipQLEditorProps`, `LeafChangePayload`, `LeafAstNode`, `FacetDef`, `RangeFacetConfig`. Error border on unparseable queries; fix initial tokenization and right-arrow leaf exit.
+
+### Patch Changes
+
+- Updated dependencies [a2d06a0]
+  - @shipfox/shipql-parser@0.2.0
+
 ## 0.30.0
 
 ### Minor Changes
