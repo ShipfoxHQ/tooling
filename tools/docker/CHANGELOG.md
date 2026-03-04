@@ -1,5 +1,11 @@
 # @shipfox/docker
 
+## 1.2.1
+
+### Patch Changes
+
+- e9a4f5b: Revert commit adding image deletion
+
 ## 1.2.0
 
 ### Minor Changes
