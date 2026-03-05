@@ -192,7 +192,7 @@ export function DataTable<TData, TValue>({
     getCoreRowModel: getCoreRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
     getSortedRowModel: getSortedRowModel(),
-    getPaginationRowModel: isPaginationNeeded ? getPaginationRowModel() : undefined,
+    getPaginationRowModel: pagination ? getPaginationRowModel() : undefined,
     enableRowSelection: showSelectedCount,
     onSortingChange: setSorting,
     onColumnFiltersChange: setColumnFilters,
@@ -204,7 +204,7 @@ export function DataTable<TData, TValue>({
       columnFilters,
       columnVisibility,
       rowSelection,
-      pagination: isPaginationNeeded ? paginationState : undefined,
+      pagination: pagination ? paginationState : undefined,
     },
   });
 
