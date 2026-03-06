@@ -111,14 +111,17 @@ const REBUILD_TAG = 'shipql-rebuild';
 
 interface ShipQLPluginProps {
   onLeafFocus?: (node: LeafAstNode | null) => void;
+  formatLeafDisplay?: (source: string) => string;
 }
 
-export function ShipQLPlugin({onLeafFocus}: ShipQLPluginProps): null {
+export function ShipQLPlugin({onLeafFocus, formatLeafDisplay}: ShipQLPluginProps): null {
   const [editor] = useLexicalComposerContext();
 
   // Keep latest callback accessible inside Lexical listeners without re-registering.
   const onLeafFocusRef = useRef(onLeafFocus);
   onLeafFocusRef.current = onLeafFocus;
+  const formatLeafDisplayRef = useRef(formatLeafDisplay);
+  formatLeafDisplayRef.current = formatLeafDisplay;
 
   // Track the key of the last focused leaf to avoid redundant callbacks.
   const lastFocusedKeyRef = useRef<string | null>(null);
@@ -285,9 +288,10 @@ export function ShipQLPlugin({onLeafFocus}: ShipQLPluginProps): null {
 
           para.clear();
 
+          const fmt = formatLeafDisplayRef.current;
           const newNodes = nextSegments.map((seg) =>
             seg.kind === 'leaf'
-              ? $createShipQLLeafNode(seg.text, seg.node)
+              ? $createShipQLLeafNode(seg.text, seg.node, fmt?.(seg.text))
               : $createTextNode(seg.text),
           );
 
@@ -332,11 +336,12 @@ export function ShipQLPlugin({onLeafFocus}: ShipQLPluginProps): null {
       if (!ast) return;
       const segments = tokenize(text, collectLeaves(ast));
       if (!needsRebuild(children, segments)) return;
+      const fmt = formatLeafDisplayRef.current;
       para.clear();
       for (const seg of segments) {
         para.append(
           seg.kind === 'leaf'
-            ? $createShipQLLeafNode(seg.text, seg.node)
+            ? $createShipQLLeafNode(seg.text, seg.node, fmt?.(seg.text))
             : $createTextNode(seg.text),
         );
       }

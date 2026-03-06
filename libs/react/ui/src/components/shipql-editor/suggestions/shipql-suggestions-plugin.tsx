@@ -34,6 +34,17 @@ import {
 } from './generate-suggestions';
 import type {FacetDef, SuggestionItem} from './types';
 
+const NEEDS_QUOTING = /[\s"()]/;
+const RANGE_SYNTAX = /^(\[.*\s+TO\s+.*\]|[<>]=?.+)$/;
+
+function quoteIfNeeded(value: string): string {
+  if (RANGE_SYNTAX.test(value)) return value;
+  if (value === '' || NEEDS_QUOTING.test(value)) {
+    return `"${value}"`;
+  }
+  return value;
+}
+
 interface ShipQLSuggestionsPluginProps {
   facets: FacetDef[];
   currentFacet: string | null;
@@ -65,6 +76,11 @@ function getActiveSegment(para: ParagraphNode): string {
       const leafText = child.getTextContent();
       if (active.length > 0 && active[0] !== ' ' && leafText.includes(':')) {
         active = leafText + active;
+      } else if (active.length === 0 && leafText.endsWith(':')) {
+        // Cursor is immediately after a facet leaf like "status:" (no trailing
+        // text yet). Include the leaf so detectFacetContext can identify the
+        // facet and show value suggestions instead of facet-name suggestions.
+        active = leafText;
       }
       break;
     }
@@ -245,7 +261,7 @@ export function ShipQLSuggestionsPlugin({
           if (!para) return;
 
           const insertText = currentFacetRef.current
-            ? `${negationPrefixRef.current}${currentFacetRef.current}:${selectedValue} `
+            ? `${negationPrefixRef.current}${currentFacetRef.current}:${quoteIfNeeded(selectedValue)} `
             : `${negationPrefixRef.current}${selectedValue}:`;
 
           // Case 1: Cursor is inside a focused leaf chip — replace the chip in-place

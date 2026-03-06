@@ -184,7 +184,7 @@ export function buildSuggestionItems(
   if (filtered.length === 0) return [];
   return [
     header('TYPE'),
-    ...filtered.slice(0, 8).map((f) => ({
+    ...filtered.map((f) => ({
       value: f,
       label: f,
       icon: <Icon name="searchLine" className="size-16 text-foreground-neutral-subtle" />,
