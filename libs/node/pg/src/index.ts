@@ -3,6 +3,8 @@ import {config} from './config';
 
 export type * from 'pg';
 
+export {DatabaseError} from 'pg';
+
 let _pool: pg.Pool | undefined;
 
 export function createPostgresClient(options?: pg.PoolConfig): pg.Pool {
