@@ -1,5 +1,11 @@
 # @shipfox/node-pg
 
+## 0.3.1
+
+### Patch Changes
+
+- 7f477b0: Export DatabaseError from node-pg
+
 ## 0.3.0
 
 ### Minor Changes

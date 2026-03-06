@@ -1,5 +1,11 @@
 # @shipfox/react-ui
 
+## 0.31.1
+
+### Patch Changes
+
+- 3b7f517: Fix DataTable crash when filtered data drops below pageSize
+
 ## 0.31.0
 
 ### Minor Changes
