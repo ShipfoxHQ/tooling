@@ -1,24 +1,19 @@
 import {trace} from '@opentelemetry/api';
 import {afterEach, describe, expect, it} from '@shipfox/vitest/vi';
-import {vi} from 'vitest';
+import * as contextModule from './context';
 import {logger} from './logger';
 
 vi.mock('@shipfox/node-log', () => ({
-  createLogger: () => ({
-    child: vi.fn().mockReturnValue({}),
-  }),
+  createLogger: () => ({child: () => ({})}),
 }));
 
 vi.mock('./context', () => ({
-  getContextMetadata: vi.fn().mockReturnValue({}),
+  getContextMetadata: () => ({}),
 }));
-
-import {getContextMetadata} from './context';
 
 describe('logger', () => {
   afterEach(() => {
     vi.restoreAllMocks();
-    vi.mocked(getContextMetadata).mockReturnValue({});
   });
 
   it('returns cached base logger when no context exists', () => {
@@ -46,7 +41,7 @@ describe('logger', () => {
   it('returns child logger when business metadata is present', () => {
     const base = logger();
 
-    vi.mocked(getContextMetadata).mockReturnValue({orgId: 'org-123'});
+    vi.spyOn(contextModule, 'getContextMetadata').mockReturnValue({orgId: 'org-123'});
 
     const child = logger();
 
@@ -62,7 +57,7 @@ describe('logger', () => {
         spanId: '00f067aa0ba902b7',
       }),
     } as any);
-    vi.mocked(getContextMetadata).mockReturnValue({orgId: 'org-123'});
+    vi.spyOn(contextModule, 'getContextMetadata').mockReturnValue({orgId: 'org-123'});
 
     const child = logger();
 

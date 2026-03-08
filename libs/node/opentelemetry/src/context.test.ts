@@ -62,6 +62,18 @@ describe('enrichSpanWithMetadata', () => {
     expect(setAttribute).toHaveBeenCalledWith('orgId', 'org-123');
   });
 
+  it('reads from active context when no metadata provided', () => {
+    const setAttribute = vi.fn();
+    const span = {setAttribute} as any;
+    const baggage = propagation.createBaggage({orgId: {value: 'org-123'}});
+    vi.spyOn(propagation, 'getBaggage').mockReturnValue(baggage);
+
+    enrichSpanWithMetadata(undefined, {span});
+
+    expect(setAttribute).toHaveBeenCalledWith('orgId', 'org-123');
+    vi.restoreAllMocks();
+  });
+
   it('is a no-op when no span is provided and none is active', () => {
     expect(() => enrichSpanWithMetadata({orgId: 'org-123'})).not.toThrow();
   });

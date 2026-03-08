@@ -3,6 +3,7 @@ import {createLogger} from '@shipfox/node-log';
 import {getContextMetadata} from './context';
 
 type Logger = ReturnType<typeof createLogger>;
+type LoggerOptions = Parameters<typeof createLogger>[0];
 
 let baseLogger: Logger | undefined;
 
@@ -13,8 +14,8 @@ function getBaseLogger(): Logger {
   return baseLogger;
 }
 
-export function logger(): Logger {
-  const base = getBaseLogger();
+export function logger(options?: LoggerOptions): Logger {
+  const base = options ? createLogger(options) : getBaseLogger();
   const span = trace.getActiveSpan();
   const metadata = getContextMetadata();
   const hasMetadata = Object.keys(metadata).length > 0;
