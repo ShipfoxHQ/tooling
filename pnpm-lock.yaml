@@ -220,9 +220,6 @@ importers:
       '@shipfox/node-log':
         specifier: workspace:*
         version: link:../log
-      pino:
-        specifier: ^10.3.0
-        version: 10.3.1
     devDependencies:
       '@shipfox/biome':
         specifier: workspace:*

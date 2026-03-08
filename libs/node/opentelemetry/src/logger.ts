@@ -1,21 +1,22 @@
 import {trace} from '@opentelemetry/api';
-import {settings} from '@shipfox/node-log';
-import pino, {type Logger as PinoLogger} from 'pino';
+import {createLogger} from '@shipfox/node-log';
 import {getContextMetadata} from './context';
 
-let baseLogger: PinoLogger | undefined;
+type Logger = ReturnType<typeof createLogger>;
 
-function getBaseLogger(): PinoLogger {
+let baseLogger: Logger | undefined;
+
+function getBaseLogger(): Logger {
   if (!baseLogger) {
-    baseLogger = pino(settings);
+    baseLogger = createLogger({});
   }
   return baseLogger;
 }
 
-export function logger(prefix?: string): PinoLogger {
+export function logger(): Logger {
   const base = getBaseLogger();
   const span = trace.getActiveSpan();
-  const metadata = getContextMetadata(undefined, prefix);
+  const metadata = getContextMetadata();
   const hasMetadata = Object.keys(metadata).length > 0;
 
   if (!span && !hasMetadata) {

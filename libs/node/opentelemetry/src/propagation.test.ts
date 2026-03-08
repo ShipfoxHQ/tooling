@@ -46,7 +46,7 @@ describe('injectContextToAttributes', () => {
 
     const attrs = injectContextToAttributes({}, ctx);
 
-    expect(attrs.baggage).toContain('sf.orgId=org-123');
+    expect(attrs.baggage).toContain('orgId=org-123');
   });
 });
 
@@ -75,6 +75,6 @@ describe('extractContextFromAttributes', () => {
     const extractedCtx = extractContextFromAttributes(attrs);
 
     const baggage = propagation.getBaggage(extractedCtx);
-    expect(baggage?.getEntry('sf.orgId')?.value).toBe('org-123');
+    expect(baggage?.getEntry('orgId')?.value).toBe('org-123');
   });
 });

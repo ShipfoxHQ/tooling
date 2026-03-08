@@ -8,8 +8,8 @@ describe('contextWithMetadata', () => {
 
     const baggage = propagation.getBaggage(ctx);
 
-    expect(baggage?.getEntry('sf.orgId')?.value).toBe('org-123');
-    expect(baggage?.getEntry('sf.userId')?.value).toBe('user-456');
+    expect(baggage?.getEntry('orgId')?.value).toBe('org-123');
+    expect(baggage?.getEntry('userId')?.value).toBe('user-456');
   });
 
   it('preserves existing context and baggage', () => {
@@ -20,15 +20,7 @@ describe('contextWithMetadata', () => {
 
     const baggage = propagation.getBaggage(ctx);
     expect(baggage?.getEntry('existing')?.value).toBe('val');
-    expect(baggage?.getEntry('sf.orgId')?.value).toBe('org-123');
-  });
-
-  it('respects custom prefix', () => {
-    const ctx = contextWithMetadata({orgId: 'org-123'}, {prefix: 'custom.'});
-
-    const baggage = propagation.getBaggage(ctx);
-    expect(baggage?.getEntry('custom.orgId')?.value).toBe('org-123');
-    expect(baggage?.getEntry('sf.orgId')).toBeUndefined();
+    expect(baggage?.getEntry('orgId')?.value).toBe('org-123');
   });
 });
 
@@ -43,8 +35,8 @@ describe('getContextMetadata', () => {
 
   it('falls back to baggage when custom keys are absent', () => {
     const existingBaggage = propagation.createBaggage({
-      'sf.orgId': {value: 'org-123'},
-      'sf.userId': {value: 'user-456'},
+      orgId: {value: 'org-123'},
+      userId: {value: 'user-456'},
     });
     const ctx = propagation.setBaggage(otelContext.active(), existingBaggage);
 
@@ -61,13 +53,13 @@ describe('getContextMetadata', () => {
 });
 
 describe('enrichSpanWithMetadata', () => {
-  it('sets prefixed span attributes', () => {
+  it('sets span attributes from metadata', () => {
     const setAttribute = vi.fn();
     const span = {setAttribute} as any;
 
     enrichSpanWithMetadata({orgId: 'org-123'}, {span});
 
-    expect(setAttribute).toHaveBeenCalledWith('sf.orgId', 'org-123');
+    expect(setAttribute).toHaveBeenCalledWith('orgId', 'org-123');
   });
 
   it('is a no-op when no span is provided and none is active', () => {

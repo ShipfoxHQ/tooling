@@ -4,7 +4,9 @@ import {vi} from 'vitest';
 import {logger} from './logger';
 
 vi.mock('@shipfox/node-log', () => ({
-  settings: {level: 'info'},
+  createLogger: () => ({
+    child: vi.fn().mockReturnValue({}),
+  }),
 }));
 
 vi.mock('./context', () => ({
