@@ -1,0 +1,76 @@
+import {context as otelContext, propagation, ROOT_CONTEXT} from '@opentelemetry/api';
+import {describe, expect, it, vi} from '@shipfox/vitest/vi';
+import {contextWithMetadata, enrichSpanWithMetadata, getContextMetadata} from './context';
+
+describe('contextWithMetadata', () => {
+  it('sets custom context keys and baggage entries', () => {
+    const ctx = contextWithMetadata({orgId: 'org-123', userId: 'user-456'});
+
+    const baggage = propagation.getBaggage(ctx);
+
+    expect(baggage?.getEntry('sf.orgId')?.value).toBe('org-123');
+    expect(baggage?.getEntry('sf.userId')?.value).toBe('user-456');
+  });
+
+  it('preserves existing context and baggage', () => {
+    const existingBaggage = propagation.createBaggage({existing: {value: 'val'}});
+    const parentCtx = propagation.setBaggage(otelContext.active(), existingBaggage);
+
+    const ctx = contextWithMetadata({orgId: 'org-123'}, {parentContext: parentCtx});
+
+    const baggage = propagation.getBaggage(ctx);
+    expect(baggage?.getEntry('existing')?.value).toBe('val');
+    expect(baggage?.getEntry('sf.orgId')?.value).toBe('org-123');
+  });
+
+  it('respects custom prefix', () => {
+    const ctx = contextWithMetadata({orgId: 'org-123'}, {prefix: 'custom.'});
+
+    const baggage = propagation.getBaggage(ctx);
+    expect(baggage?.getEntry('custom.orgId')?.value).toBe('org-123');
+    expect(baggage?.getEntry('sf.orgId')).toBeUndefined();
+  });
+});
+
+describe('getContextMetadata', () => {
+  it('reads from custom context keys (round-trip via contextWithMetadata)', () => {
+    const ctx = contextWithMetadata({orgId: 'org-123', userId: 'user-456'});
+
+    const metadata = getContextMetadata(ctx);
+
+    expect(metadata).toEqual({orgId: 'org-123', userId: 'user-456'});
+  });
+
+  it('falls back to baggage when custom keys are absent', () => {
+    const existingBaggage = propagation.createBaggage({
+      'sf.orgId': {value: 'org-123'},
+      'sf.userId': {value: 'user-456'},
+    });
+    const ctx = propagation.setBaggage(otelContext.active(), existingBaggage);
+
+    const metadata = getContextMetadata(ctx);
+
+    expect(metadata).toEqual({orgId: 'org-123', userId: 'user-456'});
+  });
+
+  it('returns empty object for ROOT_CONTEXT', () => {
+    const metadata = getContextMetadata(ROOT_CONTEXT);
+
+    expect(metadata).toEqual({});
+  });
+});
+
+describe('enrichSpanWithMetadata', () => {
+  it('sets prefixed span attributes', () => {
+    const setAttribute = vi.fn();
+    const span = {setAttribute} as any;
+
+    enrichSpanWithMetadata({orgId: 'org-123'}, {span});
+
+    expect(setAttribute).toHaveBeenCalledWith('sf.orgId', 'org-123');
+  });
+
+  it('is a no-op when no span is provided and none is active', () => {
+    expect(() => enrichSpanWithMetadata({orgId: 'org-123'})).not.toThrow();
+  });
+});

@@ -15,7 +15,10 @@ import {
 import {shutdownInstanceInstrumentation} from './instance';
 import {getServiceMetricsProvider, shutdownServiceMetrics} from './service';
 
+export {contextWithMetadata, enrichSpanWithMetadata, getContextMetadata} from './context';
 export {getFastifyInstrumentation, startInstanceInstrumentation} from './instance';
+export {logger} from './logger';
+export {extractContextFromAttributes, injectContextToAttributes} from './propagation';
 export {startServiceMetrics} from './service';
 
 export async function shutdownInstrumentation() {

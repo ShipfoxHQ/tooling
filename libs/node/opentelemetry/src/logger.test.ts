@@ -1,0 +1,69 @@
+import {trace} from '@opentelemetry/api';
+import {afterEach, describe, expect, it} from '@shipfox/vitest/vi';
+import {vi} from 'vitest';
+import {logger} from './logger';
+
+vi.mock('@shipfox/node-log', () => ({
+  settings: {level: 'info'},
+}));
+
+vi.mock('./context', () => ({
+  getContextMetadata: vi.fn().mockReturnValue({}),
+}));
+
+import {getContextMetadata} from './context';
+
+describe('logger', () => {
+  afterEach(() => {
+    vi.restoreAllMocks();
+    vi.mocked(getContextMetadata).mockReturnValue({});
+  });
+
+  it('returns cached base logger when no context exists', () => {
+    const log1 = logger();
+    const log2 = logger();
+
+    expect(log1).toBe(log2);
+  });
+
+  it('returns child logger with traceId/spanId when span is active', () => {
+    const base = logger();
+
+    vi.spyOn(trace, 'getActiveSpan').mockReturnValue({
+      spanContext: () => ({
+        traceId: '4bf92f3577b34da6a3ce929d0e0e4736',
+        spanId: '00f067aa0ba902b7',
+      }),
+    } as any);
+
+    const child = logger();
+
+    expect(child).not.toBe(base);
+  });
+
+  it('returns child logger when business metadata is present', () => {
+    const base = logger();
+
+    vi.mocked(getContextMetadata).mockReturnValue({orgId: 'org-123'});
+
+    const child = logger();
+
+    expect(child).not.toBe(base);
+  });
+
+  it('returns child logger when both trace and metadata are present', () => {
+    const base = logger();
+
+    vi.spyOn(trace, 'getActiveSpan').mockReturnValue({
+      spanContext: () => ({
+        traceId: '4bf92f3577b34da6a3ce929d0e0e4736',
+        spanId: '00f067aa0ba902b7',
+      }),
+    } as any);
+    vi.mocked(getContextMetadata).mockReturnValue({orgId: 'org-123'});
+
+    const child = logger();
+
+    expect(child).not.toBe(base);
+  });
+});

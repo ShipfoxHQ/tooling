@@ -10,6 +10,7 @@
   "scripts": {
     "build": "swc",
     "check": "biome-check",
+    "test": "vitest-run",
     "type": "tsc-emit"
   },
   "dependencies": {
@@ -23,12 +24,15 @@
     "@opentelemetry/sdk-metrics": "2.5.1",
     "@opentelemetry/sdk-node": "^0.212.0",
     "@opentelemetry/semantic-conventions": "^1.33.0",
-    "@shipfox/config": "workspace:*"
+    "@shipfox/config": "workspace:*",
+    "@shipfox/node-log": "workspace:*",
+    "pino": "^10.3.0"
   },
   "devDependencies": {
     "@shipfox/biome": "workspace:*",
     "@shipfox/swc": "workspace:*",
     "@shipfox/ts-config": "workspace:*",
-    "@shipfox/typescript": "workspace:*"
+    "@shipfox/typescript": "workspace:*",
+    "@shipfox/vitest": "workspace:*"
   }
 }
