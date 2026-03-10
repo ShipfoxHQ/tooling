@@ -1,15 +1,16 @@
-import {MeterProvider, type MetricReader} from '@opentelemetry/sdk-metrics';
+import {type IMetricReader, MeterProvider} from '@opentelemetry/sdk-metrics';
+import {config} from 'config';
 import {getMetricsReader, getResource, type StartInstrumentationOptions} from './common';
 
 let serviceMetricsProvider: MeterProvider | undefined;
-let serviceMetricReader: MetricReader | undefined;
+let serviceMetricReader: IMetricReader | undefined;
 
 export function startServiceMetrics(options?: StartInstrumentationOptions) {
   if (serviceMetricsProvider) return serviceMetricsProvider;
 
   const resource = getResource(options?.serviceName);
   serviceMetricReader = getMetricsReader({
-    port: 9474,
+    port: config.OTEL_SERVICE_METRICS_PORT,
     endpoint: '/metrics',
     ...options?.exporter?.service,
   });

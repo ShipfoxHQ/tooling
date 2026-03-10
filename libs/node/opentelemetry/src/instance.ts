@@ -2,7 +2,9 @@ import FastifyOtelInstrumentation from '@fastify/otel';
 import {getNodeAutoInstrumentations} from '@opentelemetry/auto-instrumentations-node';
 import {OTLPTraceExporter} from '@opentelemetry/exporter-trace-otlp-http';
 import {NodeSDK} from '@opentelemetry/sdk-node';
+import {config} from 'config';
 import {env, getMetricsReader, type StartInstrumentationOptions} from './common';
+import {fastifyRequestHook} from './utils';
 
 let instanceInstrumentation: NodeSDK | undefined;
 let fastifyInstrumentation: FastifyOtelInstrumentation | undefined;
@@ -10,11 +12,11 @@ let fastifyInstrumentation: FastifyOtelInstrumentation | undefined;
 export function startInstanceInstrumentation(options: StartInstrumentationOptions) {
   if (instanceInstrumentation) throw new Error('Instrumentation already initialized');
   const metricReader = getMetricsReader({
-    port: 9464,
+    port: config.OTEL_INSTANCE_METRICS_PORT,
     endpoint: '/metrics',
     ...options.exporter?.instance,
   });
-  fastifyInstrumentation = new FastifyOtelInstrumentation();
+  fastifyInstrumentation = new FastifyOtelInstrumentation({requestHook: fastifyRequestHook});
   instanceInstrumentation = new NodeSDK({
     serviceName: options.serviceName,
     metricReader,
