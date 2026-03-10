@@ -1,3 +1,4 @@
+import type {Span} from '@opentelemetry/api';
 import {context as otelContext, propagation, ROOT_CONTEXT} from '@opentelemetry/api';
 import {describe, expect, it, vi} from '@shipfox/vitest/vi';
 import {contextWithMetadata, enrichSpanWithMetadata, getContextMetadata} from './context';
@@ -55,7 +56,7 @@ describe('getContextMetadata', () => {
 describe('enrichSpanWithMetadata', () => {
   it('sets span attributes from metadata', () => {
     const setAttribute = vi.fn();
-    const span = {setAttribute} as any;
+    const span = {setAttribute} as unknown as Span;
 
     enrichSpanWithMetadata({orgId: 'org-123'}, {span});
 
@@ -64,7 +65,7 @@ describe('enrichSpanWithMetadata', () => {
 
   it('reads from active context when no metadata provided', () => {
     const setAttribute = vi.fn();
-    const span = {setAttribute} as any;
+    const span = {setAttribute} as unknown as Span;
     const baggage = propagation.createBaggage({orgId: {value: 'org-123'}});
     vi.spyOn(propagation, 'getBaggage').mockReturnValue(baggage);
 
