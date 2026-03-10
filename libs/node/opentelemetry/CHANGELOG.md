@@ -1,5 +1,11 @@
 # @shipfox/node-opentelemetry
 
+## 0.2.2
+
+### Patch Changes
+
+- 6aaecd4: Export `MetricAttributes` type to allow consumers to annotate metric instrument variables without a direct dependency on `@opentelemetry/api`
+
 ## 0.2.1
 
 ### Patch Changes
