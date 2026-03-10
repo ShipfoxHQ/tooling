@@ -1,5 +1,11 @@
 # @shipfox/node-opentelemetry
 
+## 0.2.1
+
+### Patch Changes
+
+- ddd50b9: Normalise UUIDs and numeric IDs in `http.route` and `url.path` span attributes to `:id` to reduce metric cardinality
+
 ## 0.2.0
 
 ### Minor Changes
