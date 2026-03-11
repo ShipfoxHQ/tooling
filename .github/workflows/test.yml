@@ -1,0 +1,12 @@
+name: Test
+
+on:
+  push: {}
+
+jobs:
+  test:
+    name: Test
+    runs-on: shipfox-2vcpu-ubuntu-2404
+    environment: test
+    steps:
+      - run: echo "Hello, world!"
