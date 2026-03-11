@@ -1,5 +1,14 @@
 # @shipfox/node-feature-flag
 
+## 0.6.6
+
+### Patch Changes
+
+- Updated dependencies [bc8636f]
+  - @shipfox/node-opentelemetry@0.2.3
+  - @shipfox/config@1.2.0
+  - @shipfox/node-log@0.3.1
+
 ## 0.6.5
 
 ### Patch Changes

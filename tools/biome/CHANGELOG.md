@@ -1,5 +1,11 @@
 # @shipfox/biome
 
+## 1.8.0
+
+### Minor Changes
+
+- 1c1f7a2: Add `biome-format` command for format-only invocations (e.g. editor format-on-save).
+
 ## 1.7.0
 
 ### Minor Changes
