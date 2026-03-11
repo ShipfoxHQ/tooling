@@ -1,5 +1,13 @@
 # @shipfox/node-opentelemetry
 
+## 0.2.3
+
+### Patch Changes
+
+- bc8636f: Export `Context` and `Span` types to allow consumers to annotate variables without a direct dependency on `@opentelemetry/api`
+  - @shipfox/config@1.2.0
+  - @shipfox/node-log@0.3.1
+
 ## 0.2.2
 
 ### Patch Changes
