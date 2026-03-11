@@ -1,4 +1,5 @@
 import {
+  type Context,
   type Counter,
   type Gauge,
   type Histogram,
@@ -11,6 +12,7 @@ import {
   type ObservableGauge,
   type ObservableResult,
   type ObservableUpDownCounter,
+  type Span,
   type UpDownCounter,
 } from '@opentelemetry/api';
 import {shutdownInstanceInstrumentation} from './instance';
@@ -41,4 +43,6 @@ export type {
   ObservableResult,
   ObservableCallback,
   Meter,
+  Context,
+  Span,
 };
