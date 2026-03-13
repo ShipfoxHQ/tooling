@@ -1,3 +1,4 @@
+import {argosScreenshot} from '@argos-ci/storybook/vitest';
 import type {Meta, StoryObj} from '@storybook/react';
 import {Code} from './code';
 
@@ -11,6 +12,10 @@ type Story = StoryObj;
 const variants = ['label', 'paragraph'] as const;
 
 export const Default: Story = {
+  play: async (ctx) => {
+    await document.fonts.ready;
+    await argosScreenshot(ctx, 'Code Default');
+  },
   render: () => (
     <div className="flex flex-col gap-16">
       {variants.map((variant) => (
