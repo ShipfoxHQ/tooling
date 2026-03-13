@@ -65,14 +65,12 @@ export const InlineVariants: Story = {
             variant="primary"
             radius="squared"
             placeholder="Search..."
-            defaultValue="random"
             className="w-200"
           />
           <SearchInline
             variant="primary"
             radius="rounded"
             placeholder="Search..."
-            defaultValue="random"
             className="w-200"
           />
         </div>
@@ -84,14 +82,12 @@ export const InlineVariants: Story = {
             variant="secondary"
             radius="squared"
             placeholder="Search..."
-            defaultValue="random"
             className="w-200"
           />
           <SearchInline
             variant="secondary"
             radius="rounded"
             placeholder="Search..."
-            defaultValue="random"
             className="w-200"
           />
         </div>
@@ -106,23 +102,13 @@ export const InlineSizes: Story = {
       <div className="flex flex-col gap-8">
         <span className="text-xs text-foreground-neutral-muted">Base (32px)</span>
         <div className="flex gap-8">
-          <SearchInline
-            size="base"
-            placeholder="Search..."
-            defaultValue="random"
-            className="w-200"
-          />
+          <SearchInline size="base" placeholder="Search..." className="w-200" />
         </div>
       </div>
       <div className="flex flex-col gap-8">
         <span className="text-xs text-foreground-neutral-muted">Small (28px)</span>
         <div className="flex gap-8">
-          <SearchInline
-            size="small"
-            placeholder="Search..."
-            defaultValue="random"
-            className="w-200"
-          />
+          <SearchInline size="small" placeholder="Search..." className="w-200" />
         </div>
       </div>
     </div>

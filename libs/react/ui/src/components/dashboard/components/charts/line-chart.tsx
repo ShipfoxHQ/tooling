@@ -83,7 +83,11 @@ export function LineChart({
       )}
       <CardContent>
         <div style={{height}} className="relative">
-          <ResponsiveContainer width="100%" height="100%">
+          <ResponsiveContainer
+            width="100%"
+            height="100%"
+            initialDimension={{width: 320, height: 200}}
+          >
             <RechartsLineChart
               data={isEmpty ? [] : data}
               margin={{top: 8, right: 8, left: -20, bottom: 0}}
