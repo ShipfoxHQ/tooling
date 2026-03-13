@@ -1,8 +1,10 @@
 import {
+  type Context,
   type Counter,
   type Gauge,
   type Histogram,
   type Meter,
+  type MetricAttributes,
   metrics,
   type Observable,
   type ObservableCallback,
@@ -10,12 +12,16 @@ import {
   type ObservableGauge,
   type ObservableResult,
   type ObservableUpDownCounter,
+  type Span,
   type UpDownCounter,
 } from '@opentelemetry/api';
 import {shutdownInstanceInstrumentation} from './instance';
 import {getServiceMetricsProvider, shutdownServiceMetrics} from './service';
 
+export {contextWithMetadata, enrichSpanWithMetadata, getContextMetadata} from './context';
 export {getFastifyInstrumentation, startInstanceInstrumentation} from './instance';
+export {logger} from './logger';
+export {extractContextFromAttributes, injectContextToAttributes} from './propagation';
 export {startServiceMetrics} from './service';
 
 export async function shutdownInstrumentation() {
@@ -28,6 +34,7 @@ export type {
   Counter,
   Histogram,
   Gauge,
+  MetricAttributes,
   UpDownCounter,
   Observable,
   ObservableCounter,
@@ -36,4 +43,6 @@ export type {
   ObservableResult,
   ObservableCallback,
   Meter,
+  Context,
+  Span,
 };

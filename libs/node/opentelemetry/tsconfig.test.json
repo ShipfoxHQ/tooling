@@ -5,7 +5,8 @@
     "paths": {
       "test": ["../test"],
       "test/*": ["../test/*"]
-    }
+    },
+    "types": ["vitest/globals"]
   },
   "include": ["src", "test", "vitest.config.ts"],
   "exclude": []

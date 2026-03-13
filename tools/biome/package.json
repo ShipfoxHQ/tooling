@@ -1,12 +1,13 @@
 {
   "name": "@shipfox/biome",
-  "version": "1.7.0",
+  "version": "1.8.0",
   "license": "MIT",
   "private": false,
   "packageManager": "pnpm@9.15.9",
   "type": "module",
   "bin": {
-    "biome-check": "./bin/biome-check.js"
+    "biome-check": "./bin/biome-check.js",
+    "biome-format": "./bin/biome-format.js"
   },
   "scripts": {
     "build": "swc",

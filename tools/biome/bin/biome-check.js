@@ -1,3 +1,3 @@
 #!/usr/bin/env node
 
-import '../dist/biome.js';
+import '../dist/biome-check.js';
