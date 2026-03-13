@@ -45,10 +45,12 @@ type SerializedShipQLLeafNode = SerializedTextNode & {type: 'shipql-leaf'};
 
 export class ShipQLLeafNode extends TextNode {
   __shipqlNode: LeafAstNode;
+  __displayText: string | null;
 
-  constructor(text: string, shipqlNode: LeafAstNode, key?: NodeKey) {
+  constructor(text: string, shipqlNode: LeafAstNode, key?: NodeKey, displayText?: string) {
     super(text, key);
     this.__shipqlNode = shipqlNode;
+    this.__displayText = displayText ?? null;
   }
 
   static getType(): string {
@@ -56,7 +58,12 @@ export class ShipQLLeafNode extends TextNode {
   }
 
   static clone(node: ShipQLLeafNode): ShipQLLeafNode {
-    return new ShipQLLeafNode(node.__text, node.__shipqlNode, node.__key);
+    return new ShipQLLeafNode(
+      node.__text,
+      node.__shipqlNode,
+      node.__key,
+      node.__displayText ?? undefined,
+    );
   }
 
   static importJSON(serialized: SerializedShipQLLeafNode): ShipQLLeafNode {
@@ -89,6 +96,9 @@ export class ShipQLLeafNode extends TextNode {
 
   createDOM(config: EditorConfig): HTMLElement {
     const element = super.createDOM(config);
+    if (this.__displayText) {
+      element.textContent = this.__displayText;
+    }
     const valid = isValidLeafText(this.__text);
     for (const cls of LEAF_BASE_CLASSES.split(' ')) element.classList.add(cls);
     for (const cls of (valid ? LEAF_NORMAL_CLASSES : LEAF_ERROR_CLASSES).split(' '))
@@ -134,8 +144,12 @@ export function $isShipQLLeafNode(node: unknown): node is ShipQLLeafNode {
   return node instanceof ShipQLLeafNode;
 }
 
-export function $createShipQLLeafNode(text: string, shipqlNode: LeafAstNode): ShipQLLeafNode {
-  return new ShipQLLeafNode(text, shipqlNode);
+export function $createShipQLLeafNode(
+  text: string,
+  shipqlNode: LeafAstNode,
+  displayText?: string,
+): ShipQLLeafNode {
+  return new ShipQLLeafNode(text, shipqlNode, undefined, displayText);
 }
 
 /** Returns true if the AST node qualifies as a visual leaf chip in the editor. */

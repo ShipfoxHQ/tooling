@@ -47,6 +47,7 @@ export default function ShipQLEditorInner({
   valueSuggestions,
   isLoadingValueSuggestions,
   onLeafChange,
+  formatLeafDisplay,
 }: ShipQLEditorInnerProps) {
   const [suggestionsOpen, setSuggestionsOpen] = useState(false);
   const [selectedIndex, setSelectedIndex] = useState(-1);
@@ -144,7 +145,7 @@ export default function ShipQLEditorInner({
                 }
                 ErrorBoundary={LexicalErrorBoundary}
               />
-              <ShipQLPlugin onLeafFocus={handleLeafFocus} />
+              <ShipQLPlugin onLeafFocus={handleLeafFocus} formatLeafDisplay={formatLeafDisplay} />
               <OnBlurPlugin onChange={onChange} />
               <OnTextChangePlugin onTextChange={onTextChange} />
               <HistoryPlugin />
@@ -207,6 +208,10 @@ export default function ShipQLEditorInner({
             setCurrentFacet?.(facetCtx?.facet ?? null);
 
             onLeafChange?.({partialValue: facetCtx?.partialValue ?? '', ast: tryParse(newText)});
+          }}
+          onBlur={(e) => {
+            const ast = tryParse(e.target.value);
+            if (ast) onChange?.(ast);
           }}
           placeholder={placeholder}
           disabled={disabled}
