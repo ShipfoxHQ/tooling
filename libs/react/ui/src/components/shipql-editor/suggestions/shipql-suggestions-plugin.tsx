@@ -34,11 +34,13 @@ import {
 } from './generate-suggestions';
 import type {FacetDef, SuggestionItem} from './types';
 
-const NEEDS_QUOTING = /[\s"()]/;
+const NEEDS_QUOTING = /[\s"()[\]]/;
 const RANGE_SYNTAX = /^(\[.*\s+TO\s+.*\]|[<>]=?.+)$/;
+const ALREADY_QUOTED = /^"[^"]*"$/;
 
 function quoteIfNeeded(value: string): string {
   if (RANGE_SYNTAX.test(value)) return value;
+  if (ALREADY_QUOTED.test(value)) return value;
   if (value === '' || NEEDS_QUOTING.test(value)) {
     return `"${value}"`;
   }

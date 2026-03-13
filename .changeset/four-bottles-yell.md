@@ -2,4 +2,4 @@
 "@shipfox/react-ui": patch
 ---
 
-Enhance ShipQL
+Improve ShipQL suggestion formatting, including leaf display callbacks, auto-quoting inserts, and range panel layout.
