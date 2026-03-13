@@ -37,6 +37,7 @@ export * from './sheet';
 export * from './shiny-text';
 export * from './shipql-editor';
 export * from './skeleton';
+export * from './switch';
 export * from './slider';
 export * from './table';
 export * from './tabs';
