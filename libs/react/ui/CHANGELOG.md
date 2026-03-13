@@ -1,5 +1,15 @@
 # @shipfox/react-ui
 
+## 0.32.0
+
+### Minor Changes
+
+- f795c62: Add Switch component
+
+### Patch Changes
+
+- 0dbdca7: Improve ShipQL suggestion formatting, including leaf display callbacks, auto-quoting inserts, and range panel layout.
+
 ## 0.31.1
 
 ### Patch Changes
