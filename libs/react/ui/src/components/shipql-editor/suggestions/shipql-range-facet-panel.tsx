@@ -7,6 +7,24 @@ import type {RangeFacetConfig} from './types';
 
 const RECENT_MAX = 5;
 
+const RANGE_BRACKET_RE = /^\[(\S+)\s+TO\s+(\S+)\]$/;
+const RANGE_OP_RE = /^([<>]=?)(.+)$/;
+
+function formatRangeDisplay(raw: string, fmt: (n: number) => string): string {
+  const bracketMatch = RANGE_BRACKET_RE.exec(raw);
+  if (bracketMatch) {
+    const min = Number(bracketMatch[1]);
+    const max = Number(bracketMatch[2]);
+    if (!Number.isNaN(min) && !Number.isNaN(max)) return `[${fmt(min)} TO ${fmt(max)}]`;
+  }
+  const opMatch = RANGE_OP_RE.exec(raw);
+  if (opMatch) {
+    const v = Number(opMatch[2]);
+    if (!Number.isNaN(v)) return `${opMatch[1]}${fmt(v)}`;
+  }
+  return raw;
+}
+
 const INPUT_CLASSES =
   'w-40 shrink-0 rounded-4 border border-border-neutral-base-component bg-background-field-base shadow-button-neutral transition-[color,box-shadow] outline-none px-4 py-2 text-center text-xs text-foreground-neutral-base focus-visible:shadow-border-interactive-with-active [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none';
 
@@ -44,13 +62,21 @@ function clearRecent(facetName: string): void {
 
 interface PresetRowProps {
   value: string;
+  displayValue?: string;
   onClick: (value: string) => void;
   isRecent?: boolean;
   isHighlighted?: boolean;
   rowRef?: (el: HTMLButtonElement | null) => void;
 }
 
-function PresetRow({value, onClick, isRecent, isHighlighted, rowRef}: PresetRowProps) {
+function PresetRow({
+  value,
+  displayValue,
+  onClick,
+  isRecent,
+  isHighlighted,
+  rowRef,
+}: PresetRowProps) {
   return (
     <button
       ref={rowRef}
@@ -70,7 +96,9 @@ function PresetRow({value, onClick, isRecent, isHighlighted, rowRef}: PresetRowP
         name={isRecent ? 'timeLine' : 'arrowRightLongFill'}
         className="size-16 shrink-0 text-foreground-neutral-subtle"
       />
-      <span className="flex-1 truncate text-sm text-foreground-neutral-subtle">{value}</span>
+      <span className="flex-1 truncate text-sm text-foreground-neutral-subtle">
+        {displayValue ?? value}
+      </span>
     </button>
   );
 }
@@ -90,6 +118,7 @@ export function ShipQLRangeFacetPanel({
 }: ShipQLRangeFacetPanelProps) {
   const absMin = Number(config.min);
   const absMax = Number(config.max);
+  const fmt = config.format ?? String;
 
   const [sliderValues, setSliderValues] = useState<[number, number]>([absMin, absMax]);
   const [recentValues, setRecentValues] = useState<string[]>(() => loadRecent(facetName));
@@ -99,18 +128,46 @@ export function ShipQLRangeFacetPanel({
   const presetRowRefs = useRef<(HTMLButtonElement | null)[]>([]);
 
   // Local string state for inputs so mid-edit typing isn't clamped
-  const [minText, setMinText] = useState(String(absMin));
-  const [maxText, setMaxText] = useState(String(absMax));
+  const [minText, setMinText] = useState(fmt(absMin));
+  const [maxText, setMaxText] = useState(fmt(absMax));
+  const [isEditingMin, setIsEditingMin] = useState(false);
+  const [isEditingMax, setIsEditingMax] = useState(false);
 
   const [lo, hi] = sliderValues;
 
-  // Keep input text in sync when slider moves
+  // Keep input text in sync when slider moves (only when not actively editing)
   useEffect(() => {
-    setMinText(String(lo));
-  }, [lo]);
+    if (!isEditingMin) setMinText(fmt(lo));
+  }, [lo, fmt, isEditingMin]);
   useEffect(() => {
-    setMaxText(String(hi));
-  }, [hi]);
+    if (!isEditingMax) setMaxText(fmt(hi));
+  }, [hi, fmt, isEditingMax]);
+
+  const commitMin = useCallback(
+    (text: string) => {
+      setIsEditingMin(false);
+      const n = Number(text);
+      if (!Number.isNaN(n)) {
+        const clamped = Math.max(absMin, Math.min(n, hi));
+        setSliderValues([clamped, hi]);
+      }
+      setMinText(fmt(lo));
+    },
+    [absMin, hi, lo, fmt],
+  );
+
+  const commitMax = useCallback(
+    (text: string) => {
+      setIsEditingMax(false);
+      const n = Number(text);
+      if (!Number.isNaN(n)) {
+        const clamped = Math.max(lo, Math.min(n, absMax));
+        setSliderValues([lo, clamped]);
+      }
+      setMaxText(fmt(hi));
+    },
+    [absMax, lo, hi, fmt],
+  );
 
   // Hold dropdown open for any pointer interaction inside the panel
   const panelRef = useRef<HTMLDivElement>(null);
@@ -135,11 +192,11 @@ export function ShipQLRangeFacetPanel({
   }, [isSelectingRef]);
 
   const addLabel = useMemo(() => {
-    if (lo === absMin && hi === absMax) return `Add ">=${lo},<=${hi}"`;
-    if (lo === absMin) return `Add "<=${hi}"`;
-    if (hi === absMax) return `Add ">=${lo}"`;
-    return `Add ">=${lo},<=${hi}"`;
-  }, [lo, hi, absMin, absMax]);
+    if (lo === absMin && hi === absMax) return `Add ">=${fmt(lo)},<=${fmt(hi)}"`;
+    if (lo === absMin) return `Add "<=${fmt(hi)}"`;
+    if (hi === absMax) return `Add ">=${fmt(lo)}"`;
+    return `Add ">=${fmt(lo)},<=${fmt(hi)}"`;
+  }, [lo, hi, absMin, absMax, fmt]);
 
   const buildValue = useCallback(() => {
     if (lo === absMin && hi === absMax) return `[${lo} TO ${hi}]`;
@@ -216,30 +273,6 @@ export function ShipQLRangeFacetPanel({
     if (el) el.scrollIntoView({behavior: 'smooth', block: 'nearest'});
   }, [selectedPresetIndex]);
 
-  // Commit min input on blur or Enter
-  const commitMin = useCallback(() => {
-    const v = Number(minText);
-    if (!Number.isNaN(v)) {
-      const clamped = Math.min(Math.max(v, absMin), hi);
-      setSliderValues([clamped, hi]);
-      setMinText(String(clamped));
-    } else {
-      setMinText(String(lo));
-    }
-  }, [minText, absMin, hi, lo]);
-
-  // Commit max input on blur or Enter
-  const commitMax = useCallback(() => {
-    const v = Number(maxText);
-    if (!Number.isNaN(v)) {
-      const clamped = Math.max(Math.min(v, absMax), lo);
-      setSliderValues([lo, clamped]);
-      setMaxText(String(clamped));
-    } else {
-      setMaxText(String(hi));
-    }
-  }, [maxText, absMax, lo, hi]);
-
   return (
     <div ref={panelRef} className="flex flex-col">
       {/* Header */}
@@ -253,14 +286,21 @@ export function ShipQLRangeFacetPanel({
       <div className="p-8 space-y-2">
         <div className="flex items-center gap-12">
           <input
-            type="number"
-            value={minText}
-            onChange={(e) => setMinText(e.target.value)}
-            onBlur={commitMin}
-            onKeyDown={(e) => {
-              if (e.key === 'Enter') commitMin();
-            }}
+            type="text"
             className={INPUT_CLASSES}
+            value={minText}
+            onChange={(e) => {
+              setIsEditingMin(true);
+              setMinText(e.target.value);
+            }}
+            onBlur={(e) => commitMin(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter') (e.target as HTMLInputElement).blur();
+            }}
+            onFocus={() => {
+              setIsEditingMin(true);
+              setMinText(String(lo));
+            }}
           />
           <Slider
             className="flex-1"
@@ -276,14 +316,21 @@ export function ShipQLRangeFacetPanel({
             }}
           />
           <input
-            type="number"
-            value={maxText}
-            onChange={(e) => setMaxText(e.target.value)}
-            onBlur={commitMax}
-            onKeyDown={(e) => {
-              if (e.key === 'Enter') commitMax();
-            }}
+            type="text"
             className={INPUT_CLASSES}
+            value={maxText}
+            onChange={(e) => {
+              setIsEditingMax(true);
+              setMaxText(e.target.value);
+            }}
+            onBlur={(e) => commitMax(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter') (e.target as HTMLInputElement).blur();
+            }}
+            onFocus={() => {
+              setIsEditingMax(true);
+              setMaxText(String(hi));
+            }}
           />
         </div>
         <Button
@@ -323,6 +370,7 @@ export function ShipQLRangeFacetPanel({
                 <PresetRow
                   key={v}
                   value={v}
+                  displayValue={formatRangeDisplay(v, fmt)}
                   onClick={handlePreset}
                   isRecent
                   isHighlighted={selectedPresetIndex === i}
@@ -346,6 +394,7 @@ export function ShipQLRangeFacetPanel({
                   <PresetRow
                     key={v}
                     value={v}
+                    displayValue={formatRangeDisplay(v, fmt)}
                     onClick={handlePreset}
                     isHighlighted={selectedPresetIndex === idx}
                     rowRef={(el) => {

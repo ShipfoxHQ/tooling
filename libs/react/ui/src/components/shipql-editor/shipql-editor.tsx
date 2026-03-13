@@ -3,9 +3,9 @@ import {parse} from '@shipfox/shipql-parser';
 import {lazy, Suspense, useCallback, useRef, useState} from 'react';
 import {cn} from 'utils/cn';
 import type {LeafAstNode} from './lexical/shipql-leaf-node';
-import type {FacetDef} from './suggestions/types';
+import type {FacetDef, FormatLeafDisplay} from './suggestions/types';
 
-export type {FacetDef, RangeFacetConfig} from './suggestions/types';
+export type {FacetDef, FormatLeafDisplay, RangeFacetConfig} from './suggestions/types';
 
 function isParseError(text: string): boolean {
   if (!text.trim()) return false;
@@ -31,6 +31,7 @@ export interface ShipQLEditorProps {
   valueSuggestions?: string[];
   isLoadingValueSuggestions?: boolean;
   onLeafChange?: (payload: LeafChangePayload) => void;
+  formatLeafDisplay?: FormatLeafDisplay;
 }
 
 export interface ShipQLEditorInnerProps extends ShipQLEditorProps {
@@ -70,7 +71,8 @@ export function ShipQLEditor({disabled, className, ...props}: ShipQLEditorProps)
     textRef.current = '';
     setIsError(false);
     setEditorKey((k) => k + 1);
-  }, []);
+    props.onLeafChange?.({partialValue: '', ast: null});
+  }, [props.onLeafChange]);
 
   const handleToggleMode = useCallback(() => {
     setMode((m) => {
