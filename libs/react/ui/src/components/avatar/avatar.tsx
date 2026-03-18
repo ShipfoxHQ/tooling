@@ -216,4 +216,4 @@ export function Avatar({
   );
 }
 
-export {AvatarRoot, AvatarImage, AvatarFallback};
+export {AvatarFallback, AvatarImage, AvatarRoot};

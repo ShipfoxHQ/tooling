@@ -277,15 +277,14 @@ function AlertClose({
   );
 }
 
+export type {AlertProps};
 export {
   Alert,
-  AlertContent,
-  AlertTitle,
-  AlertDescription,
-  AlertActions,
   AlertAction,
+  AlertActions,
   AlertClose,
+  AlertContent,
+  AlertDescription,
+  AlertTitle,
   alertDefaultTransition,
 };
-
-export type {AlertProps};

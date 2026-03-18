@@ -384,33 +384,32 @@ function DropdownMenuSubContent({
   );
 }
 
+export type {
+  DropdownMenuCheckboxItemProps,
+  DropdownMenuContentProps,
+  DropdownMenuItemProps,
+  DropdownMenuLabelProps,
+  DropdownMenuRadioItemProps,
+  DropdownMenuShortcutProps,
+  DropdownMenuSubTriggerProps,
+};
 export {
   DropdownMenu,
-  DropdownMenuTrigger,
-  DropdownMenuPortal,
+  DropdownMenuCheckboxItem,
   DropdownMenuContent,
   DropdownMenuGroup,
-  DropdownMenuLabel,
   DropdownMenuItem,
-  DropdownMenuCheckboxItem,
+  DropdownMenuLabel,
+  DropdownMenuPortal,
   DropdownMenuRadioGroup,
   DropdownMenuRadioItem,
   DropdownMenuSeparator,
   DropdownMenuShortcut,
   DropdownMenuSub,
-  DropdownMenuSubTrigger,
   DropdownMenuSubContent,
+  DropdownMenuSubTrigger,
+  DropdownMenuTrigger,
   dropdownMenuContentVariants,
   dropdownMenuItemVariants,
   dropdownMenuLabelVariants,
-};
-
-export type {
-  DropdownMenuContentProps,
-  DropdownMenuLabelProps,
-  DropdownMenuItemProps,
-  DropdownMenuCheckboxItemProps,
-  DropdownMenuRadioItemProps,
-  DropdownMenuSubTriggerProps,
-  DropdownMenuShortcutProps,
 };

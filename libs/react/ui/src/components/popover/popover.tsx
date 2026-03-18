@@ -58,4 +58,4 @@ function PopoverClose({...props}: ComponentProps<typeof PopoverPrimitive.Close>)
   return <PopoverPrimitive.Close {...props} />;
 }
 
-export {Popover, PopoverTrigger, PopoverAnchor, PopoverContent, PopoverArrow, PopoverClose};
+export {Popover, PopoverAnchor, PopoverArrow, PopoverClose, PopoverContent, PopoverTrigger};

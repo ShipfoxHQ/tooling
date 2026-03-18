@@ -17,5 +17,5 @@ function ShinyText({text, disabled = false, speed = 5, className = ''}: ShinyTex
   );
 }
 
-export {ShinyText};
 export type {ShinyTextProps};
+export {ShinyText};
