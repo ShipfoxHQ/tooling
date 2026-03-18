@@ -1,5 +1,12 @@
 # @shipfox/react-ui
 
+## 0.32.1
+
+### Patch Changes
+
+- e12c589: Remove DropdownInput and fix DOM warnings
+- cafa5d2: Update RangeFacetConfig and formatLeafDisplay of ShipQL plugin
+
 ## 0.32.0
 
 ### Minor Changes
