@@ -110,12 +110,12 @@ function TooltipContent({
   );
 }
 
+export type {TooltipContentProps};
 export {
+  defaultTransition,
   Tooltip,
-  TooltipTrigger,
   TooltipContent,
   TooltipProvider,
+  TooltipTrigger,
   tooltipContentVariants,
-  defaultTransition,
 };
-export type {TooltipContentProps};
