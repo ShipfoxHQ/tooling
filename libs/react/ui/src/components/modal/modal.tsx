@@ -317,29 +317,28 @@ function ModalBodyHeader({
   );
 }
 
-export {
-  Modal,
-  ModalPortal,
-  ModalOverlay,
-  ModalTrigger,
-  ModalClose,
-  ModalContent,
-  ModalHeader,
-  ModalBody,
-  ModalFooter,
-  ModalBodyHeader,
-  ModalTitle,
-  ModalDescription,
-  modalContentVariants,
-  modalOverlayVariants,
-  modalDefaultTransition,
-};
-
 export type {
+  ModalBodyHeaderProps,
   ModalContentProps,
+  ModalDescriptionProps,
   ModalHeaderProps,
   ModalOverlayProps,
   ModalTitleProps,
-  ModalDescriptionProps,
-  ModalBodyHeaderProps,
+};
+export {
+  Modal,
+  ModalBody,
+  ModalBodyHeader,
+  ModalClose,
+  ModalContent,
+  ModalDescription,
+  ModalFooter,
+  ModalHeader,
+  ModalOverlay,
+  ModalPortal,
+  ModalTitle,
+  ModalTrigger,
+  modalContentVariants,
+  modalDefaultTransition,
+  modalOverlayVariants,
 };

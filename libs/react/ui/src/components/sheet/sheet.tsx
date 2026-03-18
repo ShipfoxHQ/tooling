@@ -215,28 +215,27 @@ function SheetBody({className, children, ...props}: SheetBodyProps) {
   );
 }
 
+export type {
+  SheetBodyProps,
+  SheetContentProps,
+  SheetDescriptionProps,
+  SheetFooterProps,
+  SheetHeaderProps,
+  SheetOverlayProps,
+  SheetTitleProps,
+};
 export {
   Sheet,
-  SheetPortal,
-  SheetOverlay,
-  SheetTrigger,
+  SheetBody,
   SheetClose,
   SheetContent,
-  SheetHeader,
-  SheetFooter,
-  SheetTitle,
   SheetDescription,
-  SheetBody,
+  SheetFooter,
+  SheetHeader,
+  SheetOverlay,
+  SheetPortal,
+  SheetTitle,
+  SheetTrigger,
   sheetContentVariants,
   sheetOverlayVariants,
-};
-
-export type {
-  SheetContentProps,
-  SheetHeaderProps,
-  SheetFooterProps,
-  SheetTitleProps,
-  SheetDescriptionProps,
-  SheetBodyProps,
-  SheetOverlayProps,
 };

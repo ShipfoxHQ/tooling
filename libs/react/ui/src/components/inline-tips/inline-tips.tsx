@@ -124,9 +124,9 @@ function InlineTipsAction({
 
 export {
   InlineTips,
-  InlineTipsContent,
-  InlineTipsTitle,
-  InlineTipsDescription,
-  InlineTipsActions,
   InlineTipsAction,
+  InlineTipsActions,
+  InlineTipsContent,
+  InlineTipsDescription,
+  InlineTipsTitle,
 };
