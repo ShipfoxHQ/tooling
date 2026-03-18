@@ -29,7 +29,6 @@ export async function shutdownInstrumentation() {
   await shutdownServiceMetrics();
 }
 
-export {getServiceMetricsProvider, metrics as instanceMetrics};
 export type {
   Context,
   Counter,
@@ -46,3 +45,4 @@ export type {
   Span,
   UpDownCounter,
 };
+export {getServiceMetricsProvider, metrics as instanceMetrics};
