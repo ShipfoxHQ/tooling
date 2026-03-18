@@ -17,7 +17,18 @@ let fastifyInstrumentation: FastifyOtelInstrumentation | undefined;
 async function resolveInstrumentations(
   options: InstrumentationOptions,
 ): Promise<Instrumentation[]> {
-  const {fastify = true, http, net, dns, pg, ioredis, undici, cassandraDriver, grpc, pino} = options;
+  const {
+    fastify = true,
+    http,
+    net,
+    dns,
+    pg,
+    ioredis,
+    undici,
+    cassandraDriver,
+    grpc,
+    pino,
+  } = options;
   const instrumentations: Instrumentation[] = [];
 
   if (fastify) {

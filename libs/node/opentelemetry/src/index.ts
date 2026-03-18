@@ -20,9 +20,9 @@ import {getServiceMetricsProvider, shutdownServiceMetrics} from './service';
 
 import './diag';
 
+export type {InstrumentationOptions} from './common';
 export {contextWithMetadata, enrichSpanWithMetadata, getContextMetadata} from './context';
 export {getFastifyInstrumentation, startInstanceInstrumentation} from './instance';
-export type {InstrumentationOptions} from './common';
 export {logger} from './logger';
 export {extractContextFromAttributes, injectContextToAttributes} from './propagation';
 export {startServiceMetrics} from './service';
