@@ -1,26 +1,103 @@
 import FastifyOtelInstrumentation from '@fastify/otel';
-import {getNodeAutoInstrumentations} from '@opentelemetry/auto-instrumentations-node';
 import {OTLPTraceExporter} from '@opentelemetry/exporter-trace-otlp-http';
+import type {Instrumentation} from '@opentelemetry/instrumentation';
 import {NodeSDK} from '@opentelemetry/sdk-node';
 import {config} from 'config';
-import {env, getMetricsReader, type StartInstrumentationOptions} from './common';
+import {
+  env,
+  getMetricsReader,
+  type InstrumentationOptions,
+  type StartInstrumentationOptions,
+} from './common';
 import {fastifyRequestHook} from './utils';
 
 let instanceInstrumentation: NodeSDK | undefined;
 let fastifyInstrumentation: FastifyOtelInstrumentation | undefined;
 
-export function startInstanceInstrumentation(options: StartInstrumentationOptions) {
+async function resolveInstrumentations(
+  options: InstrumentationOptions,
+): Promise<Instrumentation[]> {
+  const {
+    fastify = true,
+    http,
+    net,
+    dns,
+    pg,
+    ioredis,
+    undici,
+    cassandraDriver,
+    grpc,
+    pino,
+  } = options;
+  const instrumentations: Instrumentation[] = [];
+
+  if (fastify) {
+    fastifyInstrumentation = new FastifyOtelInstrumentation({requestHook: fastifyRequestHook});
+    instrumentations.push(fastifyInstrumentation);
+  }
+  if (http) {
+    const {HttpInstrumentation} = await import('@opentelemetry/instrumentation-http');
+    instrumentations.push(new HttpInstrumentation());
+  }
+  if (net) {
+    const {NetInstrumentation} = await import('@opentelemetry/instrumentation-net');
+    instrumentations.push(new NetInstrumentation());
+  }
+  if (dns) {
+    const {DnsInstrumentation} = await import('@opentelemetry/instrumentation-dns');
+    instrumentations.push(new DnsInstrumentation());
+  }
+  if (pg) {
+    const {PgInstrumentation} = await import('@opentelemetry/instrumentation-pg');
+    instrumentations.push(new PgInstrumentation());
+  }
+  if (ioredis) {
+    const {IORedisInstrumentation} = await import('@opentelemetry/instrumentation-ioredis');
+    instrumentations.push(new IORedisInstrumentation());
+  }
+  if (undici) {
+    const {UndiciInstrumentation} = await import('@opentelemetry/instrumentation-undici');
+    instrumentations.push(new UndiciInstrumentation());
+  }
+  if (cassandraDriver) {
+    const {CassandraDriverInstrumentation} = await import(
+      '@opentelemetry/instrumentation-cassandra-driver'
+    );
+    instrumentations.push(new CassandraDriverInstrumentation());
+  }
+  if (grpc) {
+    const {GrpcInstrumentation} = await import('@opentelemetry/instrumentation-grpc');
+    instrumentations.push(new GrpcInstrumentation());
+  }
+  if (pino) {
+    const {PinoInstrumentation} = await import('@opentelemetry/instrumentation-pino');
+    instrumentations.push(new PinoInstrumentation());
+  }
+
+  return instrumentations;
+}
+
+export async function startInstanceInstrumentation(options: StartInstrumentationOptions) {
   if (instanceInstrumentation) throw new Error('Instrumentation already initialized');
   const metricReader = getMetricsReader({
     port: config.OTEL_INSTANCE_METRICS_PORT,
     endpoint: '/metrics',
     ...options.exporter?.instance,
   });
-  fastifyInstrumentation = new FastifyOtelInstrumentation({requestHook: fastifyRequestHook});
+
+  let instrumentations: Instrumentation[];
+  if (options.instrumentations === undefined) {
+    fastifyInstrumentation = new FastifyOtelInstrumentation({requestHook: fastifyRequestHook});
+    const {getNodeAutoInstrumentations} = await import('@opentelemetry/auto-instrumentations-node');
+    instrumentations = [fastifyInstrumentation, ...getNodeAutoInstrumentations()];
+  } else {
+    instrumentations = await resolveInstrumentations(options.instrumentations);
+  }
+
   instanceInstrumentation = new NodeSDK({
     serviceName: options.serviceName,
     metricReader,
-    instrumentations: [fastifyInstrumentation, ...getNodeAutoInstrumentations()],
+    instrumentations,
     traceExporter: env.TRACES_COLLECTOR_URL
       ? new OTLPTraceExporter({url: env.TRACES_COLLECTOR_URL})
       : undefined,
@@ -28,8 +105,7 @@ export function startInstanceInstrumentation(options: StartInstrumentationOption
   instanceInstrumentation.start();
 }
 
-export function getFastifyInstrumentation() {
-  if (!fastifyInstrumentation) throw new Error('Instrumentation not initialized');
+export function getFastifyInstrumentation(): FastifyOtelInstrumentation | undefined {
   return fastifyInstrumentation;
 }
 

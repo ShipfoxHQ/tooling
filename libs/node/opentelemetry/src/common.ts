@@ -19,8 +19,42 @@ export const env = createConfig({
   TRACES_COLLECTOR_URL: url({default: undefined}),
 });
 
+/**
+ * Selectively enable individual instrumentations to reduce startup time.
+ * When `instrumentations` is omitted from `StartInstrumentationOptions`, all
+ * Node.js auto-instrumentations are enabled (the default behaviour).
+ */
+export interface InstrumentationOptions {
+  /** Fastify route tracing via @fastify/otel. @default true */
+  fastify?: boolean;
+  http?: boolean;
+  net?: boolean;
+  dns?: boolean;
+  pg?: boolean;
+  ioredis?: boolean;
+  undici?: boolean;
+  cassandraDriver?: boolean;
+  grpc?: boolean;
+  pino?: boolean;
+}
+
 export interface StartInstrumentationOptions {
   serviceName?: string;
+  /**
+   * Instrumentations to enable. When omitted, all Node.js auto-instrumentations
+   * are loaded (equivalent to `getNodeAutoInstrumentations()`).
+   *
+   * Provide an `InstrumentationOptions` object to selectively enable only what
+   * your app uses. This avoids eagerly loading ~40 instrumentation packages on
+   * startup, which significantly reduces boot time.
+   *
+   * @example
+   * startInstanceInstrumentation({
+   *   serviceName: 'api',
+   *   instrumentations: { pg: true, ioredis: true, http: true },
+   * });
+   */
+  instrumentations?: InstrumentationOptions;
   exporter?: {
     instance: PrometheusExporterConfig;
     service: PrometheusExporterConfig;

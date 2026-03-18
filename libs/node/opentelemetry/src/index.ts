@@ -18,6 +18,9 @@ import {
 import {shutdownInstanceInstrumentation} from './instance';
 import {getServiceMetricsProvider, shutdownServiceMetrics} from './service';
 
+import './diag';
+
+export type {InstrumentationOptions} from './common';
 export {contextWithMetadata, enrichSpanWithMetadata, getContextMetadata} from './context';
 export {getFastifyInstrumentation, startInstanceInstrumentation} from './instance';
 export {logger} from './logger';
