@@ -10,17 +10,17 @@ const RECENT_MAX = 5;
 const RANGE_BRACKET_RE = /^\[(\S+)\s+TO\s+(\S+)\]$/;
 const RANGE_OP_RE = /^([<>]=?)(.+)$/;
 
-function formatRangeDisplay(raw: string, fmt: (n: number) => string): string {
+function formatRangeDisplay(raw: string, fmt: (value: string) => string): string {
   const bracketMatch = RANGE_BRACKET_RE.exec(raw);
   if (bracketMatch) {
-    const min = Number(bracketMatch[1]);
-    const max = Number(bracketMatch[2]);
-    if (!Number.isNaN(min) && !Number.isNaN(max)) return `[${fmt(min)} TO ${fmt(max)}]`;
+    const min = bracketMatch[1];
+    const max = bracketMatch[2];
+    if (min && max) return `[${fmt(min)} TO ${fmt(max)}]`;
   }
   const opMatch = RANGE_OP_RE.exec(raw);
   if (opMatch) {
-    const v = Number(opMatch[2]);
-    if (!Number.isNaN(v)) return `${opMatch[1]}${fmt(v)}`;
+    const v = opMatch[2];
+    if (v) return `${opMatch[1]}${fmt(v)}`;
   }
   return raw;
 }
@@ -128,8 +128,8 @@ export function ShipQLRangeFacetPanel({
   const presetRowRefs = useRef<(HTMLButtonElement | null)[]>([]);
 
   // Local string state for inputs so mid-edit typing isn't clamped
-  const [minText, setMinText] = useState(fmt(absMin));
-  const [maxText, setMaxText] = useState(fmt(absMax));
+  const [minText, setMinText] = useState(fmt(String(absMin)));
+  const [maxText, setMaxText] = useState(fmt(String(absMax)));
   const [isEditingMin, setIsEditingMin] = useState(false);
   const [isEditingMax, setIsEditingMax] = useState(false);
 
@@ -137,10 +137,10 @@ export function ShipQLRangeFacetPanel({
 
   // Keep input text in sync when slider moves (only when not actively editing)
   useEffect(() => {
-    if (!isEditingMin) setMinText(fmt(lo));
+    if (!isEditingMin) setMinText(fmt(String(lo)));
   }, [lo, fmt, isEditingMin]);
   useEffect(() => {
-    if (!isEditingMax) setMaxText(fmt(hi));
+    if (!isEditingMax) setMaxText(fmt(String(hi)));
   }, [hi, fmt, isEditingMax]);
 
   const commitMin = useCallback(
@@ -151,7 +151,7 @@ export function ShipQLRangeFacetPanel({
         const clamped = Math.max(absMin, Math.min(n, hi));
         setSliderValues([clamped, hi]);
       }
-      setMinText(fmt(lo));
+      setMinText(fmt(String(lo)));
     },
     [absMin, hi, lo, fmt],
   );
@@ -164,7 +164,7 @@ export function ShipQLRangeFacetPanel({
         const clamped = Math.max(lo, Math.min(n, absMax));
         setSliderValues([lo, clamped]);
       }
-      setMaxText(fmt(hi));
+      setMaxText(fmt(String(hi)));
     },
     [absMax, lo, hi, fmt],
   );
@@ -192,10 +192,12 @@ export function ShipQLRangeFacetPanel({
   }, [isSelectingRef]);
 
   const addLabel = useMemo(() => {
-    if (lo === absMin && hi === absMax) return `Add ">=${fmt(lo)},<=${fmt(hi)}"`;
-    if (lo === absMin) return `Add "<=${fmt(hi)}"`;
-    if (hi === absMax) return `Add ">=${fmt(lo)}"`;
-    return `Add ">=${fmt(lo)},<=${fmt(hi)}"`;
+    const fmtLo = fmt(String(lo));
+    const fmtHi = fmt(String(hi));
+    if (lo === absMin && hi === absMax) return `Add ">=${fmtLo},<=${fmtHi}"`;
+    if (lo === absMin) return `Add "<=${fmtHi}"`;
+    if (hi === absMax) return `Add ">=${fmtLo}"`;
+    return `Add ">=${fmtLo},<=${fmtHi}"`;
   }, [lo, hi, absMin, absMax, fmt]);
 
   const buildValue = useCallback(() => {
@@ -306,6 +308,7 @@ export function ShipQLRangeFacetPanel({
             className="flex-1"
             min={absMin}
             max={absMax}
+            step={config.step}
             value={sliderValues}
             onValueChange={(vals) => {
               const newLo = vals[0];

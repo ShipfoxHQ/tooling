@@ -111,7 +111,7 @@ const REBUILD_TAG = 'shipql-rebuild';
 
 interface ShipQLPluginProps {
   onLeafFocus?: (node: LeafAstNode | null) => void;
-  formatLeafDisplay?: (source: string) => string;
+  formatLeafDisplay?: (source: string, node: LeafAstNode) => string;
 }
 
 export function ShipQLPlugin({onLeafFocus, formatLeafDisplay}: ShipQLPluginProps): null {
@@ -291,7 +291,7 @@ export function ShipQLPlugin({onLeafFocus, formatLeafDisplay}: ShipQLPluginProps
           const fmt = formatLeafDisplayRef.current;
           const newNodes = nextSegments.map((seg) =>
             seg.kind === 'leaf'
-              ? $createShipQLLeafNode(seg.text, seg.node, fmt?.(seg.text))
+              ? $createShipQLLeafNode(seg.text, seg.node, fmt?.(seg.text, seg.node))
               : $createTextNode(seg.text),
           );
 
@@ -341,7 +341,7 @@ export function ShipQLPlugin({onLeafFocus, formatLeafDisplay}: ShipQLPluginProps
       for (const seg of segments) {
         para.append(
           seg.kind === 'leaf'
-            ? $createShipQLLeafNode(seg.text, seg.node, fmt?.(seg.text))
+            ? $createShipQLLeafNode(seg.text, seg.node, fmt?.(seg.text, seg.node))
             : $createTextNode(seg.text),
         );
       }

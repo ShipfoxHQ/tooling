@@ -1,14 +1,17 @@
+import type {AstNode} from '@shipfox/shipql-parser';
+
 export interface RangeFacetConfig {
   type: 'range';
   min: string;
   max: string;
+  step?: number;
   presets?: string[];
-  format?: (value: number) => string;
+  format?: (value: string) => string;
 }
 
 export type FacetDef = string | {name: string; config: RangeFacetConfig};
 
-export type FormatLeafDisplay = (source: string) => string;
+export type FormatLeafDisplay = (source: string, node: AstNode) => string;
 
 export interface SuggestionItem {
   value: string;
