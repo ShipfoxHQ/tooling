@@ -262,18 +262,17 @@ function CommandShortcut({className, children, ...props}: ComponentProps<typeof 
   );
 }
 
+export type {CommandInputProps, CommandTriggerProps};
 export {
   Command,
-  CommandTrigger,
   CommandDialog,
-  CommandInput,
-  CommandList,
   CommandEmpty,
   CommandGroup,
+  CommandInput,
   CommandItem,
+  CommandList,
   CommandSeparator,
   CommandShortcut,
+  CommandTrigger,
   commandTriggerVariants,
 };
-
-export type {CommandTriggerProps, CommandInputProps};

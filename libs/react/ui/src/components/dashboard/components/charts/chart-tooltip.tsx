@@ -21,7 +21,7 @@ export function ChartTooltipContent({
   hoveredDataKey,
   labelFormatter,
 }: ChartTooltipContentProps) {
-  const isVisible = active && payload && payload.length;
+  const isVisible = active && payload?.length;
 
   if (!isVisible) return null;
 
