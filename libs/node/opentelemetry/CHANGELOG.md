@@ -1,5 +1,11 @@
 # @shipfox/node-opentelemetry
 
+## 0.4.0
+
+### Minor Changes
+
+- df4506a: Use BatchSpanProcessor for trace export and expose Attributes and SpanStatusCode types
+
 ## 0.3.0
 
 ### Minor Changes
