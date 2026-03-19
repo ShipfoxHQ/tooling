@@ -14,7 +14,8 @@ import {
   type ObservableResult,
   type ObservableUpDownCounter,
   type Span,
-  type SpanStatusCode,
+  SpanKind,
+  SpanStatusCode,
   trace,
   type UpDownCounter,
 } from '@opentelemetry/api';
@@ -50,7 +51,6 @@ export type {
   ObservableResult,
   ObservableUpDownCounter,
   Span,
-  SpanStatusCode,
   UpDownCounter,
 };
-export {getServiceMetricsProvider, metrics as instanceMetrics, trace};
+export {getServiceMetricsProvider, metrics as instanceMetrics, SpanKind, SpanStatusCode, trace};
