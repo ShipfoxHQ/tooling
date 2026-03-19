@@ -1,4 +1,5 @@
 import {
+  type Attributes,
   type Context,
   type Counter,
   type Gauge,
@@ -13,6 +14,7 @@ import {
   type ObservableResult,
   type ObservableUpDownCounter,
   type Span,
+  type SpanStatusCode,
   trace,
   type UpDownCounter,
 } from '@opentelemetry/api';
@@ -34,6 +36,7 @@ export async function shutdownInstrumentation() {
 }
 
 export type {
+  Attributes,
   Context,
   Counter,
   Gauge,
@@ -47,6 +50,7 @@ export type {
   ObservableResult,
   ObservableUpDownCounter,
   Span,
+  SpanStatusCode,
   UpDownCounter,
 };
 export {getServiceMetricsProvider, metrics as instanceMetrics, trace};

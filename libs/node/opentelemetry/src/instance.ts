@@ -2,6 +2,7 @@ import FastifyOtelInstrumentation from '@fastify/otel';
 import {OTLPTraceExporter} from '@opentelemetry/exporter-trace-otlp-http';
 import type {Instrumentation} from '@opentelemetry/instrumentation';
 import {NodeSDK} from '@opentelemetry/sdk-node';
+import {BatchSpanProcessor} from '@opentelemetry/sdk-trace-node';
 import {config} from 'config';
 import {
   env,
@@ -98,8 +99,8 @@ export async function startInstanceInstrumentation(options: StartInstrumentation
     serviceName: options.serviceName,
     metricReader,
     instrumentations,
-    traceExporter: env.TRACES_COLLECTOR_URL
-      ? new OTLPTraceExporter({url: env.TRACES_COLLECTOR_URL})
+    spanProcessors: env.TRACES_COLLECTOR_URL
+      ? [new BatchSpanProcessor(new OTLPTraceExporter({url: env.TRACES_COLLECTOR_URL}))]
       : undefined,
   });
   instanceInstrumentation.start();
