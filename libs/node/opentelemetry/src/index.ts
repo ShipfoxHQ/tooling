@@ -13,6 +13,7 @@ import {
   type ObservableResult,
   type ObservableUpDownCounter,
   type Span,
+  trace,
   type UpDownCounter,
 } from '@opentelemetry/api';
 import {shutdownInstanceInstrumentation} from './instance';
@@ -48,4 +49,4 @@ export type {
   Span,
   UpDownCounter,
 };
-export {getServiceMetricsProvider, metrics as instanceMetrics};
+export {getServiceMetricsProvider, metrics as instanceMetrics, trace};
