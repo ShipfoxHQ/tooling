@@ -1,5 +1,11 @@
 # @shipfox/node-opentelemetry
 
+## 0.4.1
+
+### Patch Changes
+
+- bce98f6: Export SpanKind and SpanStatusCode as values
+
 ## 0.4.0
 
 ### Minor Changes
