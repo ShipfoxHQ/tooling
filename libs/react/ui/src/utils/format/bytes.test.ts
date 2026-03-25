@@ -5,6 +5,7 @@ describe('formatBytes', () => {
   it('returns — for non-numeric input', () => {
     expect(formatBytes('abc')).toBe('—');
     expect(formatBytes('')).toBe('—');
+    expect(formatBytes('123abc')).toBe('—');
   });
 
   it('formats bytes', () => {

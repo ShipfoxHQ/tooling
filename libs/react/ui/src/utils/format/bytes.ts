@@ -1,8 +1,13 @@
+const KB = 1024;
+const MB = KB * 1024;
+const GB = MB * 1024;
+
 export function formatBytes(bytes: string): string {
-  const n = parseInt(bytes, 10);
-  if (Number.isNaN(n)) return '—';
-  if (n < 1024) return `${n} B`;
-  if (n < 1024 * 1024) return `${(n / 1024).toFixed(1)} KB`;
-  if (n < 1024 * 1024 * 1024) return `${(n / (1024 * 1024)).toFixed(1)} MB`;
-  return `${(n / (1024 * 1024 * 1024)).toFixed(1)} GB`;
+  if (bytes.trim() === '') return '—';
+  const n = Number(bytes);
+  if (!Number.isFinite(n)) return '—';
+  if (n < KB) return `${n} B`;
+  if (n < MB) return `${(n / KB).toFixed(1)} KB`;
+  if (n < GB) return `${(n / MB).toFixed(1)} MB`;
+  return `${(n / GB).toFixed(1)} GB`;
 }
