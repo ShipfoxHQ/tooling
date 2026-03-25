@@ -1,3 +1,4 @@
+export * from './bytes';
 export * from './chart';
 export * from './date';
 export * from './duration';
