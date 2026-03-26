@@ -1,5 +1,11 @@
 # @shipfox/react-ui
 
+## 0.32.2
+
+### Patch Changes
+
+- da13bd6: Add formatBytes utility function
+
 ## 0.32.1
 
 ### Patch Changes
