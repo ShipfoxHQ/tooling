@@ -14,11 +14,11 @@
     "type": "tsc-emit"
   },
   "dependencies": {
-    "@biomejs/biome": "2.4.8",
-    "@biomejs/cli-darwin-arm64": "2.4.8",
-    "@biomejs/cli-darwin-x64": "2.4.8",
-    "@biomejs/cli-linux-arm64": "2.4.8",
-    "@biomejs/cli-linux-x64": "2.4.8",
+    "@biomejs/biome": "2.4.9",
+    "@biomejs/cli-darwin-arm64": "2.4.9",
+    "@biomejs/cli-darwin-x64": "2.4.9",
+    "@biomejs/cli-linux-arm64": "2.4.9",
+    "@biomejs/cli-linux-x64": "2.4.9",
     "@shipfox/tool-utils": "workspace:*"
   },
   "devDependencies": {
