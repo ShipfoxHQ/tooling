@@ -7,6 +7,10 @@ import type {ComponentProps, HTMLAttributes, ReactNode} from 'react';
 import {ShipfoxLoader} from 'shipfox-loader-react';
 import {cn} from 'utils/cn';
 
+// In Playwright (Argos CI) navigator.webdriver is true. Disable canvas-based
+// animations so screenshots are deterministic.
+const isTest = typeof navigator !== 'undefined' && navigator.webdriver === true;
+
 export type CodeBlockFooterProps = HTMLAttributes<HTMLDivElement> & {
   asChild?: boolean;
   state?: 'running' | 'done';
@@ -36,6 +40,7 @@ export function CodeBlockFooter({
         animation="circular"
         color={resolvedTheme === 'dark' ? 'white' : 'orange'}
         background={resolvedTheme === 'dark' ? 'dark' : 'light'}
+        autoPlay={!isTest}
       />
     ) : (
       <Icon
@@ -69,7 +74,7 @@ export function CodeBlockFooter({
           {message && (
             <CodeBlockFooterMessage>
               {state === 'running' && typeof message === 'string' ? (
-                <ShinyText text={message} speed={3} />
+                <ShinyText text={message} speed={3} disabled={isTest} />
               ) : (
                 message
               )}
