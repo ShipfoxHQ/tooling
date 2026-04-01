@@ -74,7 +74,7 @@ export function CodeBlockFooter({
           {message && (
             <CodeBlockFooterMessage>
               {state === 'running' && typeof message === 'string' ? (
-                <ShinyText text={message} speed={3} />
+                <ShinyText text={message} speed={3} disabled={isTest} />
               ) : (
                 message
               )}
