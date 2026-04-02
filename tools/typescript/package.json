@@ -14,7 +14,7 @@
   },
   "dependencies": {
     "@shipfox/tool-utils": "workspace:*",
-    "typescript": "~5.9.1-rc",
+    "typescript": "~6.0.1-rc",
     "tsc-alias": "^1.8.10"
   },
   "devDependencies": {
