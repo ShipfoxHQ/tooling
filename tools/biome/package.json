@@ -24,6 +24,7 @@
   "devDependencies": {
     "@shipfox/swc": "workspace:*",
     "@shipfox/ts-config": "workspace:*",
-    "@shipfox/typescript": "workspace:*"
+    "@shipfox/typescript": "workspace:*",
+    "@types/node": "25.5.0"
   }
 }
