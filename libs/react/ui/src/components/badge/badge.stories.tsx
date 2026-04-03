@@ -1,3 +1,4 @@
+import {argosScreenshot} from '@argos-ci/storybook/vitest';
 import type {Meta, StoryObj} from '@storybook/react';
 import {Code} from 'components/typography';
 import React from 'react';
@@ -16,6 +17,20 @@ export default meta;
 type Story = StoryObj<typeof meta>;
 
 export const AllVariants: Story = {
+  play: async (ctx) => {
+    const images = ctx.canvasElement.querySelectorAll<HTMLImageElement>('img');
+    await Promise.all(
+      Array.from(images).map(
+        (img) =>
+          img.complete ||
+          new Promise((resolve) => {
+            img.addEventListener('load', resolve, {once: true});
+            img.addEventListener('error', resolve, {once: true});
+          }),
+      ),
+    );
+    await argosScreenshot(ctx, 'Badge All Variants');
+  },
   render: () => (
     <div className="flex flex-col gap-32">
       {/* STATUS BADGE */}
