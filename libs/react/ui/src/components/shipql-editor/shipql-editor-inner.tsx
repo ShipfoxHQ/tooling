@@ -146,12 +146,7 @@ export default function ShipQLEditorInner({
                 }
                 ErrorBoundary={LexicalErrorBoundary}
               />
-              <ShipQLPlugin
-                onLeafFocus={handleLeafFocus}
-                formatLeafDisplay={formatLeafDisplay}
-                allowFreeText={allowFreeText}
-                suggestionsOpen={suggestionsOpen}
-              />
+              <ShipQLPlugin onLeafFocus={handleLeafFocus} formatLeafDisplay={formatLeafDisplay} />
               <OnBlurPlugin onChange={onChange} allowFreeText={allowFreeText} />
               <OnTextChangePlugin onTextChange={onTextChange} />
               <HistoryPlugin />
