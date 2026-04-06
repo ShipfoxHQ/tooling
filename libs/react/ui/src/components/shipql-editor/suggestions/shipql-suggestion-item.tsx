@@ -18,7 +18,8 @@ export function ShipQLSuggestionItem({
 }: ShipQLSuggestionItemProps) {
   if (item.type === 'section-header') {
     return (
-      <div className="flex w-full items-center px-8 h-30 shrink-0">
+      <div className="flex w-full items-center gap-6 px-8 h-30 shrink-0">
+        {item.icon}
         <span className="text-xs font-normal uppercase text-foreground-neutral-muted">
           {item.label}
         </span>

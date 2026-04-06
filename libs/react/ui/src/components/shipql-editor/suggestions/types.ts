@@ -15,6 +15,7 @@ export interface FacetMetadata {
   group?: string;
   groupLabel?: string;
   groupOrder?: number;
+  groupIcon?: string;
 }
 
 export type FacetDef = string | {name: string; config?: RangeFacetConfig; metadata?: FacetMetadata};

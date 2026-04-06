@@ -248,6 +248,7 @@ const GROUPED_FACETS: FacetDef[] = [
       group: 'execution',
       groupLabel: 'Execution',
       groupOrder: 0,
+      groupIcon: 'playLine',
     },
   },
   {
@@ -258,6 +259,7 @@ const GROUPED_FACETS: FacetDef[] = [
       group: 'pipeline',
       groupLabel: 'Pipeline',
       groupOrder: 1,
+      groupIcon: 'gitMergeLine',
     },
   },
   {
@@ -268,6 +270,7 @@ const GROUPED_FACETS: FacetDef[] = [
       group: 'pipeline',
       groupLabel: 'Pipeline',
       groupOrder: 1,
+      groupIcon: 'gitMergeLine',
     },
   },
   {
@@ -278,6 +281,7 @@ const GROUPED_FACETS: FacetDef[] = [
       group: 'vcs',
       groupLabel: 'VCS',
       groupOrder: 5,
+      groupIcon: 'gitBranchLine',
     },
   },
   {
@@ -288,6 +292,7 @@ const GROUPED_FACETS: FacetDef[] = [
       group: 'vcs',
       groupLabel: 'VCS',
       groupOrder: 5,
+      groupIcon: 'gitBranchLine',
     },
   },
   {
@@ -298,6 +303,7 @@ const GROUPED_FACETS: FacetDef[] = [
       group: 'infrastructure',
       groupLabel: 'Infrastructure',
       groupOrder: 6,
+      groupIcon: 'serverLine',
     },
   },
   {
@@ -308,6 +314,7 @@ const GROUPED_FACETS: FacetDef[] = [
       group: 'ci',
       groupLabel: 'CI',
       groupOrder: 8,
+      groupIcon: 'robotLine',
     },
   },
 ];

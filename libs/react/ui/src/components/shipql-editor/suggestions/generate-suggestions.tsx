@@ -96,10 +96,12 @@ export function buildSuggestionItems(
 ): SuggestionItem[] {
   const facetNames = normalizeFacets(facets);
 
-  const header = (label: string): SuggestionItem => ({
+  const header = (label: string, iconName?: string): SuggestionItem => ({
     value: `__header__${label}`,
     label,
-    icon: null,
+    icon: iconName ? (
+      <Icon name={iconName} className="size-12 text-foreground-neutral-muted" />
+    ) : null,
     selected: false,
     type: 'section-header',
   });
@@ -223,6 +225,7 @@ export function buildSuggestionItems(
     description: string | undefined;
     groupOrder: number;
     groupLabel: string;
+    groupIcon: string | undefined;
   };
   const groups = new Map<string, GroupEntry[]>();
 
@@ -233,11 +236,19 @@ export function buildSuggestionItems(
     const label = metadata?.label ?? name;
     const groupLabel = metadata?.groupLabel ?? group.charAt(0).toUpperCase() + group.slice(1);
     const groupOrder = metadata?.groupOrder ?? Infinity;
+    const groupIcon = metadata?.groupIcon;
 
     if (!groups.has(group)) groups.set(group, []);
     const groupList = groups.get(group);
     if (groupList)
-      groupList.push({name, label, description: metadata?.description, groupOrder, groupLabel});
+      groupList.push({
+        name,
+        label,
+        description: metadata?.description,
+        groupOrder,
+        groupLabel,
+        groupIcon,
+      });
   }
 
   const sortedGroups = [...groups.entries()].sort(([, aItems], [, bItems]) => {
@@ -251,12 +262,14 @@ export function buildSuggestionItems(
     groupItems.sort((a, b) => a.label.localeCompare(b.label));
     const firstItem = groupItems[0];
     if (!firstItem) continue;
-    items.push(header(firstItem.groupLabel));
+    items.push(header(firstItem.groupLabel, firstItem.groupIcon));
     for (const entry of groupItems) {
       items.push({
         value: entry.name,
         label: entry.label,
-        icon: null,
+        icon: entry.groupIcon ? (
+          <Icon name={entry.groupIcon} className="size-16 text-foreground-neutral-subtle" />
+        ) : null,
         selected: false,
         description: entry.description,
       });
