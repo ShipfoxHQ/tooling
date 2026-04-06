@@ -47,16 +47,19 @@ export function ShipQLSuggestionsDropdown({
     const isPrecededByHeader =
       prevItem?.type === 'section-header' || prevItem?.type === 'facet-context';
 
-    // A large index jump means we wrapped around the list — scroll directly to the
-    // item so it is always visible regardless of header position.
     const isWrapping = prevIndex >= 0 && Math.abs(selectedIndex - prevIndex) > items.length / 2;
-    const isGoingForward = selectedIndex > prevIndex && !isWrapping;
+    // When wrapping bottom→top the header is safe to include (it's just above the
+    // first item). When wrapping top→bottom we skip the header because it sits far
+    // above the last item and pinning to it would push the actual item off-screen.
+    const isWrappingToBottom = isWrapping && selectedIndex > prevIndex;
+    const isGoingForward =
+      (selectedIndex > prevIndex && !isWrapping) || (isWrapping && !isWrappingToBottom);
 
-    if (!isWrapping && isPrecededByHeader) {
+    if (!isWrappingToBottom && isPrecededByHeader) {
       const headerEl = itemRefs.current[selectedIndex - 1] ?? itemRefs.current[selectedIndex];
-      // Going forward: pin the header to the top so the selected item below it is
-      // visible. Going backward: nearest is enough because the header is above and
-      // scrolling up will bring it into view at the top edge.
+      // Going forward / wrapping to top: pin the header to the top so the selected
+      // item below it is visible. Going backward: nearest is enough because the
+      // header is above and scrolling up will bring it into view at the top edge.
       const block = isGoingForward ? 'start' : 'nearest';
       if (headerEl) headerEl.scrollIntoView({behavior: 'smooth', block});
     } else {
