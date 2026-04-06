@@ -37,14 +37,26 @@ export function ShipQLSuggestionsDropdown({
   syntaxHintMode,
 }: ShipQLSuggestionsDropdownProps) {
   const itemRefs = useRef<(HTMLElement | null)[]>([]);
+  const prevSelectedIndexRef = useRef<number>(-1);
 
   useEffect(() => {
+    const prevIndex = prevSelectedIndexRef.current;
+    prevSelectedIndexRef.current = selectedIndex;
+
     const prevItem = items[selectedIndex - 1];
     const isPrecededByHeader =
       prevItem?.type === 'section-header' || prevItem?.type === 'facet-context';
-    const scrollTarget = isPrecededByHeader
-      ? (itemRefs.current[selectedIndex - 1] ?? itemRefs.current[selectedIndex])
-      : itemRefs.current[selectedIndex];
+
+    // Scroll to the preceding header only when navigating forward without wrapping.
+    // A large index jump means we wrapped around the list, in which case we should
+    // scroll to the item itself so it is always visible.
+    const isWrapping = prevIndex >= 0 && Math.abs(selectedIndex - prevIndex) > items.length / 2;
+    const isForwardWithoutWrap = selectedIndex > prevIndex && !isWrapping;
+
+    const scrollTarget =
+      isForwardWithoutWrap && isPrecededByHeader
+        ? (itemRefs.current[selectedIndex - 1] ?? itemRefs.current[selectedIndex])
+        : itemRefs.current[selectedIndex];
     if (scrollTarget) scrollTarget.scrollIntoView({behavior: 'smooth', block: 'nearest'});
   }, [selectedIndex, items]);
 
