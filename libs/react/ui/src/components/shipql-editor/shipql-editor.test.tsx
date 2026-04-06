@@ -39,6 +39,7 @@ describe('ShipQLEditor', () => {
       expect(textLeaf).toBeTruthy();
       expect(textLeaf).toHaveClass('bg-tag-error-bg');
     });
+    expect(editor).not.toHaveClass('shadow-border-error');
     expect(onChange).not.toHaveBeenCalled();
   });
 });

@@ -7,7 +7,7 @@ import {hasTextNodes} from '@shipfox/shipql-parser';
 import {Input} from 'components/input';
 import {Popover, PopoverAnchor} from 'components/popover';
 import {$createParagraphNode, $createTextNode, $getRoot} from 'lexical';
-import {useCallback, useRef, useState} from 'react';
+import {useCallback, useEffect, useRef, useState} from 'react';
 import {cn} from '../../utils/cn';
 import {Icon} from '../icon/icon';
 import {LeafCloseOverlay} from './lexical/leaf-close-overlay';
@@ -52,6 +52,7 @@ export default function ShipQLEditorInner({
   allowFreeText,
 }: ShipQLEditorInnerProps) {
   const [suggestionsOpen, setSuggestionsOpen] = useState(false);
+  const [suggestionsSuppressed, setSuggestionsSuppressed] = useState(false);
   const [selectedIndex, setSelectedIndex] = useState(-1);
   const [items, setItems] = useState<SuggestionItem[]>([]);
   const [focusedLeafNode, setFocusedLeafNode] = useState<LeafAstNode | null>(null);
@@ -62,6 +63,7 @@ export default function ShipQLEditorInner({
   const isSelectingRef = useRef(false);
   const applyRef = useRef<((value: string) => void) | null>(null);
   const negationPrefixRef = useRef('');
+  const containerRef = useRef<HTMLDivElement>(null);
 
   const hasSuggestions = Boolean(facets && facets.length > 0);
   const showValueActions = Boolean(currentFacet);
@@ -96,8 +98,50 @@ export default function ShipQLEditorInner({
     setShowSyntaxHelp((prev) => !prev);
   }, []);
 
+  const handleDismissSuggestions = useCallback(() => {
+    setSuggestionsSuppressed(true);
+    setSuggestionsOpen(false);
+  }, []);
+
+  const handleSuggestionsOpenChange = useCallback(
+    (open: boolean) => {
+      if (open && suggestionsSuppressed) return;
+      setSuggestionsOpen(open);
+    },
+    [suggestionsSuppressed],
+  );
+
+  const handleEditorMouseDownCapture = useCallback(() => {
+    setSuggestionsSuppressed(false);
+  }, []);
+
+  useEffect(() => {
+    if (!suggestionsOpen) return;
+
+    const handleMouseDown = (event: MouseEvent) => {
+      if (isSelectingRef.current) return;
+      const target = event.target as Node | null;
+      if (target && containerRef.current?.contains(target)) return;
+      handleDismissSuggestions();
+      const activeElement = document.activeElement as HTMLElement | null;
+      if (activeElement && containerRef.current?.contains(activeElement)) {
+        activeElement.blur();
+      }
+    };
+
+    document.addEventListener('mousedown', handleMouseDown, true);
+    return () => {
+      document.removeEventListener('mousedown', handleMouseDown, true);
+    };
+  }, [suggestionsOpen, handleDismissSuggestions]);
+
   return (
-    <div data-shipql-editor className={cn('relative', className)}>
+    <div
+      ref={containerRef}
+      data-shipql-editor
+      className={cn('relative', className)}
+      onMouseDownCapture={handleEditorMouseDownCapture}
+    >
       {mode === 'editor' ? (
         <Popover open={hasSuggestions && suggestionsOpen}>
           <PopoverAnchor className="w-full">
@@ -152,7 +196,6 @@ export default function ShipQLEditorInner({
                 onLeafFocus={handleLeafFocus}
                 formatLeafDisplay={formatLeafDisplay}
                 allowFreeText={allowFreeText}
-                suggestionsOpen={suggestionsOpen}
               />
               <OnBlurPlugin onChange={onChange} allowFreeText={allowFreeText} />
               <OnTextChangePlugin onTextChange={onTextChange} />
@@ -166,7 +209,7 @@ export default function ShipQLEditorInner({
                   valueSuggestions={valueSuggestions ?? []}
                   isLoadingValueSuggestions={isLoadingValueSuggestions ?? false}
                   open={suggestionsOpen}
-                  setOpen={setSuggestionsOpen}
+                  setOpen={handleSuggestionsOpenChange}
                   selectedIndex={selectedIndex}
                   setSelectedIndex={setSelectedIndex}
                   items={items}
@@ -186,7 +229,7 @@ export default function ShipQLEditorInner({
               selectedIndex={selectedIndex}
               isSelectingRef={isSelectingRef}
               onSelect={handleSelect}
-              onClose={() => setSuggestionsOpen(false)}
+              onClose={handleDismissSuggestions}
               isLoading={isLoadingValueSuggestions}
               isNegated={isNegated}
               onToggleNegate={handleToggleNegate}
