@@ -6,7 +6,7 @@ interface ShipQLSuggestionItemProps {
   isHighlighted: boolean;
   isNegated?: boolean;
   onMouseDown: (value: string) => void;
-  itemRef?: (el: HTMLButtonElement | null) => void;
+  itemRef?: (el: HTMLElement | null) => void;
 }
 
 export function ShipQLSuggestionItem({
@@ -18,7 +18,7 @@ export function ShipQLSuggestionItem({
 }: ShipQLSuggestionItemProps) {
   if (item.type === 'section-header') {
     return (
-      <div className="flex w-full items-center gap-6 px-8 h-30 shrink-0">
+      <div ref={itemRef} className="flex w-full items-center gap-6 px-8 h-30 shrink-0">
         {item.icon}
         <span className="text-xs font-normal uppercase text-foreground-neutral-muted">
           {item.label}
@@ -31,7 +31,10 @@ export function ShipQLSuggestionItem({
     const showRawFacetName =
       typeof item.label === 'string' && item.facetName && item.label !== item.facetName;
     return (
-      <div className="flex w-full flex-col gap-2 px-8 py-8 border-b border-border-neutral-subtle shrink-0">
+      <div
+        ref={itemRef}
+        className="flex w-full flex-col gap-2 px-8 py-8 border-b border-border-neutral-subtle shrink-0"
+      >
         {item.sectionLabel && (
           <div className="flex items-center gap-4">
             {item.icon}

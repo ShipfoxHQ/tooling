@@ -36,12 +36,17 @@ export function ShipQLSuggestionsDropdown({
   isError,
   syntaxHintMode,
 }: ShipQLSuggestionsDropdownProps) {
-  const itemRefs = useRef<(HTMLButtonElement | null)[]>([]);
+  const itemRefs = useRef<(HTMLElement | null)[]>([]);
 
   useEffect(() => {
-    const el = itemRefs.current[selectedIndex];
-    if (el) el.scrollIntoView({behavior: 'smooth', block: 'nearest'});
-  }, [selectedIndex]);
+    const prevItem = items[selectedIndex - 1];
+    const isPrecededByHeader =
+      prevItem?.type === 'section-header' || prevItem?.type === 'facet-context';
+    const scrollTarget = isPrecededByHeader
+      ? (itemRefs.current[selectedIndex - 1] ?? itemRefs.current[selectedIndex])
+      : itemRefs.current[selectedIndex];
+    if (scrollTarget) scrollTarget.scrollIntoView({behavior: 'smooth', block: 'nearest'});
+  }, [selectedIndex, items]);
 
   // Shift key toggles negation while dropdown is visible
   useEffect(() => {
