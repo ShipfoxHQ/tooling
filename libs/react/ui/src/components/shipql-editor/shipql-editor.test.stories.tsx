@@ -42,7 +42,6 @@ function getLeafNodes(canvasElement: HTMLElement): HTMLElement[] {
 }
 
 async function getEditor(canvasElement: HTMLElement): Promise<HTMLElement> {
-  await new Promise((resolve) => setTimeout(resolve, 150));
   return within(canvasElement).findByLabelText('ShipQL query editor');
 }
 
