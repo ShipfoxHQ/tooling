@@ -4,7 +4,7 @@ import userEvent from '@testing-library/user-event';
 import {ShipQLEditor} from './shipql-editor';
 
 describe('ShipQLEditor', () => {
-  it('preserves invalid state when switching to text mode with free text disallowed', async () => {
+  it('marks text-mode input invalid on blur when free text is disallowed', async () => {
     const user = userEvent.setup();
     const onChange = vi.fn();
 
@@ -13,6 +13,9 @@ describe('ShipQLEditor', () => {
     await user.click(await screen.findByRole('button', {name: 'Switch to free text mode'}));
 
     const input = await screen.findByRole('textbox', {name: 'ShipQL query editor'});
+    expect(input).toHaveAttribute('aria-invalid', 'false');
+
+    fireEvent.blur(input);
 
     await waitFor(() => {
       expect(input).toHaveAttribute('aria-invalid', 'true');

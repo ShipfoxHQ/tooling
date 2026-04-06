@@ -73,7 +73,7 @@ export function ShipQLSuggestionsDropdown({
       onSelect(value);
       setTimeout(() => {
         isSelectingRef.current = false;
-      }, 150);
+      }, 0);
     },
     [isSelectingRef, onSelect],
   );

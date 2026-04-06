@@ -307,9 +307,7 @@ export function ShipQLPlugin({
     const unregisterFocus = editor.registerCommand(
       FOCUS_COMMAND,
       () => {
-        const wasFocused = isFocusedRef.current;
         isFocusedRef.current = true;
-        if (!wasFocused && !allowFreeTextRef.current) rebuildWithCurrentState();
         return false;
       },
       COMMAND_PRIORITY_LOW,
