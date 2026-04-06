@@ -41,7 +41,7 @@ function getLeafNodes(canvasElement: HTMLElement): HTMLElement[] {
   return Array.from(canvasElement.querySelectorAll<HTMLElement>('[data-shipql-leaf="true"]'));
 }
 
-async function getEditor(canvasElement: HTMLElement): Promise<HTMLElement> {
+function getEditor(canvasElement: HTMLElement): Promise<HTMLElement> {
   return within(canvasElement).findByLabelText('ShipQL query editor');
 }
 
