@@ -47,17 +47,22 @@ export function ShipQLSuggestionsDropdown({
     const isPrecededByHeader =
       prevItem?.type === 'section-header' || prevItem?.type === 'facet-context';
 
-    // Scroll to the preceding header only when navigating forward without wrapping.
-    // A large index jump means we wrapped around the list, in which case we should
-    // scroll to the item itself so it is always visible.
+    // A large index jump means we wrapped around the list — scroll directly to the
+    // item so it is always visible regardless of header position.
     const isWrapping = prevIndex >= 0 && Math.abs(selectedIndex - prevIndex) > items.length / 2;
-    const isForwardWithoutWrap = selectedIndex > prevIndex && !isWrapping;
+    const isGoingForward = selectedIndex > prevIndex && !isWrapping;
 
-    const scrollTarget =
-      isForwardWithoutWrap && isPrecededByHeader
-        ? (itemRefs.current[selectedIndex - 1] ?? itemRefs.current[selectedIndex])
-        : itemRefs.current[selectedIndex];
-    if (scrollTarget) scrollTarget.scrollIntoView({behavior: 'smooth', block: 'nearest'});
+    if (!isWrapping && isPrecededByHeader) {
+      const headerEl = itemRefs.current[selectedIndex - 1] ?? itemRefs.current[selectedIndex];
+      // Going forward: pin the header to the top so the selected item below it is
+      // visible. Going backward: nearest is enough because the header is above and
+      // scrolling up will bring it into view at the top edge.
+      const block = isGoingForward ? 'start' : 'nearest';
+      if (headerEl) headerEl.scrollIntoView({behavior: 'smooth', block});
+    } else {
+      const el = itemRefs.current[selectedIndex];
+      if (el) el.scrollIntoView({behavior: 'smooth', block: 'nearest'});
+    }
   }, [selectedIndex, items]);
 
   // Shift key toggles negation while dropdown is visible
