@@ -1,4 +1,4 @@
-import {type AstNode, hasTextNodes, parse, stringify} from '@shipfox/shipql-parser';
+import {type AstNode, parse, stringify} from '@shipfox/shipql-parser';
 import {type EditorConfig, type NodeKey, type SerializedTextNode, TextNode} from 'lexical';
 
 export type LeafAstNode = AstNode;
@@ -46,19 +46,19 @@ type SerializedShipQLLeafNode = SerializedTextNode & {type: 'shipql-leaf'};
 export class ShipQLLeafNode extends TextNode {
   __shipqlNode: LeafAstNode;
   __displayText: string | null;
-  __allowFreeText: boolean;
+  __freeTextError: boolean;
 
   constructor(
     text: string,
     shipqlNode: LeafAstNode,
     key?: NodeKey,
     displayText?: string,
-    allowFreeText = true,
+    freeTextError = false,
   ) {
     super(text, key);
     this.__shipqlNode = shipqlNode;
     this.__displayText = displayText ?? null;
-    this.__allowFreeText = allowFreeText;
+    this.__freeTextError = freeTextError;
   }
 
   static getType(): string {
@@ -71,7 +71,7 @@ export class ShipQLLeafNode extends TextNode {
       node.__shipqlNode,
       node.__key,
       node.__displayText ?? undefined,
-      node.__allowFreeText,
+      node.__freeTextError,
     );
   }
 
@@ -119,7 +119,7 @@ export class ShipQLLeafNode extends TextNode {
 
   updateDOM(prevNode: this, dom: HTMLElement, config: EditorConfig): boolean {
     const result = super.updateDOM(prevNode, dom, config);
-    if (prevNode.__text !== this.__text || prevNode.__allowFreeText !== this.__allowFreeText) {
+    if (prevNode.__text !== this.__text || prevNode.__freeTextError !== this.__freeTextError) {
       const prevValid = prevNode._isLeafValid();
       const nextValid = this._isLeafValid();
       if (prevValid !== nextValid) {
@@ -134,7 +134,7 @@ export class ShipQLLeafNode extends TextNode {
 
   _isLeafValid(): boolean {
     if (!isValidLeafText(this.__text)) return false;
-    if (!this.__allowFreeText && hasTextNodes(this.__shipqlNode)) return false;
+    if (this.__freeTextError) return false;
     return true;
   }
 
@@ -163,9 +163,14 @@ export function $createShipQLLeafNode(
   text: string,
   shipqlNode: LeafAstNode,
   displayText?: string,
-  allowFreeText = true,
+  freeTextError = false,
 ): ShipQLLeafNode {
-  return new ShipQLLeafNode(text, shipqlNode, undefined, displayText, allowFreeText);
+  return new ShipQLLeafNode(text, shipqlNode, undefined, displayText, freeTextError);
+}
+
+export function $setLeafFreeTextError(node: ShipQLLeafNode, value: boolean): void {
+  const writable = node.getWritable();
+  writable.__freeTextError = value;
 }
 
 /** Returns true if the AST node qualifies as a visual leaf chip in the editor. */

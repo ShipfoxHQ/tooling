@@ -1,6 +1,6 @@
 import {useLexicalComposerContext} from '@lexical/react/LexicalComposerContext';
 import type {AstNode} from '@shipfox/shipql-parser';
-import {parse, removeBySource, stringify} from '@shipfox/shipql-parser';
+import {hasTextNodes, parse, removeBySource, stringify} from '@shipfox/shipql-parser';
 import {
   $createRangeSelection,
   $createTextNode,
@@ -24,6 +24,7 @@ import {handleArrowRightFromLeaf} from './handle-arrow-right-from-leaf';
 import {
   $createShipQLLeafNode,
   $isShipQLLeafNode,
+  $setLeafFreeTextError,
   isGroupedCompound,
   isSimpleLeaf,
   type LeafAstNode,
@@ -113,12 +114,14 @@ interface ShipQLPluginProps {
   onLeafFocus?: (node: LeafAstNode | null) => void;
   formatLeafDisplay?: (source: string, node: LeafAstNode) => string;
   allowFreeText?: boolean;
+  suggestionsOpen?: boolean;
 }
 
 export function ShipQLPlugin({
   onLeafFocus,
   formatLeafDisplay,
   allowFreeText = true,
+  suggestionsOpen = false,
 }: ShipQLPluginProps): null {
   const [editor] = useLexicalComposerContext();
 
@@ -129,6 +132,8 @@ export function ShipQLPlugin({
   formatLeafDisplayRef.current = formatLeafDisplay;
   const allowFreeTextRef = useRef(allowFreeText);
   allowFreeTextRef.current = allowFreeText;
+  const suggestionsOpenRef = useRef(suggestionsOpen);
+  suggestionsOpenRef.current = suggestionsOpen;
 
   // Track the key of the last focused leaf to avoid redundant callbacks.
   const lastFocusedKeyRef = useRef<string | null>(null);
@@ -227,6 +232,8 @@ export function ShipQLPlugin({
       let shouldRebuild = false;
       let nextSegments: Segment[] = [];
       let savedOffset = -1;
+      let markErrorKey: string | null = null;
+      let clearErrorKey: string | null = null;
 
       editorState.read(() => {
         const para = $getRoot().getFirstChild() as ParagraphNode | null;
@@ -270,22 +277,60 @@ export function ShipQLPlugin({
             savedOffset = getAbsoluteOffset(para, sel.anchor);
           }
         } else {
-          // No structural change — just update leaf-focus.
+          // No structural change — update leaf-focus and deferred text-node errors.
           const sel = $getSelection();
           if ($isRangeSelection(sel)) {
             const anchor = sel.anchor.getNode();
             const key = $isShipQLLeafNode(anchor) ? anchor.getKey() : null;
             if (key !== lastFocusedKeyRef.current) {
+              const oldKey = lastFocusedKeyRef.current;
               lastFocusedKeyRef.current = key;
               onLeafFocusRef.current?.(
                 key !== null && $isShipQLLeafNode(anchor) ? anchor.getShipQLNode() : null,
               );
+
+              // Deferred free-text error: mark the exited leaf, clear the entered one.
+              if (!allowFreeTextRef.current && !suggestionsOpenRef.current) {
+                if (oldKey) {
+                  for (const child of para.getChildren()) {
+                    if (
+                      $isShipQLLeafNode(child) &&
+                      child.getKey() === oldKey &&
+                      hasTextNodes(child.getShipQLNode())
+                    ) {
+                      markErrorKey = oldKey;
+                      break;
+                    }
+                  }
+                }
+                if (key && $isShipQLLeafNode(anchor) && anchor.getLatest().__freeTextError) {
+                  clearErrorKey = key;
+                }
+              }
             }
           }
         }
       });
 
-      if (!shouldRebuild) return;
+      if (!shouldRebuild) {
+        // Apply deferred freeTextError changes outside the read block.
+        if (markErrorKey || clearErrorKey) {
+          editor.update(
+            () => {
+              const para = $getRoot().getFirstChild() as ParagraphNode | null;
+              if (!para) return;
+              for (const child of para.getChildren()) {
+                if (!$isShipQLLeafNode(child)) continue;
+                const k = child.getKey();
+                if (k === markErrorKey) $setLeafFreeTextError(child, true);
+                else if (k === clearErrorKey) $setLeafFreeTextError(child, false);
+              }
+            },
+            {tag: REBUILD_TAG},
+          );
+        }
+        return;
+      }
 
       // ── Rebuild node structure ─────────────────────────────────────────────
       editor.update(
@@ -297,16 +342,35 @@ export function ShipQLPlugin({
 
           const fmt = formatLeafDisplayRef.current;
           const allowFreeTextVal = allowFreeTextRef.current;
-          const newNodes = nextSegments.map((seg) =>
-            seg.kind === 'leaf'
-              ? $createShipQLLeafNode(
-                  seg.text,
-                  seg.node,
-                  fmt?.(seg.text, seg.node),
-                  allowFreeTextVal,
-                )
-              : $createTextNode(seg.text),
-          );
+
+          // Determine which segment the cursor is in so we can skip
+          // freeTextError on the actively edited leaf.
+          let focusedSegIndex = -1;
+          if (savedOffset >= 0) {
+            let accum = 0;
+            for (let i = 0; i < nextSegments.length; i++) {
+              const segLen = nextSegments[i].text.length;
+              if (savedOffset >= accum && savedOffset <= accum + segLen) {
+                focusedSegIndex = i;
+                break;
+              }
+              accum += segLen;
+            }
+          }
+
+          const newNodes = nextSegments.map((seg, i) => {
+            if (seg.kind === 'leaf') {
+              const isFocused = i === focusedSegIndex;
+              const freeTextError = !allowFreeTextVal && !isFocused && hasTextNodes(seg.node);
+              return $createShipQLLeafNode(
+                seg.text,
+                seg.node,
+                fmt?.(seg.text, seg.node),
+                freeTextError,
+              );
+            }
+            return $createTextNode(seg.text);
+          });
 
           for (const node of newNodes) para.append(node);
 
@@ -353,9 +417,10 @@ export function ShipQLPlugin({
       const allowFreeTextVal = allowFreeTextRef.current;
       para.clear();
       for (const seg of segments) {
+        const freeTextError = seg.kind === 'leaf' && !allowFreeTextVal && hasTextNodes(seg.node);
         para.append(
           seg.kind === 'leaf'
-            ? $createShipQLLeafNode(seg.text, seg.node, fmt?.(seg.text, seg.node), allowFreeTextVal)
+            ? $createShipQLLeafNode(seg.text, seg.node, fmt?.(seg.text, seg.node), freeTextError)
             : $createTextNode(seg.text),
         );
       }

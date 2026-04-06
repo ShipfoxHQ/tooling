@@ -150,6 +150,7 @@ export default function ShipQLEditorInner({
                 onLeafFocus={handleLeafFocus}
                 formatLeafDisplay={formatLeafDisplay}
                 allowFreeText={allowFreeText}
+                suggestionsOpen={suggestionsOpen}
               />
               <OnBlurPlugin onChange={onChange} allowFreeText={allowFreeText} />
               <OnTextChangePlugin onTextChange={onTextChange} />
