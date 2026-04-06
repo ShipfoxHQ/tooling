@@ -95,6 +95,37 @@ function needsRebuild(children: LexicalNode[], segments: Segment[]): boolean {
   return false;
 }
 
+function getOrderedLeafStateKey(text: string, counts: Map<string, number>): string {
+  const index = (counts.get(text) ?? 0) + 1;
+  counts.set(text, index);
+  return `${text}::${index}`;
+}
+
+function getLeafErrorState(children: LexicalNode[]): Map<string, boolean> {
+  const counts = new Map<string, number>();
+  const errorState = new Map<string, boolean>();
+
+  for (const child of children) {
+    if (!$isShipQLLeafNode(child)) continue;
+    const key = getOrderedLeafStateKey(child.getTextContent(), counts);
+    errorState.set(key, child.getLatest().__freeTextError);
+  }
+
+  return errorState;
+}
+
+function getLeafStateKeyByNodeKey(children: LexicalNode[], targetNodeKey: string): string | null {
+  const counts = new Map<string, number>();
+
+  for (const child of children) {
+    if (!$isShipQLLeafNode(child)) continue;
+    const stateKey = getOrderedLeafStateKey(child.getTextContent(), counts);
+    if (child.getKey() === targetNodeKey) return stateKey;
+  }
+
+  return null;
+}
+
 function getAbsoluteOffset(para: ParagraphNode, point: Point): number {
   let offset = 0;
   for (const child of para.getChildren()) {
@@ -308,6 +339,8 @@ export function ShipQLPlugin({
       let savedOffset = -1;
       let markErrorKey: string | null = null;
       let clearErrorKey: string | null = null;
+      let preservedLeafErrors = new Map<string, boolean>();
+      let activeLeafStateKey: string | null = null;
 
       editorState.read(() => {
         const para = $getRoot().getFirstChild() as ParagraphNode | null;
@@ -346,9 +379,14 @@ export function ShipQLPlugin({
         if (needsRebuild(children, segments)) {
           shouldRebuild = true;
           nextSegments = segments;
+          preservedLeafErrors = getLeafErrorState(children);
           const sel = $getSelection();
           if ($isRangeSelection(sel) && sel.anchor.type === 'text') {
             savedOffset = getAbsoluteOffset(para, sel.anchor);
+          }
+          const anchor = $isRangeSelection(sel) ? sel.anchor.getNode() : null;
+          if (anchor && $isShipQLLeafNode(anchor)) {
+            activeLeafStateKey = getLeafStateKeyByNodeKey(children, anchor.getKey());
           }
         } else {
           // No structural change — update leaf-focus and deferred text-node errors.
@@ -416,24 +454,18 @@ export function ShipQLPlugin({
 
           const fmt = formatLeafDisplayRef.current;
           const allowFreeTextVal = allowFreeTextRef.current;
+          const occurrenceCounts = new Map<string, number>();
 
-          let focusedSegIndex = -1;
-          if (savedOffset >= 0) {
-            let accumulated = 0;
-            for (let i = 0; i < nextSegments.length; i++) {
-              const segmentLength = nextSegments[i].text.length;
-              if (savedOffset >= accumulated && savedOffset <= accumulated + segmentLength) {
-                focusedSegIndex = i;
-                break;
-              }
-              accumulated += segmentLength;
-            }
-          }
-
-          const newNodes = nextSegments.map((seg, index) => {
+          const newNodes = nextSegments.map((seg) => {
             if (seg.kind === 'leaf') {
-              const isFocusedSegment = index === focusedSegIndex;
-              const freeTextError = !allowFreeTextVal && !isFocusedSegment && isTextLeaf(seg.node);
+              const stateKey = getOrderedLeafStateKey(seg.text, occurrenceCounts);
+              const shouldMarkAllOnBlur =
+                !allowFreeTextVal && !isFocusedRef.current && isTextLeaf(seg.node);
+              const preservedError =
+                stateKey === activeLeafStateKey
+                  ? false
+                  : (preservedLeafErrors.get(stateKey) ?? false);
+              const freeTextError = shouldMarkAllOnBlur || preservedError;
               return $createShipQLLeafNode(
                 seg.text,
                 seg.node,
