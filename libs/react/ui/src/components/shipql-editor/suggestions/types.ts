@@ -18,7 +18,7 @@ export interface FacetMetadata {
   groupIcon?: string;
 }
 
-export type FacetDef = string | {name: string; config?: RangeFacetConfig; metadata?: FacetMetadata};
+export type FacetDef = string | {id: string; config?: RangeFacetConfig; metadata?: FacetMetadata};
 
 export type FormatLeafDisplay = (source: string, node: AstNode) => string;
 

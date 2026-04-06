@@ -15,8 +15,8 @@ describe('normalizeFacets', () => {
   it('extracts names from string and object facets', () => {
     const facets: FacetDef[] = [
       'status',
-      {name: 'duration', config: {type: 'range', min: '0', max: '100'}},
-      {name: 'pipeline.name', metadata: {label: 'Pipeline'}},
+      {id: 'duration', config: {type: 'range', min: '0', max: '100'}},
+      {id: 'pipeline.name', metadata: {label: 'Pipeline'}},
     ];
 
     const result = normalizeFacets(facets);
@@ -30,7 +30,7 @@ describe('normalizeFacets', () => {
 describe('getFacetConfig', () => {
   it('returns config for a matching facet (case-insensitive)', () => {
     const config = {type: 'range' as const, min: '0', max: '1000'};
-    const facets: FacetDef[] = [{name: 'duration', config}];
+    const facets: FacetDef[] = [{id: 'duration', config}];
 
     const result = getFacetConfig(facets, 'Duration');
 
@@ -38,7 +38,7 @@ describe('getFacetConfig', () => {
   });
 
   it('returns undefined when facet has no config', () => {
-    const facets: FacetDef[] = [{name: 'pipeline.name', metadata: {label: 'Pipeline'}}];
+    const facets: FacetDef[] = [{id: 'pipeline.name', metadata: {label: 'Pipeline'}}];
 
     const result = getFacetConfig(facets, 'pipeline.name');
 
@@ -59,7 +59,7 @@ describe('getFacetConfig', () => {
 describe('getFacetMetadata', () => {
   it('returns metadata for a known facet', () => {
     const metadata = {label: 'Pipeline', group: 'pipeline', groupOrder: 1};
-    const facets: FacetDef[] = [{name: 'pipeline.name', metadata}];
+    const facets: FacetDef[] = [{id: 'pipeline.name', metadata}];
 
     const result = getFacetMetadata(facets, 'pipeline.name');
 
@@ -75,7 +75,7 @@ describe('getFacetMetadata', () => {
   });
 
   it('returns undefined for unknown facets', () => {
-    const facets: FacetDef[] = [{name: 'pipeline.name', metadata: {label: 'Pipeline'}}];
+    const facets: FacetDef[] = [{id: 'pipeline.name', metadata: {label: 'Pipeline'}}];
 
     const result = getFacetMetadata(facets, 'unknown');
 
@@ -83,7 +83,7 @@ describe('getFacetMetadata', () => {
   });
 
   it('matches by exact name (case-sensitive)', () => {
-    const facets: FacetDef[] = [{name: 'pipeline.name', metadata: {label: 'Pipeline'}}];
+    const facets: FacetDef[] = [{id: 'pipeline.name', metadata: {label: 'Pipeline'}}];
 
     expect(getFacetMetadata(facets, 'Pipeline.Name')).toBeUndefined();
     expect(getFacetMetadata(facets, 'pipeline.name')).toBeDefined();
@@ -143,21 +143,21 @@ describe('stripNegationPrefix', () => {
 // ─── buildSuggestionItems ─────────────────────────────────────────────────────
 
 describe('buildSuggestionItems', () => {
-  describe('without metadata (backward compat)', () => {
+  describe('without metadata (no section header)', () => {
     const facets: FacetDef[] = ['status', 'env', 'service'];
 
-    it('produces flat TYPE header', () => {
+    it('produces items with no section header, sorted alphabetically', () => {
       const result = buildSuggestionItems(facets, [], '', null);
 
-      expect(result[0]).toMatchObject({type: 'section-header', label: 'TYPE'});
-      expect(result.slice(1).map((i) => i.value)).toEqual(['status', 'env', 'service']);
+      expect(result.some((i) => i.type === 'section-header')).toBe(false);
+      expect(result.map((i) => i.value)).toEqual(['env', 'service', 'status']);
     });
 
     it('filters facets by partial text', () => {
       const result = buildSuggestionItems(facets, [], 'sta', null);
 
-      expect(result[0]).toMatchObject({type: 'section-header'});
-      expect(result.slice(1).map((i) => i.value)).toEqual(['status']);
+      expect(result.some((i) => i.type === 'section-header')).toBe(false);
+      expect(result.map((i) => i.value)).toEqual(['status']);
     });
 
     it('returns empty array when no match', () => {
@@ -170,19 +170,19 @@ describe('buildSuggestionItems', () => {
   describe('with metadata (grouped mode)', () => {
     const facets: FacetDef[] = [
       {
-        name: 'status',
+        id: 'status',
         metadata: {label: 'Status', group: 'execution', groupLabel: 'Execution', groupOrder: 0},
       },
       {
-        name: 'pipeline.name',
+        id: 'pipeline.name',
         metadata: {label: 'Pipeline', group: 'pipeline', groupLabel: 'Pipeline', groupOrder: 1},
       },
       {
-        name: 'pipeline.id',
+        id: 'pipeline.id',
         metadata: {label: 'Pipeline ID', group: 'pipeline', groupLabel: 'Pipeline', groupOrder: 1},
       },
       {
-        name: 'vcs.ref.head.name',
+        id: 'vcs.ref.head.name',
         metadata: {
           label: 'Branch',
           description: 'Branch or tag name',
@@ -271,22 +271,20 @@ describe('buildSuggestionItems', () => {
   describe('mixed state (some with metadata, some without)', () => {
     const facets: FacetDef[] = [
       {
-        name: 'status',
+        id: 'status',
         metadata: {label: 'Status', group: 'execution', groupLabel: 'Execution', groupOrder: 0},
       },
       'custom.field',
     ];
 
-    it('ungrouped facets land in Other', () => {
+    it('grouped facets have a section header, ungrouped facets do not', () => {
       const result = buildSuggestionItems(facets, [], '', null);
 
       const headers = result.filter((i) => i.type === 'section-header');
-      const headerLabels = headers.map((h) => h.label);
-      expect(headerLabels).toContain('Execution');
-      expect(headerLabels).toContain('Other');
+      expect(headers.map((h) => h.label)).toEqual(['Execution']);
     });
 
-    it('ungrouped facets use raw name as label', () => {
+    it('ungrouped facets use raw id as label', () => {
       const result = buildSuggestionItems(facets, [], '', null);
 
       const customItem = result.find((i) => i.value === 'custom.field');

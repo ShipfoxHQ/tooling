@@ -16,19 +16,19 @@ export function tryParse(text: string): AstNode | null {
 // ─── Facet normalization ───────────────────────────────────────────────────────
 
 export function normalizeFacets(facets: FacetDef[]): string[] {
-  return facets.map((f) => (typeof f === 'string' ? f : f.name));
+  return facets.map((f) => (typeof f === 'string' ? f : f.id));
 }
 
-export function getFacetConfig(facets: FacetDef[], name: string): RangeFacetConfig | undefined {
+export function getFacetConfig(facets: FacetDef[], id: string): RangeFacetConfig | undefined {
   for (const f of facets) {
-    if (typeof f !== 'string' && f.name.toLowerCase() === name.toLowerCase()) return f.config;
+    if (typeof f !== 'string' && f.id.toLowerCase() === id.toLowerCase()) return f.config;
   }
   return undefined;
 }
 
-export function getFacetMetadata(facets: FacetDef[], name: string): FacetMetadata | undefined {
+export function getFacetMetadata(facets: FacetDef[], id: string): FacetMetadata | undefined {
   for (const f of facets) {
-    if (typeof f !== 'string' && f.name === name) return f.metadata;
+    if (typeof f !== 'string' && f.id === id) return f.metadata;
   }
   return undefined;
 }
@@ -207,53 +207,38 @@ export function buildSuggestionItems(
   const rawPartial = focusedLeaf?.type === 'text' ? focusedLeaf.value : activeText;
   const partial = stripNegationPrefix(rawPartial.trim()).stripped.toLowerCase();
 
-  // Filter against raw name AND metadata label
+  // Filter against raw id AND metadata label
   const filtered = partial
     ? facets.filter((f) => {
-        const name = typeof f === 'string' ? f : f.name;
+        const id = typeof f === 'string' ? f : f.id;
         const label = typeof f !== 'string' ? f.metadata?.label : undefined;
         return (
-          name.toLowerCase().includes(partial) || (label?.toLowerCase().includes(partial) ?? false)
+          id.toLowerCase().includes(partial) || (label?.toLowerCase().includes(partial) ?? false)
         );
       })
     : facets;
 
   if (filtered.length === 0) return [];
 
-  // Backward compat: if no facets have metadata, fall back to flat "TYPE" header
-  const hasMetadata = facets.some((f) => typeof f !== 'string' && f.metadata);
-  if (!hasMetadata) {
-    return [
-      header('TYPE'),
-      ...filtered.map((f) => {
-        const name = typeof f === 'string' ? f : f.name;
-        return {
-          value: name,
-          label: name,
-          icon: <Icon name="searchLine" className="size-16 text-foreground-neutral-subtle" />,
-          selected: false,
-        };
-      }),
-    ];
-  }
-
-  // Grouped mode: bucket facets by group, sort groups by order, sort within group alphabetically
+  // Bucket facets by group, sort groups by order, sort within group alphabetically.
+  // Facets without a group are placed last with no section header.
   type GroupEntry = {
-    name: string;
+    id: string;
     label: string;
     description: string | undefined;
     groupOrder: number;
-    groupLabel: string;
+    groupLabel: string | undefined;
     groupIcon: string | undefined;
   };
   const groups = new Map<string, GroupEntry[]>();
 
   for (const f of filtered) {
-    const name = typeof f === 'string' ? f : f.name;
+    const id = typeof f === 'string' ? f : f.id;
     const metadata = typeof f !== 'string' ? f.metadata : undefined;
-    const group = metadata?.group ?? 'other';
-    const label = metadata?.label ?? name;
-    const groupLabel = metadata?.groupLabel ?? group.charAt(0).toUpperCase() + group.slice(1);
+    const group = metadata?.group ?? '';
+    const label = metadata?.label ?? id;
+    const groupLabel =
+      metadata?.groupLabel ?? (group ? group.charAt(0).toUpperCase() + group.slice(1) : undefined);
     const groupOrder = metadata?.groupOrder ?? Infinity;
     const groupIcon = metadata?.groupIcon;
 
@@ -261,7 +246,7 @@ export function buildSuggestionItems(
     const groupList = groups.get(group);
     if (groupList)
       groupList.push({
-        name,
+        id,
         label,
         description: metadata?.description,
         groupOrder,
@@ -281,10 +266,10 @@ export function buildSuggestionItems(
     groupItems.sort((a, b) => a.label.localeCompare(b.label));
     const firstItem = groupItems[0];
     if (!firstItem) continue;
-    items.push(header(firstItem.groupLabel, firstItem.groupIcon));
+    if (firstItem.groupLabel) items.push(header(firstItem.groupLabel, firstItem.groupIcon));
     for (const entry of groupItems) {
       items.push({
-        value: entry.name,
+        value: entry.id,
         label: entry.label,
         icon: null,
         selected: false,

@@ -107,7 +107,7 @@ const FACETS: FacetDef[] = [
   'service',
   'repository',
   {
-    name: 'duration',
+    id: 'duration',
     config: {
       type: 'range',
       min: '0',
@@ -241,7 +241,7 @@ export const WithAsyncSuggestions: Story = {
 
 const GROUPED_FACETS: FacetDef[] = [
   {
-    name: 'status',
+    id: 'status',
     metadata: {
       label: 'Status',
       description: 'Primary execution status (success, failed, cancelled...)',
@@ -252,7 +252,7 @@ const GROUPED_FACETS: FacetDef[] = [
     },
   },
   {
-    name: 'pipeline.name',
+    id: 'pipeline.name',
     metadata: {
       label: 'Pipeline',
       description: 'Name of the CI pipeline',
@@ -263,7 +263,7 @@ const GROUPED_FACETS: FacetDef[] = [
     },
   },
   {
-    name: 'pipeline.execution.number',
+    id: 'pipeline.execution.number',
     metadata: {
       label: 'Pipeline Exec #',
       description: 'Execution number of the pipeline',
@@ -274,7 +274,7 @@ const GROUPED_FACETS: FacetDef[] = [
     },
   },
   {
-    name: 'vcs.ref.head.name',
+    id: 'vcs.ref.head.name',
     metadata: {
       label: 'Branch',
       description: 'Branch or tag name',
@@ -285,7 +285,7 @@ const GROUPED_FACETS: FacetDef[] = [
     },
   },
   {
-    name: 'vcs.commit.author.name',
+    id: 'vcs.commit.author.name',
     metadata: {
       label: 'Commit Author',
       description: 'Name of the commit author',
@@ -296,7 +296,7 @@ const GROUPED_FACETS: FacetDef[] = [
     },
   },
   {
-    name: 'host.arch',
+    id: 'host.arch',
     metadata: {
       label: 'CPU Architecture',
       description: 'CPU architecture (x86, amd64, arm64)',
@@ -307,7 +307,7 @@ const GROUPED_FACETS: FacetDef[] = [
     },
   },
   {
-    name: 'ci.runner.type',
+    id: 'ci.runner.type',
     metadata: {
       label: 'Runner Type',
       description: 'Type of CI runner (e.g. shipfox-2vcpu-ubuntu-2404)',
