@@ -102,7 +102,7 @@ export function ShipQLSuggestionsDropdown({
       />
     </div>
   ) : (
-    <div className="flex flex-col overflow-hidden rounded-8 bg-background-neutral-base shadow-tooltip max-h-[min(70vh,320px)] min-h-0">
+    <div className="flex flex-col overflow-hidden rounded-8 bg-background-neutral-base shadow-tooltip max-h-[min(70vh,400px)] min-h-0">
       <ScrollArea className="flex-1 min-h-0 overflow-y-auto scrollbar">
         <div className="flex flex-col">
           {isLoading && items.length === 0 ? (

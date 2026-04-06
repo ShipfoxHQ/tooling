@@ -9,7 +9,15 @@ export interface RangeFacetConfig {
   format?: (value: string) => string;
 }
 
-export type FacetDef = string | {name: string; config: RangeFacetConfig};
+export interface FacetMetadata {
+  label?: string;
+  description?: string;
+  group?: string;
+  groupLabel?: string;
+  groupOrder?: number;
+}
+
+export type FacetDef = string | {name: string; config?: RangeFacetConfig; metadata?: FacetMetadata};
 
 export type FormatLeafDisplay = (source: string, node: AstNode) => string;
 
@@ -21,4 +29,5 @@ export interface SuggestionItem {
   type?: 'section-header' | 'range-slider';
   rangeFacetConfig?: RangeFacetConfig;
   facetName?: string;
+  description?: string;
 }

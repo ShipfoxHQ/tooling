@@ -5,7 +5,12 @@ import {cn} from 'utils/cn';
 import type {LeafAstNode} from './lexical/shipql-leaf-node';
 import type {FacetDef, FormatLeafDisplay} from './suggestions/types';
 
-export type {FacetDef, FormatLeafDisplay, RangeFacetConfig} from './suggestions/types';
+export type {
+  FacetDef,
+  FacetMetadata,
+  FormatLeafDisplay,
+  RangeFacetConfig,
+} from './suggestions/types';
 
 function isParseError(text: string): boolean {
   if (!text.trim()) return false;

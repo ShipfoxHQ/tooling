@@ -236,3 +236,112 @@ export const WithAsyncSuggestions: Story = {
   render: (args) => <WithAsyncSuggestionsDemo {...args} />,
   play: (ctx) => waitForEditor(ctx, 'ShipQLEditor WithAsyncSuggestions'),
 };
+
+// ─── With Grouped Suggestions ─────────────────────────────────────────────────
+
+const GROUPED_FACETS: FacetDef[] = [
+  {
+    name: 'status',
+    metadata: {
+      label: 'Status',
+      description: 'Primary execution status (success, failed, cancelled...)',
+      group: 'execution',
+      groupLabel: 'Execution',
+      groupOrder: 0,
+    },
+  },
+  {
+    name: 'pipeline.name',
+    metadata: {
+      label: 'Pipeline',
+      description: 'Name of the CI pipeline',
+      group: 'pipeline',
+      groupLabel: 'Pipeline',
+      groupOrder: 1,
+    },
+  },
+  {
+    name: 'pipeline.execution.number',
+    metadata: {
+      label: 'Pipeline Exec #',
+      description: 'Execution number of the pipeline',
+      group: 'pipeline',
+      groupLabel: 'Pipeline',
+      groupOrder: 1,
+    },
+  },
+  {
+    name: 'vcs.ref.head.name',
+    metadata: {
+      label: 'Branch',
+      description: 'Branch or tag name',
+      group: 'vcs',
+      groupLabel: 'VCS',
+      groupOrder: 5,
+    },
+  },
+  {
+    name: 'vcs.commit.author.name',
+    metadata: {
+      label: 'Commit Author',
+      description: 'Name of the commit author',
+      group: 'vcs',
+      groupLabel: 'VCS',
+      groupOrder: 5,
+    },
+  },
+  {
+    name: 'host.arch',
+    metadata: {
+      label: 'CPU Architecture',
+      description: 'CPU architecture (x86, amd64, arm64)',
+      group: 'infrastructure',
+      groupLabel: 'Infrastructure',
+      groupOrder: 6,
+    },
+  },
+  {
+    name: 'ci.runner.type',
+    metadata: {
+      label: 'Runner Type',
+      description: 'Type of CI runner (e.g. shipfox-2vcpu-ubuntu-2404)',
+      group: 'ci',
+      groupLabel: 'CI',
+      groupOrder: 8,
+    },
+  },
+];
+
+const GROUPED_FACET_VALUES: Record<string, string[]> = {
+  status: ['success', 'failed', 'cancelled', 'running'],
+  'pipeline.name': ['api-test', 'e2e', 'deploy-prod'],
+};
+
+function WithGroupedSuggestionsDemo(args: Parameters<typeof ShipQLEditor>[0]) {
+  const [currentFacet, setCurrentFacet] = useState<string | null>(null);
+  const [onLeafChangePayload, setOnLeafChangePayload] = useState<LeafChangePayload | null>(null);
+
+  const partialValue = onLeafChangePayload?.partialValue ?? '';
+  const allValues = currentFacet ? (GROUPED_FACET_VALUES[currentFacet] ?? []) : [];
+  const valueSuggestions = partialValue
+    ? allValues.filter((v) => v.toLowerCase().includes(partialValue.toLowerCase()))
+    : allValues;
+
+  return (
+    <ShipQLEditor
+      {...args}
+      facets={GROUPED_FACETS}
+      currentFacet={currentFacet}
+      setCurrentFacet={setCurrentFacet}
+      valueSuggestions={valueSuggestions}
+      onLeafChange={setOnLeafChangePayload}
+      placeholder="Add filter..."
+    />
+  );
+}
+
+export const WithGroupedSuggestions: Story = {
+  name: 'With Grouped Suggestions',
+  render: (args) => <WithGroupedSuggestionsDemo {...args} />,
+  play: (ctx) => waitForEditor(ctx, 'ShipQLEditor WithGroupedSuggestions'),
+};

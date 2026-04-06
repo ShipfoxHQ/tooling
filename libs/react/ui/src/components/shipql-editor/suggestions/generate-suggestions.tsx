@@ -1,7 +1,7 @@
 import {type AstNode, parse} from '@shipfox/shipql-parser';
 import {Icon} from 'components/icon';
 import type {LeafAstNode} from '../lexical/shipql-leaf-node';
-import type {FacetDef, RangeFacetConfig, SuggestionItem} from './types';
+import type {FacetDef, FacetMetadata, RangeFacetConfig, SuggestionItem} from './types';
 
 // ─── Parse helper ─────────────────────────────────────────────────────────────
 
@@ -22,6 +22,13 @@ export function normalizeFacets(facets: FacetDef[]): string[] {
 export function getFacetConfig(facets: FacetDef[], name: string): RangeFacetConfig | undefined {
   for (const f of facets) {
     if (typeof f !== 'string' && f.name.toLowerCase() === name.toLowerCase()) return f.config;
+  }
+  return undefined;
+}
+
+export function getFacetMetadata(facets: FacetDef[], name: string): FacetMetadata | undefined {
+  for (const f of facets) {
+    if (typeof f !== 'string' && f.name === name) return f.metadata;
   }
   return undefined;
 }
@@ -178,17 +185,82 @@ export function buildSuggestionItems(
   // before matching so "NOT sta" still suggests "status", "-sta" suggests "status", etc.
   const rawPartial = focusedLeaf?.type === 'text' ? focusedLeaf.value : activeText;
   const partial = stripNegationPrefix(rawPartial.trim()).stripped.toLowerCase();
+
+  // Filter against raw name AND metadata label
   const filtered = partial
-    ? facetNames.filter((f) => f.toLowerCase().includes(partial))
-    : facetNames;
+    ? facets.filter((f) => {
+        const name = typeof f === 'string' ? f : f.name;
+        const label = typeof f !== 'string' ? f.metadata?.label : undefined;
+        return (
+          name.toLowerCase().includes(partial) || (label?.toLowerCase().includes(partial) ?? false)
+        );
+      })
+    : facets;
+
   if (filtered.length === 0) return [];
-  return [
-    header('TYPE'),
-    ...filtered.map((f) => ({
-      value: f,
-      label: f,
-      icon: <Icon name="searchLine" className="size-16 text-foreground-neutral-subtle" />,
-      selected: false,
-    })),
-  ];
+
+  // Backward compat: if no facets have metadata, fall back to flat "TYPE" header
+  const hasMetadata = facets.some((f) => typeof f !== 'string' && f.metadata);
+  if (!hasMetadata) {
+    return [
+      header('TYPE'),
+      ...filtered.map((f) => {
+        const name = typeof f === 'string' ? f : f.name;
+        return {
+          value: name,
+          label: name,
+          icon: <Icon name="searchLine" className="size-16 text-foreground-neutral-subtle" />,
+          selected: false,
+        };
+      }),
+    ];
+  }
+
+  // Grouped mode: bucket facets by group, sort groups by order, sort within group alphabetically
+  type GroupEntry = {
+    name: string;
+    label: string;
+    description: string | undefined;
+    groupOrder: number;
+    groupLabel: string;
+  };
+  const groups = new Map<string, GroupEntry[]>();
+
+  for (const f of filtered) {
+    const name = typeof f === 'string' ? f : f.name;
+    const metadata = typeof f !== 'string' ? f.metadata : undefined;
+    const group = metadata?.group ?? 'other';
+    const label = metadata?.label ?? name;
+    const groupLabel = metadata?.groupLabel ?? group.charAt(0).toUpperCase() + group.slice(1);
+    const groupOrder = metadata?.groupOrder ?? Infinity;
+
+    if (!groups.has(group)) groups.set(group, []);
+    const groupList = groups.get(group);
+    if (groupList)
+      groupList.push({name, label, description: metadata?.description, groupOrder, groupLabel});
+  }
+
+  const sortedGroups = [...groups.entries()].sort(([, aItems], [, bItems]) => {
+    const aOrder = aItems[0]?.groupOrder ?? Infinity;
+    const bOrder = bItems[0]?.groupOrder ?? Infinity;
+    return aOrder - bOrder;
+  });
+
+  const items: SuggestionItem[] = [];
+  for (const [, groupItems] of sortedGroups) {
+    groupItems.sort((a, b) => a.label.localeCompare(b.label));
+    const firstItem = groupItems[0];
+    if (!firstItem) continue;
+    items.push(header(firstItem.groupLabel));
+    for (const entry of groupItems) {
+      items.push({
+        value: entry.name,
+        label: entry.label,
+        icon: null,
+        selected: false,
+        description: entry.description,
+      });
+    }
+  }
+  return items;
 }
