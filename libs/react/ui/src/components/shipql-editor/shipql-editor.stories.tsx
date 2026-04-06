@@ -1,10 +1,14 @@
 import {argosScreenshot} from '@argos-ci/storybook/vitest';
 import type {AstNode} from '@shipfox/shipql-parser';
 import type {Meta, StoryObj} from '@storybook/react';
+import {screen, within} from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import {useEffect, useState} from 'react';
 import type {LeafAstNode} from './lexical/shipql-leaf-node';
 import {type LeafChangePayload, ShipQLEditor} from './shipql-editor';
 import type {FacetDef} from './suggestions/types';
+
+const SHIPQL_EDITOR_LABEL_RE = /ShipQL query editor/i;
 
 // Wait for React.lazy Suspense + Lexical useEffect tokenisation to settle.
 const waitForEditor = async (ctx: Parameters<NonNullable<Story['play']>>[0], name: string) => {
@@ -349,6 +353,33 @@ function WithGroupedSuggestionsDemo(args: Parameters<typeof ShipQLEditor>[0]) {
 
 export const WithGroupedSuggestions: Story = {
   name: 'With Grouped Suggestions',
+  decorators: [
+    (Story) => (
+      <div style={{width: '480px', padding: '16px'}}>
+        <Story />
+      </div>
+    ),
+  ],
   render: (args) => <WithGroupedSuggestionsDemo {...args} />,
-  play: (ctx) => waitForEditor(ctx, 'ShipQLEditor WithGroupedSuggestions'),
+  play: async (ctx) => {
+    const {canvasElement, step} = ctx;
+    const canvas = within(canvasElement);
+    const user = userEvent.setup();
+
+    await step('Wait for editor to initialise', async () => {
+      await new Promise((resolve) => setTimeout(resolve, 150));
+    });
+
+    await step('Click editor to open suggestions', async () => {
+      const editor = canvas.getByRole('textbox', {name: SHIPQL_EDITOR_LABEL_RE});
+      await user.click(editor);
+    });
+
+    await step('Wait for suggestion groups to render', async () => {
+      await screen.findByText('Execution');
+      await new Promise((resolve) => setTimeout(resolve, 150));
+    });
+
+    await argosScreenshot(ctx, 'ShipQLEditor WithGroupedSuggestions');
+  },
 };
