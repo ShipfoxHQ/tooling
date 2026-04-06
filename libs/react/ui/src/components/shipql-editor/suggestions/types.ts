@@ -9,6 +9,17 @@ export interface RangeFacetConfig {
   format?: (value: string) => string;
 }
 
+export interface FacetGroupInfo {
+  /** Group key (empty string = ungrouped). */
+  key: string;
+  /** Display label for the section header. Derived from key when not explicitly set. */
+  label: string | undefined;
+  /** Sort order for the group. Defaults to Infinity (last). */
+  order: number;
+  /** Icon name for the section header, if any. */
+  icon: string | undefined;
+}
+
 export interface FacetMetadata {
   label?: string;
   description?: string;

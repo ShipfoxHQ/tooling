@@ -1,7 +1,7 @@
 import {type AstNode, parse} from '@shipfox/shipql-parser';
 import {Icon} from 'components/icon';
 import type {LeafAstNode} from '../lexical/shipql-leaf-node';
-import type {FacetDef, FacetMetadata, RangeFacetConfig, SuggestionItem} from './types';
+import type {FacetDef, FacetGroupInfo, RangeFacetConfig, SuggestionItem} from './types';
 
 // ─── Parse helper ─────────────────────────────────────────────────────────────
 
@@ -26,11 +26,34 @@ export function getFacetConfig(facets: FacetDef[], id: string): RangeFacetConfig
   return undefined;
 }
 
-export function getFacetMetadata(facets: FacetDef[], id: string): FacetMetadata | undefined {
+// Private: finds the object-form FacetDef by exact id match.
+function findFacet(facets: FacetDef[], id: string): Exclude<FacetDef, string> | undefined {
   for (const f of facets) {
-    if (typeof f !== 'string' && f.id === id) return f.metadata;
+    if (typeof f !== 'string' && f.id === id) return f;
   }
   return undefined;
+}
+
+/** Returns the human-readable display label, falling back to the raw id. */
+export function getFacetLabel(facets: FacetDef[], id: string): string {
+  return findFacet(facets, id)?.metadata?.label ?? id;
+}
+
+/** Returns the description for a facet, if any. */
+export function getFacetDescription(facets: FacetDef[], id: string): string | undefined {
+  return findFacet(facets, id)?.metadata?.description;
+}
+
+/** Returns grouping information for a facet, with defaults applied. */
+export function getFacetGroupInfo(facets: FacetDef[], id: string): FacetGroupInfo {
+  const metadata = findFacet(facets, id)?.metadata;
+  const key = metadata?.group ?? '';
+  return {
+    key,
+    label: metadata?.groupLabel ?? (key ? key.charAt(0).toUpperCase() + key.slice(1) : undefined),
+    order: metadata?.groupOrder ?? Infinity,
+    icon: metadata?.groupIcon,
+  };
 }
 
 // ─── Leaf helpers ─────────────────────────────────────────────────────────────
@@ -106,22 +129,19 @@ export function buildSuggestionItems(
     type: 'section-header',
   });
 
-  const facetContext = (name: string): SuggestionItem => {
-    const metadata = getFacetMetadata(facets, name);
-    const label = metadata?.label ?? name;
-    const sectionLabel = metadata?.groupLabel;
-    const sectionIconName = metadata?.groupIcon;
+  const facetContext = (id: string): SuggestionItem => {
+    const groupInfo = getFacetGroupInfo(facets, id);
     return {
-      value: `__facet-context__${name}`,
-      label,
-      icon: sectionIconName ? (
-        <Icon name={sectionIconName} className="size-12 text-foreground-neutral-muted" />
+      value: `__facet-context__${id}`,
+      label: getFacetLabel(facets, id),
+      icon: groupInfo.icon ? (
+        <Icon name={groupInfo.icon} className="size-12 text-foreground-neutral-muted" />
       ) : null,
       selected: false,
       type: 'facet-context',
-      facetName: name,
-      description: metadata?.description,
-      sectionLabel,
+      facetName: id,
+      description: getFacetDescription(facets, id),
+      sectionLabel: groupInfo.label,
     };
   };
 
@@ -234,21 +254,20 @@ export function buildSuggestionItems(
 
   for (const f of filtered) {
     const id = typeof f === 'string' ? f : f.id;
-    const metadata = typeof f !== 'string' ? f.metadata : undefined;
-    const group = metadata?.group ?? '';
-    const label = metadata?.label ?? id;
-    const groupLabel =
-      metadata?.groupLabel ?? (group ? group.charAt(0).toUpperCase() + group.slice(1) : undefined);
-    const groupOrder = metadata?.groupOrder ?? Infinity;
-    const groupIcon = metadata?.groupIcon;
+    const {
+      key: group,
+      label: groupLabel,
+      order: groupOrder,
+      icon: groupIcon,
+    } = getFacetGroupInfo(facets, id);
 
     if (!groups.has(group)) groups.set(group, []);
     const groupList = groups.get(group);
     if (groupList)
       groupList.push({
         id,
-        label,
-        description: metadata?.description,
+        label: getFacetLabel(facets, id),
+        description: getFacetDescription(facets, id),
         groupOrder,
         groupLabel,
         groupIcon,

@@ -3,7 +3,9 @@ import {
   buildSuggestionItems,
   detectFacetContext,
   getFacetConfig,
-  getFacetMetadata,
+  getFacetDescription,
+  getFacetGroupInfo,
+  getFacetLabel,
   normalizeFacets,
   stripNegationPrefix,
 } from './generate-suggestions';
@@ -54,39 +56,104 @@ describe('getFacetConfig', () => {
   });
 });
 
-// ─── getFacetMetadata ──────────────────────────────────────────────────────────
+// ─── getFacetLabel ─────────────────────────────────────────────────────────────
 
-describe('getFacetMetadata', () => {
-  it('returns metadata for a known facet', () => {
-    const metadata = {label: 'Pipeline', group: 'pipeline', groupOrder: 1};
-    const facets: FacetDef[] = [{id: 'pipeline.name', metadata}];
+describe('getFacetLabel', () => {
+  it('returns the metadata label when present', () => {
+    const facets: FacetDef[] = [{id: 'pipeline.name', metadata: {label: 'Pipeline'}}];
 
-    const result = getFacetMetadata(facets, 'pipeline.name');
+    expect(getFacetLabel(facets, 'pipeline.name')).toBe('Pipeline');
+  });
 
-    expect(result).toBe(metadata);
+  it('falls back to the raw id for object facets without a label', () => {
+    const facets: FacetDef[] = [{id: 'pipeline.name', metadata: {}}];
+
+    expect(getFacetLabel(facets, 'pipeline.name')).toBe('pipeline.name');
+  });
+
+  it('falls back to the raw id for string facets', () => {
+    const facets: FacetDef[] = ['status'];
+
+    expect(getFacetLabel(facets, 'status')).toBe('status');
+  });
+
+  it('matches by exact id (case-sensitive)', () => {
+    const facets: FacetDef[] = [{id: 'pipeline.name', metadata: {label: 'Pipeline'}}];
+
+    expect(getFacetLabel(facets, 'Pipeline.Name')).toBe('Pipeline.Name');
+  });
+});
+
+// ─── getFacetDescription ───────────────────────────────────────────────────────
+
+describe('getFacetDescription', () => {
+  it('returns the description when present', () => {
+    const facets: FacetDef[] = [{id: 'status', metadata: {description: 'Execution status'}}];
+
+    expect(getFacetDescription(facets, 'status')).toBe('Execution status');
+  });
+
+  it('returns undefined when no description is set', () => {
+    const facets: FacetDef[] = [{id: 'status', metadata: {label: 'Status'}}];
+
+    expect(getFacetDescription(facets, 'status')).toBeUndefined();
   });
 
   it('returns undefined for string facets', () => {
     const facets: FacetDef[] = ['status'];
 
-    const result = getFacetMetadata(facets, 'status');
+    expect(getFacetDescription(facets, 'status')).toBeUndefined();
+  });
+});
 
-    expect(result).toBeUndefined();
+// ─── getFacetGroupInfo ─────────────────────────────────────────────────────────
+
+describe('getFacetGroupInfo', () => {
+  it('returns explicit group fields when all are set', () => {
+    const facets: FacetDef[] = [
+      {
+        id: 'status',
+        metadata: {
+          group: 'execution',
+          groupLabel: 'Execution',
+          groupOrder: 0,
+          groupIcon: 'playLine',
+        },
+      },
+    ];
+
+    const result = getFacetGroupInfo(facets, 'status');
+
+    expect(result).toEqual({key: 'execution', label: 'Execution', order: 0, icon: 'playLine'});
   });
 
-  it('returns undefined for unknown facets', () => {
-    const facets: FacetDef[] = [{id: 'pipeline.name', metadata: {label: 'Pipeline'}}];
+  it('derives label from group key when groupLabel is not set', () => {
+    const facets: FacetDef[] = [{id: 'status', metadata: {group: 'execution'}}];
 
-    const result = getFacetMetadata(facets, 'unknown');
-
-    expect(result).toBeUndefined();
+    expect(getFacetGroupInfo(facets, 'status').label).toBe('Execution');
   });
 
-  it('matches by exact name (case-sensitive)', () => {
-    const facets: FacetDef[] = [{id: 'pipeline.name', metadata: {label: 'Pipeline'}}];
+  it('returns empty key, undefined label, and Infinity order for ungrouped object facets', () => {
+    const facets: FacetDef[] = [{id: 'status', metadata: {label: 'Status'}}];
 
-    expect(getFacetMetadata(facets, 'Pipeline.Name')).toBeUndefined();
-    expect(getFacetMetadata(facets, 'pipeline.name')).toBeDefined();
+    const result = getFacetGroupInfo(facets, 'status');
+
+    expect(result).toEqual({key: '', label: undefined, order: Infinity, icon: undefined});
+  });
+
+  it('returns empty key, undefined label, and Infinity order for string facets', () => {
+    const facets: FacetDef[] = ['status'];
+
+    const result = getFacetGroupInfo(facets, 'status');
+
+    expect(result).toEqual({key: '', label: undefined, order: Infinity, icon: undefined});
+  });
+
+  it('matches by exact id (case-sensitive)', () => {
+    const facets: FacetDef[] = [{id: 'pipeline.name', metadata: {group: 'pipeline'}}];
+
+    expect(getFacetGroupInfo(facets, 'Pipeline.Name').key).toBe('');
+    expect(getFacetGroupInfo(facets, 'pipeline.name').key).toBe('pipeline');
   });
 });
 
