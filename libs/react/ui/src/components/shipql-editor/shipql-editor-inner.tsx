@@ -3,6 +3,7 @@ import {ContentEditable} from '@lexical/react/LexicalContentEditable';
 import {LexicalErrorBoundary} from '@lexical/react/LexicalErrorBoundary';
 import {HistoryPlugin} from '@lexical/react/LexicalHistoryPlugin';
 import {PlainTextPlugin} from '@lexical/react/LexicalPlainTextPlugin';
+import {hasTextNodes} from '@shipfox/shipql-parser';
 import {Input} from 'components/input';
 import {Popover, PopoverAnchor} from 'components/popover';
 import {$createParagraphNode, $createTextNode, $getRoot} from 'lexical';
@@ -56,6 +57,7 @@ export default function ShipQLEditorInner({
   const [focusedLeafNode, setFocusedLeafNode] = useState<LeafAstNode | null>(null);
   const [isNegated, setIsNegated] = useState(false);
   const [showSyntaxHelp, setShowSyntaxHelp] = useState(false);
+  const [isTextModeBlurError, setIsTextModeBlurError] = useState(false);
 
   const isSelectingRef = useRef(false);
   const applyRef = useRef<((value: string) => void) | null>(null);
@@ -150,6 +152,7 @@ export default function ShipQLEditorInner({
                 onLeafFocus={handleLeafFocus}
                 formatLeafDisplay={formatLeafDisplay}
                 allowFreeText={allowFreeText}
+                suggestionsOpen={suggestionsOpen}
               />
               <OnBlurPlugin onChange={onChange} allowFreeText={allowFreeText} />
               <OnTextChangePlugin onTextChange={onTextChange} />
@@ -202,10 +205,11 @@ export default function ShipQLEditorInner({
             <Icon name="searchLine" size={16} className="shrink-0 text-foreground-neutral-muted" />
           }
           className={cn(INPUT_CLASSES, disabled && 'pointer-events-none opacity-50')}
-          aria-invalid={isError}
+          aria-invalid={isError || isTextModeBlurError}
           value={text}
           onChange={(e) => {
             const newText = e.target.value;
+            setIsTextModeBlurError(false);
             onTextChange(newText);
 
             const facetNames = facets ? normalizeFacets(facets) : [];
@@ -216,8 +220,11 @@ export default function ShipQLEditorInner({
           }}
           onBlur={(e) => {
             const ast = tryParse(e.target.value);
-            if (ast) onChange?.(ast);
+            const hasDeferredFreeTextError = Boolean(ast && !allowFreeText && hasTextNodes(ast));
+            setIsTextModeBlurError(hasDeferredFreeTextError);
+            if (ast && !hasDeferredFreeTextError) onChange?.(ast);
           }}
+          onFocus={() => setIsTextModeBlurError(false)}
           placeholder={placeholder}
           disabled={disabled}
         />
