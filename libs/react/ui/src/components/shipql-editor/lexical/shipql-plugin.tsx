@@ -433,8 +433,7 @@ export function ShipQLPlugin({
           const newNodes = nextSegments.map((seg, index) => {
             if (seg.kind === 'leaf') {
               const isFocusedSegment = index === focusedSegIndex;
-              const freeTextError =
-                !allowFreeTextVal && !isFocusedSegment && isTextLeaf(seg.node);
+              const freeTextError = !allowFreeTextVal && !isFocusedSegment && isTextLeaf(seg.node);
               return $createShipQLLeafNode(
                 seg.text,
                 seg.node,
