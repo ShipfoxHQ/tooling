@@ -1,3 +1,4 @@
+import {argosScreenshot} from '@argos-ci/storybook/vitest';
 import type {Meta, StoryObj} from '@storybook/react';
 import {
   CodeBlock,
@@ -218,6 +219,11 @@ export const MultipleFiles: Story = {
   args: {
     data: [],
     defaultValue: '',
+  },
+  play: async (ctx) => {
+    await document.fonts.ready;
+    await new Promise((resolve) => setTimeout(resolve, 150));
+    await argosScreenshot(ctx, 'CodeBlock MultipleFiles');
   },
   render: () => (
     <CodeTabs
