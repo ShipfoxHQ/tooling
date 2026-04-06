@@ -9,9 +9,12 @@ import {
   $isRangeSelection,
   $isTextNode,
   $setSelection,
+  BLUR_COMMAND,
   COMMAND_PRIORITY_HIGH,
+  COMMAND_PRIORITY_LOW,
   COMMAND_PRIORITY_NORMAL,
   createCommand,
+  FOCUS_COMMAND,
   INSERT_PARAGRAPH_COMMAND,
   KEY_ARROW_RIGHT_COMMAND,
   KEY_ENTER_COMMAND,
@@ -100,6 +103,13 @@ function getAbsoluteOffset(para: ParagraphNode, point: Point): number {
   return offset + point.offset;
 }
 
+/** Returns true if a leaf segment represents a free-text node (bare word / quoted string). */
+function isTextLeaf(node: LeafAstNode): boolean {
+  if (node.type === 'text') return true;
+  if (node.type === 'not' && node.expr.type === 'text') return true;
+  return false;
+}
+
 // ─── Commands ─────────────────────────────────────────────────────────────────
 
 /** Payload: the Lexical node key of the leaf to remove. */
@@ -112,9 +122,14 @@ const REBUILD_TAG = 'shipql-rebuild';
 interface ShipQLPluginProps {
   onLeafFocus?: (node: LeafAstNode | null) => void;
   formatLeafDisplay?: (source: string, node: LeafAstNode) => string;
+  allowFreeText?: boolean;
 }
 
-export function ShipQLPlugin({onLeafFocus, formatLeafDisplay}: ShipQLPluginProps): null {
+export function ShipQLPlugin({
+  onLeafFocus,
+  formatLeafDisplay,
+  allowFreeText = true,
+}: ShipQLPluginProps): null {
   const [editor] = useLexicalComposerContext();
 
   // Keep latest callback accessible inside Lexical listeners without re-registering.
@@ -122,9 +137,14 @@ export function ShipQLPlugin({onLeafFocus, formatLeafDisplay}: ShipQLPluginProps
   onLeafFocusRef.current = onLeafFocus;
   const formatLeafDisplayRef = useRef(formatLeafDisplay);
   formatLeafDisplayRef.current = formatLeafDisplay;
+  const allowFreeTextRef = useRef(allowFreeText);
+  allowFreeTextRef.current = allowFreeText;
 
   // Track the key of the last focused leaf to avoid redundant callbacks.
   const lastFocusedKeyRef = useRef<string | null>(null);
+
+  // Track whether the editor is focused so we can show errors only when blurred.
+  const isFocusedRef = useRef(true);
 
   useEffect(() => {
     // Block newlines — ShipQL is a single-line language.
@@ -196,6 +216,67 @@ export function ShipQLPlugin({onLeafFocus, formatLeafDisplay}: ShipQLPluginProps
         return true;
       },
       COMMAND_PRIORITY_HIGH,
+    );
+
+    // ── Blur / Focus: toggle free-text error styling via rebuild ────────────
+
+    function rebuildWithCurrentState(): void {
+      editor.update(
+        () => {
+          const para = $getRoot().getFirstChild() as ParagraphNode | null;
+          if (!para) return;
+          const text = para.getTextContent();
+          if (!text) return;
+
+          let ast: AstNode | null = null;
+          try {
+            ast = parse(text);
+          } catch {
+            return;
+          }
+          if (!ast) return;
+
+          const segments = tokenize(text, collectLeaves(ast));
+          const fmt = formatLeafDisplayRef.current;
+          const markErrors = !isFocusedRef.current && !allowFreeTextRef.current;
+
+          para.clear();
+          for (const seg of segments) {
+            para.append(
+              seg.kind === 'leaf'
+                ? $createShipQLLeafNode(
+                    seg.text,
+                    seg.node,
+                    fmt?.(seg.text, seg.node),
+                    markErrors && isTextLeaf(seg.node),
+                  )
+                : $createTextNode(seg.text),
+            );
+          }
+        },
+        {tag: REBUILD_TAG},
+      );
+    }
+
+    const unregisterBlur = editor.registerCommand(
+      BLUR_COMMAND,
+      () => {
+        isFocusedRef.current = false;
+        if (!allowFreeTextRef.current) rebuildWithCurrentState();
+        return false;
+      },
+      COMMAND_PRIORITY_LOW,
+    );
+
+    const unregisterFocus = editor.registerCommand(
+      FOCUS_COMMAND,
+      () => {
+        const wasFocused = isFocusedRef.current;
+        isFocusedRef.current = true;
+        if (!wasFocused && !allowFreeTextRef.current) rebuildWithCurrentState();
+        return false;
+      },
+      COMMAND_PRIORITY_LOW,
     );
 
     const unregisterUpdate = editor.registerUpdateListener(({editorState, tags}) => {
@@ -289,9 +370,15 @@ export function ShipQLPlugin({onLeafFocus, formatLeafDisplay}: ShipQLPluginProps
           para.clear();
 
           const fmt = formatLeafDisplayRef.current;
+          const markErrors = !isFocusedRef.current && !allowFreeTextRef.current;
           const newNodes = nextSegments.map((seg) =>
             seg.kind === 'leaf'
-              ? $createShipQLLeafNode(seg.text, seg.node, fmt?.(seg.text, seg.node))
+              ? $createShipQLLeafNode(
+                  seg.text,
+                  seg.node,
+                  fmt?.(seg.text, seg.node),
+                  markErrors && isTextLeaf(seg.node),
+                )
               : $createTextNode(seg.text),
           );
 
@@ -352,6 +439,8 @@ export function ShipQLPlugin({onLeafFocus, formatLeafDisplay}: ShipQLPluginProps
       unregisterParagraph();
       unregisterArrowRight();
       unregisterRemoveLeaf();
+      unregisterBlur();
+      unregisterFocus();
       unregisterUpdate();
     };
   }, [editor]);
