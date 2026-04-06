@@ -1,4 +1,4 @@
-import {type AstNode, parse, stringify} from '@shipfox/shipql-parser';
+import {type AstNode, hasTextNodes, parse, stringify} from '@shipfox/shipql-parser';
 import {type EditorConfig, type NodeKey, type SerializedTextNode, TextNode} from 'lexical';
 
 export type LeafAstNode = AstNode;
@@ -46,11 +46,19 @@ type SerializedShipQLLeafNode = SerializedTextNode & {type: 'shipql-leaf'};
 export class ShipQLLeafNode extends TextNode {
   __shipqlNode: LeafAstNode;
   __displayText: string | null;
+  __allowFreeText: boolean;
 
-  constructor(text: string, shipqlNode: LeafAstNode, key?: NodeKey, displayText?: string) {
+  constructor(
+    text: string,
+    shipqlNode: LeafAstNode,
+    key?: NodeKey,
+    displayText?: string,
+    allowFreeText = true,
+  ) {
     super(text, key);
     this.__shipqlNode = shipqlNode;
     this.__displayText = displayText ?? null;
+    this.__allowFreeText = allowFreeText;
   }
 
   static getType(): string {
@@ -63,6 +71,7 @@ export class ShipQLLeafNode extends TextNode {
       node.__shipqlNode,
       node.__key,
       node.__displayText ?? undefined,
+      node.__allowFreeText,
     );
   }
 
@@ -99,7 +108,7 @@ export class ShipQLLeafNode extends TextNode {
     if (this.__displayText) {
       element.textContent = this.__displayText;
     }
-    const valid = isValidLeafText(this.__text);
+    const valid = this._isLeafValid();
     for (const cls of LEAF_BASE_CLASSES.split(' ')) element.classList.add(cls);
     for (const cls of (valid ? LEAF_NORMAL_CLASSES : LEAF_ERROR_CLASSES).split(' '))
       element.classList.add(cls);
@@ -110,9 +119,9 @@ export class ShipQLLeafNode extends TextNode {
 
   updateDOM(prevNode: this, dom: HTMLElement, config: EditorConfig): boolean {
     const result = super.updateDOM(prevNode, dom, config);
-    if (prevNode.__text !== this.__text) {
-      const prevValid = isValidLeafText(prevNode.__text);
-      const nextValid = isValidLeafText(this.__text);
+    if (prevNode.__text !== this.__text || prevNode.__allowFreeText !== this.__allowFreeText) {
+      const prevValid = prevNode._isLeafValid();
+      const nextValid = this._isLeafValid();
       if (prevValid !== nextValid) {
         for (const cls of (prevValid ? LEAF_NORMAL_CLASSES : LEAF_ERROR_CLASSES).split(' '))
           dom.classList.remove(cls);
@@ -121,6 +130,12 @@ export class ShipQLLeafNode extends TextNode {
       }
     }
     return result;
+  }
+
+  _isLeafValid(): boolean {
+    if (!isValidLeafText(this.__text)) return false;
+    if (!this.__allowFreeText && hasTextNodes(this.__shipqlNode)) return false;
+    return true;
   }
 
   isSimpleText(): boolean {
@@ -148,8 +163,9 @@ export function $createShipQLLeafNode(
   text: string,
   shipqlNode: LeafAstNode,
   displayText?: string,
+  allowFreeText = true,
 ): ShipQLLeafNode {
-  return new ShipQLLeafNode(text, shipqlNode, undefined, displayText);
+  return new ShipQLLeafNode(text, shipqlNode, undefined, displayText, allowFreeText);
 }
 
 /** Returns true if the AST node qualifies as a visual leaf chip in the editor. */

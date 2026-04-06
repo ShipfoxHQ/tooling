@@ -112,9 +112,14 @@ const REBUILD_TAG = 'shipql-rebuild';
 interface ShipQLPluginProps {
   onLeafFocus?: (node: LeafAstNode | null) => void;
   formatLeafDisplay?: (source: string, node: LeafAstNode) => string;
+  allowFreeText?: boolean;
 }
 
-export function ShipQLPlugin({onLeafFocus, formatLeafDisplay}: ShipQLPluginProps): null {
+export function ShipQLPlugin({
+  onLeafFocus,
+  formatLeafDisplay,
+  allowFreeText = true,
+}: ShipQLPluginProps): null {
   const [editor] = useLexicalComposerContext();
 
   // Keep latest callback accessible inside Lexical listeners without re-registering.
@@ -122,6 +127,8 @@ export function ShipQLPlugin({onLeafFocus, formatLeafDisplay}: ShipQLPluginProps
   onLeafFocusRef.current = onLeafFocus;
   const formatLeafDisplayRef = useRef(formatLeafDisplay);
   formatLeafDisplayRef.current = formatLeafDisplay;
+  const allowFreeTextRef = useRef(allowFreeText);
+  allowFreeTextRef.current = allowFreeText;
 
   // Track the key of the last focused leaf to avoid redundant callbacks.
   const lastFocusedKeyRef = useRef<string | null>(null);
@@ -289,9 +296,15 @@ export function ShipQLPlugin({onLeafFocus, formatLeafDisplay}: ShipQLPluginProps
           para.clear();
 
           const fmt = formatLeafDisplayRef.current;
+          const allowFreeTextVal = allowFreeTextRef.current;
           const newNodes = nextSegments.map((seg) =>
             seg.kind === 'leaf'
-              ? $createShipQLLeafNode(seg.text, seg.node, fmt?.(seg.text, seg.node))
+              ? $createShipQLLeafNode(
+                  seg.text,
+                  seg.node,
+                  fmt?.(seg.text, seg.node),
+                  allowFreeTextVal,
+                )
               : $createTextNode(seg.text),
           );
 
@@ -337,11 +350,12 @@ export function ShipQLPlugin({onLeafFocus, formatLeafDisplay}: ShipQLPluginProps
       const segments = tokenize(text, collectLeaves(ast));
       if (!needsRebuild(children, segments)) return;
       const fmt = formatLeafDisplayRef.current;
+      const allowFreeTextVal = allowFreeTextRef.current;
       para.clear();
       for (const seg of segments) {
         para.append(
           seg.kind === 'leaf'
-            ? $createShipQLLeafNode(seg.text, seg.node, fmt?.(seg.text, seg.node))
+            ? $createShipQLLeafNode(seg.text, seg.node, fmt?.(seg.text, seg.node), allowFreeTextVal)
             : $createTextNode(seg.text),
         );
       }

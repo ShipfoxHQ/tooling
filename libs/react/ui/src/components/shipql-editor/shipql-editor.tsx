@@ -1,5 +1,5 @@
 import type {AstNode} from '@shipfox/shipql-parser';
-import {parse} from '@shipfox/shipql-parser';
+import {hasTextNodes, parse} from '@shipfox/shipql-parser';
 import {lazy, Suspense, useCallback, useRef, useState} from 'react';
 import {cn} from 'utils/cn';
 import type {LeafAstNode} from './lexical/shipql-leaf-node';
@@ -7,10 +7,13 @@ import type {FacetDef, FormatLeafDisplay} from './suggestions/types';
 
 export type {FacetDef, FormatLeafDisplay, RangeFacetConfig} from './suggestions/types';
 
-function isParseError(text: string): boolean {
+function isParseError(text: string, allowFreeText = true): boolean {
   if (!text.trim()) return false;
   try {
-    return parse(text) === null;
+    const ast = parse(text);
+    if (ast === null) return true;
+    if (!allowFreeText && hasTextNodes(ast)) return true;
+    return false;
   } catch {
     return true;
   }
@@ -32,6 +35,7 @@ export interface ShipQLEditorProps {
   isLoadingValueSuggestions?: boolean;
   onLeafChange?: (payload: LeafChangePayload) => void;
   formatLeafDisplay?: FormatLeafDisplay;
+  allowFreeText?: boolean;
 }
 
 export interface ShipQLEditorInnerProps extends ShipQLEditorProps {
@@ -47,23 +51,29 @@ export interface ShipQLEditorInnerProps extends ShipQLEditorProps {
 const ShipQLEditorInner = lazy(() => import('./shipql-editor-inner'));
 
 export function ShipQLEditor({disabled, className, ...props}: ShipQLEditorProps) {
+  const allowFreeText = props.allowFreeText ?? true;
   const [mode, setMode] = useState<'editor' | 'text'>('editor');
   const [text, setText] = useState(props.defaultValue ?? '');
   const [editorKey, setEditorKey] = useState(0);
-  const [isError, setIsError] = useState(() => isParseError(props.defaultValue ?? ''));
+  const [isError, setIsError] = useState(() =>
+    isParseError(props.defaultValue ?? '', allowFreeText),
+  );
   const textRef = useRef(text);
   textRef.current = text;
   const clearingRef = useRef(false);
 
-  const handleTextChange = useCallback((newText: string) => {
-    if (clearingRef.current) {
-      if (newText.trim() === '') clearingRef.current = false;
-      return;
-    }
-    textRef.current = newText;
-    setText(newText);
-    setIsError(isParseError(newText));
-  }, []);
+  const handleTextChange = useCallback(
+    (newText: string) => {
+      if (clearingRef.current) {
+        if (newText.trim() === '') clearingRef.current = false;
+        return;
+      }
+      textRef.current = newText;
+      setText(newText);
+      setIsError(isParseError(newText, allowFreeText));
+    },
+    [allowFreeText],
+  );
 
   const handleClear = useCallback(() => {
     clearingRef.current = true;

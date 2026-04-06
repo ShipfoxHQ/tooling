@@ -48,6 +48,7 @@ export default function ShipQLEditorInner({
   isLoadingValueSuggestions,
   onLeafChange,
   formatLeafDisplay,
+  allowFreeText,
 }: ShipQLEditorInnerProps) {
   const [suggestionsOpen, setSuggestionsOpen] = useState(false);
   const [selectedIndex, setSelectedIndex] = useState(-1);
@@ -145,8 +146,12 @@ export default function ShipQLEditorInner({
                 }
                 ErrorBoundary={LexicalErrorBoundary}
               />
-              <ShipQLPlugin onLeafFocus={handleLeafFocus} formatLeafDisplay={formatLeafDisplay} />
-              <OnBlurPlugin onChange={onChange} />
+              <ShipQLPlugin
+                onLeafFocus={handleLeafFocus}
+                formatLeafDisplay={formatLeafDisplay}
+                allowFreeText={allowFreeText}
+              />
+              <OnBlurPlugin onChange={onChange} allowFreeText={allowFreeText} />
               <OnTextChangePlugin onTextChange={onTextChange} />
               <HistoryPlugin />
               {!disabled && <LeafCloseOverlay />}
