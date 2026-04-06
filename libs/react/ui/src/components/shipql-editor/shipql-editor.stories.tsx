@@ -353,11 +353,6 @@ function WithGroupedSuggestionsDemo(args: Parameters<typeof ShipQLEditor>[0]) {
 
 export const WithGroupedSuggestions: Story = {
   name: 'With Grouped Suggestions',
-  parameters: {
-    // The suggestions dropdown renders in a Radix portal at document.body, outside the
-    // story canvas. Targeting 'body' ensures Argos captures the open popover.
-    argos: {element: 'body'},
-  },
   decorators: [
     (Story) => (
       <div style={{width: '480px', padding: '16px'}}>
