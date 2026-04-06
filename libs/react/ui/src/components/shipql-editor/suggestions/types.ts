@@ -27,8 +27,10 @@ export interface SuggestionItem {
   label: React.ReactNode;
   icon: React.ReactNode | null;
   selected: boolean;
-  type?: 'section-header' | 'range-slider';
+  type?: 'section-header' | 'range-slider' | 'facet-context';
   rangeFacetConfig?: RangeFacetConfig;
   facetName?: string;
   description?: string;
+  /** For facet-context items: the group label shown above the facet name */
+  sectionLabel?: string;
 }

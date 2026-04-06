@@ -106,6 +106,25 @@ export function buildSuggestionItems(
     type: 'section-header',
   });
 
+  const facetContext = (name: string): SuggestionItem => {
+    const metadata = getFacetMetadata(facets, name);
+    const label = metadata?.label ?? name;
+    const sectionLabel = metadata?.groupLabel;
+    const sectionIconName = metadata?.groupIcon;
+    return {
+      value: `__facet-context__${name}`,
+      label,
+      icon: sectionIconName ? (
+        <Icon name={sectionIconName} className="size-12 text-foreground-neutral-muted" />
+      ) : null,
+      selected: false,
+      type: 'facet-context',
+      facetName: name,
+      description: metadata?.description,
+      sectionLabel,
+    };
+  };
+
   // Focused leaf — show values with current value marked selected.
   // Text-type leaves (bare words) are not facet:value matches, so fall through
   // to facet filtering using the leaf's text as the partial query.
@@ -128,7 +147,7 @@ export function buildSuggestionItems(
     const currentValue = extractValueFromLeaf(focusedLeaf);
     if (valueSuggestions.length === 0) return [];
     return [
-      header(facetName.toUpperCase()),
+      facetContext(facetName),
       ...valueSuggestions.map((v) => {
         const selected = v === currentValue;
         return {
@@ -172,7 +191,7 @@ export function buildSuggestionItems(
     // Regular facet — show value suggestions (parent is responsible for filtering)
     if (valueSuggestions.length === 0) return [];
     return [
-      header(facetCtx.facet.toUpperCase()),
+      facetContext(facetCtx.facet),
       ...valueSuggestions.map((v) => ({
         value: v,
         label: v,
@@ -267,9 +286,7 @@ export function buildSuggestionItems(
       items.push({
         value: entry.name,
         label: entry.label,
-        icon: entry.groupIcon ? (
-          <Icon name={entry.groupIcon} className="size-16 text-foreground-neutral-subtle" />
-        ) : null,
+        icon: null,
         selected: false,
         description: entry.description,
       });

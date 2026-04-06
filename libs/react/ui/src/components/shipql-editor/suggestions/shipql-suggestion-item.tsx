@@ -27,6 +27,32 @@ export function ShipQLSuggestionItem({
     );
   }
 
+  if (item.type === 'facet-context') {
+    const showRawFacetName =
+      typeof item.label === 'string' && item.facetName && item.label !== item.facetName;
+    return (
+      <div className="flex w-full flex-col gap-2 px-8 py-8 border-b border-border-neutral-subtle shrink-0">
+        {item.sectionLabel && (
+          <div className="flex items-center gap-4">
+            {item.icon}
+            <span className="text-xs text-foreground-neutral-muted">{item.sectionLabel}</span>
+          </div>
+        )}
+        <div className="flex items-baseline gap-8">
+          <span className="text-sm font-medium text-foreground-neutral-base">{item.label}</span>
+          {showRawFacetName && (
+            <span className="font-mono text-xs text-foreground-neutral-muted">
+              {item.facetName}
+            </span>
+          )}
+        </div>
+        {item.description && (
+          <span className="text-xs text-foreground-neutral-muted">{item.description}</span>
+        )}
+      </div>
+    );
+  }
+
   const labelText = isNegated ? `-${item.label}` : item.label;
   const showRawId = typeof item.label === 'string' && item.label !== item.value;
 

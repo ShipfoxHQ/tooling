@@ -388,11 +388,13 @@ export function ShipQLSuggestionsPlugin({
         if (!openRef.current || itemsRef.current.length === 0) return false;
         e?.preventDefault();
         const its = itemsRef.current;
+        const isNonSelectable = (i: number) =>
+          its[i]?.type === 'section-header' || its[i]?.type === 'facet-context';
         let next = selectedIndexRef.current + 1;
-        while (next < its.length && its[next]?.type === 'section-header') next++;
+        while (next < its.length && isNonSelectable(next)) next++;
         if (next >= its.length) {
           next = 0;
-          while (next < its.length && its[next]?.type === 'section-header') next++;
+          while (next < its.length && isNonSelectable(next)) next++;
         }
         if (next < its.length) {
           hasNavigatedRef.current = true;
@@ -409,11 +411,13 @@ export function ShipQLSuggestionsPlugin({
         if (!openRef.current || itemsRef.current.length === 0) return false;
         e?.preventDefault();
         const its = itemsRef.current;
+        const isNonSelectable = (i: number) =>
+          its[i]?.type === 'section-header' || its[i]?.type === 'facet-context';
         let prev = selectedIndexRef.current - 1;
-        while (prev >= 0 && its[prev]?.type === 'section-header') prev--;
+        while (prev >= 0 && isNonSelectable(prev)) prev--;
         if (prev < 0) {
           prev = its.length - 1;
-          while (prev >= 0 && its[prev]?.type === 'section-header') prev--;
+          while (prev >= 0 && isNonSelectable(prev)) prev--;
         }
         if (prev >= 0) {
           hasNavigatedRef.current = true;
@@ -430,7 +434,7 @@ export function ShipQLSuggestionsPlugin({
         if (!openRef.current || itemsRef.current.length === 0) return false;
         if (!hasNavigatedRef.current || selectedIndexRef.current < 0) return false;
         const item = itemsRef.current[selectedIndexRef.current];
-        if (!item || item.type === 'section-header') return false;
+        if (!item || item.type === 'section-header' || item.type === 'facet-context') return false;
         e?.preventDefault();
         applyRef.current?.(item.value);
         return true;

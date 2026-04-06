@@ -298,7 +298,9 @@ describe('buildSuggestionItems', () => {
     it('shows value suggestions in facet context', () => {
       const result = buildSuggestionItems(['status'], ['success', 'failed'], 'status:', null);
 
-      const nonHeaders = result.filter((i) => i.type !== 'section-header');
+      const nonHeaders = result.filter(
+        (i) => i.type !== 'section-header' && i.type !== 'facet-context',
+      );
       expect(nonHeaders.map((i) => i.value)).toEqual(['success', 'failed']);
     });
 
