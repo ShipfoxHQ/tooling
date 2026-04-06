@@ -349,6 +349,13 @@ function WithGroupedSuggestionsDemo(args: Parameters<typeof ShipQLEditor>[0]) {
 
 export const WithGroupedSuggestions: Story = {
   name: 'With Grouped Suggestions',
+  decorators: [
+    (Story) => (
+      <div style={{minWidth: '400px'}}>
+        <Story />
+      </div>
+    ),
+  ],
   render: (args) => <WithGroupedSuggestionsDemo {...args} />,
   play: (ctx) => waitForEditor(ctx, 'ShipQLEditor WithGroupedSuggestions'),
 };
