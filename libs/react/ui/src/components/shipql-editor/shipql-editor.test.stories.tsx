@@ -20,7 +20,7 @@ const FACETS: FacetDef[] = [
   'service',
   'repository',
   {
-    name: 'duration',
+    id: 'duration',
     config: {
       type: 'range',
       min: '0',
