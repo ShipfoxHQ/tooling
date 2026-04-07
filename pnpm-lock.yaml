@@ -128,6 +128,12 @@ importers:
       '@launchdarkly/node-server-sdk':
         specifier: ^9.7.2
         version: 9.10.10
+      '@launchdarkly/openfeature-node-server':
+        specifier: ^1.2.0
+        version: 1.2.0(@launchdarkly/node-server-sdk@9.10.10)(@openfeature/server-sdk@1.20.2(@openfeature/core@1.9.2))
+      '@openfeature/server-sdk':
+        specifier: ^1.20.0
+        version: 1.20.2(@openfeature/core@1.9.2)
       '@shipfox/config':
         specifier: workspace:*
         version: link:../../common/config
@@ -870,13 +876,11 @@ packages:
   '@biomejs/cli-darwin-arm64@2.4.10':
     resolution: {integrity: sha512-vuzzI1cWqDVzOMIkYyHbKqp+AkQq4K7k+UCXWpkYcY/HDn1UxdsbsfgtVpa40shem8Kax4TLDLlx8kMAecgqiw==}
     engines: {node: '>=14.21.3'}
-    cpu: [arm64]
     os: [darwin]
 
   '@biomejs/cli-darwin-x64@2.4.10':
     resolution: {integrity: sha512-14fzASRo+BPotwp7nWULy2W5xeUyFnTaq1V13Etrrxkrih+ez/2QfgFm5Ehtf5vSjtgx/IJycMMpn5kPd5ZNaA==}
     engines: {node: '>=14.21.3'}
-    cpu: [x64]
     os: [darwin]
 
   '@biomejs/cli-linux-arm64-musl@2.4.10':
@@ -888,7 +892,6 @@ packages:
   '@biomejs/cli-linux-arm64@2.4.10':
     resolution: {integrity: sha512-7MH1CMW5uuxQ/s7FLST63qF8B3Hgu2HRdZ7tA1X1+mk+St4JOuIrqdhIBnnyqeyWJNI+Bww7Es5QZ0wIc1Cmkw==}
     engines: {node: '>=14.21.3'}
-    cpu: [arm64]
     os: [linux]
 
   '@biomejs/cli-linux-x64-musl@2.4.10':
@@ -900,7 +903,6 @@ packages:
   '@biomejs/cli-linux-x64@2.4.10':
     resolution: {integrity: sha512-tZLvEEi2u9Xu1zAqRjTcpIDGVtldigVvzug2fTuPG0ME/g8/mXpRPcNgLB22bGn6FvLJpHHnqLnwliOu8xjYrg==}
     engines: {node: '>=14.21.3'}
-    cpu: [x64]
     os: [linux]
 
   '@biomejs/cli-win32-arm64@2.4.10':
@@ -1438,6 +1440,13 @@ packages:
   '@launchdarkly/node-server-sdk@9.10.10':
     resolution: {integrity: sha512-qJNVrHbX+FKUhVUl7FWK9ICsL4lJmHBE7vOCkvERFFODRxYrrf8HdiyYDf79aI8JMSOLCKZgcJJKNXAvRJXThg==}
 
+  '@launchdarkly/openfeature-node-server@1.2.0':
+    resolution: {integrity: sha512-VXnfQJfHsofhmHV4HvURLdMiX3bSwLumyeSPzuFn+5FdNKH2l44ijwXeSsotXpANMp+Gmz1LiQLz7ftgTSHKXg==}
+    engines: {node: '>=20'}
+    peerDependencies:
+      '@launchdarkly/node-server-sdk': 9.x
+      '@openfeature/server-sdk': ^1.16.0
+
   '@lexical/clipboard@0.42.0':
     resolution: {integrity: sha512-D3K2ID0zew/+CKpwxnUTTh/N46yU4IK8bFWV9Htz+g1vFhgUF9UnDOQCmqpJbdP7z+9U1F8rk3fzf9OmP2Fm2w==}
 
@@ -1686,6 +1695,15 @@ packages:
 
   '@octokit/types@16.0.0':
     resolution: {integrity: sha512-sKq+9r1Mm4efXW1FCk7hFSeJo4QKreL/tTbR0rz/qx/r1Oa2VV83LTA/H/MuCOX7uCIJmQVRKBcbmWoySjAnSg==}
+
+  '@openfeature/core@1.9.2':
+    resolution: {integrity: sha512-0lX0xYTflLrjiYNlareYmdV98xEddR5+PhcuoGvH+BMIqpZ2icAC7us9Uv86KRVqofXvpAUwpP32wgqmtUFs8Q==}
+
+  '@openfeature/server-sdk@1.20.2':
+    resolution: {integrity: sha512-JaaYhsX4CA/QTIXdQfDpD9zcxew5EHuWxJjL+Ctp3L4FXC2gEAZ3s1DaCJU6aFOF285dJH3zAoeU64EJvxCaAw==}
+    engines: {node: '>=20'}
+    peerDependencies:
+      '@openfeature/core': ^1.9.2
 
   '@opentelemetry/api-logs@0.212.0':
     resolution: {integrity: sha512-TEEVrLbNROUkYY51sBJGk7lO/OLjuepch8+hmpM6ffMJQ2z/KVCjdHuCFX6fJj8OkJP2zckPjrJzQtXU3IAsFg==}
@@ -6914,6 +6932,11 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
+  '@launchdarkly/openfeature-node-server@1.2.0(@launchdarkly/node-server-sdk@9.10.10)(@openfeature/server-sdk@1.20.2(@openfeature/core@1.9.2))':
+    dependencies:
+      '@launchdarkly/node-server-sdk': 9.10.10
+      '@openfeature/server-sdk': 1.20.2(@openfeature/core@1.9.2)
+
   '@lexical/clipboard@0.42.0':
     dependencies:
       '@lexical/html': 0.42.0
@@ -7231,6 +7254,12 @@ snapshots:
   '@octokit/types@16.0.0':
     dependencies:
       '@octokit/openapi-types': 27.0.0
+
+  '@openfeature/core@1.9.2': {}
+
+  '@openfeature/server-sdk@1.20.2(@openfeature/core@1.9.2)':
+    dependencies:
+      '@openfeature/core': 1.9.2
 
   '@opentelemetry/api-logs@0.212.0':
     dependencies:
