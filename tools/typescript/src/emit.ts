@@ -5,8 +5,7 @@ import {existsSync} from 'node:fs';
 import {dirname, join} from 'node:path';
 import {fileURLToPath} from 'node:url';
 import {buildShellCommand, getProjectFilePath, log} from '@shipfox/tool-utils';
-import {replaceTscAliasPaths} from 'tsc-alias';
-import {cleanup} from './utils';
+import {cleanup, replacePathAliases} from './utils';
 
 async function run() {
   const __filename = fileURLToPath(import.meta.url);
@@ -29,7 +28,7 @@ async function run() {
   ]);
   execSync(command, {stdio: 'inherit'});
   await cleanup(configFile);
-  await replaceTscAliasPaths({outDir, configFile, resolveFullPaths: true});
+  await replacePathAliases(configFile, outDir);
 }
 
 run().catch((e) => {

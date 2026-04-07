@@ -1,6 +1,8 @@
+import {writeFileSync, unlinkSync} from 'node:fs';
 import {readdir, rm} from 'node:fs/promises';
 import {dirname, join} from 'node:path';
 import {sys, parseJsonConfigFileContent, readConfigFile} from 'typescript';
+import {replaceTscAliasPaths} from 'tsc-alias';
 
 const tsExtensionRegex = /\.tsx?/;
 
@@ -23,4 +25,28 @@ export async function cleanup(tsConfigPath: string) {
 
   const filesToDelete = tsFilesInOutput.filter((f) => !expectedTsTilesInOutput.includes(f));
   await Promise.all(filesToDelete.map((f) => rm(f, {force: true})));
+}
+
+export async function replacePathAliases(configFile: string, outDir: string) {
+  const configStr = readConfigFile(configFile, sys.readFile);
+  const compilerOptions = configStr.config?.compilerOptions ?? {};
+
+  const hasBaseUrl = !!compilerOptions.baseUrl;
+  const catchAll = compilerOptions.paths?.['*'];
+  const derivedBaseUrl =
+    !hasBaseUrl && Array.isArray(catchAll)
+      ? (catchAll[0] as string)?.match(/^\.\/(.+)\/\*$/)?.[1]
+      : undefined;
+
+  if (derivedBaseUrl) {
+    const tempConfigPath = join(dirname(configFile), '.tsconfig-alias-temp.json');
+    writeFileSync(tempConfigPath, JSON.stringify({extends: configFile, compilerOptions: {baseUrl: derivedBaseUrl}}));
+    try {
+      await replaceTscAliasPaths({configFile: tempConfigPath, outDir, resolveFullPaths: true});
+    } finally {
+      unlinkSync(tempConfigPath);
+    }
+  } else {
+    await replaceTscAliasPaths({configFile, outDir, resolveFullPaths: true});
+  }
 }
