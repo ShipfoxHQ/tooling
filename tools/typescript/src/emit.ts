@@ -29,7 +29,7 @@ async function run() {
   ]);
   execSync(command, {stdio: 'inherit'});
   await cleanup(configFile);
-  await replaceTscAliasPaths({outDir, configFile});
+  await replaceTscAliasPaths({outDir, configFile, resolveFullPaths: true});
 }
 
 run().catch((e) => {
