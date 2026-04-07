@@ -1,6 +1,6 @@
-import {type Stats, existsSync} from 'node:fs';
+import {type Stats, existsSync, readFileSync, writeFileSync, unlinkSync} from 'node:fs';
 import {readdir, rm, stat} from 'node:fs/promises';
-import {join} from 'node:path';
+import {dirname, join} from 'node:path';
 import {isEqual} from 'date-fns';
 import {replaceTscAliasPaths} from 'tsc-alias';
 
@@ -47,10 +47,34 @@ interface ReplaceTypescriptPathsOptions {
   outputPath: string;
 }
 
+function parseTsConfigCompilerOptions(configPath: string): Record<string, unknown> {
+  const raw = readFileSync(configPath, 'utf-8')
+    .replace(/\/\/[^\n]*/g, '')
+    .replace(/\/\*[\s\S]*?\*\//g, '');
+  const config = JSON.parse(raw);
+  return config?.compilerOptions ?? {};
+}
+
 export async function replaceTypescriptPaths(options: ReplaceTypescriptPathsOptions) {
-  await replaceTscAliasPaths({
-    configFile: options.tsConfigPath,
-    outDir: options.outputPath,
-    resolveFullPaths: true,
-  });
+  const {tsConfigPath, outputPath} = options;
+  const compilerOptions = parseTsConfigCompilerOptions(tsConfigPath);
+
+  const hasBaseUrl = !!compilerOptions.baseUrl;
+  const catchAll = compilerOptions.paths as Record<string, string[]> | undefined;
+  const derivedBaseUrl =
+    !hasBaseUrl && Array.isArray(catchAll?.['*'])
+      ? catchAll['*'][0]?.match(/^\.\/(.+)\/\*$/)?.[1]
+      : undefined;
+
+  if (derivedBaseUrl) {
+    const tempConfigPath = join(dirname(tsConfigPath), '.tsconfig-alias-temp.json');
+    writeFileSync(tempConfigPath, JSON.stringify({extends: tsConfigPath, compilerOptions: {baseUrl: derivedBaseUrl}}));
+    try {
+      await replaceTscAliasPaths({configFile: tempConfigPath, outDir: outputPath, resolveFullPaths: true});
+    } finally {
+      unlinkSync(tempConfigPath);
+    }
+  } else {
+    await replaceTscAliasPaths({configFile: tsConfigPath, outDir: outputPath, resolveFullPaths: true});
+  }
 }
