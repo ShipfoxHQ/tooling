@@ -1,7 +1,7 @@
 import {type AstNode, parse} from '@shipfox/shipql-parser';
 import {Icon} from 'components/icon';
 import type {LeafAstNode} from '../lexical/shipql-leaf-node';
-import type {FacetDef, RangeFacetConfig, SuggestionItem} from './types';
+import type {FacetDef, FacetGroupInfo, RangeFacetConfig, SuggestionItem} from './types';
 
 // ─── Parse helper ─────────────────────────────────────────────────────────────
 
@@ -16,14 +16,44 @@ export function tryParse(text: string): AstNode | null {
 // ─── Facet normalization ───────────────────────────────────────────────────────
 
 export function normalizeFacets(facets: FacetDef[]): string[] {
-  return facets.map((f) => (typeof f === 'string' ? f : f.name));
+  return facets.map((f) => (typeof f === 'string' ? f : f.id));
 }
 
-export function getFacetConfig(facets: FacetDef[], name: string): RangeFacetConfig | undefined {
+export function getFacetConfig(facets: FacetDef[], id: string): RangeFacetConfig | undefined {
   for (const f of facets) {
-    if (typeof f !== 'string' && f.name.toLowerCase() === name.toLowerCase()) return f.config;
+    if (typeof f !== 'string' && f.id.toLowerCase() === id.toLowerCase()) return f.config;
   }
   return undefined;
+}
+
+// Private: finds the object-form FacetDef by exact id match.
+function findFacet(facets: FacetDef[], id: string): Exclude<FacetDef, string> | undefined {
+  for (const f of facets) {
+    if (typeof f !== 'string' && f.id === id) return f;
+  }
+  return undefined;
+}
+
+/** Returns the human-readable display label, falling back to the raw id. */
+export function getFacetLabel(facets: FacetDef[], id: string): string {
+  return findFacet(facets, id)?.metadata?.label ?? id;
+}
+
+/** Returns the description for a facet, if any. */
+export function getFacetDescription(facets: FacetDef[], id: string): string | undefined {
+  return findFacet(facets, id)?.metadata?.description;
+}
+
+/** Returns grouping information for a facet, with defaults applied. */
+export function getFacetGroupInfo(facets: FacetDef[], id: string): FacetGroupInfo {
+  const metadata = findFacet(facets, id)?.metadata;
+  const key = metadata?.group ?? '';
+  return {
+    key,
+    label: metadata?.groupLabel ?? (key ? key.charAt(0).toUpperCase() + key.slice(1) : undefined),
+    order: metadata?.groupOrder ?? Infinity,
+    icon: metadata?.groupIcon,
+  };
 }
 
 // ─── Leaf helpers ─────────────────────────────────────────────────────────────
@@ -89,13 +119,31 @@ export function buildSuggestionItems(
 ): SuggestionItem[] {
   const facetNames = normalizeFacets(facets);
 
-  const header = (label: string): SuggestionItem => ({
+  const header = (label: string, iconName?: string): SuggestionItem => ({
     value: `__header__${label}`,
     label,
-    icon: null,
+    icon: iconName ? (
+      <Icon name={iconName} className="size-12 text-foreground-neutral-muted" />
+    ) : null,
     selected: false,
     type: 'section-header',
   });
+
+  const facetContext = (id: string): SuggestionItem => {
+    const groupInfo = getFacetGroupInfo(facets, id);
+    return {
+      value: `__facet-context__${id}`,
+      label: getFacetLabel(facets, id),
+      icon: groupInfo.icon ? (
+        <Icon name={groupInfo.icon} className="size-12 text-foreground-neutral-muted" />
+      ) : null,
+      selected: false,
+      type: 'facet-context',
+      facetName: id,
+      description: getFacetDescription(facets, id),
+      sectionLabel: groupInfo.label,
+    };
+  };
 
   // Focused leaf — show values with current value marked selected.
   // Text-type leaves (bare words) are not facet:value matches, so fall through
@@ -119,7 +167,7 @@ export function buildSuggestionItems(
     const currentValue = extractValueFromLeaf(focusedLeaf);
     if (valueSuggestions.length === 0) return [];
     return [
-      header(facetName.toUpperCase()),
+      facetContext(facetName),
       ...valueSuggestions.map((v) => {
         const selected = v === currentValue;
         return {
@@ -163,7 +211,7 @@ export function buildSuggestionItems(
     // Regular facet — show value suggestions (parent is responsible for filtering)
     if (valueSuggestions.length === 0) return [];
     return [
-      header(facetCtx.facet.toUpperCase()),
+      facetContext(facetCtx.facet),
       ...valueSuggestions.map((v) => ({
         value: v,
         label: v,
@@ -178,17 +226,75 @@ export function buildSuggestionItems(
   // before matching so "NOT sta" still suggests "status", "-sta" suggests "status", etc.
   const rawPartial = focusedLeaf?.type === 'text' ? focusedLeaf.value : activeText;
   const partial = stripNegationPrefix(rawPartial.trim()).stripped.toLowerCase();
+
+  // Filter against raw id AND metadata label
   const filtered = partial
-    ? facetNames.filter((f) => f.toLowerCase().includes(partial))
-    : facetNames;
+    ? facets.filter((f) => {
+        const id = typeof f === 'string' ? f : f.id;
+        const label = typeof f !== 'string' ? f.metadata?.label : undefined;
+        return (
+          id.toLowerCase().includes(partial) || (label?.toLowerCase().includes(partial) ?? false)
+        );
+      })
+    : facets;
+
   if (filtered.length === 0) return [];
-  return [
-    header('TYPE'),
-    ...filtered.map((f) => ({
-      value: f,
-      label: f,
-      icon: <Icon name="searchLine" className="size-16 text-foreground-neutral-subtle" />,
-      selected: false,
-    })),
-  ];
+
+  // Bucket facets by group, sort groups by order, sort within group alphabetically.
+  // Facets without a group are placed last with no section header.
+  type GroupEntry = {
+    id: string;
+    label: string;
+    description: string | undefined;
+    groupOrder: number;
+    groupLabel: string | undefined;
+    groupIcon: string | undefined;
+  };
+  const groups = new Map<string, GroupEntry[]>();
+
+  for (const f of filtered) {
+    const id = typeof f === 'string' ? f : f.id;
+    const {
+      key: group,
+      label: groupLabel,
+      order: groupOrder,
+      icon: groupIcon,
+    } = getFacetGroupInfo(facets, id);
+
+    if (!groups.has(group)) groups.set(group, []);
+    const groupList = groups.get(group);
+    if (groupList)
+      groupList.push({
+        id,
+        label: getFacetLabel(facets, id),
+        description: getFacetDescription(facets, id),
+        groupOrder,
+        groupLabel,
+        groupIcon,
+      });
+  }
+
+  const sortedGroups = [...groups.entries()].sort(([, aItems], [, bItems]) => {
+    const aOrder = aItems[0]?.groupOrder ?? Infinity;
+    const bOrder = bItems[0]?.groupOrder ?? Infinity;
+    return aOrder - bOrder;
+  });
+
+  const items: SuggestionItem[] = [];
+  for (const [, groupItems] of sortedGroups) {
+    groupItems.sort((a, b) => a.label.localeCompare(b.label));
+    const firstItem = groupItems[0];
+    if (!firstItem) continue;
+    if (firstItem.groupLabel) items.push(header(firstItem.groupLabel, firstItem.groupIcon));
+    for (const entry of groupItems) {
+      items.push({
+        value: entry.id,
+        label: entry.label,
+        icon: null,
+        selected: false,
+        description: entry.description,
+      });
+    }
+  }
+  return items;
 }

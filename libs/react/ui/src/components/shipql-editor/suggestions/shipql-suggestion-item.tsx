@@ -6,7 +6,7 @@ interface ShipQLSuggestionItemProps {
   isHighlighted: boolean;
   isNegated?: boolean;
   onMouseDown: (value: string) => void;
-  itemRef?: (el: HTMLButtonElement | null) => void;
+  itemRef?: (el: HTMLElement | null) => void;
 }
 
 export function ShipQLSuggestionItem({
@@ -18,13 +18,46 @@ export function ShipQLSuggestionItem({
 }: ShipQLSuggestionItemProps) {
   if (item.type === 'section-header') {
     return (
-      <div className="flex w-full items-center px-8 h-30 shrink-0">
+      <div ref={itemRef} className="flex w-full items-center gap-6 px-8 h-30 shrink-0">
+        {item.icon}
         <span className="text-xs font-normal uppercase text-foreground-neutral-muted">
           {item.label}
         </span>
       </div>
     );
   }
+
+  if (item.type === 'facet-context') {
+    const showRawFacetName =
+      typeof item.label === 'string' && item.facetName && item.label !== item.facetName;
+    return (
+      <div
+        ref={itemRef}
+        className="flex w-full flex-col gap-2 px-8 py-8 border-b border-border-neutral-subtle shrink-0"
+      >
+        {item.sectionLabel && (
+          <div className="flex items-center gap-4">
+            {item.icon}
+            <span className="text-xs text-foreground-neutral-muted">{item.sectionLabel}</span>
+          </div>
+        )}
+        <div className="flex items-baseline gap-8">
+          <span className="text-sm font-medium text-foreground-neutral-base">{item.label}</span>
+          {showRawFacetName && (
+            <span className="font-mono text-xs text-foreground-neutral-muted">
+              {item.facetName}
+            </span>
+          )}
+        </div>
+        {item.description && (
+          <span className="text-xs text-foreground-neutral-muted">{item.description}</span>
+        )}
+      </div>
+    );
+  }
+
+  const labelText = isNegated ? `-${item.label}` : item.label;
+  const showRawId = typeof item.label === 'string' && item.label !== item.value;
 
   return (
     <button
@@ -35,26 +68,62 @@ export function ShipQLSuggestionItem({
         onMouseDown(item.value);
       }}
       className={cn(
-        'flex w-full items-center gap-12 rounded-none px-8 py-6 h-24 text-left transition-colors duration-75 cursor-pointer',
+        'flex w-full gap-12 rounded-none px-8 py-6 text-left transition-colors duration-75 cursor-pointer',
+        item.description ? 'items-start' : 'items-center h-24',
         isHighlighted
           ? 'bg-background-button-transparent-hover'
           : 'hover:bg-background-button-transparent-hover',
       )}
     >
-      <div className="flex min-w-0 flex-1 items-center gap-12">
+      <div
+        className={cn(
+          'flex min-w-0 flex-1 gap-12',
+          item.description ? 'items-start' : 'items-center',
+        )}
+      >
         {item.icon}
-        <span
-          className={cn(
-            'flex-1 truncate text-sm',
-            isNegated
-              ? 'text-foreground-highlights-interactive'
-              : item.selected
-                ? 'text-foreground-neutral-base'
-                : 'text-foreground-neutral-subtle',
-          )}
-        >
-          {isNegated ? `-${item.label}` : item.label}
-        </span>
+        {item.description ? (
+          <div className="flex min-w-0 flex-1 flex-col">
+            <div className="flex items-center gap-8">
+              <span
+                className={cn(
+                  'flex-1 truncate text-sm',
+                  isNegated
+                    ? 'text-foreground-highlights-interactive'
+                    : item.selected
+                      ? 'text-foreground-neutral-base'
+                      : 'text-foreground-neutral-subtle',
+                )}
+              >
+                {labelText}
+              </span>
+              {showRawId && (
+                <span className="shrink-0 max-w-[40%] truncate font-mono text-xs text-foreground-neutral-muted">
+                  {item.value}
+                </span>
+              )}
+            </div>
+            <span
+              title={item.description}
+              className="truncate text-xs text-foreground-neutral-muted"
+            >
+              {item.description}
+            </span>
+          </div>
+        ) : (
+          <span
+            className={cn(
+              'flex-1 truncate text-sm',
+              isNegated
+                ? 'text-foreground-highlights-interactive'
+                : item.selected
+                  ? 'text-foreground-neutral-base'
+                  : 'text-foreground-neutral-subtle',
+            )}
+          >
+            {labelText}
+          </span>
+        )}
       </div>
       {isHighlighted && (
         <span className="shrink-0 text-xs text-foreground-neutral-muted font-medium select-none">
