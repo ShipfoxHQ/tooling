@@ -168,6 +168,7 @@ export function ShipQLSuggestionsDropdown({
 
   return (
     <PopoverContent
+      data-shipql-suggestions
       align="start"
       sideOffset={4}
       className="p-0 w-(--radix-popover-trigger-width) rounded-8"
@@ -177,10 +178,22 @@ export function ShipQLSuggestionsDropdown({
           e.preventDefault();
           return;
         }
+        const target = e.target as HTMLElement;
+        if (target?.closest?.('[data-shipql-editor]')) {
+          e.preventDefault();
+          return;
+        }
         onClose();
       }}
       onPointerDownOutside={(e) => {
         if (isSelectingRef.current) {
+          e.preventDefault();
+          return;
+        }
+        // Clicks inside the editor are handled by Lexical's focus/blur
+        // commands — only dismiss for clicks truly outside the editor.
+        const target = e.target as HTMLElement;
+        if (target?.closest?.('[data-shipql-editor]')) {
           e.preventDefault();
           return;
         }

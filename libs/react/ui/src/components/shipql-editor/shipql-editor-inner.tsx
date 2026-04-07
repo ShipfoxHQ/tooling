@@ -52,7 +52,6 @@ export default function ShipQLEditorInner({
   allowFreeText,
 }: ShipQLEditorInnerProps) {
   const [suggestionsOpen, setSuggestionsOpen] = useState(false);
-  const [suggestionsSuppressed, setSuggestionsSuppressed] = useState(false);
   const [selectedIndex, setSelectedIndex] = useState(-1);
   const [items, setItems] = useState<SuggestionItem[]>([]);
   const [focusedLeafNode, setFocusedLeafNode] = useState<LeafAstNode | null>(null);
@@ -64,6 +63,7 @@ export default function ShipQLEditorInner({
   const applyRef = useRef<((value: string) => void) | null>(null);
   const negationPrefixRef = useRef('');
   const containerRef = useRef<HTMLDivElement>(null);
+  const suggestionsSuppressedRef = useRef(false);
 
   const hasSuggestions = Boolean(facets && facets.length > 0);
   const showValueActions = Boolean(currentFacet);
@@ -99,20 +99,17 @@ export default function ShipQLEditorInner({
   }, []);
 
   const handleDismissSuggestions = useCallback(() => {
-    setSuggestionsSuppressed(true);
+    suggestionsSuppressedRef.current = true;
     setSuggestionsOpen(false);
   }, []);
 
-  const handleSuggestionsOpenChange = useCallback(
-    (open: boolean) => {
-      if (open && suggestionsSuppressed) return;
-      setSuggestionsOpen(open);
-    },
-    [suggestionsSuppressed],
-  );
+  const handleSuggestionsOpenChange = useCallback((open: boolean) => {
+    if (open && suggestionsSuppressedRef.current) return;
+    setSuggestionsOpen(open);
+  }, []);
 
   const handleEditorMouseDownCapture = useCallback(() => {
-    setSuggestionsSuppressed(false);
+    suggestionsSuppressedRef.current = false;
   }, []);
 
   useEffect(() => {
@@ -120,8 +117,9 @@ export default function ShipQLEditorInner({
 
     const handleMouseDown = (event: MouseEvent) => {
       if (isSelectingRef.current) return;
-      const target = event.target as Node | null;
+      const target = event.target as Element | null;
       if (target && containerRef.current?.contains(target)) return;
+      if (target?.closest?.('[data-shipql-suggestions]')) return;
       handleDismissSuggestions();
       const activeElement = document.activeElement as HTMLElement | null;
       if (activeElement && containerRef.current?.contains(activeElement)) {
