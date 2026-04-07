@@ -16,6 +16,8 @@
     "@shipfox/config": "workspace:*",
     "@shipfox/node-log": "workspace:*",
     "@launchdarkly/node-server-sdk": "^9.7.2",
+    "@launchdarkly/openfeature-node-server": "^1.2.0",
+    "@openfeature/server-sdk": "^1.20.0",
     "@fastify/type-provider-typebox": "^6.0.0",
     "@shipfox/node-opentelemetry": "workspace:*",
     "ajv": "^8.17.1",
