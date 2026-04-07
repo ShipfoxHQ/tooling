@@ -32,6 +32,7 @@ export interface ShipQLEditorProps {
   isLoadingValueSuggestions?: boolean;
   onLeafChange?: (payload: LeafChangePayload) => void;
   formatLeafDisplay?: FormatLeafDisplay;
+  allowFreeText?: boolean;
 }
 
 export interface ShipQLEditorInnerProps extends ShipQLEditorProps {

@@ -6,3 +6,4 @@ export * from './types';
 export const parse = _parse as (input: string) => AstNode | null;
 export {removeBySource} from './remove';
 export {stringify} from './stringify';
+export {hasTextNodes} from './validate';

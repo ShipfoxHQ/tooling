@@ -1,19 +1,21 @@
 import {useLexicalComposerContext} from '@lexical/react/LexicalComposerContext';
 import type {AstNode} from '@shipfox/shipql-parser';
-import {parse} from '@shipfox/shipql-parser';
+import {hasTextNodes, parse} from '@shipfox/shipql-parser';
 import {$getRoot, BLUR_COMMAND, COMMAND_PRIORITY_LOW} from 'lexical';
 import {useEffect, useRef} from 'react';
 
 interface OnBlurPluginProps {
   onChange?: (ast: AstNode) => void;
+  allowFreeText?: boolean;
 }
 
-export function OnBlurPlugin({onChange}: OnBlurPluginProps): null {
+export function OnBlurPlugin({onChange, allowFreeText = true}: OnBlurPluginProps): null {
   const [editor] = useLexicalComposerContext();
 
-  // Keep latest callback accessible without re-registering the command.
   const onChangeRef = useRef(onChange);
   onChangeRef.current = onChange;
+  const allowFreeTextRef = useRef(allowFreeText);
+  allowFreeTextRef.current = allowFreeText;
 
   useEffect(() => {
     return editor.registerCommand(
@@ -22,7 +24,10 @@ export function OnBlurPlugin({onChange}: OnBlurPluginProps): null {
         const text = editor.getEditorState().read(() => $getRoot().getTextContent());
         try {
           const ast = parse(text);
-          if (ast) onChangeRef.current?.(ast);
+          if (ast) {
+            if (!allowFreeTextRef.current && hasTextNodes(ast)) return false;
+            onChangeRef.current?.(ast);
+          }
         } catch {
           // Invalid query — do not call onChange.
         }

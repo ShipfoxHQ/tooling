@@ -12,6 +12,7 @@ interface ShipQLSuggestionsDropdownProps {
   selectedIndex: number;
   isSelectingRef: React.RefObject<boolean>;
   onSelect: (value: string) => void;
+  onClose: () => void;
   isLoading?: boolean;
   isNegated: boolean;
   onToggleNegate: (negated: boolean) => void;
@@ -27,6 +28,7 @@ export function ShipQLSuggestionsDropdown({
   selectedIndex,
   isSelectingRef,
   onSelect,
+  onClose,
   isLoading,
   isNegated,
   onToggleNegate,
@@ -71,7 +73,7 @@ export function ShipQLSuggestionsDropdown({
       onSelect(value);
       setTimeout(() => {
         isSelectingRef.current = false;
-      }, 150);
+      }, 0);
     },
     [isSelectingRef, onSelect],
   );
@@ -146,10 +148,18 @@ export function ShipQLSuggestionsDropdown({
       className="p-0 w-(--radix-popover-trigger-width) rounded-8"
       onOpenAutoFocus={(e) => e.preventDefault()}
       onInteractOutside={(e) => {
-        if (isSelectingRef.current) e.preventDefault();
+        if (isSelectingRef.current) {
+          e.preventDefault();
+          return;
+        }
+        onClose();
       }}
       onPointerDownOutside={(e) => {
-        if (isSelectingRef.current) e.preventDefault();
+        if (isSelectingRef.current) {
+          e.preventDefault();
+          return;
+        }
+        onClose();
       }}
     >
       {popoverContent}

@@ -178,10 +178,10 @@ export function ShipQLRangeFacetPanel({
       isSelectingRef.current = true;
     };
     const onUp = () => {
-      // Small delay so the blur handler fires first and sees isSelectingRef=true
+      // Defer reset so the blur handler still sees isSelectingRef=true.
       setTimeout(() => {
         isSelectingRef.current = false;
-      }, 150);
+      }, 0);
     };
     el.addEventListener('pointerdown', onDown);
     window.addEventListener('pointerup', onUp);
