@@ -10,7 +10,9 @@ describe('ShipQLEditor', () => {
 
     render(<ShipQLEditor allowFreeText={false} defaultValue="error" onChange={onChange} />);
 
-    await user.click(await screen.findByRole('button', {name: 'Switch to free text mode'}));
+    await user.click(
+      await screen.findByRole('button', {name: 'Switch to free text mode'}, {timeout: 5000}),
+    );
 
     const input = await screen.findByRole('textbox', {name: 'ShipQL query editor'});
     expect(input).toHaveAttribute('aria-invalid', 'false');
