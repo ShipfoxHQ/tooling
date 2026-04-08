@@ -48,10 +48,7 @@ interface ReplaceTypescriptPathsOptions {
 }
 
 function parseTsConfigCompilerOptions(configPath: string): Record<string, unknown> {
-  const raw = readFileSync(configPath, 'utf-8')
-    .replace(/\/\/[^\n]*/g, '')
-    .replace(/\/\*[\s\S]*?\*\//g, '');
-  const config = JSON.parse(raw);
+  const config = JSON.parse(readFileSync(configPath, 'utf-8'));
   return config?.compilerOptions ?? {};
 }
 
