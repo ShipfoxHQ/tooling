@@ -1,5 +1,12 @@
 # @shipfox/react-ui
 
+## 0.33.1
+
+### Patch Changes
+
+- 581aa39: Enhance ShipQLEditor Suggestion Dropdown UX
+  - @shipfox/shipql-parser@0.2.1
+
 ## 0.33.0
 
 ### Minor Changes
