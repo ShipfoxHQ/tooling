@@ -178,8 +178,8 @@ export function ShipQLSuggestionsDropdown({
           e.preventDefault();
           return;
         }
-        const target = e.target as HTMLElement;
-        if (target?.closest?.('[data-shipql-editor]')) {
+        const target = (e as CustomEvent).detail?.originalEvent?.target;
+        if (target instanceof Element && target.closest('[data-shipql-editor]')) {
           e.preventDefault();
           return;
         }
@@ -192,8 +192,8 @@ export function ShipQLSuggestionsDropdown({
         }
         // Clicks inside the editor are handled by Lexical's focus/blur
         // commands — only dismiss for clicks truly outside the editor.
-        const target = e.target as HTMLElement;
-        if (target?.closest?.('[data-shipql-editor]')) {
+        const target = (e as CustomEvent).detail?.originalEvent?.target;
+        if (target instanceof Element && target.closest('[data-shipql-editor]')) {
           e.preventDefault();
           return;
         }
