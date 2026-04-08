@@ -159,6 +159,53 @@ export const ClosesSuggestionsAndRestoresSelectionAfterBlur: Story = {
   },
 };
 
+export const ReopensOnSingleClickAfterBlur: Story = {
+  render: (args) => <RegressionHarness {...args} />,
+  play: async ({canvasElement}) => {
+    const canvas = within(canvasElement);
+    const editor = await getEditor(canvasElement);
+    const outsideButton = await canvas.findByRole('button', {name: 'Outside blur target'});
+
+    await userEvent.click(editor);
+    await userEvent.type(editor, 'status:');
+
+    await waitFor(() => {
+      expect(screen.getByText('success')).toBeInTheDocument();
+    });
+
+    await userEvent.click(outsideButton);
+    await expectSuggestionClosed('success');
+
+    await userEvent.click(editor);
+
+    await waitFor(() => {
+      expect(screen.getByText('success')).toBeVisible();
+    });
+  },
+};
+
+export const SyntaxToggleDoesNotDismissDropdown: Story = {
+  render: (args) => <RegressionHarness {...args} />,
+  play: async ({canvasElement}) => {
+    const editor = await getEditor(canvasElement);
+
+    await userEvent.click(editor);
+    await userEvent.type(editor, 'status:');
+
+    await waitFor(() => {
+      expect(screen.getByText('success')).toBeVisible();
+    });
+
+    const syntaxButton = screen.getByText('Syntax');
+    await userEvent.click(syntaxButton);
+
+    await waitFor(() => {
+      expect(screen.getByText('success')).toBeVisible();
+      expect(screen.getByText('Operators')).toBeVisible();
+    });
+  },
+};
+
 export const BlurWithErrorAndOpenSelectorKeepsEditorUsable: Story = {
   render: (args) => <RegressionHarness {...args} />,
   play: async ({canvasElement}) => {
