@@ -1,5 +1,11 @@
 # @shipfox/node-feature-flag
 
+## 0.7.0
+
+### Minor Changes
+
+- b383718: Migrate from direct LaunchDarkly SDK to OpenFeature Server SDK with LaunchDarkly provider. The public API is unchanged. Internally, the monolithic module is split into focused modules (client, context, evaluation, validation) and adds a WeakMap schema cache for Ajv validation.
+
 ## 0.6.9
 
 ### Patch Changes
