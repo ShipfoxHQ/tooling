@@ -15,7 +15,7 @@ runs:
       shell: nix develop --command bash {0}
       run: echo "PNPM_STORE_PATH=$(pnpm store path --silent)" >> $GITHUB_OUTPUT
     - name: Get store from cache
-      uses: actions/cache@668228422ae6a00e4ad889ee87cd7109ec5666a7 # v5
+      uses: actions/cache@27d5ce7f107fe9357f9df03efb73ab90386fccae # v5
       with:
         path: ${{ steps.pnpm_store_path.outputs.PNPM_STORE_PATH }}
         key: pnpm-store-${{ hashFiles('pnpm-lock.yaml') }}
