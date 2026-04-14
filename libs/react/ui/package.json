@@ -38,7 +38,7 @@
     "type": "tsc-emit"
   },
   "dependencies": {
-    "@lexical/react": "^0.42.0",
+    "@lexical/react": "^0.43.0",
     "@radix-ui/react-accordion": "^1.2.12",
     "@radix-ui/react-alert-dialog": "^1.1.15",
     "@radix-ui/react-avatar": "^1.1.10",
@@ -66,7 +66,7 @@
     "cmdk": "^1.1.1",
     "framer-motion": "^12.23.24",
     "gsap": "^3.13.0",
-    "lexical": "^0.42.0",
+    "lexical": "^0.43.0",
     "lucide-react": "^1.0.0",
     "react-day-picker": "^9.5.1",
     "recharts": "^3.1.0",
