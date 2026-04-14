@@ -19,7 +19,7 @@
     "@shipfox/ts-config": "workspace:*",
     "@shipfox/typescript": "workspace:*",
     "@shipfox/vite": "workspace:*",
-    "@types/node": "25.5.2",
+    "@types/node": "25.6.0",
     "vite": "^8.0.3"
   }
 }

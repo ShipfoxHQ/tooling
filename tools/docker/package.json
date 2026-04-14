@@ -22,6 +22,6 @@
     "@shipfox/swc": "workspace:*",
     "@shipfox/ts-config": "workspace:*",
     "@shipfox/typescript": "workspace:*",
-    "@types/node": "25.5.2"
+    "@types/node": "25.6.0"
   }
 }
