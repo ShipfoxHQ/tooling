@@ -56,6 +56,15 @@ export class UnleashProvider implements Provider {
   ): Promise<ResolutionDetails<boolean>> {
     const client = this.getClient();
     const unleashContext = mapToUnleashContext(context);
+
+    if (!client.getFeatureToggleDefinition(flagKey)) {
+      return Promise.resolve({
+        value: defaultValue,
+        reason: 'DEFAULT',
+        errorCode: ErrorCode.FLAG_NOT_FOUND,
+      });
+    }
+
     const value = client.isEnabled(flagKey, unleashContext, defaultValue);
     return Promise.resolve({value});
   }
@@ -101,6 +110,10 @@ export class UnleashProvider implements Provider {
 
     const parsed = Number(variant.payload.value);
     if (Number.isNaN(parsed)) {
+      log.warn(
+        {flagKey, payload: variant.payload.value},
+        'Unleash variant payload is not a valid number',
+      );
       return Promise.resolve({
         value: defaultValue,
         reason: 'ERROR',
@@ -133,6 +146,10 @@ export class UnleashProvider implements Provider {
       const parsed = JSON.parse(variant.payload.value) as T;
       return Promise.resolve({value: parsed});
     } catch {
+      log.warn(
+        {flagKey, payload: variant.payload.value},
+        'Unleash variant payload is not valid JSON',
+      );
       return Promise.resolve({
         value: defaultValue,
         reason: 'ERROR',
