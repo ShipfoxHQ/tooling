@@ -22,7 +22,8 @@
     "@shipfox/node-opentelemetry": "workspace:*",
     "ajv": "^8.17.1",
     "ajv-errors": "^3.0.0",
-    "ajv-formats": "^3.0.1"
+    "ajv-formats": "^3.0.1",
+    "unleash-client": "^6.3.0"
   },
   "devDependencies": {
     "@shipfox/biome": "workspace:*",

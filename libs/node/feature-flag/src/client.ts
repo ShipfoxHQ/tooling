@@ -1,12 +1,18 @@
 import type {LDClient} from '@launchdarkly/node-server-sdk';
 import {LaunchDarklyProvider} from '@launchdarkly/openfeature-node-server';
-import type {Client} from '@openfeature/server-sdk';
-import {OpenFeature, ProviderEvents} from '@openfeature/server-sdk';
+import type {Client, Provider} from '@openfeature/server-sdk';
+import {
+  FirstSuccessfulStrategy,
+  MultiProvider,
+  OpenFeature,
+  ProviderEvents,
+} from '@openfeature/server-sdk';
 import {createConfig, str} from '@shipfox/config';
 import {log} from '@shipfox/node-log';
+import {UnleashProvider} from './unleash-provider';
 
 let _initialized = false;
-let _provider: LaunchDarklyProvider | undefined;
+let _launchDarklyProvider: LaunchDarklyProvider | undefined;
 
 const _listeners = new Map<string, Set<() => void>>();
 let _eventHandlerRegistered = false;
@@ -15,16 +21,39 @@ export async function initFeatureFlagging(): Promise<void> {
   const env = createConfig({
     LAUNCH_DARKLY_SDK_KEY: str(),
     LAUNCH_DARKLY_BASE_URI: str({default: undefined}),
+    UNLEASH_URL: str({default: undefined}),
+    UNLEASH_API_KEY: str({default: undefined}),
+    UNLEASH_APP_NAME: str({default: undefined}),
   });
 
-  _provider = new LaunchDarklyProvider(env.LAUNCH_DARKLY_SDK_KEY, {
+  _launchDarklyProvider = new LaunchDarklyProvider(env.LAUNCH_DARKLY_SDK_KEY, {
     logger: log,
     baseUri: env.LAUNCH_DARKLY_BASE_URI,
     streamUri: env.LAUNCH_DARKLY_BASE_URI,
     eventsUri: env.LAUNCH_DARKLY_BASE_URI,
   });
 
-  await OpenFeature.setProviderAndWait(_provider);
+  const useUnleash = env.UNLEASH_URL && env.UNLEASH_API_KEY && env.UNLEASH_APP_NAME;
+  let provider: Provider;
+
+  if (useUnleash) {
+    const unleashProvider = new UnleashProvider({
+      url: env.UNLEASH_URL as string,
+      apiKey: env.UNLEASH_API_KEY as string,
+      appName: env.UNLEASH_APP_NAME as string,
+    });
+
+    provider = new MultiProvider(
+      [{provider: unleashProvider}, {provider: _launchDarklyProvider}],
+      new FirstSuccessfulStrategy(),
+    );
+    log.info('Feature flagging initialized with Unleash (primary) and LaunchDarkly (fallback)');
+  } else {
+    provider = _launchDarklyProvider;
+    log.info('Feature flagging initialized with LaunchDarkly');
+  }
+
+  await OpenFeature.setProviderAndWait(provider);
   _initialized = true;
 }
 
@@ -34,8 +63,8 @@ export function getOpenFeatureClient(): Client {
 }
 
 export function getLaunchDarklyClient(): LDClient {
-  if (!_provider) throw new Error('Feature flag module has not been initialized');
-  return _provider.getClient() as LDClient;
+  if (!_launchDarklyProvider) throw new Error('Feature flag module has not been initialized');
+  return _launchDarklyProvider.getClient() as LDClient;
 }
 
 export function dispatchFlagChanges(
