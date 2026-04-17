@@ -127,10 +127,10 @@ importers:
         version: 6.1.0(typebox@1.0.81)
       '@launchdarkly/node-server-sdk':
         specifier: ^9.7.2
-        version: 9.10.10
+        version: 9.10.11
       '@launchdarkly/openfeature-node-server':
         specifier: ^1.2.0
-        version: 1.2.0(@launchdarkly/node-server-sdk@9.10.10)(@openfeature/server-sdk@1.20.2(@openfeature/core@1.9.2))
+        version: 1.2.0(@launchdarkly/node-server-sdk@9.10.11)(@openfeature/server-sdk@1.20.2(@openfeature/core@1.9.2))
       '@openfeature/server-sdk':
         specifier: ^1.20.0
         version: 1.20.2(@openfeature/core@1.9.2)
@@ -1438,14 +1438,14 @@ packages:
   '@keyv/serialize@1.1.1':
     resolution: {integrity: sha512-dXn3FZhPv0US+7dtJsIi2R+c7qWYiReoEh5zUntWCf4oSpMNib8FDhSoed6m3QyZdx5hK7iLFkYk3rNxwt8vTA==}
 
-  '@launchdarkly/js-sdk-common@2.24.0':
-    resolution: {integrity: sha512-f/xRD8gl/bSOVljat79nAzX0V0QjJ76R54aAbB6PJDWL+7BWBSFMxduaeokzbX53cs3oOVajL8ej/ps7+ojMeQ==}
+  '@launchdarkly/js-sdk-common@2.24.1':
+    resolution: {integrity: sha512-rrqZrUwjPWtSkjDNG1qX+BawlyGTx3RFTX4cdHeIR6MOyJR5i9DTzCit8bNBxjI/kGfxZHBepaPlGxoCfJjGFQ==}
 
-  '@launchdarkly/js-server-sdk-common@2.18.3':
-    resolution: {integrity: sha512-9lf1IRLJSghtDZlUT04KmmJOwRnAUuqXUcn7C2S9jNPDvrsmFJeD9Dpn7PoCUOR5rZgqAEveWdlBw9qjWeY6jw==}
+  '@launchdarkly/js-server-sdk-common@2.18.4':
+    resolution: {integrity: sha512-N3cYW1MTiXLpUzyIGU2jYo02/ZGeQFxz1diL3utgR+Mkrnb448e34uqt6Mrmv7lHr/IUL5aSgHdiJZc/5+WQAA==}
 
-  '@launchdarkly/node-server-sdk@9.10.10':
-    resolution: {integrity: sha512-qJNVrHbX+FKUhVUl7FWK9ICsL4lJmHBE7vOCkvERFFODRxYrrf8HdiyYDf79aI8JMSOLCKZgcJJKNXAvRJXThg==}
+  '@launchdarkly/node-server-sdk@9.10.11':
+    resolution: {integrity: sha512-2YsWGb7S5lxIg9DJpQDkLem69xzfP9PLXnOqZrfZEae5vh68V9nnKG6VpG3gTaHBJg1gDrqcpdJxCwPodI+MSA==}
 
   '@launchdarkly/openfeature-node-server@1.2.0':
     resolution: {integrity: sha512-VXnfQJfHsofhmHV4HvURLdMiX3bSwLumyeSPzuFn+5FdNKH2l44ijwXeSsotXpANMp+Gmz1LiQLz7ftgTSHKXg==}
@@ -6920,24 +6920,24 @@ snapshots:
 
   '@keyv/serialize@1.1.1': {}
 
-  '@launchdarkly/js-sdk-common@2.24.0': {}
+  '@launchdarkly/js-sdk-common@2.24.1': {}
 
-  '@launchdarkly/js-server-sdk-common@2.18.3':
+  '@launchdarkly/js-server-sdk-common@2.18.4':
     dependencies:
-      '@launchdarkly/js-sdk-common': 2.24.0
+      '@launchdarkly/js-sdk-common': 2.24.1
       semver: 7.5.4
 
-  '@launchdarkly/node-server-sdk@9.10.10':
+  '@launchdarkly/node-server-sdk@9.10.11':
     dependencies:
-      '@launchdarkly/js-server-sdk-common': 2.18.3
+      '@launchdarkly/js-server-sdk-common': 2.18.4
       https-proxy-agent: 7.0.6
       launchdarkly-eventsource: 2.2.0
     transitivePeerDependencies:
       - supports-color
 
-  '@launchdarkly/openfeature-node-server@1.2.0(@launchdarkly/node-server-sdk@9.10.10)(@openfeature/server-sdk@1.20.2(@openfeature/core@1.9.2))':
+  '@launchdarkly/openfeature-node-server@1.2.0(@launchdarkly/node-server-sdk@9.10.11)(@openfeature/server-sdk@1.20.2(@openfeature/core@1.9.2))':
     dependencies:
-      '@launchdarkly/node-server-sdk': 9.10.10
+      '@launchdarkly/node-server-sdk': 9.10.11
       '@openfeature/server-sdk': 1.20.2(@openfeature/core@1.9.2)
 
   '@lexical/clipboard@0.43.0':
