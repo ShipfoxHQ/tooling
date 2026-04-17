@@ -1,5 +1,11 @@
 # @shipfox/node-feature-flag
 
+## 0.8.0
+
+### Minor Changes
+
+- 8967115: Add Unleash as primary feature flag provider with LaunchDarkly fallback using OpenFeature MultiProvider and FirstSuccessfulStrategy
+
 ## 0.7.0
 
 ### Minor Changes
