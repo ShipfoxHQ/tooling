@@ -58,11 +58,7 @@ export class UnleashProvider implements Provider {
     const unleashContext = mapToUnleashContext(context);
 
     if (!client.getFeatureToggleDefinition(flagKey)) {
-      return Promise.resolve({
-        value: defaultValue,
-        reason: 'DEFAULT',
-        errorCode: ErrorCode.FLAG_NOT_FOUND,
-      });
+      throw new FlagNotFoundError(flagKey);
     }
 
     const value = client.isEnabled(flagKey, unleashContext, defaultValue);
@@ -77,6 +73,11 @@ export class UnleashProvider implements Provider {
   ): Promise<ResolutionDetails<string>> {
     const client = this.getClient();
     const unleashContext = mapToUnleashContext(context);
+
+    if (!client.getFeatureToggleDefinition(flagKey)) {
+      throw new FlagNotFoundError(flagKey);
+    }
+
     const variant = client.getVariant(flagKey, unleashContext);
 
     if (!variant.enabled || !variant.payload) {
@@ -98,6 +99,11 @@ export class UnleashProvider implements Provider {
   ): Promise<ResolutionDetails<number>> {
     const client = this.getClient();
     const unleashContext = mapToUnleashContext(context);
+
+    if (!client.getFeatureToggleDefinition(flagKey)) {
+      throw new FlagNotFoundError(flagKey);
+    }
+
     const variant = client.getVariant(flagKey, unleashContext);
 
     if (!variant.enabled || !variant.payload) {
@@ -132,6 +138,11 @@ export class UnleashProvider implements Provider {
   ): Promise<ResolutionDetails<T>> {
     const client = this.getClient();
     const unleashContext = mapToUnleashContext(context);
+
+    if (!client.getFeatureToggleDefinition(flagKey)) {
+      throw new FlagNotFoundError(flagKey);
+    }
+
     const variant = client.getVariant(flagKey, unleashContext);
 
     if (!variant.enabled || !variant.payload) {
@@ -156,6 +167,12 @@ export class UnleashProvider implements Provider {
         errorCode: ErrorCode.PARSE_ERROR,
       });
     }
+  }
+}
+
+class FlagNotFoundError extends Error {
+  constructor(flagKey: string) {
+    super(`Flag "${flagKey}" not found in Unleash`);
   }
 }
 
