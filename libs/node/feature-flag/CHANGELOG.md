@@ -1,5 +1,15 @@
 # @shipfox/node-feature-flag
 
+## 0.8.1
+
+### Patch Changes
+
+- 86756d5: Fix Unleash provider to throw on flag not found so MultiProvider falls through to LaunchDarkly
+
+  When a flag doesn't exist in Unleash, the provider now throws instead of returning a resolved
+  default value. This allows `FirstSuccessfulStrategy` to correctly fall through to the LaunchDarkly
+  provider, preventing flags missing from Unleash from silently returning hardcoded defaults.
+
 ## 0.8.0
 
 ### Minor Changes
