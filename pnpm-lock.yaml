@@ -127,10 +127,10 @@ importers:
         version: 6.1.0(typebox@1.0.81)
       '@launchdarkly/node-server-sdk':
         specifier: ^9.7.2
-        version: 9.10.10
+        version: 9.10.12
       '@launchdarkly/openfeature-node-server':
         specifier: ^1.2.0
-        version: 1.2.0(@launchdarkly/node-server-sdk@9.10.10)(@openfeature/server-sdk@1.20.2(@openfeature/core@1.9.2))
+        version: 1.2.0(@launchdarkly/node-server-sdk@9.10.12)(@openfeature/server-sdk@1.20.2(@openfeature/core@1.9.2))
       '@openfeature/server-sdk':
         specifier: ^1.20.0
         version: 1.20.2(@openfeature/core@1.9.2)
@@ -1445,14 +1445,14 @@ packages:
   '@keyv/serialize@1.1.1':
     resolution: {integrity: sha512-dXn3FZhPv0US+7dtJsIi2R+c7qWYiReoEh5zUntWCf4oSpMNib8FDhSoed6m3QyZdx5hK7iLFkYk3rNxwt8vTA==}
 
-  '@launchdarkly/js-sdk-common@2.24.0':
-    resolution: {integrity: sha512-f/xRD8gl/bSOVljat79nAzX0V0QjJ76R54aAbB6PJDWL+7BWBSFMxduaeokzbX53cs3oOVajL8ej/ps7+ojMeQ==}
+  '@launchdarkly/js-sdk-common@2.24.2':
+    resolution: {integrity: sha512-SuWfR90NZ1ttGxz/2AeavfFXy/sFnFE7PhEBfg4mv0beTF9LeZwVa4XJsVeBe0Zb1PcuUQt7kn4VmFCctQIAzA==}
 
-  '@launchdarkly/js-server-sdk-common@2.18.3':
-    resolution: {integrity: sha512-9lf1IRLJSghtDZlUT04KmmJOwRnAUuqXUcn7C2S9jNPDvrsmFJeD9Dpn7PoCUOR5rZgqAEveWdlBw9qjWeY6jw==}
+  '@launchdarkly/js-server-sdk-common@2.18.5':
+    resolution: {integrity: sha512-P+KvThDSxzBM1jHmCZuHWaz+B0Wu44GRcpDar7RoT5yFW7HN3l2vQEArYrRHGGDvTE3YWqQxOfVUTRK0pktz1g==}
 
-  '@launchdarkly/node-server-sdk@9.10.10':
-    resolution: {integrity: sha512-qJNVrHbX+FKUhVUl7FWK9ICsL4lJmHBE7vOCkvERFFODRxYrrf8HdiyYDf79aI8JMSOLCKZgcJJKNXAvRJXThg==}
+  '@launchdarkly/node-server-sdk@9.10.12':
+    resolution: {integrity: sha512-jGScTl6n8lKgnuPvRPMOxf2xdE//+asa5mj97bRPa7AOZYmKtjweJMWNlGEGyaFqeOEqkw+VebqMK+qUJuDOug==}
 
   '@launchdarkly/openfeature-node-server@1.2.0':
     resolution: {integrity: sha512-VXnfQJfHsofhmHV4HvURLdMiX3bSwLumyeSPzuFn+5FdNKH2l44ijwXeSsotXpANMp+Gmz1LiQLz7ftgTSHKXg==}
@@ -4863,6 +4863,10 @@ packages:
     resolution: {integrity: sha512-wgWa6FWQ3QRRJbIjbsldRJZxdxYngT/dO0I5Ynmlnin8qy7tC6xYzbcJjtN4wHLXtkbVwHzk0C+OejVw1XM+DQ==}
     engines: {node: 20 || >=22}
 
+  lru-cache@11.3.5:
+    resolution: {integrity: sha512-NxVFwLAnrd9i7KUBxC4DrUhmgjzOs+1Qm50D3oF1/oL+r1NpZ4gA7xvG0/zJ8evR7zIKn4vLf7qTNduWFtCrRw==}
+    engines: {node: 20 || >=22}
+
   lru-cache@5.1.1:
     resolution: {integrity: sha512-KpNARQA3Iwv+jTA0utUVVbrh+Jlrr1Fv0e56GGzAFOXN7dk/FviaDW8LHmK52DlcH4WP2n6gI8vN1aesBFgo9w==}
 
@@ -7041,24 +7045,24 @@ snapshots:
 
   '@keyv/serialize@1.1.1': {}
 
-  '@launchdarkly/js-sdk-common@2.24.0': {}
+  '@launchdarkly/js-sdk-common@2.24.2': {}
 
-  '@launchdarkly/js-server-sdk-common@2.18.3':
+  '@launchdarkly/js-server-sdk-common@2.18.5':
     dependencies:
-      '@launchdarkly/js-sdk-common': 2.24.0
+      '@launchdarkly/js-sdk-common': 2.24.2
       semver: 7.5.4
 
-  '@launchdarkly/node-server-sdk@9.10.10':
+  '@launchdarkly/node-server-sdk@9.10.12':
     dependencies:
-      '@launchdarkly/js-server-sdk-common': 2.18.3
+      '@launchdarkly/js-server-sdk-common': 2.18.5
       https-proxy-agent: 7.0.6
       launchdarkly-eventsource: 2.2.0
     transitivePeerDependencies:
       - supports-color
 
-  '@launchdarkly/openfeature-node-server@1.2.0(@launchdarkly/node-server-sdk@9.10.10)(@openfeature/server-sdk@1.20.2(@openfeature/core@1.9.2))':
+  '@launchdarkly/openfeature-node-server@1.2.0(@launchdarkly/node-server-sdk@9.10.12)(@openfeature/server-sdk@1.20.2(@openfeature/core@1.9.2))':
     dependencies:
-      '@launchdarkly/node-server-sdk': 9.10.10
+      '@launchdarkly/node-server-sdk': 9.10.12
       '@openfeature/server-sdk': 1.20.2(@openfeature/core@1.9.2)
 
   '@lexical/clipboard@0.43.0':
@@ -10619,6 +10623,8 @@ snapshots:
 
   lru-cache@11.3.2: {}
 
+  lru-cache@11.3.5: {}
+
   lru-cache@5.1.1:
     dependencies:
       yallist: 3.1.1
@@ -10923,7 +10929,7 @@ snapshots:
 
   path-scurry@2.0.2:
     dependencies:
-      lru-cache: 11.3.2
+      lru-cache: 11.3.5
       minipass: 7.1.3
 
   path-type@4.0.0: {}
