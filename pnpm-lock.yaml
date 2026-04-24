@@ -463,7 +463,7 @@ importers:
         version: 4.1.4
       '@argos-ci/storybook':
         specifier: ^5.2.1
-        version: 5.3.1
+        version: 5.3.2
       '@hookform/resolvers':
         specifier: ^5.2.2
         version: 5.2.2(react-hook-form@7.71.1(react@19.2.4))
@@ -756,6 +756,10 @@ packages:
     resolution: {integrity: sha512-z74ZdqT46+sirGlJUXXn1vhZZshUU50bRLfeVCeHilEf585N8GG7demF4vtY+dp226jGqSf+CkgBfg/O48AxAA==}
     engines: {node: '>=20.0.0'}
 
+  '@argos-ci/api-client@0.18.0':
+    resolution: {integrity: sha512-64vK5Bar20C4CT2MidiFQKc/bfw66VNcGKy7i6+WBSA502yRPLGw0163CWL1/+0Tb0thOxB04KoAxcOEN/CjuA==}
+    engines: {node: '>=20.0.0'}
+
   '@argos-ci/browser@5.1.3':
     resolution: {integrity: sha512-2acfqcb7A2VNqm43bBk90PleBV+qCwO68FNmoGn28zs3d10G3W3/ZkqtoYUY3ycWclWQ/KYxH8SdHQfz4iB3ow==}
     engines: {node: '>=20.0.0'}
@@ -769,12 +773,16 @@ packages:
     resolution: {integrity: sha512-DUTcNf8VFtlZj2h2qH1GP7lvDiaX4v+rZs/SQA2uAQp4J6Oapl40D90O4Hum8XZt1kaKC5BrxeDAohomH/plkA==}
     engines: {node: '>=20.0.0'}
 
-  '@argos-ci/playwright@6.6.1':
-    resolution: {integrity: sha512-GdNeCDjBX0vozgDg7jYzBY0iSQobjmNgOXjCpHQl8k8ZuwgAQ+oklfWx45uu4L1Sa6aZ8NmR6UCABTPCESXSJA==}
+  '@argos-ci/core@5.2.1':
+    resolution: {integrity: sha512-aOPB/dat46Qa6zqRyD7QS/ewxYKNTkqpAyVvA8qnfFGYM8dQ7M+MMmiQELsybMt6hRORZ+1n1r1dzVOMGvAeRQ==}
     engines: {node: '>=20.0.0'}
 
-  '@argos-ci/storybook@5.3.1':
-    resolution: {integrity: sha512-AQUhySj52k+qTYp76Tyo173X/Xm7K4dnbGWqK8BMKjSN/d2ZHBSIhkl5MZls+eeHk10xTU6lBYIoIT0/OWhKtw==}
+  '@argos-ci/playwright@6.6.2':
+    resolution: {integrity: sha512-VFXW39A68rQIUpS54ghBeUnZrJ/LkOpHQ3tVN5STrCAv2pQ3tWYl7QJOAvK/9nZDLkt0D/QBtDMdI/uhIJ0TUw==}
+    engines: {node: '>=20.0.0'}
+
+  '@argos-ci/storybook@5.3.2':
+    resolution: {integrity: sha512-ZUWsPix9XZYPhlLMnSbiO8sEQzD8x4yuDmjeDLe8fJFZR+Bi5kh99SruShD4ugZjyHXlbx/WBzOkuXrv/AGTuQ==}
     engines: {node: '>=20.0.0'}
 
   '@argos-ci/util@3.4.0':
@@ -6358,6 +6366,13 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
+  '@argos-ci/api-client@0.18.0':
+    dependencies:
+      debug: 4.4.3
+      openapi-fetch: 0.17.0
+    transitivePeerDependencies:
+      - supports-color
+
   '@argos-ci/browser@5.1.3': {}
 
   '@argos-ci/cli@4.1.4':
@@ -6382,19 +6397,32 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@argos-ci/playwright@6.6.1':
+  '@argos-ci/core@5.2.1':
+    dependencies:
+      '@argos-ci/api-client': 0.18.0
+      '@argos-ci/util': 3.4.0
+      convict: 6.2.5
+      debug: 4.4.3
+      fast-glob: 3.3.3
+      mime-types: 3.0.2
+      sharp: 0.34.5
+      tmp: 0.2.5
+    transitivePeerDependencies:
+      - supports-color
+
+  '@argos-ci/playwright@6.6.2':
     dependencies:
       '@argos-ci/browser': 5.1.3
-      '@argos-ci/core': 5.2.0
+      '@argos-ci/core': 5.2.1
       '@argos-ci/util': 3.4.0
       chalk: 5.6.2
       debug: 4.4.3
     transitivePeerDependencies:
       - supports-color
 
-  '@argos-ci/storybook@5.3.1':
+  '@argos-ci/storybook@5.3.2':
     dependencies:
-      '@argos-ci/playwright': 6.6.1
+      '@argos-ci/playwright': 6.6.2
       '@argos-ci/util': 3.4.0
     transitivePeerDependencies:
       - supports-color
