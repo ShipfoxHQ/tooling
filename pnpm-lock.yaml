@@ -127,10 +127,10 @@ importers:
         version: 6.1.0(typebox@1.0.81)
       '@launchdarkly/node-server-sdk':
         specifier: ^9.7.2
-        version: 9.10.10
+        version: 9.10.14
       '@launchdarkly/openfeature-node-server':
         specifier: ^1.2.0
-        version: 1.2.0(@launchdarkly/node-server-sdk@9.10.10)(@openfeature/server-sdk@1.20.2(@openfeature/core@1.9.2))
+        version: 1.2.0(@launchdarkly/node-server-sdk@9.10.14)(@openfeature/server-sdk@1.20.2(@openfeature/core@1.9.2))
       '@openfeature/server-sdk':
         specifier: ^1.20.0
         version: 1.20.2(@openfeature/core@1.9.2)
@@ -1445,14 +1445,14 @@ packages:
   '@keyv/serialize@1.1.1':
     resolution: {integrity: sha512-dXn3FZhPv0US+7dtJsIi2R+c7qWYiReoEh5zUntWCf4oSpMNib8FDhSoed6m3QyZdx5hK7iLFkYk3rNxwt8vTA==}
 
-  '@launchdarkly/js-sdk-common@2.24.0':
-    resolution: {integrity: sha512-f/xRD8gl/bSOVljat79nAzX0V0QjJ76R54aAbB6PJDWL+7BWBSFMxduaeokzbX53cs3oOVajL8ej/ps7+ojMeQ==}
+  '@launchdarkly/js-sdk-common@2.24.4':
+    resolution: {integrity: sha512-ikD6MElNa3WPUxXdUIDSBvbig21gfjemEus1Vh0HGcgLThxGglq+EGb0coyc8199+3aqu8c9kpuXEdMBZhOowA==}
 
-  '@launchdarkly/js-server-sdk-common@2.18.3':
-    resolution: {integrity: sha512-9lf1IRLJSghtDZlUT04KmmJOwRnAUuqXUcn7C2S9jNPDvrsmFJeD9Dpn7PoCUOR5rZgqAEveWdlBw9qjWeY6jw==}
+  '@launchdarkly/js-server-sdk-common@2.18.7':
+    resolution: {integrity: sha512-v1vttu8tALIvpm1+Bal2HKtuvpdBBOTVJfAidlqS4PgSO9qyIzMa5R9fTkRFFXUpQh/iLRqPMI2TINubdfd5kg==}
 
-  '@launchdarkly/node-server-sdk@9.10.10':
-    resolution: {integrity: sha512-qJNVrHbX+FKUhVUl7FWK9ICsL4lJmHBE7vOCkvERFFODRxYrrf8HdiyYDf79aI8JMSOLCKZgcJJKNXAvRJXThg==}
+  '@launchdarkly/node-server-sdk@9.10.14':
+    resolution: {integrity: sha512-mpgBT0mRBO/2dup7VrKaydyowv7pu3xRqyN7QMsXnOVF5yvC2N2HOBJ7HwBYaNtII32vEa9uQJbX8v2mBfVMaw==}
 
   '@launchdarkly/openfeature-node-server@1.2.0':
     resolution: {integrity: sha512-VXnfQJfHsofhmHV4HvURLdMiX3bSwLumyeSPzuFn+5FdNKH2l44ijwXeSsotXpANMp+Gmz1LiQLz7ftgTSHKXg==}
@@ -3531,6 +3531,7 @@ packages:
 
   '@ungap/structured-clone@1.3.0':
     resolution: {integrity: sha512-WmoN8qaIAo7WTYWbAZuG8PYEhn5fkz7dZrqTBZ7dtt//lL2Gwms1IcnQ5yHqjDfX8Ft5j4YzDM23f87zBfDe9g==}
+    deprecated: Potential CWE-502 - Update to 1.3.1 or higher
 
   '@vitejs/plugin-react@6.0.1':
     resolution: {integrity: sha512-l9X/E3cDb+xY3SWzlG1MOGt2usfEHGMNIaegaUGFsLkb3RCn/k8/TOXBcab+OndDI4TBtktT8/9BwwW8Vi9KUQ==}
@@ -5619,6 +5620,11 @@ packages:
     engines: {node: '>=10'}
     hasBin: true
 
+  semver@7.8.0:
+    resolution: {integrity: sha512-AcM7dV/5ul4EekoQ29Agm5vri8JNqRyj39o0qpX6vDF2GZrtutZl5RwgD1XnZjiTAfncsJhMI48QQH3sN87YNA==}
+    engines: {node: '>=10'}
+    hasBin: true
+
   sharp@0.34.5:
     resolution: {integrity: sha512-Ou9I5Ft9WNcCbXrU9cMgPBcCK8LiwLqcbywW3t4oDV37n1pzpuNLsYiAV8eODnjbtQlSDwZ2cUEeQz4E54Hltg==}
     engines: {node: ^18.17.0 || ^20.3.0 || >=21.0.0}
@@ -7041,24 +7047,24 @@ snapshots:
 
   '@keyv/serialize@1.1.1': {}
 
-  '@launchdarkly/js-sdk-common@2.24.0': {}
+  '@launchdarkly/js-sdk-common@2.24.4': {}
 
-  '@launchdarkly/js-server-sdk-common@2.18.3':
+  '@launchdarkly/js-server-sdk-common@2.18.7':
     dependencies:
-      '@launchdarkly/js-sdk-common': 2.24.0
+      '@launchdarkly/js-sdk-common': 2.24.4
       semver: 7.5.4
 
-  '@launchdarkly/node-server-sdk@9.10.10':
+  '@launchdarkly/node-server-sdk@9.10.14':
     dependencies:
-      '@launchdarkly/js-server-sdk-common': 2.18.3
+      '@launchdarkly/js-server-sdk-common': 2.18.7
       https-proxy-agent: 7.0.6
       launchdarkly-eventsource: 2.2.0
     transitivePeerDependencies:
       - supports-color
 
-  '@launchdarkly/openfeature-node-server@1.2.0(@launchdarkly/node-server-sdk@9.10.10)(@openfeature/server-sdk@1.20.2(@openfeature/core@1.9.2))':
+  '@launchdarkly/openfeature-node-server@1.2.0(@launchdarkly/node-server-sdk@9.10.14)(@openfeature/server-sdk@1.20.2(@openfeature/core@1.9.2))':
     dependencies:
-      '@launchdarkly/node-server-sdk': 9.10.10
+      '@launchdarkly/node-server-sdk': 9.10.14
       '@openfeature/server-sdk': 1.20.2(@openfeature/core@1.9.2)
 
   '@lexical/clipboard@0.43.0':
@@ -10651,7 +10657,7 @@ snapshots:
 
   make-dir@4.0.0:
     dependencies:
-      semver: 7.7.4
+      semver: 7.8.0
 
   make-fetch-happen@15.0.5:
     dependencies:
@@ -11407,11 +11413,13 @@ snapshots:
 
   semver@7.7.4: {}
 
+  semver@7.8.0: {}
+
   sharp@0.34.5:
     dependencies:
       '@img/colour': 1.1.0
       detect-libc: 2.1.2
-      semver: 7.7.4
+      semver: 7.8.0
     optionalDependencies:
       '@img/sharp-darwin-arm64': 0.34.5
       '@img/sharp-darwin-x64': 0.34.5
